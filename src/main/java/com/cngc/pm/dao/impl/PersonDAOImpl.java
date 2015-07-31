@@ -1,18 +1,13 @@
-package com.cngc.pm.dao;
+package com.cngc.pm.dao.impl;
 
-import java.util.List;
-
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 
+import com.cngc.pm.dao.PersonDAO;
 import com.cngc.pm.model.Person;
 
 @Repository
-public class PersonDAOImpl implements PersonDAO {
-	
+public class PersonDAOImpl extends BaseDAOImpl<Person, Integer> implements PersonDAO {
+	/*
 	private static final Logger logger = LoggerFactory.getLogger(PersonDAOImpl.class);
 
 	private SessionFactory sessionFactory;
@@ -64,5 +59,5 @@ public class PersonDAOImpl implements PersonDAO {
 		//logger.info("Person deleted successfully, person details="+p);
 		logger.warn("Person deleted successfully, person details="+p);
 	}
-
+*/
 }

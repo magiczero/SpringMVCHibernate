@@ -10,7 +10,7 @@
 	 <bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource" 
 				  destroy-method="close" 
 				  p:driverClass="com.mysql.jdbc.Driver"
-				  p:jdbcUrl="jdbc:mysql://localhost:3396/testdb" 
+				  p:jdbcUrl="jdbc:mysql://localhost:3396/pmsys?useUnicode=true&amp;characterEncoding=utf8" 
 				  p:user="root"
 				  p:password="myoa888"
 				  p:acquireIncrement="10" 

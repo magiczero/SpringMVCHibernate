@@ -74,5 +74,5 @@
 		<beans:property name="sessionFactory" ref="hibernate4AnnotatedSessionFactory" />
 	</beans:bean>
 
-	<beans:import resource="spring-datasource.xml" />
+	<!-- <beans:import resource="spring-datasource.xml" /> -->
 </beans:beans>

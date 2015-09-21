@@ -10,8 +10,9 @@
       <!-- <http auto-config="true">
         <intercept-url pattern="/hello*" access="ROLE_USER" />
 	  </http> -->
+	  <sec:debug/>
 	  <http pattern="/initLogin*" security="none" />
-	  <http auto-config="false" access-denied-page="/403.jsp"><!--  authentication-manager-ref="authenticationManager" -->
+	  <http auto-config="false" access-denied-page="/403.jsp" ><!--  authentication-manager-ref="authenticationManager" -->
 	  	<form-login login-page="/initLogin"
 	  			 login-processing-url="/login" username-parameter="username" password-parameter="password" always-use-default-target="true" authentication-success-handler-ref="authenticationSuccessHandler"/>
 	  	<intercept-url pattern="/admin.jsp" access="ROLE_ADMIN" />
@@ -23,6 +24,13 @@
  		<beans:property name="forwardToDestination" value="true"></beans:property>
  	</beans:bean>
  	
+ 	<!-- 配置登录入口点 entry-point-ref="authenticationProcessingFilterEntryPoint" -->
+    <beans:bean id="authenticationProcessingFilterEntryPoint"
+        class="org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint">
+        <beans:property name="loginFormUrl" value="/WEB-INF/ views/hello.jsp" />
+        <!-- 是否强制HTTPS -->
+        <beans:property name="forceHttps" value="false" />
+    </beans:bean>
     <!-- <authentication-manager>
         <authentication-provider>
             <user-service>
@@ -32,14 +40,42 @@
         </authentication-provider>
     </authentication-manager> -->
     
-    <beans:bean id="userDetailsService" class="com.cngc.pm.security.impl.UserDetailServiceImpl" />
+    <!-- <beans:bean id="userDetailServiceImpl" class="com.cngc.pm.security.impl.UserDetailServiceImpl" /> -->
     
+    <!-- <beans:bean id="daoAuthenticationProvider" class="org.springframework.security.authentication.dao.DaoAuthenticationProvider">
+	    <beans:property name="userDetailsService" ref="userDetailsService" />
+	</beans:bean>
+
+	<beans:bean id="providerManager" class="org.springframework.security.authentication.ProviderManager">
+	    <beans:property name="providers">
+	        <beans:list>
+	            <beans:ref bean="daoAuthenticationProvider" />
+	        </beans:list>
+	    </beans:property>
+	</beans:bean>
+ -->    
     <authentication-manager alias="authenticationManager">
-		<authentication-provider user-service-ref="userDetailsService" >
-			<!-- 用户加密解密类  -->  
-            <password-encoder hash="md5">
-                <salt-source user-property="username"/>  
-            </password-encoder> 
+		<authentication-provider user-service-ref="userDetailServiceImpl" >
+		
+            <password-encoder hash="md5" />
 		</authentication-provider>
 	</authentication-manager>
+	<!-- 
+	<sec:authentication-manager>  
+	    <sec:authentication-provider ref="authenticationProvider" />  
+	</sec:authentication-manager>  
+	  
+	<beans:bean id="authenticationProvider" class="org.springframework.security.authentication.dao.DaoAuthenticationProvider">  
+	    <beans:property name="hideUserNotFoundExceptions" value="false" />  
+	    <beans:property name="userDetailsService" ref="userDetailsService" />  
+	    <beans:property name="passwordEncoder" ref="passwordEncode" />  
+	    <beans:property name="saltSource" ref="saltSource" />  
+	</beans:bean>   -->
+	  
+	  
+	<!-- 配置密码加密类
+	<beans:bean id="passwordEncode" class="org.springframework.security.authentication.encoding.Md5PasswordEncoder" />  
+	<beans:bean id="saltSource" class="org.springframework.security.authentication.dao.ReflectionSaltSource">  
+	    <beans:property name="userPropertyToUse" value="username"/>  
+	</beans:bean>   -->  
 </beans:beans>

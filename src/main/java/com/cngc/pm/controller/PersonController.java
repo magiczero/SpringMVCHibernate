@@ -1,9 +1,14 @@
 package com.cngc.pm.controller;
 
+import java.util.List;
+
 import javax.annotation.Resource;
+import javax.validation.Valid;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -32,18 +37,24 @@ public class PersonController {
 	
 	//For add and update person both
 	@RequestMapping(value= "/person/add", method = RequestMethod.POST)
-	public String addPerson(@ModelAttribute("person") Person p){
+	public String addPerson(@Valid @ModelAttribute("person") Person person, BindingResult result){
 		
-		if(p.getId() == null){
-			//new person, add it
-			this.personService.addPerson(p);
-		}else{
-			//existing person, call update
-			this.personService.updatePerson(p);
+		if(result.hasErrors()) {
+			List<ObjectError> errorList = result.getAllErrors();
+            for(ObjectError error : errorList){
+                System.out.println(error.getDefaultMessage());
+            }
+		} else{
+			if(person.getId() == null){
+				//new person, add it
+				this.personService.addPerson(person);
+			}else{
+				//existing person, call update
+				this.personService.updatePerson(person);
+			}
+			
 		}
-		
 		return "redirect:/persons";
-		
 	}
 	
 	@RequestMapping("/remove/{id}")

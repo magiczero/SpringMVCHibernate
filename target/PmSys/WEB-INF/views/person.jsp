@@ -41,7 +41,7 @@
 			</form:label>
 		</td>
 		<td>
-			<form:input path="name" />
+			<form:input path="name" /><form:errors path="name"></form:errors>
 		</td> 
 	</tr>
 	<tr>
@@ -51,7 +51,7 @@
 			</form:label>
 		</td>
 		<td>
-			<form:input path="country" />
+			<form:input path="country" /><form:errors path="country"></form:errors>
 		</td>
 	</tr>
 	<tr>

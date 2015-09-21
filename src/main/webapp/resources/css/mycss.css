@@ -1,0 +1,19 @@
+﻿
+/* add by andy 2015-6-19 15:01*/                   
+.dialog .headInfo{background-color: #F1F1F1; border: 1px solid #D5D5D5; padding: 5px; position: relative;
+                -moz-border-top-left-radius: 3px; -webkit-border-top-left-radius: 3px; border-top-left-radius: 3px;
+                -moz-border-top-right-radius: 3px; -webkit-border-top-right-radius: 3px; border-top-right-radius: 3px;}            
+.dialog  .headInfo .arrow_down{width: 17px; height: 12px; position: absolute; left: 50%; margin-left: -9px; bottom: -12px; background: url('../img/menu-arrow-down.png') left top no-repeat; z-index: 1;}            
+.dialog  .headInfo .image{margin: 0px 10px 5px 5px; float: left;}                
+.dialog  .headInfo .image a{display: block; font-weight: bold; text-align: center;}
+.dialog  .headInfo .info{float: left; font-size: 11px; color: #333;}
+.dialog  .headInfo .info address{margin-bottom: 0px;}                    
+.dialog  .headInfo .input-append{text-align: right;}                    
+.dialog  .headInfo .input-append,
+.dialog  .headInfo .input-append button{margin-bottom: 0px;}                                        
+.dialog  .headInfo .actions{text-align: right; margin: 5px 0px 0px;}
+.dialog  .headInfo .actions .btn-group .btn{margin: 0px;}/*andy end*/
+.dialog  .dialog_block{border: 0px; padding: 0px; padding-right: 10px; background: transparent; }
+
+.messages .item .image{text-align:center;}
+

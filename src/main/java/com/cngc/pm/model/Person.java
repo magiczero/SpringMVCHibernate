@@ -6,6 +6,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -26,8 +28,9 @@ public class Person {
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Integer id;
 	
+	@NotNull @Size(min = 2, max = 30, message="填入iei")
 	private String name;
-	
+	@Size(min = 2, max = 4, message="我爱北京天安门")
 	private String country;
 
 	public Integer getId() {

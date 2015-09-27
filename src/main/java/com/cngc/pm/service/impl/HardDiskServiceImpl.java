@@ -39,4 +39,11 @@ public class HardDiskServiceImpl implements HardDiskService {
 		return diskDao.getListByServer(serverid);
 	}
 
+	@Override
+	@Transactional
+	public void delete(long l) {
+		// TODO Auto-generated method stub
+		diskDao.removeById(l);
+	}
+
 }

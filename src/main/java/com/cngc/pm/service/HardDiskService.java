@@ -9,5 +9,5 @@ public interface HardDiskService {
 	List<HardDisk> getList();
 	void addHardDisk(HardDisk disk);
 	List<HardDisk> getListByServerId(int serverid);
-	
+	void delete(long id);
 }

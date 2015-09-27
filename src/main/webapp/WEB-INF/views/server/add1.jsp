@@ -104,6 +104,24 @@
         	        'hideOnOverlayClick' : true,
         	        'showCloseButton' : true
         	    });
+                
+                $("#shownetcard").fancybox({
+        	    	'href'  : '${contextPath }/networkcard/list/${server.id }',
+        	    	'width' : 778,
+        	        'height' : 530,
+        	        'type' : 'iframe',
+        	        'hideOnOverlayClick' : true,
+        	        'showCloseButton' : true
+        	    });
+                
+                $("#showsoftware").fancybox({
+        	    	'href'  : '${contextPath }/Server/listsoftware/${server.id }',
+        	    	'width' : 778,
+        	        'height' : 530,
+        	        'type' : 'iframe',
+        	        'hideOnOverlayClick' : true,
+        	        'showCloseButton' : true
+        	    });
             });
     </script>
 </head>
@@ -150,8 +168,8 @@
                                     <a class="isw-settings" href="#"></a>
                                     <ul class="dd-list">
                                         <li><a id="showhd" href="javascript:void(0);"><span class="isw-text_document"></span> 硬盘</a></li>
-                                        <li><a href="#"><span class="isw-mail"></span> 网卡</a></li>
-                                        <li><a href="#"><span class="isw-refresh"></span> 软件</a></li>
+                                        <li><a id="shownetcard" href="javascript:void(0);"><span class="isw-mail"></span> 网卡</a></li>
+                                        <li><a id="showsoftware" href="javascript:void(0);"><span class="isw-refresh"></span> 软件</a></li>
                                     </ul>
                                 </li>
                             </ul>

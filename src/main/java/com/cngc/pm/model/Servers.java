@@ -28,9 +28,9 @@ public class Servers extends Asset {
 	private Set<CabinetPosition> position = new HashSet<CabinetPosition>();		//机柜位置
 	private Set<HardDisk> disks = new HashSet<HardDisk>();									//硬盘
 	private Set<NetworkCard> networkCards = new HashSet<NetworkCard>();		//网卡
-	
-	
-//	public String getNum() {
+	private Set<ServerSoftware> serverSofts = new HashSet<ServerSoftware>();		//软件安装信息
+
+	//	public String getNum() {
 //		return num;
 //	}
 //	public void setNum(String num) {
@@ -106,4 +106,12 @@ public class Servers extends Asset {
 		this.networkCards = networkCards;
 	}
 	
+	@OneToMany(targetEntity=ServerSoftware.class)
+	@JoinColumn(name="server_id", referencedColumnName="id")
+	public Set<ServerSoftware> getServerSofts() {
+		return serverSofts;
+	}
+	public void setServerSofts(Set<ServerSoftware> serverSofts) {
+		this.serverSofts = serverSofts;
+	}
 }

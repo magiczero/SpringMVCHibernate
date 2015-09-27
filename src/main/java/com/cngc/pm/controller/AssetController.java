@@ -93,6 +93,8 @@ public class AssetController {
 			return "";
 		} else if(type == 4) {		//涉密终端
 			return "";
+		} else if(type == 9) {
+			return "forward:/software/initadd";
 		} else {
 			return "";
 		}
@@ -108,6 +110,8 @@ public class AssetController {
 			return "";
 		} else if(type == 4) {		//涉密终端
 			return "";
+		} else if(type == 9) {
+			return "redirect:/software/view/"+id;
 		} else {
 			return "";
 		}

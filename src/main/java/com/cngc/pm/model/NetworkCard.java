@@ -1,8 +1,6 @@
 package com.cngc.pm.model;
 
 import java.io.Serializable;
-import java.util.HashSet;
-import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -11,11 +9,10 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
-import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.CascadeType;
+import org.hibernate.annotations.NotFound;
+import org.hibernate.annotations.NotFoundAction;
 
 /**
  * 网卡
@@ -34,24 +31,20 @@ public class NetworkCard implements Serializable {
 	private Long id;
 	private Style cardType;					//网卡类型
 	private String macAdd;					//mac地址
-	private String desc;
+	private String internetProtocol;	//IP地址
+	private String subnetMask;			//子网掩码
 	
-	private Set<InternetProtocol> ips = new HashSet<InternetProtocol>();
+	private String remark;
 	
-	@OneToMany(targetEntity=InternetProtocol.class)
-	@JoinColumn(name="network_id", referencedColumnName="id")
-	public Set<InternetProtocol> getIps() {
-		return ips;
+	private Servers server;						//所属服务器
+	
+	public String getRemark() {
+		return remark;
 	}
-	public void setIps(Set<InternetProtocol> ips) {
-		this.ips = ips;
+	public void setRemark(String remark) {
+		this.remark = remark;
 	}
-	public String getDesc() {
-		return desc;
-	}
-	public void setDesc(String desc) {
-		this.desc = desc;
-	}
+	
 	@Id
 	@Column(name="id")
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
@@ -64,7 +57,7 @@ public class NetworkCard implements Serializable {
 	
 	@ManyToOne(targetEntity=Style.class)
 	@JoinColumn(name = "card_type", nullable = false)
-	@Cascade(CascadeType.ALL)
+	//@Cascade(CascadeType.ALL)
 	public Style getCardType() {
 		return cardType;
 	}
@@ -79,6 +72,30 @@ public class NetworkCard implements Serializable {
 	public void setMacAdd(String macAdd) {
 		this.macAdd = macAdd;
 	}
+
+	@ManyToOne(targetEntity=Servers.class)
+	@JoinColumn(name="server_id", referencedColumnName="id")
+	@NotFound(action=NotFoundAction.IGNORE)  
+	public Servers getServer() {
+		return server;
+	}
+	public void setServer(Servers server) {
+		this.server = server;
+	}
 	
+	@Column(name="internet_protocol")
+	public String getInternetProtocol() {
+		return internetProtocol;
+	}
+	public void setInternetProtocol(String internetProtocol) {
+		this.internetProtocol = internetProtocol;
+	}
 	
+	@Column(name="subnet_mask")
+	public String getSubnetMask() {
+		return subnetMask;
+	}
+	public void setSubnetMask(String subnetMask) {
+		this.subnetMask = subnetMask;
+	}
 }

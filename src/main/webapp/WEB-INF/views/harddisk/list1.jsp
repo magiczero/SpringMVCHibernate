@@ -54,6 +54,7 @@
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/cleditor/jquery.cleditor.js'></script>
     
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/dataTables/jquery.dataTables.min.js'></script>    
+    <script type='text/javascript' src='${contextPath }/resources/js/plugins/dataTables/fnReloadAjax.js'></script>    
     
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/fancybox/jquery.fancybox.pack.js'></script>
     
@@ -73,26 +74,94 @@
 	    	$("#createHD").click(function() {
 	    		window.location.href="${contextPath }/harddisk/add/${serverid}";
 	    	});
+	    	
+	    	$("#deleteHD").click(function() {
+	    		if(confirm("确定执行删除操作？")) {
+		    		var arr = [];
+		    		$("input[name=ids]").each(function() {
+		    			if($(this).attr("checked")=='checked') {
+		    				arr.push($(this).val());
+		    			}
+		    		});
+		    		if(arr=='') {
+		    			$("div.alert").removeClass('hide');
+		    			return false;
+		    		} else {
+		    			$("div.alert").addClass('hide');
+		    			$.ajax({
+		    				type : "post",
+		    				dataType : "json",
+		    				url : "${contextPath }/harddisk/delete",
+		    				data : {ids : arr.join(",")},
+		    				success : function(data) {
+		    					if (data.flag == "true") {
+		    						$("#datalist").dataTable().fnReloadAjax(); //使用默认
+		    						cox();
+		    						alert('删除成功');
+		    						
+		    					} else {
+		    						alert('删除失败');
+		    					}
+		    				}
+		    			});
+		    		}
+	    		}
+	    	});
+	    	
+	    	initTable();
 	    });
+	    
+	    function cox() {
+	    	$("input[name=ids]").each(function(){
+				$(this).click(function(){
+    		        if(!$(this).is(':checked'))
+    		            $(this).parents('span').removeClass('checked').find('input[type=checkbox]').attr('checked',false);
+    		        else
+    		            $(this).parents('span').addClass('checked').find('input[type=checkbox]').attr('checked',true);
+    		            
+    		    });  
+			});
+	    }
+	    
+	    function initTable() {
+	    	$("#datalist").dataTable({
+	    		/*"initComplete": function () {
+	    	            
+ 	            	alert("complete");
+ 	            	if(!$(this).is(':checked'))
+ 	                    $(this).parents('span').removeClass('checked');
+ 	                else
+ 	                    $(this).parents('span').addClass('checked');
+ 	        },*/
+	    		"bProcessing": true,
+	    		"bServerside": true,
+	    		"sAjaxSource": "${contextPath }/harddisk/listhd/${serverid}",
+	    		"bRetrieve": true,
+	    		"bDestroy" : true,
+	    		"bPaginate": false, //翻页功能
+	    		"bLengthChange": false, //改变每页显示数据数量
+	    		"bFilter": false, //过滤功能
+	    		"bSort": false, //排序功能
+	    		"bInfo": false,//页脚信息
+	    		"bAutoWidth": true,//自动宽度
+	    		"fnInitComplete": cox
+	    	});
+	    }
     </script>
 </head>
 <body>
  <div class="wrapper">
   	<div class="breadLine">
-
-
-
             </div>
-
             <div class="workplace">          
                 
                 <div class="page-header">
                     <h1>服务器 <small>硬盘列表</small></h1>
                 </div>  
-                
+                <div class="alert alert-danger hide">                
+                    <h4>错误!</h4>请至少选择一项
+                </div> 
                 <div class="row">
-
-                    
 
                     <div class="col-md-12" id="mails">
                         <div class="block-fluid" id="inbox">
@@ -101,11 +170,11 @@
                                     <div class="btn-group">
                                         <button id="createHD" class="btn btn-sm btn-success tip" title="新建"><span class="glyphicon glyphicon-share-alt glyphicon glyphicon-white"></span></button>
                                         <button class="btn btn-sm btn-warning tip" title="Spam"><span class="glyphicon glyphicon-warning-sign glyphicon glyphicon-white"></span></button>
-                                        <button class="btn btn-sm btn-danger tip" title="删除"><span class="glyphicon glyphicon-trash glyphicon glyphicon-white"></span></button>
+                                        <button id="deleteHD" class="btn btn-sm btn-danger tip" title="删除"><span class="glyphicon glyphicon-trash glyphicon glyphicon-white"></span></button>
                                     </div>
                                 </div>
                             </div>
-                            <table cellpadding="0" cellspacing="0" width="100%" class="table">
+                            <table cellpadding="0" cellspacing="0" width="100%" class="table" id="datalist">
                                 <thead>
                                     <tr>
                                         <th><input type="checkbox" name="checkall"/></th>
@@ -115,17 +184,7 @@
                                         <th width="15%">容量</th>                                                                        
                                     </tr>
                                 </thead>
-                                <tbody>
-                                <c:forEach items="${listHD}" var="disk">
-                                    <tr>
-                                        <td><input type="checkbox" name="checkbox"/></td>
-                                        <td>${disk.serialNum }</td>
-                                        <td>${disk.interf }</td>
-                                        <td>${disk.type}</td>
-                                        <td>${disk.capacity }</td>
-                                    </tr>
-                                </c:forEach>
-                                </tbody>
+                               
                             </table>                       
                                                                                                 
                         </div>

@@ -14,6 +14,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.cngc.pm.model.Asset;
 import com.cngc.pm.model.SecretLevel;
+import com.cngc.pm.model.ServerSoftware;
 import com.cngc.pm.model.Servers;
 import com.cngc.pm.service.ServerService;
 
@@ -104,7 +105,6 @@ public class ServerController {
 	
 	@RequestMapping(value = "/save", method = RequestMethod.POST)
 	public String save(@Valid @ModelAttribute("server") Servers s, BindingResult result, Model model) {
-		System.out.println("进入保存方法");
 		if(result.hasErrors()) {
 			//密级
 			model.addAttribute("levels", SecretLevel.values());
@@ -121,14 +121,14 @@ public class ServerController {
 	}
 	
 	@RequestMapping("/remove/{id}")
-	public String detail(@PathVariable("id") int id, Model model) {
+	public String detail(@PathVariable("id") long id, Model model) {
 		model.addAttribute("server", serverService.getServerById(id));
 		
 		return "server/detail";
 	}
 	
 	@RequestMapping("/view/{id}")
-	public String view(@PathVariable("id") int id, Model model) {
+	public String view(@PathVariable("id") long id, Model model) {
 		//密级
 		model.addAttribute("levels", SecretLevel.values());
 		//服务器类型
@@ -136,5 +136,49 @@ public class ServerController {
 		model.addAttribute("server", this.serverService.getServerById(id));
 				
 		return "server/add1";
+	}
+	
+	@RequestMapping("/listsoftware/{serverid}")
+	public String listSoftware(@PathVariable("serverid") long serverid, Model model) {
+		Servers server = serverService.getServerById(serverid);
+		
+		if(server != null){
+			model.addAttribute("server", server);
+			model.addAttribute("softwares", serverService.getSoftwares(serverid));
+		}
+		
+		return "server/listSoftware";
+	}
+	
+	@RequestMapping("/addsoftware/{serverid}")
+	public String initAddSoftware(@PathVariable("serverid") long serverid, Model model) {
+		Servers server = serverService.getServerById(serverid);
+		
+		if(server != null){
+			model.addAttribute("server", server);
+			model.addAttribute("mapSoftware", serverService.getAllMapSoftware());
+			
+			model.addAttribute("serverSoft", new ServerSoftware());
+		}
+		return "server/addsoftware";
+	}
+	
+	@RequestMapping(value = "/savesoftware", method = RequestMethod.POST)
+	public String saveSoftware(@Valid @ModelAttribute("serverSoft") ServerSoftware s, BindingResult result, Model model) {
+		Servers server = serverService.getServerById(s.getServer().getId());
+		if(result.hasErrors()) {
+			model.addAttribute("server", serverService.getServerById(server.getId()));
+			model.addAttribute("mapSoftware", serverService.getAllMapSoftware());
+			
+			model.addAttribute("serverSoft", new ServerSoftware());
+			
+			return "server/addsoftware";
+		}
+		
+		serverService.addServerSoftware(s);
+		
+		model.addAttribute("server", server);
+		
+		return "server/listSoftware";
 	}
 }

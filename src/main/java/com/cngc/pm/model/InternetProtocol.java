@@ -2,20 +2,13 @@ package com.cngc.pm.model;
 
 import java.io.Serializable;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
-
 /**
  * IP地址
  * @author HP
  *
  */
-@Entity
-@Table(name="ip_add")
+//@Entity
+//@Table(name="ip_add")
 public class InternetProtocol implements Serializable {
 
 	/**
@@ -29,9 +22,9 @@ public class InternetProtocol implements Serializable {
 	private String maskCode;					//掩码
 	private String desc;
 	
-	@Id
-	@Column(name="id")
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
+//	@Id
+//	@Column(name="id")
+//	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	public Long getId() {
 		return id;
 	}
@@ -46,7 +39,7 @@ public class InternetProtocol implements Serializable {
 		this.address = address;
 	}
 	
-	@Column(name="mac_add")
+	//@Column(name="mac_add")
 	public String getMacAdd() {
 		return macAdd;
 	}
@@ -54,7 +47,7 @@ public class InternetProtocol implements Serializable {
 		this.macAdd = macAdd;
 	}
 	
-	@Column(name="mask_code")
+	//@Column(name="mask_code")
 	public String getMaskCode() {
 		return maskCode;
 	}

@@ -115,7 +115,7 @@
 
                 <ul class="breadcrumb">
                     <li><a href="#">运维管理系统</a> <span class="divider">></span></li>
-                    <li><a href="${contextPath }/Asset/list"">资产管理</a> <span class="divider">></span></li>         
+                    <li><a href="${contextPath }/Asset/list">资产管理</a> <span class="divider">></span></li>         
                     <li class="active">新资产</li>
                 </ul>
 

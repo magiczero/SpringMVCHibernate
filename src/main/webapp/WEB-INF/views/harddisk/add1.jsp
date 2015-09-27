@@ -69,13 +69,6 @@
     <script type='text/javascript' src='${contextPath }/resources/js/plugins.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/mail.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/settings.js'></script>  
-    <script type="text/javascript">
-	    $(document).ready(function () {
-	    	$("#createHD").click(function() {
-	    		window.location.href="${contextPath }/harddisk/add/${serverid}";
-	    	});
-	    });
-    </script>
 </head>
 <body>
  <div class="wrapper">

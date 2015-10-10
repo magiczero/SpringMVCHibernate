@@ -24,4 +24,20 @@ public interface ServerService {
 
 	List<ServerSoftware> getSoftwares(long serverid);
 
+	/**
+	 * 删除服务器与软件间的关联
+	 * @param serversoftid		服务器软件id
+	 */
+	void deleteSoftware(Long serversoftid);
+	
+	/**
+	 * 服务器上是否已经存在此软件
+	 * @param serverid
+	 * @param softwareid
+	 * @return 
+	 */
+	boolean isSoftware(Long serverid, Long softwareid);
+
+	Map<String, String> getMapManufa();
+
 }

@@ -33,6 +33,7 @@ public class SoftwareController {
 				
 				software.setAssetNum(currAsset.getAssetNum());					//资产编号
 				software.setSecretNum(currAsset.getSecretNum());				//涉密编号
+				software.setManufa(currAsset.getManufa());
 				software.setBrand(currAsset.getBrand()); 								//品牌
 				software.setModel(currAsset.getModel()); 							//设备型号
 				software.setSnNum(currAsset.getSnNum());
@@ -67,6 +68,7 @@ public class SoftwareController {
 			model.addAttribute("levels", SecretLevel.values());
 			model.addAttribute("styles", softwareService.getMapAssetStyle());
 			model.addAttribute("software", softwareService.getById(id));
+			model.addAttribute("mapManufa", softwareService.getMapManufa());
 			
 			return "software/update";
 		}
@@ -77,6 +79,7 @@ public class SoftwareController {
 				model.addAttribute("levels", SecretLevel.values());
 				model.addAttribute("styles", softwareService.getMapAssetStyle());
 				model.addAttribute("software", software);
+				model.addAttribute("mapManufa", softwareService.getMapManufa());
 				
 				return "software/update";
 				
@@ -85,5 +88,12 @@ public class SoftwareController {
 			softwareService.add(software);
 			
 			return "redirect:/Asset/list";
+		}
+		
+		@RequestMapping(value = "/listserver/{softwareid}", method = RequestMethod.GET)
+		public String listServer(@PathVariable("softwareid") long id, Model model) {
+			model.addAttribute("listserver", softwareService.getServers(id));
+			
+			return "software/listServer";
 		}
 }

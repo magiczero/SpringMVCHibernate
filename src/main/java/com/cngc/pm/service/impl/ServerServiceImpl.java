@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.cngc.pm.dao.ManufaDAO;
 import com.cngc.pm.dao.ServerDAO;
 import com.cngc.pm.dao.ServerSoftDAO;
 import com.cngc.pm.dao.SoftwareDAO;
@@ -29,6 +30,8 @@ public class ServerServiceImpl implements ServerService {
 	private SoftwareDAO softwareDao;
 	@Autowired
 	private ServerSoftDAO serverSoftDao;
+	@Autowired
+	private ManufaDAO manufaDao;
 
 	@Override
 	@Transactional(readOnly=true)
@@ -98,6 +101,26 @@ public class ServerServiceImpl implements ServerService {
 	public List<ServerSoftware> getSoftwares(long serverid) {
 		// TODO Auto-generated method stub
 		return serverSoftDao.getListByServer(serverid);
+	}
+
+	@Override
+	@Transactional
+	public void deleteSoftware(Long id) {
+		// TODO Auto-generated method stub
+		serverSoftDao.removeById(id);
+	}
+
+	@Override
+	@Transactional(readOnly=true)
+	public boolean isSoftware(Long serverid, Long softwareid) {
+		// TODO Auto-generated method stub
+		return serverSoftDao.isServerSoftware(serverid, softwareid);
+	}
+
+	@Override
+	@Transactional(readOnly=true)
+	public Map<String, String> getMapManufa() {
+		return manufaDao.getAllMap();
 	}
 
 }

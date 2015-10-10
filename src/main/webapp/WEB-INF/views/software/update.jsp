@@ -97,16 +97,7 @@
                 $("#software").validationEngine();
                 
                 $("#showhd").fancybox({
-        	    	'href'  : '${contextPath }/harddisk/list/${server.id }',
-        	    	'width' : 778,
-        	        'height' : 530,
-        	        'type' : 'iframe',
-        	        'hideOnOverlayClick' : true,
-        	        'showCloseButton' : true
-        	    });
-                
-                $("#shownetcard").fancybox({
-        	    	'href'  : '${contextPath }/networkcard/list/${server.id }',
+        	    	'href'  : '${contextPath }/software/listserver/${software.id }',
         	    	'width' : 778,
         	        'height' : 530,
         	        'type' : 'iframe',
@@ -159,8 +150,6 @@
                                     <a class="isw-settings" href="#"></a>
                                     <ul class="dd-list">
                                         <li><a id="showhd" href="javascript:void(0);"><span class="isw-text_document"></span>已安装服务器</a></li>
-                                        <li><a id="shownetcard" href="javascript:void(0);"><span class="isw-mail"></span> 网卡</a></li>
-                                        <li><a href="#"><span class="isw-refresh"></span> 软件</a></li>
                                     </ul>
                                 </li>
                             </ul>
@@ -181,6 +170,12 @@
                                 </div>
                             </div> 
                             <div class="row-form clearfix">
+                                <div class="col-md-2"><form:label path="manufa.id">厂商*</form:label></div>
+                                <div class="col-md-10">
+                                    <form:select path="manufa.id" multiple="false" items="${mapManufa }" ></form:select>
+                                </div>
+                            </div>
+                            <div class="row-form clearfix">
                                 <div class="col-md-2"><form:label path="brand">品牌</form:label></div>
                                 <div class="col-md-4"><form:input path="brand" /></div>
                                 <div class="col-md-2"><form:label path="model">设备型号</form:label></div>
@@ -191,10 +186,10 @@
                                 <div class="col-md-4"><form:input path="snNum" /></div>
                                 <div class="col-md-2"><form:label path="secretLevel">密级</form:label></div>
                                 <div class="col-md-4"><form:select path="secretLevel" multiple="false">
-				<c:forEach items="${levels }" var="level">
-				<form:option value="${level.value }">${level.level }</form:option> 
-				</c:forEach>
-			</form:select></div>
+									<c:forEach items="${levels }" var="level">
+									<form:option value="${level.value }">${level.level }</form:option> 
+									</c:forEach>
+								</form:select></div>
                             </div>
                             <div class="row-form clearfix">
                                 <div class="col-md-2"><form:label path="purpose">用途</form:label></div>

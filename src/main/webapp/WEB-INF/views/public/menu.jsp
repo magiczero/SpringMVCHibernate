@@ -239,5 +239,15 @@
                         <li><a href="rules.html"><span class="glyphicon glyphicon-warning-sign"></span><span class="text">系统规则</span></a></li>
                     </ul>
                 </li>   
+                <li class="openable">
+                    <a href="#">
+                        <span class="isw-documents"></span><span class="text">数据字典</span>                    
+                    </a>
+                    <ul>                    
+                        <li><a href="users.html"><span class="glyphicon glyphicon-warning-sign"></span><span class="text">部门</span></a></li>
+                        <li><a href="rules.html"><span class="glyphicon glyphicon-user"></span><span class="text">员工</span></a></li>
+                        <li><a href="${contextPath }/manufacturer/list"><span class="glyphicon glyphicon-share"></span><span class="text">厂商</span></a></li>
+                    </ul>
+                </li>  
             </ul>
 <script type='text/javascript' src='${contextPath }/resources/js/mymenu.js'></script> 

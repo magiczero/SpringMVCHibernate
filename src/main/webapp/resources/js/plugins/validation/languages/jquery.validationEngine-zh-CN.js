@@ -137,10 +137,9 @@
                     },
                     "alertText": "* 必须输入 test"
                 },
-                "ajaxUserCall": {
-                    "url": "ajaxValidateFieldUser",
+                "manufaRepeatNumCheck": {
+                    "url": "repeatnum",
                     // you may want to pass extra data on the ajax call
-                    "extraData": "name=eric",
                     "alertText": "* 此名称已被其他人使用",
                     "alertTextLoad": "* 正在确认名称是否有其他人使用，请稍等。"
                 },
@@ -157,9 +156,9 @@
                     // remote json service location  ///"url": "ajaxValidateFieldName",
                     "url": "validateName",
                     // error
-                    "alertText": "* 此名称可以使用",
+                    "alertText": "* 此名称已被其他人使用",
                     // if you provide an "alertTextOk", it will show as a green prompt when the field validates
-                    "alertTextOk": "* 此名称已被其他人使用",
+                    "alertTextOk": "* 此名称可以使用",
                     // speaks by itself
                     "alertTextLoad": "* 正在确认名称是否有其他人使用，请稍等。"
                 },

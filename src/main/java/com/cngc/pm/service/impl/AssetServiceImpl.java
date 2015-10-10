@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.cngc.pm.dao.AssetDAO;
+import com.cngc.pm.dao.ManufaDAO;
 import com.cngc.pm.dao.StyleDAO;
 import com.cngc.pm.model.Asset;
 import com.cngc.pm.model.Style;
@@ -21,6 +22,8 @@ public class AssetServiceImpl implements AssetService {
 	private StyleDAO styleDao;
 	@Autowired
 	private AssetDAO assetDao;
+	@Autowired
+	private ManufaDAO manufaDao;
 	
 	@Override
 	@Transactional(readOnly=true)
@@ -54,6 +57,12 @@ public class AssetServiceImpl implements AssetService {
 	public boolean isExsitAssetNum(String assetNum) {
 		if(assetDao.isExsitsAssetNum(assetNum)) return true;
 		return false;
+	}
+
+	@Override
+	@Transactional(readOnly=true)
+	public Map<String, String> getMapManufa() {
+		return manufaDao.getAllMap();
 	}
 
 }

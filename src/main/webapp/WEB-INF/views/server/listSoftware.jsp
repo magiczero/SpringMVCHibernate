@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
     <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %><c:set var="contextPath" value="${pageContext.request.contextPath}"></c:set>
+    <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
@@ -70,7 +71,7 @@
     <script type="text/javascript">
 	    $(document).ready(function () {
 	    	$("#createBtn").click(function() {
-	    		window.location.href="${contextPath }/software/addbyserver/${serverid}";
+	    		window.location.href="${contextPath }/Server/addsoftware/${serverid}";
 	    	});
 	    	
 	    	$("#deleteBtn").click(function() {
@@ -89,12 +90,12 @@
 		    			$.ajax({
 		    				type : "post",
 		    				dataType : "json",
-		    				url : "${contextPath }/networkcard/delete",
+		    				url : "${contextPath }/Server/deleteSoftware",
 		    				data : {ids : arr.join(",")},
 		    				success : function(data) {
 		    					if (data.flag == "true") {
 		    						
-		    						window.location.href="${contextPath }/server/listsoftware/"+data.serverid;
+		    						window.location.href="${contextPath }/Server/listsoftware/${serverid}";
 		    						
 		    					} else {
 		    						alert('删除失败');
@@ -146,9 +147,10 @@
                                 <thead>
                                     <tr>
                                         <th><input type="checkbox" name="ids"/></th>
-                                        <th width="20%">软件编号</th>
+                                        <th width="15%">软件编号</th>
                                         <th width="20%">软件名称</th>
-                                        <th width="15%">版本</th>
+                                        <th width="10%">版本</th>
+                                        <th width="15%">安装日期</th>
                                         <th width="25%">备注</th>                                                                        
                                     </tr>
                                 </thead>
@@ -158,6 +160,7 @@
                                		<td>${serversoft.software.num }</td>
                                		<td>${serversoft.software.name }</td>
                                		<td>${serversoft.software.versions }</td>
+                               		<td><fmt:formatDate pattern="yyyy-MM-dd" value="${serversoft.installDate }" /></td>
                                		<td>${serversoft.remark }</td>
                                	</tr></c:forEach>
                                </tbody>

@@ -2,7 +2,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>    <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
 <c:set var="contextPath" value="${pageContext.request.contextPath}"></c:set>
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>        
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
@@ -29,11 +29,6 @@
     
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/bootstrap.min.js'></script>
     
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/charts/jquery.flot.js'></script>    
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/charts/jquery.flot.stack.js'></script>    
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/charts/jquery.flot.pie.js'></script>
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/charts/jquery.flot.resize.js'></script>
-    
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/sparklines/jquery.sparkline.min.js'></script>
     
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/fullcalendar/fullcalendar.min.js'></script>
@@ -57,16 +52,6 @@
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/dataTables/jquery.dataTables.min.js'></script>    
     
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/fancybox/jquery.fancybox.pack.js'></script>
-        
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/plupload/plupload.js'></script>
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/plupload/plupload.gears.js'></script>
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/plupload/plupload.silverlight.js'></script>
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/plupload/plupload.flash.js'></script>
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/plupload/plupload.browserplus.js'></script>
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/plupload/plupload.html4.js'></script>
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/plupload/plupload.html5.js'></script>
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/plupload/jquery.plupload.queue/jquery.plupload.queue.js'></script>    
-    
     <script type="text/javascript" src="${contextPath }/resources/js/plugins/elfinder/elfinder.min.js"></script>
     
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/highlight/jquery.highlight-4.js'></script>
@@ -91,11 +76,11 @@
     <![endif]-->
     <script type="text/javascript">
             $(document).ready(function () {
-            	$(".header").load("../header");
-                $(".menu").load("../menu", function () { $(".navigation > li:eq(4)").addClass("active"); });
-                $(".breadLine .buttons").load("../contentbuttons");
+            	$(".header").load("${contextPath }/header");
+                $(".menu").load("${contextPath }/menu", function () { $(".navigation > li:eq(10)").addClass("active"); });
+                $(".breadLine .buttons").load("${contextPath }/contentbuttons");
                 
-                $("#asset").validationEngine();
+                $("#manufacturer").validationEngine();
                
             });
     </script>
@@ -117,8 +102,9 @@
 
                 <ul class="breadcrumb">
                     <li><a href="#">运维管理系统</a> <span class="divider">></span></li>
-                    <li><a href="#">资产管理</a> <span class="divider">></span></li>         
-                    <li class="active">新资产</li>
+                    <li><a href="#">数据字典</a> <span class="divider">></span></li>      
+                     <li><a href="#">厂商</a> <span class="divider">></span></li>    
+                    <li class="active">增加厂商</li>
                 </ul>
 
                 <ul class="buttons"></ul>
@@ -134,65 +120,40 @@
                     <div class="col-md-10">
                         <div class="head clearfix">
                             <div class="isw-documents"></div>
-                            <h1>资产信息录入</h1>
+                            <h1>厂商信息录入</h1>
                         </div>
-                        <c:url var="addAction" value="/Asset/next" ></c:url>
-						<form:form action="${addAction}" commandName="asset">
+                        <c:url var="addAction" value="/manufacturer/save" ></c:url>
+						<form:form action="${addAction}" commandName="manufacturer">
                         <div class="block-fluid">                        
                           <div class="row-form clearfix">
-                                <div class="col-md-2"><form:label path="assetNum">资产编号*</form:label></div>
+                                <div class="col-md-2"><form:label path="num">厂商编号*</form:label></div>
                                 <div class="col-md-4">
-                                    <form:input path="assetNum" class="validate[required,ajax[ajaxNameCall]] text-input" /><form:errors path="assetNum" cssClass="error" />
+                                    <form:input path="num" class="validate[required,custom[integer],minSize[3],maxSize[6] ajax[manufaRepeatNumCheck]]" /><form:errors path="num" cssClass="error" />
                                 </div>
-                                <div class="col-md-2"><form:label path="secretNum">涉密编号</form:label></div>
+                                <div class="col-md-2"><form:label path="name">厂商名称*</form:label></div>
                                 <div class="col-md-4">
-                                    <form:input path="secretNum" /><form:errors path="secretNum" cssClass="error" />
+                                    <form:input path="name" /><form:errors path="name" cssClass="error" />
                                 </div>
                             </div> 
                             <div class="row-form clearfix">
-                                <div class="col-md-2"><form:label path="equipType.id">设备类型*</form:label></div>
+                                <div class="col-md-2"><form:label path="linkman">联系人</form:label></div>
                                 <div class="col-md-10">
-                                    <form:select path="equipType.id" multiple="false" items="${styles }" ></form:select>
+                                    <form:input path="linkman" /><form:errors path="linkman" cssClass="error" />
                                 </div>
                             </div>
                             <div class="row-form clearfix">
-                                <div class="col-md-2"><form:label path="manufa.id">厂商*</form:label></div>
+                                <div class="col-md-2"><form:label path="telephone">联系电话</form:label></div>
                                 <div class="col-md-10">
-                                    <form:select path="manufa.id" multiple="false" items="${mapManufa }" ></form:select>
+                                    <form:input path="telephone" /><form:errors path="telephone" cssClass="error" />
                                 </div>
                             </div>
                             <div class="row-form clearfix">
-                                <div class="col-md-2"><form:label path="brand">品牌</form:label></div>
-                                <div class="col-md-4"><form:input path="brand" /></div>
-                                <div class="col-md-2"><form:label path="model">设备型号</form:label></div>
-                                <div class="col-md-4"><form:input path="model" /></div>
+                                <div class="col-md-2"><form:label path="qualifications">资质</form:label></div>
+                                <div class="col-md-10"><form:textarea path="qualifications" /></div>
                             </div>
-                            <div class="row-form clearfix">
-                                <div class="col-md-2"><form:label path="snNum">SN</form:label></div>
-                                <div class="col-md-4"><form:input path="snNum" /></div>
-                                <div class="col-md-2"><form:label path="secretLevel">密级</form:label></div>
-                                <div class="col-md-4">
-                                	<form:select path="secretLevel" multiple="false">
-										<c:forEach items="${levels }" var="level">
-										<form:option value="${level.value }">${level.level }</form:option> 
-										</c:forEach>
-									</form:select>
-								</div>
-                            </div>
-                            <div class="row-form clearfix">
-                                <div class="col-md-2"><form:label path="purpose">用途</form:label></div>
-                                <div class="col-md-10"><form:textarea path="purpose"/>
-                                    </div>
-                            </div> 
-                            <div class="row-form clearfix">
-                                <div class="col-md-2"><form:label path="productionDate">生产日期*</form:label></div>
-                                <div class="col-md-4"><form:input path="productionDate"  id="Datepicker" readonly="true" class="validate[required,custom[date]] text-input datepicker" /><form:errors path="productionDate" cssClass="error" /></div>
-                                <div class="col-md-2"><form:label path="purchaseTime">购置时间*</form:label></div>
-                                <div class="col-md-4"><form:input path="purchaseTime"  id="menuDatepicker" readonly="true" class="validate[required,custom[date]] text-input" /><form:errors path="purchaseTime" cssClass="error" /></div>
-                            </div>  
 
                             <div class="footer tar">
-                                <button class="btn btn-primary center-block"> 下一步 </button>
+                                <button class="btn btn-primary center-block"> 保存 </button>
                             </div>                            
                         </div>
                         </form:form>

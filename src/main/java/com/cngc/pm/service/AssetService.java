@@ -14,4 +14,6 @@ public interface AssetService {
 	Asset getById(long id);
 	
 	boolean isExsitAssetNum(String assetNum);
+
+	Map<String, String> getMapManufa();
 }

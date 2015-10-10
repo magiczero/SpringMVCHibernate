@@ -42,7 +42,7 @@
     
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/maskedinput/jquery.maskedinput-1.3.min.js'></script>
     
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/validation/languages/jquery.validationEngine-en.js' charset='utf-8'></script>
+    <script type='text/javascript' src='${contextPath }/resources/js/plugins/validation/languages/jquery.validationEngine-zh-CN.js' charset='utf-8'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/validation/jquery.validationEngine.js' charset='utf-8'></script>
     
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/mcustomscrollbar/jquery.mCustomScrollbar.min.js'></script>
@@ -97,12 +97,12 @@
                                 <h4>填写软件安装信息</h4>
                             </div>                                                 
                             <div class="row-form clearfix">
-                                <div class="col-sm-4"><form:label path="cardType.id">软件*</form:label></div>
+                                <div class="col-sm-4"><form:label path="software.id">软件*</form:label></div>
                                 <div class="col-sm-8"><form:select path="software.id" multiple="false" items="${mapSoftware }" ></form:select></div>
                             </div>
                             <div class="row-form clearfix">
                                 <div class="col-sm-4"><form:label path="installDate">安装时间</form:label></div>
-                                <div class="col-sm-8"><form:input path="installDate" id="Datepicker" readonly="readonly" class="validate[required]" /></div>
+                                <div class="col-sm-8"><form:input path="installDate" id="Datepicker" readonly="true" class="validate[required,custom[date]]" /></div>
                             </div>   
                             <div class="row-form clearfix">
                                 <div class="col-sm-4"><form:label path="remark">备注</form:label></div>

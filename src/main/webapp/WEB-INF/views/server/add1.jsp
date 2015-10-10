@@ -11,7 +11,7 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <![endif]-->
     
-    <title>事件管理--运维管理系统</title>
+    <title>修改服务器信息--运维管理系统</title>
 
     <link href="${contextPath }/resources/css/stylesheets.css" rel="stylesheet" type="text/css" />
     <!--[if lt IE 8]>
@@ -189,6 +189,12 @@
                                     <form:input path="secretNum" /><form:errors path="secretNum" cssClass="error" />
                                 </div>
                             </div> 
+                            <div class="row-form clearfix">
+                                <div class="col-md-2"><form:label path="manufa.id">厂商*</form:label></div>
+                                <div class="col-md-10">
+                                    <form:select path="manufa.id" multiple="false" items="${mapManufa }" ></form:select>
+                                </div>
+                            </div>
                             <div class="row-form clearfix">
                                 <div class="col-md-2"><form:label path="brand">品牌</form:label></div>
                                 <div class="col-md-4"><form:input path="brand" /></div>

@@ -1,9 +1,9 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-    <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>    <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+    <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
     <c:set var="contextPath" value="${pageContext.request.contextPath}"></c:set>
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>        
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
@@ -13,8 +13,6 @@
     
     <title>工程师工作台--运维管理系统</title>
 
-    <link rel="icon" type="image/ico" href="favicon.ico"/>
-    
     <link href="${contextPath }/resources/css/stylesheets.css" rel="stylesheet" type="text/css" />
     <!--[if lt IE 8]>
         <link href="${contextPath }/resources/css/ie7.css" rel="stylesheet" type="text/css" />
@@ -29,11 +27,6 @@
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/cookie/jquery.cookies.2.2.0.min.js'></script>
     
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/bootstrap.min.js'></script>
-    
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/charts/jquery.flot.js'></script>    
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/charts/jquery.flot.stack.js'></script>    
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/charts/jquery.flot.pie.js'></script>
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/charts/jquery.flot.resize.js'></script>
     
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/sparklines/jquery.sparkline.min.js'></script>
     
@@ -58,17 +51,6 @@
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/dataTables/jquery.dataTables.min.js'></script>    
     
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/fancybox/jquery.fancybox.pack.js'></script>
-        
-    <!-- <script type='text/javascript' src='../../../bp.yahooapis.com/2.4.21/browserplus-min.js'></script> -->
-
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/plupload/plupload.js'></script>
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/plupload/plupload.gears.js'></script>
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/plupload/plupload.silverlight.js'></script>
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/plupload/plupload.flash.js'></script>
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/plupload/plupload.browserplus.js'></script>
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/plupload/plupload.html4.js'></script>
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/plupload/plupload.html5.js'></script>
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/plupload/jquery.plupload.queue/jquery.plupload.queue.js'></script>    
     
     <script type="text/javascript" src="${contextPath }/resources/js/plugins/elfinder/elfinder.min.js"></script>
     
@@ -92,11 +74,11 @@
     <![endif]-->
     <script type="text/javascript">
             $(document).ready(function () {
+                $(".header").load("${contextPath }/header");
+                $(".menu").load("${contextPath }/menu", function () { $(".navigation > li:eq(10)").addClass("active"); });
+                $(".breadLine .buttons").load("${contextPath }/contentbuttons");
+                
                 $("#eventTable").dataTable();
-
-                $(".header").load("../header");
-                $(".menu").load("../menu", function () { $(".navigation > li:eq(4)").addClass("active"); });
-                $(".breadLine .buttons").load("../contentbuttons");
             });
     </script>
 </head>
@@ -117,8 +99,8 @@
 
                 <ul class="breadcrumb">
                     <li><a href="#">运维管理系统</a> <span class="divider">></span></li>
-                    <li><a href="${contextPath }/Asset/list">资产管理</a> <span class="divider">></span></li>       
-                    <li class="active">资产信息管理</li>
+                    <li><a href="${contextPath }/manufacturer/list">数据字典</a> <span class="divider">></span></li>       
+                    <li class="active">厂商</li>
                 </ul>
 
                 <ul class="buttons"></ul>
@@ -136,53 +118,39 @@
                     <div class="col-md-12">                    
                         <div class="head clearfix">
                             <div class="isw-grid"></div>
-                            <h1>资产列表</h1>  
+                            <h1>厂商列表</h1>  
 
-                            <ul class="buttons">                          
+							<ul class="buttons">                          
                                 <li>
                                     <a href="#" class="isw-settings tipl" title="操作 "></a>
                                     <ul class="dd-list">
-                                        <li><a href="#"><span class="isw-list"></span> 查看全部</a></li>
-                                        <li><a href="#"><span class="isw-ok"></span> 查看未指派</a></li>
-                                        <li><a href="#"><span class="isw-minus"></span> 查看已超期事件</a></li>
+                                        <li><a href="${contextPath }/manufacturer/add"><span class="isw-list"></span> 添加厂商</a></li>
                                         <li><a href="#"><span class="isw-refresh"></span> 刷新</a></li>
                                     </ul>
                                 </li>
-                            </ul>                             
+                            </ul>            
                         </div>
                         <div class="block-fluid table-sorting clearfix">
                             <table  class="table" id="eventTable">
                                 <thead>
                                     <tr>
                                         <th width="40px"><input type="checkbox" name="checkall"/></th>
-                                        <th width="8%">资产编号</th>
-										<th width="8%">涉密编号</th>
-										<th >厂商</th>
-										<th width="7%">品牌</th>
-										<th width="5%">型号</th>
-										<th width="5%">SN</th>
-										<th width="10%">设备类型</th>
-										<th width=" 7%">密级</th>
-										<th>用途</th>
-										<th width="10%">生产日期</th>
-										<th width="10%">购置时间</th>
+                                        <th width="10%">厂商编号</th>
+										<th width="15%">厂商名称</th>
+										<th width="20%">联系人</th>
+										<th width="20%">电话</th>
+										<th >资质</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <c:forEach items="${ListAsset}" var="asset">
+                                    <c:forEach items="${listManufa}" var="manufa">
                                     <tr>
                                         <td><input type="checkbox" name="checkbox"/></td>
-                                        <td><a title="点击查看详细信息" href="${contextPath }/Asset/view/${asset.id}">${asset.assetNum }</a></td>
-										<td>${asset.secretNum }</td>
-										<td>${asset.manufa.name }</td>
-										<td>${asset.brand}</td>
-										<td>${asset.model }</td>
-										<td>${asset.snNum }</td>
-										<td>${asset.equipType.name }</td>
-										<td>${asset.secretLevel.level }</td>
-										<td>${asset.purpose }</td>
-										<td><fmt:formatDate pattern="yyyy-MM-dd" value="${asset.productionDate }" /></td>
-										<td><fmt:formatDate pattern="yyyy-MM-dd" value="${asset.purchaseTime }" /></td>
+                                        <td><a title="点击查看详细信息" href="${contextPath }/manufacturer/view/${manufa.id}">${manufa.num }</a></td>
+										<td>${manufa.name }</td>
+										<td>${manufa.linkman}</td>
+										<td>${manufa.telephone }</td>
+										<td>${manufa.qualifications }</td>
                                     </tr>
                                     </c:forEach>
                                     

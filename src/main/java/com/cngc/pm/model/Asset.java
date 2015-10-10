@@ -51,6 +51,8 @@ public class Asset implements Serializable {
 	private Date productionDate;			//生产日期
 	private Date purchaseTime;				//购置时间
 	
+	private Manufacturer manufa;				//厂商
+	
 	@Id
 	@Column(name="id")
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
@@ -146,6 +148,15 @@ public class Asset implements Serializable {
 	}
 	public void setPurchaseTime(Date purchaseTime) {
 		this.purchaseTime = purchaseTime;
+	}
+	
+	@ManyToOne
+	@JoinColumn(name = "manufa_id", nullable = false)
+	public Manufacturer getManufa() {
+		return manufa;
+	}
+	public void setManufa(Manufacturer manufa) {
+		this.manufa = manufa;
 	}
 	
 }

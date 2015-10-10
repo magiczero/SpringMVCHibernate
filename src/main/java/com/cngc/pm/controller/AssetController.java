@@ -66,6 +66,8 @@ public class AssetController {
 		model.addAttribute("levels", SecretLevel.values());
 		//设备类型
 		model.addAttribute("styles", assetService.getMapStyle());
+		//厂商
+		model.addAttribute("mapManufa", assetService.getMapManufa());
 		model.addAttribute("asset", new Asset());
 		
 		return "asset/add";

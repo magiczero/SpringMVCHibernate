@@ -40,7 +40,31 @@ CREATE TABLE `asset` (
 
 /*Data for the table `asset` */
 
-insert  into `asset`(`id`,`asset_num`,`secret_num`,`brand`,`model`,`sn_num`,`equip_type`,`secret_level`,`purpose`,`Production_date`,`Purchase_time`,`record_time`,`manufa_id`) values (3,'11111111','22222222','蓝超','型号','SN好',2,0,'安装杀毒软件','2015-09-01','2015-09-05 00:00:00','2015-08-31 13:44:41',1),(4,'11111111','22222222','蓝超','型号','SN好',2,0,'用途',NULL,NULL,'2015-08-31 14:20:13',1),(12,'J4569','23451','瑞星1','型号','HK98700983',9,0,'杀毒','2015-09-01','2015-09-16 00:00:00','2015-09-24 16:46:54',1),(13,'44444','44455','555','555','555',2,0,'55','2015-10-08','2015-10-09 00:00:00','2015-10-09 14:07:51',2),(10,'1234567','7654321','浪潮','desc2_8_','arent_i4_8_',2,0,'Hibernate: select style0_.id as id1_8_, style0_.desc as desc2_8_, ','2015-08-01','2015-09-09 00:00:00','2015-09-09 09:43:08',1),(11,'12345679','6443333','蓝超','电饭锅','SN好',2,0,'','2015-09-01','2015-09-04 00:00:00','2015-09-10 14:16:38',1);
+insert  into `asset`(`id`,`asset_num`,`secret_num`,`brand`,`model`,`sn_num`,`equip_type`,`secret_level`,`purpose`,`Production_date`,`Purchase_time`,`record_time`,`manufa_id`) values (3,'11111111','22222222','蓝超','型号','SN好',2,0,'安装杀毒软件','2015-09-01','2015-09-05 00:00:00','2015-08-31 13:44:41',2),(4,'11111111','22222222','蓝超','型号','SN好',2,0,'用途',NULL,NULL,'2015-08-31 14:20:13',4),(12,'J4569','23451','瑞星1','型号','HK98700983',9,0,'杀毒','2015-09-01','2015-09-16 00:00:00','2015-09-24 16:46:54',4),(13,'44444','44455','555','555','555',2,0,'55','2015-10-08','2015-10-09 00:00:00','2015-10-09 14:07:51',2),(10,'1234567','7654321','浪潮','desc2_8_','arent_i4_8_',2,0,'Hibernate: select style0_.id as id1_8_, style0_.desc as desc2_8_, ','2015-08-01','2015-09-09 00:00:00','2015-09-09 09:43:08',6),(11,'12345679','6443333','蓝超','电饭锅','SN好',2,0,'','2015-09-01','2015-09-04 00:00:00','2015-09-10 14:16:38',6);
+
+/*Table structure for table `attachment` */
+
+DROP TABLE IF EXISTS `attachment`;
+
+CREATE TABLE `attachment` (
+  `id` int(11) NOT NULL auto_increment,
+  `name` varchar(32) NOT NULL,
+  `thumbnailFilename` varchar(255) default NULL,
+  `newFilename` varchar(255) default NULL,
+  `contentType` varchar(255) default NULL,
+  `size_` int(11) default NULL,
+  `thumbnailSize` int(11) default NULL,
+  `dateCreated` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
+  `lastUpdated` timestamp NOT NULL default '0000-00-00 00:00:00',
+  `type_` int(11) default NULL,
+  `type_id` int(11) default NULL,
+  `path_` varchar(255) default NULL,
+  PRIMARY KEY  (`id`)
+) ENGINE=MyISAM AUTO_INCREMENT=56 DEFAULT CHARSET=utf8;
+
+/*Data for the table `attachment` */
+
+insert  into `attachment`(`id`,`name`,`thumbnailFilename`,`newFilename`,`contentType`,`size_`,`thumbnailSize`,`dateCreated`,`lastUpdated`,`type_`,`type_id`,`path_`) values (2,'子栏目结构规划&子站建设资料需求清单.xls',NULL,'p1a1vk8adt1p891h5r13dc1qch1c791.xls','application/vnd.ms-excel',16256,NULL,'2015-10-19 16:43:10','2015-10-19 16:43:10',NULL,NULL,'D:\\Server\\tomcat6\\webapps\\PmSys\\plupload'),(3,'子站建设流程.xlsx',NULL,'p1a21btde11vjr1c0i182mfegn801.xlsx','application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',11002,NULL,'2015-10-20 08:56:36','2015-10-20 08:56:36',NULL,NULL,'D:\\Server\\tomcat6\\webapps\\PmSys\\plupload'),(4,'资产分类.xlsx',NULL,'o_1a21cbeac1igkrjs1bri1r24ef8e.xlsx','application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',12565,NULL,'2015-10-20 09:03:33','2015-10-20 09:03:33',NULL,NULL,'D:\\Server\\tomcat6\\webapps\\PmSys\\plupload'),(5,'页面版块定位规则20150123.xlsx',NULL,'o_1a21cdk7347m1hk6i3p86d1eig.xlsx','application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',11008,NULL,'2015-10-20 09:05:59','2015-10-20 09:05:59',NULL,NULL,'D:\\Server\\tomcat6\\webapps\\PmSys\\plupload'),(6,'资产分类.xlsx',NULL,'o_1a21cdk734f2epk341g6e1ej4h.xlsx','application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',12565,NULL,'2015-10-20 09:05:59','2015-10-20 09:05:59',NULL,NULL,'D:\\Server\\tomcat6\\webapps\\PmSys\\plupload'),(7,'子站建设流程.xlsx',NULL,'o_1a21cdk749ii1ro4mev11f21c0ji.xlsx','application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',11002,NULL,'2015-10-20 09:05:59','2015-10-20 09:05:59',NULL,NULL,'D:\\Server\\tomcat6\\webapps\\PmSys\\plupload'),(8,'子站建设流程.xlsx',NULL,'o_1a21i5osq1u7e8a0e50l8r14eee.xlsx','application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',11002,NULL,'2015-10-20 10:45:19','2015-10-20 10:45:19',NULL,NULL,'D:\\Server\\tomcat6\\webapps\\PmSys\\plupload'),(16,'资产分类.xlsx',NULL,'o_1a21rgnui420m2ncrq196pro8e.xlsx','application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',12565,NULL,'2015-10-20 13:28:55','2015-10-20 13:28:55',NULL,NULL,'D:\\Server\\tomcat6\\webapps\\PmSys\\plupload\\files'),(17,'子站建设流程.xlsx',NULL,'o_1a21rv7jv1joifd115t415llujse.xlsx','application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',11002,NULL,'2015-10-20 13:36:30','2015-10-20 13:36:30',NULL,NULL,'D:\\Server\\tomcat6\\webapps\\PmSys\\plupload\\files'),(27,'资产分类.xlsx',NULL,'o_1a226uphj185o7a11b06b8f1ri5e.xlsx','application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',12565,NULL,'2015-10-20 16:51:02','2015-10-20 16:48:26',0,8,'D:\\Server\\tomcat6\\webapps\\PmSys\\plupload\\files'),(29,'页面版块定位规则20150123.xlsx',NULL,'o_1a227ieqo1a0a1e60126d1kgm1v45e.xlsx','application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',11008,NULL,'2015-10-20 16:59:10','2015-10-20 16:59:10',0,NULL,'D:\\Server\\tomcat6\\webapps\\PmSys\\plupload\\files'),(30,'子站建设流程.xlsx',NULL,'o_1a227j8uf1nts18sbq511bvh1v69e.xlsx','application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',11002,NULL,'2015-10-20 16:59:37','2015-10-20 16:59:37',0,NULL,'D:\\Server\\tomcat6\\webapps\\PmSys\\plupload\\files'),(31,'资产分类.xlsx',NULL,'o_1a243us7f1ugil5nrkf8cg19rme.xlsx','application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',12565,NULL,'2015-10-21 10:34:33','2015-10-21 10:34:33',0,NULL,'D:\\Server\\tomcat6\\webapps\\PmSys\\plupload\\files'),(32,'资产分类.xlsx',NULL,'o_1a244074rljr1q351eade8ds8ce.xlsx','application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',12565,NULL,'2015-10-21 10:35:15','2015-10-21 10:35:15',0,NULL,'D:\\Server\\tomcat6\\webapps\\PmSys\\plupload\\files'),(33,'页面版块定位规则20150123.xlsx',NULL,'o_1a244g1pehkj159j1ohv1cgame8e.xlsx','application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',11008,NULL,'2015-10-21 10:43:55','2015-10-21 10:43:55',0,NULL,'D:\\Server\\tomcat6\\webapps\\PmSys\\plupload\\files'),(34,'资产分类.xlsx',NULL,'o_1a244j215co86jcuh8104vqjte.xlsx','application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',12565,NULL,'2015-10-21 10:45:34','2015-10-21 10:45:34',0,NULL,'D:\\Server\\tomcat6\\webapps\\PmSys\\plupload\\files'),(35,'资产分类.xlsx',NULL,'o_1a244loo817at1svb1a1k2cg65ee.xlsx','application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',12565,NULL,'2015-10-21 10:47:05','2015-10-21 10:47:05',0,NULL,'D:\\Server\\tomcat6\\webapps\\PmSys\\plupload\\files'),(38,'资产分类.xlsx',NULL,'o_1a245dtt81j5n5qqevkveg13r9e.xlsx','application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',12565,NULL,'2015-10-21 11:00:14','2015-10-21 11:00:14',0,NULL,'D:\\Server\\tomcat6\\webapps\\PmSys\\plupload\\files'),(39,'资产分类.xlsx',NULL,'o_1a245is9ve9kpsjpq6u64nnae.xlsx','application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',12565,NULL,'2015-10-21 11:02:56','2015-10-21 11:02:56',0,NULL,'D:\\Server\\tomcat6\\webapps\\PmSys\\plupload\\files'),(40,'资产分类.xlsx',NULL,'o_1a245v4rpllb39j10av1pkhl72e.xlsx','application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',12565,NULL,'2015-10-21 11:09:38','2015-10-21 11:09:38',0,NULL,'D:\\Server\\tomcat6\\webapps\\PmSys\\plupload\\files'),(41,'页面版块定位规则20150123.xlsx',NULL,'o_1a2463f4u1jtl18b2o7d4l92dpe.xlsx','application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',11008,NULL,'2015-10-21 11:12:09','2015-10-21 11:12:09',0,NULL,'D:\\Server\\tomcat6\\webapps\\PmSys\\plupload\\files'),(42,'资产分类.xlsx',NULL,'o_1a24672mp14j6lj01lm11ghi1vn4e.xlsx','application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',12565,NULL,'2015-10-21 11:14:18','2015-10-21 11:13:58',0,12,'D:\\Server\\tomcat6\\webapps\\PmSys\\plupload\\files'),(43,'资产分类.xlsx',NULL,'o_1a2469e2l3o01orc1ebr2pu15s0e.xlsx','application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',12565,NULL,'2015-10-21 11:15:15','2015-10-21 11:15:15',0,NULL,'D:\\Server\\tomcat6\\webapps\\PmSys\\plupload\\files'),(44,'资产分类.xlsx',NULL,'o_1a246mji11tltiqba9v3nfihle.xlsx','application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',12565,NULL,'2015-10-21 11:22:27','2015-10-21 11:22:27',0,NULL,'D:\\Server\\tomcat6\\webapps\\PmSys\\plupload\\files'),(45,'页面版块定位规则20150123.xlsx',NULL,'o_1a246untl1o9g1rrj17j112e28pme.xlsx','application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',11008,NULL,'2015-10-21 11:26:54','2015-10-21 11:26:54',0,NULL,'D:\\Server\\tomcat6\\webapps\\PmSys\\plupload\\files'),(46,'资产分类.xlsx',NULL,'o_1a2474jri1gj816hs9lr8pu3oce.xlsx','application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',12565,NULL,'2015-10-21 11:30:12','2015-10-21 11:30:07',0,13,'D:\\Server\\tomcat6\\webapps\\PmSys\\plupload\\files'),(50,'资产分类.xlsx',NULL,'o_1a247manb139lpfo16vc19dqipme.xlsx','application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',12565,NULL,'2015-10-21 11:39:54','2015-10-21 11:39:45',0,17,'D:\\Server\\tomcat6\\webapps\\PmSys\\plupload\\files'),(53,'资产分类.xlsx',NULL,'o_1a24cti101j5312flpv0sfq6fe.xlsx','application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',12565,NULL,'2015-10-21 13:11:19','2015-10-21 13:11:08',0,20,'D:\\Server\\tomcat6\\webapps\\PmSys\\plupload\\files');
 
 /*Table structure for table `cabinet` */
 
@@ -79,10 +103,44 @@ CREATE TABLE `department` (
   `id` int(11) NOT NULL auto_increment,
   `name` varchar(50) NOT NULL,
   `parent_id` int(11) default NULL COMMENT '上级部门id',
+  `telephone` varchar(64) default NULL COMMENT '部门电话',
   PRIMARY KEY  (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 /*Data for the table `department` */
+
+/*Table structure for table `doc_style` */
+
+DROP TABLE IF EXISTS `doc_style`;
+
+CREATE TABLE `doc_style` (
+  `id` int(11) NOT NULL auto_increment,
+  `doc_id` int(11) NOT NULL,
+  `style_id` int(11) NOT NULL,
+  KEY `id` (`id`)
+) ENGINE=MyISAM AUTO_INCREMENT=39 DEFAULT CHARSET=utf8 COMMENT='文档类别表';
+
+/*Data for the table `doc_style` */
+
+insert  into `doc_style`(`id`,`doc_id`,`style_id`) values (3,8,12),(4,8,11),(11,12,12),(12,12,14),(13,13,11),(14,13,14),(24,17,11),(25,17,12),(26,17,14),(33,20,11),(34,20,12),(35,20,14);
+
+/*Table structure for table `document` */
+
+DROP TABLE IF EXISTS `document`;
+
+CREATE TABLE `document` (
+  `id` int(11) NOT NULL auto_increment,
+  `name` varchar(255) NOT NULL,
+  `keywords` varchar(255) NOT NULL COMMENT '关键字？是否单独成表？',
+  `versions` varchar(255) default NULL COMMENT '版本',
+  `in_while` timestamp NOT NULL default CURRENT_TIMESTAMP,
+  `auth_` int(11) default NULL,
+  PRIMARY KEY  (`id`)
+) ENGINE=MyISAM AUTO_INCREMENT=22 DEFAULT CHARSET=utf8;
+
+/*Data for the table `document` */
+
+insert  into `document`(`id`,`name`,`keywords`,`versions`,`in_while`,`auth_`) values (8,'ATest','测试','v1.0','2015-10-20 16:51:02',NULL),(12,'测试777','测试','v1.0','2015-10-21 11:14:17',NULL),(13,'测试888','测试','v1.0','2015-10-21 11:30:12',NULL),(17,'测试666','测试','v1.0','2015-10-21 11:39:54',NULL),(20,'测试666','测试','v1.0','2015-10-21 13:11:18',0);
 
 /*Table structure for table `employee` */
 
@@ -145,11 +203,11 @@ CREATE TABLE `manufacturer` (
   `telephone` varchar(255) default NULL COMMENT '联系电话',
   `qualifications` varchar(255) default NULL COMMENT '资质',
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=11 DEFAULT CHARSET=utf8;
 
 /*Data for the table `manufacturer` */
 
-insert  into `manufacturer`(`id`,`num`,`name`,`linkman`,`telephone`,`qualifications`) values (1,'000011','联想','联系人','89286066-911','苦逼资质'),(2,'000023','味多美','米老鼠','68787220-911','代码缺陷'),(3,'343443','酷派','张经理','13366688548','没有任何资质'),(4,'000333','曙光','李经理','59682365','服务器全国优质奖章，哈哈');
+insert  into `manufacturer`(`id`,`num`,`name`,`linkman`,`telephone`,`qualifications`) values (2,'000023','味多美','米老鼠','68787220-911','代码缺陷'),(10,'123466','sddddddddd','ddddddd','4546546','ghjhgjfghgfsdfds'),(4,'000333','曙光','李经理','59682365','服务器全国优质奖章，哈哈'),(6,'000011','锐捷','张经理','62354587','资质是个啥'),(9,'44444','sdfdsfds','asdfsad','24444','sdfsdf');
 
 /*Table structure for table `network_card` */
 
@@ -276,11 +334,11 @@ CREATE TABLE `styles` (
   `desc` varchar(50) default NULL COMMENT '概述',
   `parent_id` int(11) default NULL,
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=10 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=16 DEFAULT CHARSET=utf8;
 
 /*Data for the table `styles` */
 
-insert  into `styles`(`id`,`name`,`desc`,`parent_id`) values (1,'资产类型','服务器类型',NULL),(2,'服务器',NULL,1),(3,'机柜',NULL,1),(4,'涉密终端',NULL,1),(5,'网卡类型',NULL,NULL),(6,'类型1',NULL,5),(7,'类型2',NULL,5),(8,'类型3',NULL,5),(9,'软件',NULL,1);
+insert  into `styles`(`id`,`name`,`desc`,`parent_id`) values (1,'资产类型','服务器类型',NULL),(2,'服务器',NULL,1),(3,'机柜',NULL,1),(4,'涉密终端',NULL,1),(5,'网卡类型',NULL,NULL),(6,'类型1',NULL,5),(7,'类型2',NULL,5),(8,'类型3',NULL,5),(9,'软件',NULL,1),(10,'文档类别',NULL,NULL),(11,'类别1',NULL,10),(12,'类别2',NULL,10),(13,'类别3',NULL,10),(14,'类别4',NULL,10),(15,'类别5',NULL,10);
 
 /*Table structure for table `sys_authorities` */
 

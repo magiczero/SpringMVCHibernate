@@ -15,4 +15,12 @@ public interface ManufaService {
 	void save(Manufacturer manufa);
 
 	boolean isExistsNum(String num);
+
+	Manufacturer getById(long id);
+
+	boolean isExistsNumSelf(String num);
+
+	void delete(Long id);
+	
+	boolean deleteIds(String ids);
 }

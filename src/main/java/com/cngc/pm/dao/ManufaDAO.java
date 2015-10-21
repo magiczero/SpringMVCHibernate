@@ -15,4 +15,18 @@ public interface ManufaDAO extends GenericDAO<Manufacturer, Long> {
 	boolean isExsitsNum(String num);
 
 	Map<String, String> getAllMap();
+
+	/**
+	 * 判断num是否已经存在出了自己
+	 * @param num
+	 * @return
+	 */
+	boolean isExsitsNumSelf(String num);
+	
+	/**
+	 * 是否有服务器使用
+	 * @param id
+	 * @return
+	 */
+	boolean isServerUse(Long id);
 }

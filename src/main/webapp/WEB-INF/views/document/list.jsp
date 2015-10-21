@@ -1,9 +1,9 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-    <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+    <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>    <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
     <c:set var="contextPath" value="${pageContext.request.contextPath}"></c:set>
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>        
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
@@ -13,6 +13,8 @@
     
     <title>工程师工作台--运维管理系统</title>
 
+    <link rel="icon" type="image/ico" href="favicon.ico"/>
+    
     <link href="${contextPath }/resources/css/stylesheets.css" rel="stylesheet" type="text/css" />
     <!--[if lt IE 8]>
         <link href="${contextPath }/resources/css/ie7.css" rel="stylesheet" type="text/css" />
@@ -27,6 +29,11 @@
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/cookie/jquery.cookies.2.2.0.min.js'></script>
     
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/bootstrap.min.js'></script>
+    
+    <script type='text/javascript' src='${contextPath }/resources/js/plugins/charts/jquery.flot.js'></script>    
+    <script type='text/javascript' src='${contextPath }/resources/js/plugins/charts/jquery.flot.stack.js'></script>    
+    <script type='text/javascript' src='${contextPath }/resources/js/plugins/charts/jquery.flot.pie.js'></script>
+    <script type='text/javascript' src='${contextPath }/resources/js/plugins/charts/jquery.flot.resize.js'></script>
     
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/sparklines/jquery.sparkline.min.js'></script>
     
@@ -51,6 +58,17 @@
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/dataTables/jquery.dataTables.min.js'></script>    
     
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/fancybox/jquery.fancybox.pack.js'></script>
+        
+    <!-- <script type='text/javascript' src='../../../bp.yahooapis.com/2.4.21/browserplus-min.js'></script> -->
+
+    <script type='text/javascript' src='${contextPath }/resources/js/plugins/plupload/plupload.js'></script>
+    <script type='text/javascript' src='${contextPath }/resources/js/plugins/plupload/plupload.gears.js'></script>
+    <script type='text/javascript' src='${contextPath }/resources/js/plugins/plupload/plupload.silverlight.js'></script>
+    <script type='text/javascript' src='${contextPath }/resources/js/plugins/plupload/plupload.flash.js'></script>
+    <script type='text/javascript' src='${contextPath }/resources/js/plugins/plupload/plupload.browserplus.js'></script>
+    <script type='text/javascript' src='${contextPath }/resources/js/plugins/plupload/plupload.html4.js'></script>
+    <script type='text/javascript' src='${contextPath }/resources/js/plugins/plupload/plupload.html5.js'></script>
+    <script type='text/javascript' src='${contextPath }/resources/js/plugins/plupload/jquery.plupload.queue/jquery.plupload.queue.js'></script>    
     
     <script type="text/javascript" src="${contextPath }/resources/js/plugins/elfinder/elfinder.min.js"></script>
     
@@ -74,43 +92,43 @@
     <![endif]-->
     <script type="text/javascript">
             $(document).ready(function () {
-                $(".header").load("${contextPath }/header");
-                $(".menu").load("${contextPath }/menu", function () { $(".navigation > li:eq(10)").addClass("active"); });
-                $(".breadLine .buttons").load("${contextPath }/contentbuttons");
-                
                 $("#eventTable").dataTable();
+
+                $(".header").load("../header");
+                $(".menu").load("../menu", function () { $(".navigation > li:eq(5)").addClass("active"); });
+                $(".breadLine .buttons").load("../contentbuttons");
                 
-                $("#deleteHD").click(function() {
-    	    		if(confirm("确定执行删除操作？")) {
-    		    		var arr = [];
-    		    		$("input[name=ids]").each(function() {
-    		    			if($(this).attr("checked")=='checked') {
-    		    				arr.push($(this).val());
-    		    			}
-    		    		});
-    		    		if(arr=='') {
-    		    			alert('请选择一个删除项');
-    		    			return false;
-    		    		} else {
-    		    			$("div.alert").addClass('hide');
-    		    			$.ajax({
-    		    				type : "post",
-    		    				dataType : "json",
-    		    				url : "${contextPath }/manufacturer/delete",
-    		    				data : {ids : arr.join(",")},
-    		    				success : function(data) {
-    		    					if (data.flag == "true") {
-    		    						
-    		    						window.location.href="${contextPath }/manufacturer/list/";
-    		    						
-    		    					} else {
-    		    						alert('删除失败,也许有资产正在使用此厂商，导致无法删除');
-    		    					}
-    		    				}
-    		    			});
-    		    		}
-    	    		}
-    	    	});
+                $("#delBtn").click(function() {
+                		if(confirm("确定执行删除操作？")) {
+        		    		var arr = [];
+        		    		$("input[name=checkbox]").each(function() {
+        		    			if($(this).attr("checked")=='checked') {
+        		    				arr.push($(this).val());
+        		    			}
+        		    		});
+        		    		if(arr=='') {
+        		    			$("div.alert").removeClass('hide');
+        		    			return false;
+        		    		} else {
+        		    			$("div.alert").addClass('hide');
+        		    			$.ajax({
+        		    				type : "post",
+        		    				dataType : "json",
+        		    				url : "${contextPath }/document/delete",
+        		    				data : {ids : arr.join(",")},
+        		    				success : function(data) {
+        		    					if (data.flag == "true") {
+        		    						
+        		    						window.location.href="${contextPath }/document/list";
+        		    						
+        		    					} else {
+        		    						alert('删除失败，请联系管理员');
+        		    					}
+        		    				}
+        		    			});
+        		    		}
+        	    		}
+                });
             });
     </script>
 </head>
@@ -131,8 +149,8 @@
 
                 <ul class="breadcrumb">
                     <li><a href="#">运维管理系统</a> <span class="divider">></span></li>
-                    <li><a href="${contextPath }/manufacturer/list">数据字典</a> <span class="divider">></span></li>       
-                    <li class="active">厂商</li>
+                    <li><a href="${contextPath }/Asset/list">文档管理</a> <span class="divider">></span></li>       
+                    <li class="active">文档信息列表</li>
                 </ul>
 
                 <ul class="buttons"></ul>
@@ -145,47 +163,52 @@
 
                
 
-
+				<div class="alert alert-danger hide">                
+                    <h4>错误!</h4>请至少选择一项
+                </div> 
                 <div class="row">
                     <div class="col-md-12">                    
                         <div class="head clearfix">
                             <div class="isw-grid"></div>
-                            <h1>厂商列表</h1>  
+                            <h1>文档列表</h1>  
 
-							<ul class="buttons">     
-								<li>
-									<a id="deleteHD" class="isw-users" href="javascript:void(0);"></a>
-								</li>                     
+                            <ul class="buttons">                          
                                 <li>
                                     <a href="#" class="isw-settings tipl" title="操作 "></a>
                                     <ul class="dd-list">
-                                        <li><a href="${contextPath }/manufacturer/add"><span class="isw-list"></span> 添加厂商</a></li>
+                                        <li><a href="javascript:void(0);" id="delBtn"><span class="isw-list"></span> 删除</a></li>
+                                        <li><a href="#"><span class="isw-ok"></span> 查看未指派</a></li>
+                                        <li><a href="#"><span class="isw-minus"></span> 查看已超期事件</a></li>
                                         <li><a href="#"><span class="isw-refresh"></span> 刷新</a></li>
                                     </ul>
                                 </li>
-                            </ul>            
+                            </ul>                             
                         </div>
                         <div class="block-fluid table-sorting clearfix">
-                            <table  class="table" id="eventTable">
+                            <table class="table" id="eventTable">
                                 <thead>
                                     <tr>
                                         <th width="40px"><input type="checkbox" name="checkall"/></th>
-                                        <th width="10%">厂商编号</th>
-										<th width="15%">厂商名称</th>
-										<th width="20%">联系人</th>
-										<th width="20%">电话</th>
-										<th >资质</th>
+                                        <th width="10%">文档名称</th>
+										<th width="25%">关键字</th>
+										<th width="10%">类别</th>
+										<th width="5%">&nbsp;</th>
+										<th width="10%">录入时间</th>
+										<th width="5%">版本</th>
+										<th>附件</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <c:forEach items="${listManufa}" var="manufa">
+                                    <c:forEach items="${listDocs}" var="doc">
                                     <tr>
-                                        <td><input type="checkbox" name="ids" value="${manufa.id }"/></td>
-                                        <td><a title="点击修改详细信息" href="${contextPath }/manufacturer/update/${manufa.id}">${manufa.num }</a></td>
-										<td>${manufa.name }</td>
-										<td>${manufa.linkman}</td>
-										<td>${manufa.telephone }</td>
-										<td>${manufa.qualifications }</td>
+                                        <td><input type="checkbox" name="checkbox" value="${doc.id }"/></td>
+                                        <td>${doc.name }</td>
+										<td>${doc.keywords }</td>
+										<td><c:forEach items="${doc.styles}" var="style">${style.name }<br/></c:forEach></td>
+										<td>${doc.auth.name}</td>
+										<td><fmt:formatDate pattern="yyyy-MM-dd" value="${doc.createDate }" /></td>
+										<td>${doc.versions}</td>
+										<td><c:forEach items="${doc.attachs}" var="attach"><a href="${contextPath }/attachment/download/${attach.id}">${attach.name }</a><br/></c:forEach></td>
                                     </tr>
                                     </c:forEach>
                                     

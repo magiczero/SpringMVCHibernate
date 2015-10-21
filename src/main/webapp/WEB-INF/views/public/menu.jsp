@@ -173,6 +173,23 @@
                 </li>   
                 <li class="openable">
                     <a href="#">
+                        <span class="isw-text_document"></span><span class="text">文档管理</span>
+                    </a>
+                    <ul>
+                        <li>
+                            <a href="${contextPath }/document/add">
+                                <span class="glyphicon glyphicon-th"></span><span class="text">创建文档</span>
+                            </a>                  
+                        </li>    
+                        <li>
+                            <a href="${contextPath }/document/list">
+                                <span class="glyphicon glyphicon-th-large"></span><span class="text">文档管理</span>
+                            </a>                  
+                        </li>                    
+                    </ul> 
+                </li>  
+                <li class="openable">
+                    <a href="#">
                         <span class="isw-documents"></span><span class="text">配置管理</span>
                     </a>
                     <ul>

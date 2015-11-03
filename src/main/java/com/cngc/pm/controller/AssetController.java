@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.cngc.pm.common.web.BaseController;
 import com.cngc.pm.model.Asset;
 import com.cngc.pm.model.SecretLevel;
 import com.cngc.pm.service.AssetService;
@@ -24,7 +25,7 @@ import com.cngc.pm.service.AssetService;
 @Controller
 @RequestMapping("/Asset")
 //@SessionAttributes("currAsset")
-public class AssetController {
+public class AssetController extends BaseController {
 
 	@Resource
 	private AssetService assetService;

@@ -27,4 +27,8 @@ public class UserDAOImpl extends BaseDAOImpl<SysUser, Long> implements UserDAO {
 		return user;
 	}
 
+	@Override
+	public void update(SysUser user) {
+		super._merge(user);
+	}
 }

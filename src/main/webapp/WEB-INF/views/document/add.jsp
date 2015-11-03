@@ -105,6 +105,7 @@
                 $(".menu").load("${contextPath }/menu", function () { $(".navigation > li:eq(5)").addClass("active"); });
                 $(".breadLine .buttons").load("${contextPath }/contentbuttons");
                 
+                $("#document").validationEngine({promptPosition : "topLeft", scroll: true});
                 
                 $(function() {
             		$("#uploader").pluploadQueue({
@@ -184,10 +185,10 @@
                         <div class="block-fluid">                        
                           <div class="row-form clearfix">
                                 <div class="col-md-2"><form:label path="name">文档名称*</form:label></div>
-                                <div class="col-md-4"><form:input path="name" class="validate[required,ajax[ajaxNameCall]] text-input" /><form:errors path="name" cssClass="error" />
+                                <div class="col-md-4"><form:input path="name" class="validate[required,minSize[2],maxSize[30]] text-input" /><form:errors path="name" cssClass="error" />
                                 </div>
                                 <div class="col-md-2"><form:label path="keywords">关键字*</form:label></div>
-                                <div class="col-md-4"><form:input path="keywords" />
+                                <div class="col-md-4"><form:input path="keywords" class="validate[required,minSize[2],maxSize[30]] text-input" />
                                 </div>
                             </div> 
                             <div class="row-form clearfix">
@@ -200,7 +201,7 @@
 									</form:select>
 									</div>
                                 <div class="col-md-2"><form:label path="versions">版本*</form:label></div>
-                                <div class="col-md-4"><form:input path="versions"></form:input>
+                                <div class="col-md-4"><form:input path="versions" class="validate[required] text-input"></form:input>
                                 </div>
                             </div>
                             <div class="row-form clearfix">
@@ -208,7 +209,7 @@
                                 <label for="styles">所属类别</label>
                                 </div>
                                 <div class="col-md-6">
-                                	<form:select multiple="true" path="styles">
+                                	<form:select multiple="true" path="styles" class="validate[required]">
 									    <form:options items="${styleList}" itemValue="id" itemLabel="name"/>
 									</form:select>
                                 </div>

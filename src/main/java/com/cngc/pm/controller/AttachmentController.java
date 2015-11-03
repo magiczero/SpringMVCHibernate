@@ -184,12 +184,17 @@ public class AttachmentController {
 				+ attach.getNewFilename();
 		File file = new File(path);
 		HttpHeaders headers = new HttpHeaders();
-		String fileName = new String(attach.getName().getBytes("UTF-8"),
-				"iso-8859-1");// 为了解决中文名称乱码问题
-		headers.setContentDispositionFormData("attachment", fileName);
-		headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
-		return new ResponseEntity<byte[]>(FileUtils.readFileToByteArray(file),
-				headers, HttpStatus.CREATED);
+		if(file.exists()) {
+			
+			String fileName = new String(attach.getName().getBytes("UTF-8"),
+					"iso-8859-1");// 为了解决中文名称乱码问题
+			headers.setContentDispositionFormData("attachment", fileName);
+			headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+			return new ResponseEntity<byte[]>(FileUtils.readFileToByteArray(file),
+					headers, HttpStatus.CREATED);
+		}
+		headers.setContentType(MediaType.TEXT_HTML);
+		return new ResponseEntity<byte[]>("没有此文件".getBytes(),headers, HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 
 

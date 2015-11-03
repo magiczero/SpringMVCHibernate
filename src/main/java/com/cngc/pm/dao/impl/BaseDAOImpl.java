@@ -14,4 +14,5 @@ public class BaseDAOImpl<T, ID extends Serializable> extends GenericDAOImpl<T, I
 	public void setSessionFactory(SessionFactory sessionFactory) {
 		super.setSessionFactory(sessionFactory);
 	}
+	
 }

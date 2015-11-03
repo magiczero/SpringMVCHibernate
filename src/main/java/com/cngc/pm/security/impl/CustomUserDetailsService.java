@@ -12,18 +12,15 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
-import com.cngc.pm.dao.UserDAO;
 import com.cngc.pm.model.Authority;
 import com.cngc.pm.model.Role;
 import com.cngc.pm.model.SysUser;
+import com.cngc.pm.repository.UserRepository;
+public class CustomUserDetailsService implements UserDetailsService {
 
-//@Service
-public class UserDetailServiceImpl implements UserDetailsService {
-
-	private static final Logger logger = LoggerFactory.getLogger(UserDetailServiceImpl.class);
+	private static final Logger logger = LoggerFactory.getLogger(CustomUserDetailsService.class);
 	
-//	@Autowired
-	private UserDAO userDao;
+	private UserRepository userService;
 	
 //	@Autowired
 //	private UserRepository userDao;
@@ -36,9 +33,9 @@ public class UserDetailServiceImpl implements UserDetailsService {
 			throws UsernameNotFoundException {
 		// TODO Auto-generated method stub
 		if(username == null) logger.error("username is null");
-		if(userDao==null) logger.error("userDao is null");
+		if(userService==null) logger.error("userDao is null");
 		
-		SysUser user = userDao.getUserByUserName(username);
+		SysUser user = userService.findByUsername(username);
 		
 		if(user == null) {
 			logger.error(username+"is not exist", new UsernameNotFoundException(username+"is not exist"));

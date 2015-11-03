@@ -47,9 +47,10 @@ public class DocumentServiceImpl implements DocumentService {
 
 	@Override
 	@Transactional(readOnly=true)
-	public List<Document> getAll() {
+	public List<Document> getAll(Long userid) {
 		// TODO Auto-generated method stub
-		return docDao.findAll();
+		//return docDao.findAll();
+		return docDao.getListBySelfAndOpen(userid);
 	}
 
 	@Override
@@ -116,6 +117,37 @@ public class DocumentServiceImpl implements DocumentService {
 			return false;
 		}
 		return true;
+	}
+
+	@Override
+	@Transactional(readOnly=true)
+	public List<Document> getAllByStyle(Long userId, Long styleId) {
+		// TODO Auto-generated method stub
+		return docDao.getListBySelfAndOpenAndStyle(userId, styleId);
+	}
+
+	@Override
+	@Transactional(readOnly=true)
+	public List<Document> getAllByPrivate(Long userId) {
+		// TODO Auto-generated method stub
+		return docDao.getListBySelf(userId);
+	}
+
+	@Override
+	@Transactional
+	public boolean delById(Long docid, Long userid) {
+		// TODO Auto-generated method stub
+		Document doc = docDao.find(docid);
+		if(doc.getUser().getId() == userid) {
+			for(Attachment attach : doc.getAttachs()) {
+				attachDao.del(attach);
+			}
+			
+			docDao.remove(doc);
+			
+			return true;
+		}
+		return false;
 	}
 	
 }

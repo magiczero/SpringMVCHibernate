@@ -92,11 +92,13 @@
     <![endif]-->
     <script type="text/javascript">
             $(document).ready(function () {
-                $("#eventTable").dataTable();
 
-                $(".header").load("../header");
-                $(".menu").load("../menu", function () { $(".navigation > li:eq(5)").addClass("active"); });
-                $(".breadLine .buttons").load("../contentbuttons");
+                $(".header").load("${contextPath }/header");
+                $(".menu").load("${contextPath }/menu", function () { $(".navigation > li:eq(5)").addClass("active"); });
+                $(".breadLine .buttons").load("${contextPath }/contentbuttons");
+                
+                //ul添加class
+                $("#style-${flag}").addClass("active");
                 
                 $("#delBtn").click(function() {
                 		if(confirm("确定执行删除操作？")) {
@@ -107,10 +109,11 @@
         		    			}
         		    		});
         		    		if(arr=='') {
-        		    			$("div.alert").removeClass('hide');
+        		    			//$("div.alert").removeClass('hide');
+        		    			notify_e('Error','请至少选择一项');
         		    			return false;
         		    		} else {
-        		    			$("div.alert").addClass('hide');
+        		    			//$("div.alert").addClass('hide');
         		    			$.ajax({
         		    				type : "post",
         		    				dataType : "json",
@@ -122,7 +125,7 @@
         		    						window.location.href="${contextPath }/document/list";
         		    						
         		    					} else {
-        		    						alert('删除失败，请联系管理员');
+        		    						notify_e('Error','请联系管理员');
         		    					}
         		    				}
         		    			});
@@ -161,46 +164,76 @@
             <!--workplace-->
             <div class="workplace">             
 
-               
-
-				<div class="alert alert-danger hide">                
-                    <h4>错误!</h4>请至少选择一项
-                </div> 
                 <div class="row">
-                    <div class="col-md-12">                    
-                        <div class="head clearfix">
-                            <div class="isw-grid"></div>
-                            <h1>文档列表</h1>  
-
-                            <ul class="buttons">                          
-                                <li>
-                                    <a href="#" class="isw-settings tipl" title="操作 "></a>
-                                    <ul class="dd-list">
-                                        <li><a href="javascript:void(0);" id="delBtn"><span class="isw-list"></span> 删除</a></li>
-                                        <li><a href="#"><span class="isw-ok"></span> 查看未指派</a></li>
-                                        <li><a href="#"><span class="isw-minus"></span> 查看已超期事件</a></li>
-                                        <li><a href="#"><span class="isw-refresh"></span> 刷新</a></li>
-                                    </ul>
-                                </li>
-                            </ul>                             
+                     <div class="col-md-2 clearfix" id="mails_navigation">                    
+                        <a href="#" role="button" class="btn btn-success btn-block" data-toggle="modal">新建文档</a>
+                        <div class="block-fluid sNavigation">
+                            <ul>
+                                <li id="style-all"><a href="${contextPath }/document/list"><span class="glyphicon glyphicon-inbox"></span> 全部文档</a><span class="arrow"></span></li>
+                                <c:forEach items="${styles}" var="style">
+                                	<li id="style-${style.id }"><a href="${contextPath }/document/list/style/${style.id}"><span class="glyphicon glyphicon-envelope"></span> ${style.name }</a><span class="arrow"></span></li>
+                                </c:forEach>
+                                <li id="style-private"><a href="${contextPath }/document/list/private"><span class="glyphicon glyphicon-remove"></span> 我的文档</a><span class="arrow"></span></li>
+                            </ul>
                         </div>
-                        <div class="block-fluid table-sorting clearfix">
-                            <table class="table" id="eventTable">
+
+                    </div>
+
+                    <div class="col-md-10" id="mails">
+                        <div class="headInfo">
+                            <div class="input-group">
+                                <input type="text" name="search" placeholder="search keyword..." id="widgetInputMessage" class="form-control"/>
+                                <div class="input-group-btn">
+                                    <button class="btn btn-success" type="button">Search</button>
+                                </div>
+                            </div>                                           
+                            <div class="arrow_down"></div>
+                        </div>    
+
+                        <div class="block-fluid" id="inbox">
+                            <div class="toolbar clearfix">
+                                <div class="left">
+                                    <div class="btn-group">
+                                        <button class="btn btn-sm btn-success tip" title="Forward all"><span class="glyphicon glyphicon-share-alt glyphicon glyphicon-white"></span></button>
+                                        <button class="btn btn-sm btn-warning tip" title="Spam"><span class="glyphicon glyphicon-warning-sign glyphicon glyphicon-white"></span></button>
+                                        <button class="btn btn-sm btn-danger tip" title="Remove" id="delBtn"><span class="glyphicon glyphicon-trash glyphicon glyphicon-white"></span></button>
+                                    </div>
+                                    <div class="btn-group">
+                                        <a class="btn dropdown-toggle btn-sm btn-default" data-toggle="dropdown" href="#">More <span class="caret"></span></a>
+                                        <ul class="dropdown-menu">
+                                            <li><a href="#">Forward</a></li>
+                                            <li><a href="#">Mark as read</a></li>
+                                            <li><a href="#">Mark as unread</a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="right">                                   
+                                    <ul class="pagination pagination-sm">
+                                        <li class="disabled"><a href="#">Prev</a></li>
+                                        <li class="disabled"><a href="#">1</a></li>
+                                        <li><a href="#">2</a></li>
+                                        <li><a href="#">3</a></li>
+                                        <li><a href="#">4</a></li>
+                                        <li><a href="#">Next</a></li>
+                                    </ul>                         
+                                </div>
+                            </div>
+                            <table  class="table">
                                 <thead>
                                     <tr>
-                                        <th width="40px"><input type="checkbox" name="checkall"/></th>
+                                       <th width="40px"><input type="checkbox" name="checkall"/></th>
                                         <th width="10%">文档名称</th>
 										<th width="15%">关键字</th>
 										<th width="10%">录入人</th>
 										<th width="10%">类别</th>
-										<th width="5%">&nbsp;</th>
+										<th width="7%">&nbsp;</th>
 										<th width="10%">录入时间</th>
 										<th width="5%">版本</th>
-										<th>附件</th>
+										<th>附件</th>                                                                        
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <c:forEach items="${listDocs}" var="doc">
+                                     <c:forEach items="${listDocs}" var="doc">
                                     <tr>
                                         <td><input type="checkbox" name="checkbox" value="${doc.id }"/></td>
                                         <td>${doc.name }</td>
@@ -212,15 +245,44 @@
 										<td>${doc.versions}</td>
 										<td><c:forEach items="${doc.attachs}" var="attach"><a href="${contextPath }/attachment/download/${attach.id}">${attach.name }</a><br/></c:forEach></td>
                                     </tr>
-                                    </c:forEach>
-                                    
+                                    </c:forEach>                                
                                 </tbody>
-                            </table>
+                            </table>                       
+                            <div class="toolbar bottom-toolbar clearfix">
+                                <div class="left">
+                                    <div class="btn-group">
+                                        <button class="btn btn-sm btn-success tip" title="Forward all"><span class="glyphicon glyphicon-share-alt glyphicon glyphicon-white"></span></button>
+                                        <button class="btn btn-sm btn-warning tip" title="Spam"><span class="glyphicon glyphicon-warning-sign glyphicon glyphicon-white"></span></button>
+                                        <button class="btn btn-sm btn-danger tip" title="Remove"><span class="glyphicon glyphicon-trash glyphicon glyphicon-white"></span></button>
+                                    </div>
+                                    <div class="btn-group">
+                                        <a class="btn btn-default dropdown-toggle btn-sm" data-toggle="dropdown" href="#">More <span class="caret"></span></a>
+                                        <ul class="dropdown-menu">
+                                            <li><a href="#">Forward</a></li>
+                                            <li><a href="#">Mark as read</a></li>
+                                            <li><a href="#">Mark as unread</a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="right">
+                                    
+                                    <ul class="pagination pagination-sm">
+                                        <li class="disabled"><a href="#">Prev</a></li>
+                                        <li class="disabled"><a href="#">1</a></li>
+                                        <li><a href="#">2</a></li>
+                                        <li><a href="#">3</a></li>
+                                        <li><a href="#">4</a></li>
+                                        <li><a href="#">Next</a></li>
+                                    </ul>
+                                    
+                                </div>
+                            </div>                                                                     
                         </div>
-                    </div>  
+
+                    </div> 
                   
                 </div>
-                                <div class="dr"><span></span></div>
+               <div class="dr"><span></span></div>
             </div>
             <!--workplace end-->
         </div>   

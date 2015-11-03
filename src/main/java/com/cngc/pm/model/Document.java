@@ -17,10 +17,12 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -40,6 +42,9 @@ public class Document implements Serializable {
 	private String versions;
 	private Date createDate;
 	private DocAuth auth;
+	
+	private SysUser user;
+	
 	private Set<Style> styles = new HashSet<>();
 	private Set<Attachment> attachs = new HashSet<>();
 	
@@ -62,18 +67,22 @@ public class Document implements Serializable {
 		this.id = id;
 	}
 	@NotNull
+	@Size(min = 2, max = 30)
 	public String getName() {
 		return name;
 	}
 	public void setName(String name) {
 		this.name = name;
 	}
+	@NotNull
+	@Size(min = 2, max = 30)
 	public String getKeywords() {
 		return keywords;
 	}
 	public void setKeywords(String keywords) {
 		this.keywords = keywords;
 	}
+	@NotNull
 	public String getVersions() {
 		return versions;
 	}
@@ -107,5 +116,14 @@ public class Document implements Serializable {
 	}
 	public void setStyles(Set<Style> styles) {
 		this.styles = styles;
+	}
+	
+	@ManyToOne(targetEntity=SysUser.class)
+	@JoinColumn(name="user_id", referencedColumnName="user_id")
+	public SysUser getUser() {
+		return user;
+	}
+	public void setUser(SysUser user) {
+		this.user = user;
 	}
 }

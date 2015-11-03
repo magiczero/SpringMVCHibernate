@@ -2,6 +2,7 @@ package com.cngc.pm.model;
 
 import java.io.Serializable;
 import java.sql.Date;
+import java.sql.Timestamp;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -22,6 +23,7 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
+import org.springframework.format.annotation.DateTimeFormat;
 
 @Entity
 @DynamicUpdate(true)  
@@ -40,7 +42,7 @@ public class SysUser implements Serializable {
 	private String name;
 	private String password;
 	private Date createWhile;						//创建时间
-	private Date lastWhile;							//最后访问时间
+	private Timestamp lastWhile;							//最后访问时间
 	private Date deadline;							//截止日期
 	private String loginIP;							//最后登录截止IP
 	private String mechId;							//所属机构id
@@ -110,12 +112,13 @@ public class SysUser implements Serializable {
 		this.createWhile = createWhile;
 	}
 
+	@DateTimeFormat(pattern="yyyy-MM-dd hh:mm:ss") 
 	@Column(name="last_login")
-	public Date getLastWhile() {
+	public Timestamp getLastWhile() {
 		return lastWhile;
 	}
 
-	public void setLastWhile(Date lastWhile) {
+	public void setLastWhile(Timestamp lastWhile) {
 		this.lastWhile = lastWhile;
 	}
 

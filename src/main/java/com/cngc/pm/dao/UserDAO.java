@@ -6,4 +6,6 @@ import com.googlecode.genericdao.dao.hibernate.GenericDAO;
 public interface UserDAO extends GenericDAO<SysUser, Long> {
 
 	SysUser getUserByUserName(String username);
+
+	void update(SysUser user);
 }

@@ -19,7 +19,7 @@ public interface DocumentService {
 
 	void save(Document document);
 
-	List<Document> getAll();
+	List<Document> getAll(Long userid);
 	
 	Map<String, String> getMapStyle();
 
@@ -30,4 +30,15 @@ public interface DocumentService {
 	List<Style> getListStyle();
 
 	boolean delByIds(String ids);
+
+	List<Document> getAllByStyle(Long userId, Long styleId);
+
+	/**
+	 * 获取自己的文档
+	 * @param userId
+	 * @return
+	 */
+	List<Document> getAllByPrivate(Long userId);
+
+	boolean delById(Long docid, Long id);
 }

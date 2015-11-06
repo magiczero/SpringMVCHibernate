@@ -5,4 +5,6 @@ import com.cngc.pm.model.SysUser;
 public interface UserService {
 
 	SysUser getByUsername(String username);
+
+	void update(SysUser user);
 }

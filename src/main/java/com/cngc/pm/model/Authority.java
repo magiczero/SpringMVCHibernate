@@ -1,12 +1,20 @@
 package com.cngc.pm.model;
 
 import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+import javax.persistence.OrderBy;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.Cache;
@@ -39,8 +47,22 @@ public class Authority implements Serializable {
 	
 	private boolean enable;							//
 	private boolean sys;
-	//private Long moduleId;						
+	//private Long moduleId;			
 	
+	private Set<Resources> setResources = new HashSet<>();
+	
+	@ManyToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE },fetch=FetchType.EAGER)  
+	@JoinTable(name = "sys_authorities_resources", joinColumns = { @JoinColumn(name = "AUTHORITY_ID") }, inverseJoinColumns = { @JoinColumn(name = "RESOURCE_ID") })  
+	@OrderBy("id")  
+	@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)  
+	public Set<Resources> getSetResources() {
+		return setResources;
+	}
+
+	public void setSetResources(Set<Resources> setResources) {
+		this.setResources = setResources;
+	}
+
 	@Id 
     @Column(name="authority_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)  

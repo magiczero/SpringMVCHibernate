@@ -50,6 +50,22 @@
     <servlet-name>appServlet</servlet-name>
     <url-pattern>/</url-pattern>
   </servlet-mapping>
+  <!-- add by andy -->
+    <!-- Modeler REST服务 -->
+    <servlet>
+        <servlet-name>ModelerRestApplication</servlet-name>
+        <servlet-class>org.restlet.ext.servlet.ServerServlet</servlet-class>
+        <init-param>
+            <!-- Application class name -->
+            <param-name>org.restlet.application</param-name>
+            <param-value>org.activiti.explorer.rest.ExplorerRestApplication</param-value>
+        </init-param>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>ModelerRestApplication</servlet-name>
+        <url-pattern>/service/*</url-pattern>
+    </servlet-mapping>
+
   <!--Character Encoding Convert-->  
     <filter>  
         <filter-name>encodingFilter</filter-name>  

@@ -43,6 +43,11 @@
 	<!-- Handles HTTP GET requests for /resources/** by efficiently serving 
 		up static resources in the ${webappRoot}/resources directory -->
 	<resources mapping="/resources/**" location="/resources/" />
+	<resources mapping="/libs/**" location="/libs/" />
+	<resources mapping="/api/**" location="/api/" />
+	<resources mapping="/editor/**" location="/editor/" />
+	<resources mapping="/explorer/**" location="/explorer/" />
+	<resources mapping="/diagram-viewer/**" location="/diagram-viewer/" />
 
 	<!-- Resolves views selected for rendering by @Controllers to .jsp resources 
 		in the /WEB-INF/views directory -->
@@ -125,4 +130,5 @@
 	</beans:bean>
 	
 	<beans:import resource="spring-datasource.xml" />
+	<beans:import resource="activiti.xml" />
 </beans:beans>

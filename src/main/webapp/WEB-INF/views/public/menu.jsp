@@ -28,6 +28,36 @@
                         <span class="isw-attachment"></span><span class="text">快速链接</span>
                     </a>
                     <ul>
+                    	<li>
+                            <a href="${contextPath }/workflow/process/list">
+                                <span class="glyphicon glyphicon-th-large"></span><span class="text">流程列表</span>
+                            </a>                  
+                        </li>
+                        <li>
+                            <a href="${contextPath }//workflow/process/active-list">
+                                <span class="glyphicon glyphicon-th-large"></span><span class="text">启动流程</span>
+                            </a>                  
+                        </li>
+                        <li>
+                            <a href="${contextPath }/workflow/processinstance/running">
+                                <span class="glyphicon glyphicon-th-large"></span><span class="text">运行中的流程</span>
+                            </a>                  
+                        </li>
+                        <li>
+                            <a href="${contextPath }//workflow/task/list">
+                                <span class="glyphicon glyphicon-th-large"></span><span class="text">待办任务</span>
+                            </a>                  
+                        </li>
+                        <li>
+                            <a href="${contextPath }//workflow/processinstance/finished">
+                                <span class="glyphicon glyphicon-th-large"></span><span class="text">已结束流程</span>
+                            </a>                  
+                        </li>
+                        <li>
+                            <a href="${contextPath }/workflow/model/list">
+                                <span class="glyphicon glyphicon-th-large"></span><span class="text">模型工作区</span>
+                            </a>                  
+                        </li>
                         <li>
                             <a href="board4engineer.html">
                                 <span class="glyphicon glyphicon-th-large"></span><span class="text">工程师控制台</span>
@@ -241,7 +271,7 @@
                         <span class="isw-list"></span><span class="text">知识库管理</span>                    
                     </a>
                     <ul>                    
-                        <li><a href="knowledge_new.html"><span class="glyphicon glyphicon-plus"></span><span class="text">新知识</span></a></li>
+                        <li><a href="${contextPath}/knowledge/add"><span class="glyphicon glyphicon-plus"></span><span class="text">新知识</span></a></li>
                         <li><a href="knowledge_control.html"><span class="glyphicon glyphicon-list-alt"></span><span class="text">知识管理控制台</span></a></li>
                         <li><a href="knowledge.html"><span class="glyphicon glyphicon-list-alt"></span><span class="text">知识库</span></a></li>
                         <li><a href="knowledge_chart.html"><span class="glyphicon glyphicon-list-alt"></span><span class="text">知识统计</span></a></li>

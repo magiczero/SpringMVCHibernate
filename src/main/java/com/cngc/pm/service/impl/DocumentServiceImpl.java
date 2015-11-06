@@ -149,5 +149,19 @@ public class DocumentServiceImpl implements DocumentService {
 		}
 		return false;
 	}
+
+	@Override
+	@Transactional(readOnly=true)
+	public List<Document> getAllLastVersion() {
+		// TODO Auto-generated method stub
+		return docDao.getListByLastVersion();
+	}
+
+	@Override
+	@Transactional(readOnly=true)
+	public Document getById(long docid) {
+		// TODO Auto-generated method stub
+		return docDao.find(docid);
+	}
 	
 }

@@ -41,4 +41,8 @@ public interface DocumentService {
 	List<Document> getAllByPrivate(Long userId);
 
 	boolean delById(Long docid, Long id);
+
+	List<Document> getAllLastVersion();
+
+	Document getById(long docid);
 }

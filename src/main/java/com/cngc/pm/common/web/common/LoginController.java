@@ -1,4 +1,4 @@
-package com.cngc.pm.common;
+package com.cngc.pm.common.web.common;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -45,7 +45,7 @@ public class LoginController {
 			//更新登录时间
 			user.setLastWhile(new java.sql.Timestamp(new java.util.Date().getTime()));
 			userService.update(user);
-			return "redirect:/document";
+			return "redirect:/document/list";
 		}
 		
 		return "login";

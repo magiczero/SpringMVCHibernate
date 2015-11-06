@@ -12,7 +12,6 @@ import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
 import org.apache.commons.lang3.StringEscapeUtils;
-import org.springframework.beans.propertyeditors.CustomCollectionEditor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -28,9 +27,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.cngc.pm.model.Attachment;
 import com.cngc.pm.model.DocAuth;
 import com.cngc.pm.model.Document;
-import com.cngc.pm.model.Style;
+import com.cngc.pm.model.SecretLevel;
 import com.cngc.pm.model.SysUser;
 import com.cngc.pm.service.DocumentService;
+import com.cngc.utils.Common;
 
 @Controller
 @RequestMapping("/document")
@@ -41,32 +41,32 @@ public class DocumentController {
 	
 	@InitBinder
     protected void initBinder(WebDataBinder binder) {
-        binder.registerCustomEditor(Set.class, "styles", new CustomCollectionEditor(Set.class)
-          {
-            @Override
-            protected Style convertElement(Object element)
-            {
-                Long id = null;
-
-                if(element instanceof String && !((String)element).equals("")){
-                    //From the JSP 'element' will be a String
-                    try{
-                        id = Long.parseLong((String) element);
-                    }
-                    catch (NumberFormatException e) {
-                        System.out.println("Style was " + ((String) element));
-                        e.printStackTrace();
-                    }
-                }
-                else if(element instanceof Long) {
-                    //From the database 'element' will be a Long
-                    id = (Long) element;
-                }
-
-                return id != null ? docService.loadStyleById(id) : null;
-            }
-          });
-        binder.registerCustomEditor(DocAuth.class, new AuthEnumEditor());
+//        binder.registerCustomEditor(Set.class, "styles", new CustomCollectionEditor(Set.class)
+//          {
+//            @Override
+//            protected Style convertElement(Object element)
+//            {
+//                Long id = null;
+//
+//                if(element instanceof String && !((String)element).equals("")){
+//                    //From the JSP 'element' will be a String
+//                    try{
+//                        id = Long.parseLong((String) element);
+//                    }
+//                    catch (NumberFormatException e) {
+//                        System.out.println("Style was " + ((String) element));
+//                        e.printStackTrace();
+//                    }
+//                }
+//                else if(element instanceof Long) {
+//                    //From the database 'element' will be a Long
+//                    id = (Long) element;
+//                }
+//
+//                return id != null ? docService.loadStyleById(id) : null;
+//            }
+//          });
+//        binder.registerCustomEditor(DocAuth.class, new AuthEnumEditor());
      // String类型转换，将所有传递进来的String进行HTML编码，防止XSS攻击
      		binder.registerCustomEditor(String.class, new PropertyEditorSupport() {
      			@Override
@@ -85,7 +85,7 @@ public class DocumentController {
 	public String root(Model model) {
 		model.addAttribute("styles", docService.getListStyle());
 		
-		return "document/list3";
+		return "document/list";
 	}
 	
 	@RequestMapping(value = "/list3", method = RequestMethod.POST)
@@ -104,11 +104,11 @@ public class DocumentController {
 			str[i][1] = d.getName();
 			str[i][2] = d.getKeywords();
 			str[i][3] = d.getUser().getUsername();
-			String s = "", attach = "";
-			for(Style style :d.getStyles()) {
-				s += style.getName()+"<br/>";
-			}
-			str[i][4] = s;
+			String  attach = "";
+//			for(Style style :d.getStyles()) {
+//				s += style.getName()+"<br/>";
+//			}
+			str[i][4] = d.getStyle().getName();
 			String auth = "";
 			if(d.getAuth().getNum()==1) {  //公开
 				auth = "<span class=\"label label-warning\">";
@@ -117,7 +117,7 @@ public class DocumentController {
 			}
 			str[i][5] = auth+d.getAuth().getName()+"</span>";
 			str[i][6] = d.getCreateDate().toString();
-			str[i][7] = d.getVersions();
+			str[i][7] = d.getVersions().toString();
 			for(Attachment att : d.getAttachs()) {
 				attach += "<a href=\"attachment/download/"+att.getId()+"\" target=\"_blank\">"+att.getName()+"</a><br/>";
 			}
@@ -135,10 +135,54 @@ public class DocumentController {
 		return map;
 	}
 	
+	@RequestMapping(value = "/update_version/{docid}", method = RequestMethod.GET)
+	public String initUpdateVersion(Model model, @PathVariable("docid") long docid) {
+		Document doc = docService.getById(docid);
+		if(doc == null) {
+			return "redirect:/document/list";
+		} else {
+			model.addAttribute("document", doc);
+			
+			return "document/update_version";
+		}
+	}
+	@RequestMapping(value = "/update_version_commit", method = RequestMethod.POST)
+	public String updateVersion(@ModelAttribute("document") Document document, HttpServletRequest request) {
+		long docid = document.getId();
+		Document doc = docService.getById(docid);
+		if(doc == null) {
+			
+			return "500";				//内部错误
+		} else {
+			int count = Integer.parseInt(request.getParameter("uploader_count"));
+			
+			String[] names = new String[count];
+			for (int i = 0; i < count; i++) {
+				//uploadFileName = request.getParameter("uploader_" + i + "_name");
+				names[i] = request.getParameter("uploader_" + i + "_tmpname");
+			}
+	
+			Set<Attachment> setAttach = docService.getSetAttach(names);
+			
+			//获取用户
+			SysUser user = (SysUser)request.getSession().getAttribute("user");
+			
+			Document newDoc = new Document();
+			
+			newDoc.setAttachs(setAttach);				
+			newDoc.setDeposit(doc.getDeposit());
+			
+			
+			return "redirect:/document/list";
+		}
+	}
+	
 	@RequestMapping(value = "/add", method = RequestMethod.GET)
 	public String add(Model model) {
+		//密级
+		model.addAttribute("levels", SecretLevel.values());
 		//权限
-		model.addAttribute("auths", DocAuth.values());
+		//model.addAttribute("auths", DocAuth.values());
 		//读取所有类型
 		model.addAttribute("styleList", docService.getListStyle());
 		model.addAttribute("document", new Document());
@@ -155,13 +199,15 @@ public class DocumentController {
 			//uploadFileName = request.getParameter("uploader_" + i + "_name");
 			names[i] = request.getParameter("uploader_" + i + "_tmpname");
 		}
-//		Long[] ids = {11l,12l};
-//		Set<Style> setStyle = docService.getSetStyle(ids);
+
 		Set<Attachment> setAttach = docService.getSetAttach(names);
 		
 		//获取用户
 		SysUser user = (SysUser)request.getSession().getAttribute("user");
 		
+		document.setDocId(Common.getUUID());
+		document.setLast(true);
+		document.setVersions(1);
 		document.setUser(user);		
 		document.setAttachs(setAttach);
 //		document.setStyles(setStyle);
@@ -171,10 +217,11 @@ public class DocumentController {
 	}
 	
 	@RequestMapping(value = "/list", method = RequestMethod.GET)
-	public String list(Model model, HttpSession session) {
-		SysUser user = (SysUser)session.getAttribute("user");
+	public String list(Model model) {
+		
 		model.addAttribute("styles", docService.getListStyle());
-		model.addAttribute("listDocs", docService.getAll(user.getId()));
+		//model.addAttribute("listDocs", docService.getAll(user.getId()));
+		model.addAttribute("listDocs", docService.getAllLastVersion());
 		model.addAttribute("flag", "all");
 		
 		return "document/list2";

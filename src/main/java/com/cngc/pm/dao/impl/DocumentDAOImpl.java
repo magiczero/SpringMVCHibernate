@@ -58,4 +58,15 @@ public class DocumentDAOImpl extends BaseDAOImpl<Document, Long> implements Docu
 		return query.list();
 	}
 
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<Document> getListByLastVersion() {
+		// TODO Auto-generated method stub
+		String hql = "from Document as d where  d.last=:isLast";
+		Query query = this.getSession().createQuery(hql);
+		query.setParameter("isLast", true);
+		
+		return query.list();
+	}
+
 }

@@ -180,55 +180,31 @@
                         <div class="head clearfix">
                             <div class="isw-documents"></div>
                             <h1>文档信息录入</h1>
-                        </div><c:url var="addAction" value="/document/save" ></c:url>
+                        </div><c:url var="addAction" value="/document/update_version_commit" ></c:url>
 						<form:form action="${addAction}" commandName="document">
+						<form:hidden path="id"/>
                         <div class="block-fluid">                        
                           <div class="row-form clearfix">
-                                <div class="col-md-2"><form:label path="name">文档名称*</form:label></div>
-                                <div class="col-md-4"><form:input path="name" class="validate[required,minSize[2],maxSize[30]] text-input" /><form:errors path="name" cssClass="error" />
-                                </div>
-                                <div class="col-md-2"><form:label path="keywords">关键字*</form:label></div>
-                                <div class="col-md-4"><form:input path="keywords" class="validate[required,minSize[2],maxSize[30]] text-input" />
-                                </div>
+                                <div class="col-md-2"><label>文档名称</label></div>
+                                <div class="col-md-4">${document.name }</div>
+                                <div class="col-md-2"><label>关键字</label></div>
+                                <div class="col-md-4">${document.keywords }</div>
                             </div> 
                             <div class="row-form clearfix">
-                             <div class="col-md-2"><form:label path="auth">密级*</form:label></div>
-                                <div class="col-md-4">
-									<form:select path="secretLevel" multiple="false">
-										<c:forEach items="${levels }" var="level">
-										<form:option value="${level.value }">${level.level }</form:option> 
-										</c:forEach>
-									</form:select>
-									</div>
-                                <div class="col-md-2"><form:label path="docNum">编号*</form:label></div>
-                                <div class="col-md-4"><form:input path="docNum" class="validate[required] text-input"></form:input>
-                                </div>
+                             <div class="col-md-2"><label>密&nbsp;&nbsp;&nbsp;&nbsp;级</label></div>
+                                <div class="col-md-4">${document.secretLevel.level }</div>
+                                <div class="col-md-2"><label>编&nbsp;&nbsp;&nbsp;&nbsp;号</label></div>
+                                <div class="col-md-4">${document.docNum }</div>
                             </div>
                             <div class="row-form clearfix">
                                 <div class="col-md-2">
-                                <label for="style.id">所属类别</label>
+                                <label >所属类别</label>
                                 </div>
-                                <div class="col-md-7">
-									<form:select path="style.id" class="validate[required]">
-									<c:forEach items="${styleList}" var="styleOne">
-										<form:option value="${styleOne.id }">${styleOne.name }</form:option>
-										<c:forEach items="${styleOne.child}" var="styleTwo">
-											<form:option value="${styleTwo.id }">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;| - ${styleTwo.name }</form:option>
-											<c:forEach items="${styleTwo.child}" var="styleThree">
-												<form:option value="${styleThree.id }">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;| - ${styleThree.name }</form:option>
-											</c:forEach>
-										</c:forEach>
-									</c:forEach>
-									</form:select>
-                                </div>
+                                <div class="col-md-7">${document.style.name }</div>
                             </div>
                             <div class="row-form clearfix">
-                                <div class="col-md-2">
-                                <label for="deposit">存放位置</label>
-                                </div>
-                                <div class="col-md-7">
-                                <form:input path="deposit" ></form:input>
-                                </div>
+                                <div class="col-md-2"><label>存放位置</label></div>
+                                <div class="col-md-7">${document.deposit }</div>
                             </div>
                             <div class="row-form clearfix">
                                 <div class="col-md-12">

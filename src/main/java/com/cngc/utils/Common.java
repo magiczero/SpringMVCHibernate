@@ -7,6 +7,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -31,6 +32,11 @@ public class Common {
 		}
 	}
 
+	/**
+	 * 判断是否为数字
+	 * @param str
+	 * @return
+	 */
 	public static boolean isNumeric(String str) {
 		Pattern pattern = Pattern.compile("[0-9]*");
 		Matcher isNum = pattern.matcher(str);
@@ -39,6 +45,14 @@ public class Common {
 		}
 		return true;
 	}
+	
+	/** 
+     * 获得一个UUID 
+     * @return String UUID 
+     */ 
+    public static String getUUID(){ 
+        return UUID.randomUUID().toString(); 
+    }
 
 	/**
 	 * 上传文件

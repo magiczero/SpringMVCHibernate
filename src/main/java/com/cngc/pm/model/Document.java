@@ -5,7 +5,6 @@ import java.sql.Date;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -15,11 +14,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-import javax.persistence.OrderBy;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -37,15 +33,22 @@ public class Document implements Serializable {
 	
 	private Long id;
 	
+	private String docId;							//用于版本标识某一文档
 	private String name;
 	private String keywords;
-	private String versions;
+	private Integer versions;					//版本号，自动递增
 	private Date createDate;
 	private DocAuth auth;
+	private Date issueTime;						//发布时间
+	private boolean last;						//是否是最终版，用于搜索
+	private String deposit;						//存放位置
+	private String docNum;						//文档编号
+	private SecretLevel secretLevel;		//密级
 	
 	private SysUser user;
 	
-	private Set<Style> styles = new HashSet<>();
+	private Style style;
+	//private Set<Style> styles = new HashSet<>();
 	private Set<Attachment> attachs = new HashSet<>();
 	
 	@OneToMany(targetEntity=Attachment.class, fetch = FetchType.EAGER)
@@ -83,13 +86,44 @@ public class Document implements Serializable {
 		this.keywords = keywords;
 	}
 	@NotNull
-	public String getVersions() {
+	public Integer getVersions() {
 		return versions;
 	}
-	public void setVersions(String versions) {
+	public void setVersions(Integer versions) {
 		this.versions = versions;
 	}
 	
+	@Column(name="doc_id")
+	public String getDocId() {
+		return docId;
+	}
+	public void setDocId(String docId) {
+		this.docId = docId;
+	}
+	
+	@DateTimeFormat(pattern="yyyy-MM-dd") 
+	@Column(name="issue_time")
+	public Date getIssueTime() {
+		return issueTime;
+	}
+	public void setIssueTime(Date issueTime) {
+		this.issueTime = issueTime;
+	}
+	
+	@Column(name="last_version")
+	public boolean isLast() {
+		return last;
+	}
+	public void setLast(boolean last) {
+		this.last = last;
+	}
+	
+	public String getDeposit() {
+		return deposit;
+	}
+	public void setDeposit(String deposit) {
+		this.deposit = deposit;
+	}
 	@DateTimeFormat(pattern="yyyy-MM-dd") 
 	@Column(name="in_while")
 	public Date getCreateDate() {
@@ -108,22 +142,49 @@ public class Document implements Serializable {
 		this.auth = auth;
 	}
 	
-	@ManyToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE },fetch=FetchType.EAGER)  
-	@JoinTable(name = "doc_style", joinColumns = { @JoinColumn(name = "doc_id") }, inverseJoinColumns = { @JoinColumn(name = "style_id") })  
-	@OrderBy("id")  
-	public Set<Style> getStyles() {
-		return styles;
-	}
-	public void setStyles(Set<Style> styles) {
-		this.styles = styles;
-	}
+//	@ManyToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE },fetch=FetchType.EAGER)  
+//	@JoinTable(name = "doc_style", joinColumns = { @JoinColumn(name = "doc_id") }, inverseJoinColumns = { @JoinColumn(name = "style_id") })  
+//	@OrderBy("id")  
+//	public Set<Style> getStyles() {
+//		return styles;
+//	}
+//	public void setStyles(Set<Style> styles) {
+//		this.styles = styles;
+//	}
 	
 	@ManyToOne(targetEntity=SysUser.class)
 	@JoinColumn(name="user_id", referencedColumnName="user_id")
 	public SysUser getUser() {
 		return user;
 	}
+	
 	public void setUser(SysUser user) {
 		this.user = user;
+	}
+	
+	@Column(name="doc_num")
+	public String getDocNum() {
+		return docNum;
+	}
+	public void setDocNum(String docNum) {
+		this.docNum = docNum;
+	}
+	
+	@Enumerated(EnumType.ORDINAL)
+	@Column(name="secret_level")
+	public SecretLevel getSecretLevel() {
+		return secretLevel;
+	}
+	public void setSecretLevel(SecretLevel secretLevel) {
+		this.secretLevel = secretLevel;
+	}
+	
+	@ManyToOne(targetEntity=Style.class)
+	@JoinColumn(name="style_id", referencedColumnName="id", nullable = false)
+	public Style getStyle() {
+		return style;
+	}
+	public void setStyle(Style style) {
+		this.style = style;
 	}
 }

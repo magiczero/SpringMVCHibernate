@@ -61,7 +61,7 @@ public class Style implements Serializable {
 		this.style = style;
 	}
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "style")
+	@OneToMany(fetch = FetchType.EAGER, mappedBy = "style")
 	public Set<Style> getChild() {
 		return child;
 	}

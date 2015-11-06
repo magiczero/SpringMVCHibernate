@@ -40,7 +40,7 @@ public class DocumentFilter implements Filter {
 		for(Role role : user.getRoles()) {
 			for(Authority auth : role.getAuths()) {
 				for(Resources resource: auth.getSetResources()) {
-					if(path.endsWith(resource.getPath())) {
+					if(path.endsWith(resource.getPath()) || path.replaceAll("/[^/]+$","").endsWith(resource.getPath()) ) {
 						chain.doFilter(request, response);	
 						return;
 					}

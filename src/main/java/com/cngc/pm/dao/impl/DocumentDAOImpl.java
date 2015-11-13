@@ -69,4 +69,45 @@ public class DocumentDAOImpl extends BaseDAOImpl<Document, Long> implements Docu
 		return query.list();
 	}
 
+	@Override
+	public Document update(Document document) {
+		// TODO Auto-generated method stub
+		return super._merge(document);
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<Document> getByStyle(long styleid) {
+		// TODO Auto-generated method stub
+		String hql = "from Document d where d.style.id=:styleid";
+		Query query = this.getSession().createQuery(hql);
+		
+		query.setParameter("styleid", styleid);
+		
+		return query.list();
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<Document> getByItem(long itemid) {
+		// TODO Auto-generated method stub
+		String hql = "from Document as d left join d.checkItems as items  where  items.id =:itemid";
+		Query query = this.getSession().createQuery(hql);
+		
+		query.setParameter("itemid", itemid);
+		
+		List<Object[]> list1 = query.list(); 
+		
+		List<Document> list = new ArrayList<>();
+		for(Object[] obj : list1) {
+			int size = obj.length;
+			for(int i=0; i<size; i++) {
+				if(obj[i] instanceof Document)
+					list.add((Document)obj[i]);
+			}
+		}
+		
+		return list;
+	}
+
 }

@@ -14,4 +14,10 @@ public interface DocumentDAO extends GenericDAO<Document, Long> {
 	List<Document> getListBySelf(Long userId);
 
 	List<Document> getListByLastVersion();
+
+	Document update(Document document);
+
+	List<Document> getByStyle(long styleid);
+
+	List<Document> getByItem(long itemid);
 }

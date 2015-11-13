@@ -163,5 +163,33 @@ public class DocumentServiceImpl implements DocumentService {
 		// TODO Auto-generated method stub
 		return docDao.find(docid);
 	}
+
+	@Override
+	@Transactional(readOnly=true)
+	public List<Style> getAllCheckItems() {
+		// TODO Auto-generated method stub
+		return styleDao.getListByType(47);
+	}
+
+	@Override
+	@Transactional
+	public void update(Document document) {
+		// TODO Auto-generated method stub
+		docDao.update(document);
+	}
+
+	@Override
+	@Transactional(readOnly=true)
+	public List<Document> getByStyle(long styleid) {
+		// TODO Auto-generated method stub
+		return docDao.getByStyle(styleid);
+	}
+
+	@Override
+	@Transactional(readOnly=true)
+	public List<Document> getByItem(long itemid) {
+		// TODO Auto-generated method stub
+		return docDao.getByItem(itemid);
+	}
 	
 }

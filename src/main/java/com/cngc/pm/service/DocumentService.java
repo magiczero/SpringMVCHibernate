@@ -45,4 +45,12 @@ public interface DocumentService {
 	List<Document> getAllLastVersion();
 
 	Document getById(long docid);
+
+	List<Style> getAllCheckItems();
+
+	void update(Document document);
+
+	List<Document> getByStyle(long styleid);
+
+	List<Document> getByItem(long itemid);
 }

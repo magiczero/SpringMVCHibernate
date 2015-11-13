@@ -44,12 +44,12 @@
                             </a>                  
                         </li>
                         <li>
-                            <a href="${contextPath }//workflow/task/list">
+                            <a href="${contextPath }/workflow/task/list">
                                 <span class="glyphicon glyphicon-th-large"></span><span class="text">待办任务</span>
                             </a>                  
                         </li>
                         <li>
-                            <a href="${contextPath }//workflow/processinstance/finished">
+                            <a href="${contextPath }/workflow/processinstance/finished">
                                 <span class="glyphicon glyphicon-th-large"></span><span class="text">已结束流程</span>
                             </a>                  
                         </li>
@@ -96,6 +96,25 @@
                         </li>                       
                     </ul>                
                 </li> 
+                <c:forEach items="${menu1 }" var="mod1">
+                <li class="openable">
+                	<a href="${mod1.url }">
+                        <span class="${mod1.styleClass }"></span><span class="text">${mod1.name }</span>
+                    </a>
+                    <ul>
+                    <c:forEach items="${menu2 }" var="mod2">
+                    <c:if test="${mod2.parent.id == mod1.id }">
+                    	<li>
+                    	 	<a href="${contextPath }${mod2.url }">
+                                <span class="${mod2.styleClass }"></span><span class="text">${mod2.name }</span>
+                            </a>                  
+                        </li> 
+                    </c:if>
+                    </c:forEach>
+                    </ul>
+                </li>
+                </c:forEach>
+                <!-- 
                <li class="openable">
                     <a href="#">
                         <span class="isw-list"></span><span class="text">事件管理</span>
@@ -295,6 +314,6 @@
                         <li><a href="rules.html"><span class="glyphicon glyphicon-user"></span><span class="text">员工</span></a></li>
                         <li><a href="${contextPath }/manufacturer/list"><span class="glyphicon glyphicon-share"></span><span class="text">厂商</span></a></li>
                     </ul>
-                </li>  
+                </li>  --> 
             </ul>
 <script type='text/javascript' src='${contextPath }/resources/js/mymenu.js'></script> 

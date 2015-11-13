@@ -1,6 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%@ page import="java.util.List,com.cngc.pm.model.Style" %>
     <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>    <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+    <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
     <c:set var="contextPath" value="${pageContext.request.contextPath}"></c:set>
 <!DOCTYPE html>
 <html lang="en">
@@ -30,6 +32,8 @@
     
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/bootstrap.min.js'></script>
     
+    <script type='text/javascript' src='${contextPath }/resources/js/plugins/treeview/bootstrap-treeview.js'></script>
+    
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/charts/jquery.flot.js'></script>    
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/charts/jquery.flot.stack.js'></script>    
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/charts/jquery.flot.pie.js'></script>
@@ -58,16 +62,9 @@
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/dataTables/jquery.dataTables.min.js'></script>    
     
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/fancybox/jquery.fancybox.pack.js'></script>
-        
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/plupload/plupload.js'></script>
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/plupload/plupload.gears.js'></script>
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/plupload/plupload.silverlight.js'></script>
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/plupload/plupload.flash.js'></script>
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/plupload/plupload.browserplus.js'></script>
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/plupload/plupload.html4.js'></script>
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/plupload/plupload.html5.js'></script>
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/plupload/jquery.plupload.queue/jquery.plupload.queue.js'></script>    
     
+    <script type='text/javascript' src='${contextPath }/resources/js/plugins/multiselect/jquery.multi-select.js'></script>
+        
     <script type="text/javascript" src="${contextPath }/resources/js/plugins/elfinder/elfinder.min.js"></script>
     
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/highlight/jquery.highlight-4.js'></script>
@@ -100,6 +97,16 @@
 	
 		return arrs;
 	}
+    
+    function transferId() {
+    	var arr3 = checkedBox();
+    	if(arr3=='' || arr3.length > 1) {
+			notify_e('Error','请选择一项');
+			return false;
+		}
+    	$('#id').val(arr3[0]);
+    	$('#fModal').modal();
+    }
 	
             $(document).ready(function () {
 
@@ -119,6 +126,25 @@
 		    			return false;
             		}
                 });
+                
+                 if($("#checkItems").length > 0){
+                    $("#checkItems").multiSelect({
+                        selectableHeader: "<div class='multipleselect-header'>所有检查项</div>",
+                        selectedHeader: "<div class='multipleselect-header'>已选择项</div>"
+                    });
+                    $('#multiselect-selectAll').click(function(){
+                        $('#checkItems').multiSelect('select_all');
+                        return false;
+                    });
+                    $('#multiselect-deselectAll').click(function(){
+                        $('#checkItems').multiSelect('deselect_all');
+                        return false;
+                    });
+                    $('#multiselect-selectIndia').click(function(){
+                        $('#checkItems').multiSelect('select', 'in');
+                        return false;
+                    });         
+                 }
                 
                 $("#delBtn").click(function() {
                 		if(confirm("确定执行删除操作？")) {
@@ -186,32 +212,13 @@
             <div class="workplace">             
 
                 <div class="row">
-                     <div class="col-md-2 clearfix" id="mails_navigation">                    
+                     <div class="col-md-3 clearfix" id="mails_navigation">                    
                         <span class="btn btn-success btn-block" >文档类别</span>
-                        <div class="block-fluid sNavigation">
-                            <ul>
-                                <li id="style-all"><a href="${contextPath }/document/list"><span class="glyphicon glyphicon-inbox"></span> 全部文档</a><span class="arrow"></span></li>
-                                <c:forEach items="${styles}" var="style">
-                                	<li id="style-${style.id }"><a href="${contextPath }/document/list/style/${style.id}"><span class="glyphicon glyphicon-envelope"></span> ${style.name }</a><span class="arrow"></span>
-                                	<c:if test="${style.child != null }">
-                                	<div class="row">
-                                	<div class="col-md-2"></div>
-                                	 <div class="col-md-10">
-                                	<ul>
-                                		<c:forEach items="${style.child }" var="style1">
-                                		<li>|- ${style1.name }</li>
-                                		</c:forEach>
-                                	</ul></div></div>
-                                	</c:if>
-                                	</li>
-                                </c:forEach>
-                                <li id="style-private"><a href="${contextPath }/document/list/private"><span class="glyphicon glyphicon-remove"></span> 我的文档</a><span class="arrow"></span></li>
-                            </ul>
-                        </div>
+                         <div id="tree"></div>    
 
                     </div>
 
-                    <div class="col-md-10" id="mails">
+                    <div class="col-md-9" id="mails">
                         <div class="headInfo">
                             <div class="input-group">
                                 <input type="text" name="search" placeholder="search keyword..." id="widgetInputMessage" class="form-control"/>
@@ -229,6 +236,7 @@
                                         <button id="btnCreate" class="btn btn-sm btn-success tip" title="新建文档">新建文档</button>
                                         <button id="btnUpdateVersion" class="btn btn-sm btn-warning tip" title="更新版本">更新版本</button>
                                         <button class="btn btn-sm btn-danger tip" title="删除文档" id="delBtn">删除文档</button>
+                                        <button class="btn btn-sm btn-info tip" onclick="transferId();" data-toggle="modal">关联检查项</button>
                                     </div>
                                 </div>
                                 <div class="right">                                   
@@ -253,7 +261,8 @@
 										<th width="7%">编号</th>
 										<th width="10%">录入时间</th>
 										<th width="5%">版本</th>
-										  <th width="10%">存放位置</th>
+										<th>检查项</th>
+										<th width="10%">存放位置</th>
 										<th>附件</th>                                                                        
                                     </tr>
                                 </thead>
@@ -268,6 +277,9 @@
 										<td>${doc.docNum}</td>
 										<td><fmt:formatDate pattern="yyyy-MM-dd" value="${doc.createDate }" /></td>
 										<td>${doc.versions}</td>
+										<td><c:forEach items="${doc.checkItems }" var="item">
+											${item.name }<br />
+										</c:forEach></td>
 										<td>${doc.deposit}</td>
 										<td><c:forEach items="${doc.attachs}" var="attach"><a href="${contextPath }/attachment/download/${attach.id}">${attach.name }</a><br/></c:forEach></td>
                                     </tr>
@@ -298,8 +310,121 @@
                <div class="dr"><span></span></div>
             </div>
             <!--workplace end-->
+        </div>
+        <div class="modal fade" id="fModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>                        
+                        <h4>关联检查项</h4>
+                    </div><c:url var="actionUrl" value="/document/relation-item" ></c:url>
+                    <form:form action="${actionUrl }" commandName="document">
+                    <form:hidden path="id"/>
+                    <div class="modal-body modal-body-np">
+                        <div class="row">
+                           <div class="block">                        
+							<form:select multiple="true" path="checkItems" class="validate[required] multiselect">
+								<form:options items="${listCheckItems}" itemValue="id" itemLabel="name"/>
+							</form:select>
+                            
+                            <div class="btn-group">
+                                <button class="btn btn-default btn-xs" id="multiselect-selectAll" type="button">全选</button>
+                                <button class="btn btn-default btn-xs" id="multiselect-deselectAll" type="button">全不选</button>
+                            </div>                             
+                        </div>
+                        </div>
+                    </div>   
+                    <div class="modal-footer">
+                        <input type="submit" class="btn btn-warning" value=" 保存 " />
+                        <button class="btn btn-default" data-dismiss="modal" aria-hidden="true">Close</button>            
+                    </div>
+                    </form:form>
+                </div>
+            </div>
         </div>   
     </div>
+    <script type="text/javascript">
+    var tree = [
+				{
+				    text: "全部文档",
+				    selectable: true,
+				    state: {
+	                    checked: true,
+	                    selected: true
+	                  },
+				    href: "${contextPath }/document/list"
+				},
+                {
+                  text: "种类",
+                  
+                  nodes: [ 
+                           <%
+                           java.util.Map<Integer, Integer> map = new java.util.HashMap<Integer, Integer>();
+                           List<Style> list = (List<Style>)request.getAttribute("styles");
+                           int x=1, i = 0, size=list.size();
+                           for(Style style : list) {
+                        	   i++; x++;
+                        	   map.put(style.getId().intValue(), x);
+                           %>
+                    {
+                      text: "<%=style.getName()%>"
+                      <%
+                      if(style.getChild() != null) {
+                    	  out.print(",");
+                      	int j = 0, sizej=style.getChild().size();
+                      %>
+                      nodes: [
+                        <%for(Style style1 : style.getChild()) {
+                        	j++; x++;
+                        	map.put(style1.getId().intValue(), x);
+                        %>
+                        {
+                          text: "<%=style1.getName()%>",
+                          icon: "glyphicon glyphicon-leaf",
+                          href: "${contextPath }/document/list/style/<%=style1.getId()%>"
+                        }
+                        <%if(j<sizej) out.print(",");}%>
+                      ]<%}%>
+                    }<%if(i<size) out.print(",");
+                    }%>
+                  ]
+                },
+                
+                {
+                  text: "检查项",
+                  nodes : [
+					<%
+					x++;
+					List<Style> listItems = (List<Style>)request.getAttribute("listCheckItems"); 
+					int k=0, sizek = listItems.size();
+					for(Style style3 : listItems) {
+						k++; x++;
+						map.put(style3.getId().intValue(), x);
+					%>
+					{
+						text: "<%=style3.getName()%>",
+						icon: "glyphicon glyphicon-leaf",
+                        href: "${contextPath }/document/list/item/<%=style3.getId()%>"
+					}
+					<%if(k<sizek) out.print(",");}%>
+                  ]
+                }
+              ];     
+     
+    $('#tree').treeview({
+		enableLinks:true,
+    	data: tree
+    	});      
+    <% 
+    Long styleid = (Long)request.getAttribute("styleid");
+    if(styleid > 0) {
+    %>
+    $('#tree').treeview('selectNode', [ <%=map.get(styleid.intValue())%>, { silent: true } ]);
+    $('#tree').treeview('expandAll', { silent: true });
+    <%} else {%>
+    $('#tree').treeview('collapseAll', { silent: true });
+    <%}%>
+    </script>
 </body>
 
 </html>

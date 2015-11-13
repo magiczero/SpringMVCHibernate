@@ -3,13 +3,13 @@ package com.cngc.utils.activiti;
 import java.util.List;
 import java.util.Map;
 
-import javax.annotation.Resource;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.impl.RepositoryServiceImpl;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.impl.pvm.process.ActivityImpl;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.apache.commons.lang3.ObjectUtils;
+
 import com.google.common.collect.Maps;
 
 /**

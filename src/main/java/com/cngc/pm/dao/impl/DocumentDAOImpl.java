@@ -9,6 +9,8 @@ import org.springframework.stereotype.Repository;
 import com.cngc.pm.dao.DocumentDAO;
 import com.cngc.pm.model.DocAuth;
 import com.cngc.pm.model.Document;
+import com.googlecode.genericdao.search.Search;
+import com.googlecode.genericdao.search.SearchResult;
 
 @Repository
 public class DocumentDAOImpl extends BaseDAOImpl<Document, Long> implements DocumentDAO {
@@ -108,6 +110,23 @@ public class DocumentDAOImpl extends BaseDAOImpl<Document, Long> implements Docu
 		}
 		
 		return list;
+	}
+
+	@Override
+	@SuppressWarnings("unchecked")
+	public List<Document> getListWithPage(Integer offset, Integer maxResults) {
+		// TODO Auto-generated method stub
+		return this.getSession().createCriteria(Document.class)
+				.setFirstResult(offset==null?0:offset)
+				.setMaxResults(maxResults==null?10:maxResults)
+				.list();
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public SearchResult<Document> getAllWithPage(Search search) {
+		// TODO Auto-generated method stub
+		return this._searchAndCount(Document.class,search);
 	}
 
 }

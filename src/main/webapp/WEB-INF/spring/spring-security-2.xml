@@ -9,6 +9,7 @@
       http://www.springframework.org/schema/beans/spring-beans-4.0.xsd">
 
 	<http pattern="/resources" security="none" />
+	<http pattern="/login.jsp" security="none" />
 	
 	<http auto-config="false" use-expressions="true">
 		<intercept-url pattern="/login" access="permitAll"/>
@@ -18,12 +19,8 @@
 		<intercept-url pattern="/user" access="hasRole('ROLE_USER')"/>
 		<intercept-url pattern="/admin" access="hasRole('ROLE_ADMIN')"/>
 		
-		<form-login login-page="/initLogin"
-	  			 login-processing-url="/login" 
-	  			 username-parameter="username" 
-	  			 password-parameter="password" 
-	  			 always-use-default-target="true" 
-	  			 authentication-success-handler-ref="authenticationSuccessHandler"/>
+		<form-login login-page="/login.jsp"
+	  			  default-target-url="/admin.jsp"/>
 		
 		<access-denied-handler error-page="/denied"/>
 		
@@ -38,7 +35,7 @@
  		<beans:property name="defaultTargetUrl" value="/WEB-INF/main.jsp"></beans:property>
  		<beans:property name="forwardToDestination" value="true"></beans:property>
  	</beans:bean>
-	
+ 	<beans:bean id="customUserDetailsService" class="com.cngc.pm.activiti.service.CustomUserDetailsService"></beans:bean>
 	<authentication-manager>
 	        <authentication-provider user-service-ref="customUserDetailsService">
 	        		<password-encoder hash="md5"/>

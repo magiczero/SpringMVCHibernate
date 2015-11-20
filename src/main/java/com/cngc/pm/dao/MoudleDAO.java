@@ -10,4 +10,6 @@ public interface MoudleDAO extends GenericDAO<Moudle, Long> {
 	List<Moudle> getAllMenus();
 
 	Moudle update(Moudle entity);
+
+	List<Moudle> getAllByLevel();
 }

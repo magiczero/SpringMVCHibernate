@@ -88,14 +88,14 @@
                 $(".menu").load("${contextPath }/menu", function() {$("#node_${moduleId}").addClass("active");});
                 $(".breadLine .buttons").load("${contextPath }/contentbuttons");
                 
-                $("#moudle").validationEngine({promptPosition : "topLeft", scroll: true});
+                $("#resources").validationEngine({promptPosition : "topLeft", scroll: true});
             });
             
             function changeStatus(obj,id) {
             	$.ajax({
     				type : "post",
     				dataType : "json",
-    				url : "${contextPath }/moudle/enable/"+id,
+    				url : "${contextPath }/resource/enable/"+id,
     				success : function(data) {
     					if (data.flag == "true") {
     						if(obj.className=="btn btn-success") {
@@ -133,7 +133,7 @@
                 <ul class="breadcrumb">
                     <li><a href="#">运维管理系统</a> <span class="divider">></span></li>
                     <li><a href="#">系统管理</a> <span class="divider">></span></li>       
-                    <li class="active">菜单管理</li>
+                    <li class="active">资源管理</li>
                 </ul>
 
                 <ul class="buttons"></ul>
@@ -170,26 +170,26 @@
                                 <thead>
                                     <tr>
                                         <th width="40px"><input type="checkbox" name="checkall"/></th>
-                                        <th width="15%">菜单名称</th>
+                                        <th width="20%">资源名称</th>
 										<th>路径</th>
-										<th width="10%">上级菜单</th>
-										<th width="5%">层级</th>
-										<th width="25%">图标</th>
-										<th width="8%">是否启用</th>
+										<th>所属模块</th>
+										<th width="20%">描述</th>
+										<th width="8%">类型</th>
+										<th> 操 作 </th>
 										<th width="8%">优先级</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <c:forEach items="${listmoudle}" var="moudle">
+                                    <c:forEach items="${listResources}" var="resource">
                                     <tr>
                                         <td><input type="checkbox" name="checkbox"/></td>
-                                        <td>${moudle.name }</td>
-										<td>${moudle.url }</td>
-										<td><c:if test="${moudle.parent!=null }">${moudle.parent.name }</c:if></td>
-										<td>${moudle.level}</td>
-										<td>${moudle.styleClass }</td>
-										<td><c:choose><c:when test="${moudle.enable }"><button class="btn btn-success" onclick="changeStatus(this,${moudle.id });" type="button"> 启用 </button></c:when><c:otherwise><button class="btn btn-danger" onclick="changeStatus(this,${moudle.id });" type="button"> 停用 </button></c:otherwise></c:choose></td>
-										<td>${moudle.priority }</td>
+                                        <td>${resource.name }</td>
+										<td>${resource.path }</td>
+										<td>${resource.module.name }</td>
+										<td>${resource.desc}</td>
+										<td>${resource.type }</td>
+										<td><a class="btn btn-default" href="${contextPath }/resource/init-update/${resource.id}">修改</a>&nbsp;&nbsp;<c:choose><c:when test="${resource.enable }"><button class="btn btn-success" onclick="changeStatus(this,${resource.id });" type="button"> 启用 </button></c:when><c:otherwise><button class="btn btn-danger" onclick="changeStatus(this,${resource.id });" type="button"> 停用 </button></c:otherwise></c:choose></td>
+										<td>${resource.priority }</td>
                                     </tr>
                                     </c:forEach>
                                     
@@ -208,35 +208,39 @@
                 <div class="modal-content">
                     <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>                        
-                        <h4>菜单信息</h4>
-                    </div><c:url var="addAction" value="/moudle/save" ></c:url>
-                    <form:form action="${addAction}" commandName="moudle">
+                        <h4>资源信息</h4>
+                    </div><c:url var="addAction" value="/resource/save" ></c:url>
+                    <form:form action="${addAction}" commandName="resources">
                     <div class="modal-body modal-body-np">
                         <div class="row">
                             <div class="block-fluid">
                                 <div class="row-form clearfix">
-                                    <div class="col-md-3"><form:label path="name">菜单名称*：</form:label></div>
-                                    <div class="col-md-9"><form:input path="name" class="validate[required,minSize[2],maxSize[7]]"/></div>
+                                    <div class="col-md-3"><form:label path="name">资源名称*：</form:label></div>
+                                    <div class="col-md-9"><form:input path="name" class="validate[required,minSize[2],maxSize[30]]"/></div>
                                 </div>            
                                 <div class="row-form clearfix">
-                                    <div class="col-md-3"><form:label path="parent.id">上级菜单：</form:label></div>
-                                    <div class="col-md-9">
-                                    	<form:select path="parent.id">
-                                    		<form:option value=""></form:option>
-                                    		<c:forEach items="${list1 }" var="m1">
-                                    		<form:option value="${m1.id }">${m1.name }</form:option>
-                                    		</c:forEach>
-                                    	</form:select>
-                                    </div>                    
-                                </div>      
-                                <div class="row-form clearfix">
-                                    <div class="col-md-3"><form:label path="url">路径*：</form:label></div>
-                                    <div class="col-md-9"><form:input path="url" value="#" class="validate[required,maxSize[50]]"/></div>
+                                    <div class="col-md-3"><form:label path="path">路径*：</form:label></div>
+                                    <div class="col-md-9"><form:input path="path" value="#" class="validate[required,maxSize[50]]"/></div>
                                 </div> 
                                 <div class="row-form clearfix">
-                                    <div class="col-md-3"><form:label path="styleClass">样式*：</form:label></div>
-                                    <div class="col-md-9"><form:input path="styleClass" class="validate[required,minSize[2],maxSize[30]]"/></div>
-                                </div>                             
+                                    <div class="col-md-3"><form:label path="module.id">所属模块*：</form:label></div>
+                                    <div class="col-md-9"><form:select path="module.id">
+                                    	<c:forEach items="${modules }" var="m">
+										<form:option value="${m.id }">${m.name }</form:option> 
+										</c:forEach>
+                                    </form:select></div>
+                                </div>  
+                                <div class="row-form clearfix">
+                                    <div class="col-md-3"><form:label path="priority">优先级*：</form:label></div>
+                                    <div class="col-md-9"><form:input path="priority" class="validate[required,min[1],max[99]]" value="1"/></div>
+                                </div>      
+                                <div class="row-form clearfix">
+                                    <div class="col-md-3"><form:label path="type">资源类型*：</form:label></div>
+                                    <div class="col-md-9"><form:select path="type">
+                                    	<form:option value="URL">URL</form:option>
+                                    	<form:option value="AJAX">AJAX</form:option>
+                                    </form:select></div>
+                                </div>                        
                                 <div class="row-form clearfix">
                                     <div class="col-md-3"><form:label path="desc">说明：</form:label></div>
                                     <div class="col-md-9"><form:textarea path="desc"/></div>
@@ -244,7 +248,7 @@
                             </div>                
                             <div class="dr"><span></span></div>
                             <div class="block">                
-                                <p>注意：上级菜单可不选，这样此菜单为顶级菜单，菜单为顶级菜单是，路径请填入“#”</p>
+                                <p>&nbsp;</p>
                             </div>
                         </div>
                     </div>   

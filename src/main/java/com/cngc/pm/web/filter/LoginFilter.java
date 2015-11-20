@@ -34,8 +34,8 @@ public class LoginFilter implements Filter {
 		String initlogin = config.getInitParameter("initLogin");
 		String login = config.getInitParameter("login");
 		String requestPath = req.getServletPath();
-		//System.out.println("url : " + requestPath);
-		if(requestPath.startsWith("/resources") || requestPath.endsWith("403.jsp") || requestPath.endsWith(initlogin) || requestPath.endsWith(login) ) {
+//		System.out.println("url : " + requestPath);
+		if(requestPath.startsWith("/resources") || requestPath.endsWith("403.jsp") || requestPath.endsWith(initlogin) || requestPath.endsWith(login) || requestPath.endsWith("loginout") ) {
 			chain.doFilter(request, response);
 			return;
 		}
@@ -60,6 +60,7 @@ public class LoginFilter implements Filter {
 			for(Authority auth : role.getAuths()) {
 				for(Resources resource: auth.getSetResources()) {
 					if(path.endsWith(resource.getPath()) || path.replaceAll("/[^/]+$","").endsWith(resource.getPath()) ) {
+						//System.out.println(resource.getId());
 						chain.doFilter(request, response);	
 						return;
 					}

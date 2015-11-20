@@ -28,6 +28,7 @@ public class CustomUserDetailsService implements UserDetailsService {
 		// TODO Auto-generated method stub
 		if(username == null) logger.error("username is null");
 		
+//		SysUser user = userService.getByUsername(username);
 		
 		List<GrantedAuthority> auths = new ArrayList<GrantedAuthority>();
 		
@@ -41,7 +42,7 @@ public class CustomUserDetailsService implements UserDetailsService {
 //			}
 //		}
 		
-		User userdetail = new User(username, "password", true, true, true, true, auths);
+		User userdetail = new User(username, username, true, true, true, true, auths);
 		return userdetail;
 	}
 //

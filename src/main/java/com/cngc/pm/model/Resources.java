@@ -7,6 +7,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.Cache;
@@ -22,7 +24,7 @@ import org.hibernate.annotations.DynamicUpdate;
 @Entity
 @DynamicUpdate(true)  
 @DynamicInsert(true)
-@Table(name = "sys_resources")  
+@Table(name = "sys_resources")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)  
 public class Resources implements Serializable {
 
@@ -36,7 +38,20 @@ public class Resources implements Serializable {
 	private String name;
 	private String desc;
 	private String path;
+	private String priority;				//优先级
+	private boolean enable;
+	private boolean sys;
 	
+	private Moudle module;
+	
+	@ManyToOne
+	@JoinColumn(name="module_id", referencedColumnName="module_id")
+	public Moudle getModule() {
+		return module;
+	}
+	public void setModule(Moudle module) {
+		this.module = module;
+	}
 	@Id 
     @Column(name="resource_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)  
@@ -85,21 +100,21 @@ public class Resources implements Serializable {
 	public void setPriority(String priority) {
 		this.priority = priority;
 	}
+	
+	@Column(name="enable",nullable = false, insertable = false, updatable = true)
 	public boolean isEnable() {
 		return enable;
 	}
 	public void setEnable(boolean enable) {
 		this.enable = enable;
 	}
-	public boolean isIssys() {
-		return issys;
-	}
-	public void setIssys(boolean issys) {
-		this.issys = issys;
-	}
-	private String priority;				//优先级
-	private boolean enable;
-	private boolean issys;
 	
+	@Column(name="issys",nullable = false, insertable = false, updatable = true)
+	public boolean isSys() {
+		return sys;
+	}
+	public void setSys(boolean sys) {
+		this.sys = sys;
+	}
 	
 }

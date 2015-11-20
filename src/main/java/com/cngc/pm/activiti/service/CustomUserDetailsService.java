@@ -4,28 +4,29 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+
+import com.cngc.pm.repository.UserRepository;
 
 public class CustomUserDetailsService implements UserDetailsService {
-//	@Autowired
-//	private UserRepository userRepository;
+	@Autowired
+	private UserRepository userRepository;
 
 	@Override
 	public UserDetails loadUserByUsername(String username)
 			throws UsernameNotFoundException {
 		// TODO Auto-generated method stub
-//		com.cngc.pm.activiti.jpa.entity.User user = userRepository.findByUsername(username);
+		com.cngc.pm.activiti.jpa.entity.User user = userRepository.findByUsername(username);
 		
 		return new User(
-				"username",
-				username, getAuthorities());
+				user.getUsername(),
+				user.getPassword(), getAuthorities());
 	}
 	
 	public List<String> getRoles() {

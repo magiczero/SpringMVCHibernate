@@ -30,5 +30,16 @@ public class MoudleDAOImpl extends BaseDAOImpl<Moudle, Long> implements
 		// TODO Auto-generated method stub
 		return super._merge(entity);
 	}
-
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<Moudle> getAllByLevel() {
+		// TODO Auto-generated method stub
+		String hql = "from Moudle m where m.level=:level";
+		Query query = this.getSession().createQuery(hql);
+		
+		query.setParameter("level", 2);
+		
+		return query.list();
+	}
 }

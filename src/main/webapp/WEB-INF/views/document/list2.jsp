@@ -3,6 +3,7 @@
 <%@ page import="java.util.List,com.cngc.pm.model.Style" %>
     <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>    <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
     <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
+    <%@ taglib prefix="tag" uri="/WEB-INF/taglibs/customTaglib.tld"%>
     <c:set var="contextPath" value="${pageContext.request.contextPath}"></c:set>
 <!DOCTYPE html>
 <html lang="en">
@@ -33,11 +34,6 @@
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/bootstrap.min.js'></script>
     
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/treeview/bootstrap-treeview.js'></script>
-    
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/charts/jquery.flot.js'></script>    
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/charts/jquery.flot.stack.js'></script>    
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/charts/jquery.flot.pie.js'></script>
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/charts/jquery.flot.resize.js'></script>
     
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/sparklines/jquery.sparkline.min.js'></script>
     
@@ -111,11 +107,9 @@
             $(document).ready(function () {
 
                 $(".header").load("${contextPath }/header");
-                $(".menu").load("${contextPath }/menu", function () { $(".navigation > li:eq(5)").addClass("active"); });
+                $(".menu").load("${contextPath }/menu", function() {$("#node_${moduleId}").addClass("active");});
                 $(".breadLine .buttons").load("${contextPath }/contentbuttons");
                 
-                //ul添加class
-                $("#style-${flag}").addClass("active");
                 
                 $("#btnUpdateVersion").click(function() {
             		var arr1 = checkedBox ();
@@ -212,13 +206,13 @@
             <div class="workplace">             
 
                 <div class="row">
-                     <div class="col-md-3 clearfix" id="mails_navigation">                    
+                     <div class="col-md-2 clearfix" id="mails_navigation">                    
                         <span class="btn btn-success btn-block" >文档类别</span>
                          <div id="tree"></div>    
 
                     </div>
 
-                    <div class="col-md-9" id="mails">
+                    <div class="col-md-10" id="mails">
                         <div class="headInfo">
                             <div class="input-group">
                                 <input type="text" name="search" placeholder="search keyword..." id="widgetInputMessage" class="form-control"/>
@@ -239,21 +233,12 @@
                                         <button class="btn btn-sm btn-info tip" onclick="transferId();" data-toggle="modal">关联检查项</button>
                                     </div>
                                 </div>
-                                <div class="right">                                   
-                                    <ul class="pagination pagination-sm">
-                                        <li class="disabled"><a href="#">Prev</a></li>
-                                        <li class="disabled"><a href="#">1</a></li>
-                                        <li><a href="#">2</a></li>
-                                        <li><a href="#">3</a></li>
-                                        <li><a href="#">4</a></li>
-                                        <li><a href="#">Next</a></li>
-                                    </ul>                         
-                                </div>
                             </div>
                             <table  class="table">
                                 <thead>
                                     <tr>
                                        <th width="40px"><input type="checkbox" name="checkall"/></th>
+                                       	<th>No.</th>
                                         <th width="10%">文档名称</th>
                                         <th width="5%">密级</th>
 										<th width="7%">录入人</th>
@@ -267,9 +252,10 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                     <c:forEach items="${listDocs}" var="doc">
+                                     <c:forEach items="${listDocs}" var="doc" varStatus="itr">
                                     <tr>
                                         <td><input type="checkbox" name="checkbox" value="${doc.id }"/></td>
+                                        <td>${offset + itr.index +1 }</td>
                                         <td>${doc.name }</td>
                                         <td>${doc.secretLevel.level }</td>
 										<td>${doc.user.username }</td>
@@ -287,20 +273,7 @@
                                 </tbody>
                             </table>                       
                             <div class="toolbar bottom-toolbar clearfix">
-                                <div class="left">
-                                </div>
-                                <div class="right">
-                                    
-                                    <ul class="pagination pagination-sm">
-                                        <li class="disabled"><a href="#">Prev</a></li>
-                                        <li class="disabled"><a href="#">1</a></li>
-                                        <li><a href="#">2</a></li>
-                                        <li><a href="#">3</a></li>
-                                        <li><a href="#">4</a></li>
-                                        <li><a href="#">Next</a></li>
-                                    </ul>
-                                    
-                                </div>
+                                <tag:paginate max="5" offset="${offset}" count="${count}" uri="${url }" />
                             </div>                                                                     
                         </div>
 

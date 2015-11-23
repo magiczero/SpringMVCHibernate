@@ -12,15 +12,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
-import com.cngc.pm.model.Authority;
-import com.cngc.pm.model.Role;
-import com.cngc.pm.model.SysUser;
-import com.cngc.pm.repository.UserRepository;
 public class CustomUserDetailsService implements UserDetailsService {
 
 	private static final Logger logger = LoggerFactory.getLogger(CustomUserDetailsService.class);
-	
-	private UserRepository userService;
 	
 //	@Autowired
 //	private UserRepository userDao;
@@ -33,24 +27,22 @@ public class CustomUserDetailsService implements UserDetailsService {
 			throws UsernameNotFoundException {
 		// TODO Auto-generated method stub
 		if(username == null) logger.error("username is null");
-		if(userService==null) logger.error("userDao is null");
 		
-		SysUser user = userService.findByUsername(username);
-		
-		if(user == null) {
-			logger.error(username+"is not exist", new UsernameNotFoundException(username+"is not exist"));
-		}
+//		SysUser user = userService.getByUsername(username);
 		
 		List<GrantedAuthority> auths = new ArrayList<GrantedAuthority>();
 		
-		for(Role role : user.getRoles()) {
-			for(Authority authority : role.getAuths()) {
-				//auths.add(new GrantedAuthorityImpl(authority.getAuthorityName()));
-				auths.add(new SimpleGrantedAuthority(authority.getAuthorityName()));
-			}
-		}
+		auths.add(new SimpleGrantedAuthority("ROLE_ADMIN"));
+		auths.add(new SimpleGrantedAuthority("ROLE_USER"));
 		
-		User userdetail = new User(user.getUsername(), user.getPassword(), true, true, true, true, auths);
+//		for(Role role : user.getRoles()) {
+//			for(Authority authority : role.getAuths()) {
+//				//auths.add(new GrantedAuthorityImpl(authority.getAuthorityName()));
+//				auths.add(new SimpleGrantedAuthority(authority.getAuthorityName()));
+//			}
+//		}
+		
+		User userdetail = new User(username, username, true, true, true, true, auths);
 		return userdetail;
 	}
 //

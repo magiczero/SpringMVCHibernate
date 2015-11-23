@@ -45,7 +45,7 @@ public class KnowledgeController {
 	}
 	
 	@RequestMapping(value="/save",method = RequestMethod.POST)
-	public String save(@Valid @ModelAttribute("knowledge") Knowledge knowledge, HttpServletRequest request){
+	public String save(@Valid @ModelAttribute("knowledge") Knowledge knowledge, BindingResult result, HttpServletRequest request){
 		
 		knowledge.setApplyUser(UserUtil.getUserId(request.getSession()));
 		knowledge.setApplyTime(new Date());

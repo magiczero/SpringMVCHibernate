@@ -14,11 +14,17 @@
 	<!-- <annotation-driven /> -->
 	<annotation-driven conversion-service="conversionService" />
 	
-	<!-- <beans:bean id="validator" class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean">  
-    <beans:property name="providerClass" value="org.hibernate.validator.HibernateValidator"/>  
-    
-    <beans:property name="validationMessageSource" ref="messageSource"/>  
-</beans:bean> -->  
+	<beans:bean id="exceptionHandler" class="com.cngc.exception.MyExceptionHandler" />
+	<!-- 以后有好的方法，这个应该就用不到了 -->
+	<interceptors>
+		<interceptor>
+			<mapping path="/document/*"/>
+			<mapping path="/moudle/*"/>
+			<mapping path="/resource/*"/>
+			<mapping path="/authority/*"/>
+			<beans:bean class="com.cngc.pm.interceptor.MyInterceptor"></beans:bean>
+		</interceptor>
+	</interceptors>
 
 	<beans:bean id="messageSource" class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
 		<beans:property name="basename" value="/WEB-INF/classes/messages_zh_CN.properties"></beans:property>		

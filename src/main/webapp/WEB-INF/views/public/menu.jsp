@@ -30,11 +30,24 @@
                     <ul>
                     	
                         <li>
-                            <a href="${contextPath }//workflow/task/list">
+                            <a href="${contextPath }/workflow/task/list">
                                 <span class="glyphicon glyphicon-th-large"></span><span class="text">待办任务</span>
                             </a>                  
                         </li>
                         <li>
+<<<<<<< HEAD
+=======
+                            <a href="${contextPath }/workflow/processinstance/finished">
+                                <span class="glyphicon glyphicon-th-large"></span><span class="text">已结束流程</span>
+                            </a>                  
+                        </li>
+                        <li>
+                            <a href="${contextPath }/workflow/model/list">
+                                <span class="glyphicon glyphicon-th-large"></span><span class="text">模型工作区</span>
+                            </a>                  
+                        </li>
+                        <li>
+>>>>>>> master
                             <a href="board4engineer.html">
                                 <span class="glyphicon glyphicon-th-large"></span><span class="text">工程师控制台</span>
                             </a>                  
@@ -72,11 +85,13 @@
                         </li>                       
                     </ul>                
                 </li> 
-               <li class="openable">
-                    <a href="#">
-                        <span class="isw-list"></span><span class="text">事件管理</span>
+                <c:forEach items="${menu1 }" var="mod1">
+                <li id="node_${mod1.id }" class="openable">
+                	<a href="${mod1.url }">
+                        <span class="${mod1.styleClass }"></span><span class="text">${mod1.name }</span>
                     </a>
                     <ul>
+<<<<<<< HEAD
                         <li>
                             <a href="${contextPath}/incident/add">
                                 <span class="glyphicon glyphicon-plus"></span><span class="text">创建新事件</span>
@@ -219,5 +234,19 @@
                         <li><a href="${contextPath }/manufacturer/list"><span class="glyphicon glyphicon-warning-sign"></span><span class="text">数据字典</span></a></li>
                     </ul>
                 </li>    
+=======
+                    <c:forEach items="${menu2 }" var="mod2">
+                    <c:if test="${mod2.parent.id == mod1.id }">
+                    	<li>
+                    	 	<a href="${contextPath }${mod2.url }">
+                                <span class="${mod2.styleClass }"></span><span class="text">${mod2.name }</span>
+                            </a>                  
+                        </li> 
+                    </c:if>
+                    </c:forEach>
+                    </ul>
+                </li>
+                </c:forEach>
+>>>>>>> master
             </ul>
 <script type='text/javascript' src='${contextPath }/resources/js/mymenu.js'></script> 

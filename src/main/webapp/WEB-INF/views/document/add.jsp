@@ -102,7 +102,8 @@
     <script type="text/javascript">
             $(document).ready(function () {
             	$(".header").load("${contextPath }/header");
-                $(".menu").load("${contextPath }/menu", function () { $(".navigation > li:eq(5)").addClass("active"); });
+            	// $(".menu").load("${contextPath }/menu", function () { $(".navigation > li:eq(2)").addClass("active"); });
+                $(".menu").load("${contextPath }/menu", function() {$("#node_${moduleId}").addClass("active");});
                 $(".breadLine .buttons").load("${contextPath }/contentbuttons");
                 
                 $("#document").validationEngine({promptPosition : "topLeft", scroll: true});

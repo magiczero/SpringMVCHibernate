@@ -45,6 +45,8 @@ public class Role implements Serializable {
 	private boolean sys;
 	//private Long moduleId;
 	
+	private Set<Moudle> modules = new LinkedHashSet<>();
+
 	private Set<Authority> auths = new LinkedHashSet<Authority>();
 
 	@ManyToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE },fetch=FetchType.EAGER)  
@@ -57,6 +59,18 @@ public class Role implements Serializable {
 
 	public void setAuths(Set<Authority> auths) {
 		this.auths = auths;
+	}
+	
+	@ManyToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE },fetch=FetchType.EAGER)  
+	@JoinTable(name = "sys_roles_moudles", joinColumns = { @JoinColumn(name = "ROLE_ID") }, inverseJoinColumns = { @JoinColumn(name = "MODULE_ID") })  
+	@OrderBy("id")  
+	@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)  
+	public Set<Moudle> getModules() {
+		return modules;
+	}
+
+	public void setModules(Set<Moudle> modules) {
+		this.modules = modules;
 	}
 
 	@Id 

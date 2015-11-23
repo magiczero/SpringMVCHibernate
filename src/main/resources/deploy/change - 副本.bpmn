@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.cngc.com.cn/change">
+  <process id="CHANGE" name="变更管理流程" isExecutable="true">
+    <extensionElements>
+      <activiti:executionListener event="start" expression="${execution.setVariable('change', changeEntityManager.getChange(execution))}"></activiti:executionListener>
+      <activiti:executionListener event="end" expression="${changeEntityManager.setChangeStatus(execution)}"></activiti:executionListener>
+    </extensionElements>
+    <startEvent id="startChangeManage" name="Start">
+      <extensionElements>
+        <activiti:formProperty id="id" name="标识符" type="long" required="true"></activiti:formProperty>
+      </extensionElements>
+    </startEvent>
+    <userTask id="changeConstruction" name="受理、构建变更" activiti:candidateGroups="CHANGE_ACCEPT">
+      <extensionElements>
+        <activiti:formProperty id="changeType" name="风险等级" type="string" expression="${change.changeType}"></activiti:formProperty>
+        <activiti:formProperty id="planStartTime" name="变更开始时间" type="date" expression="${change.planStartTime}" datePattern="yyyy-MM-dd"></activiti:formProperty>
+        <activiti:formProperty id="planEndTime" name="变更结束时间" type="date" expression="${change.planEndTime}" datePattern="yyyy-MM-dd"></activiti:formProperty>
+        <activiti:formProperty id="solution" name="变更方案" type="bigtext" expression="${change.solution}"></activiti:formProperty>
+        <activiti:formProperty id="fallback" name="回退计划" type="bigtext" expression="${change.fallback}"></activiti:formProperty>
+        <activiti:formProperty id="delegateUser" name="变更实施人" type="string" expression="${change.delegateUser}"></activiti:formProperty>
+      </extensionElements>
+    </userTask>
+    <sequenceFlow id="flow1" sourceRef="startChangeManage" targetRef="changeConstruction"></sequenceFlow>
+    <userTask id="changePlan" name="变更排程" activiti:candidateGroups="CHANGE_ACCEPT">
+      <extensionElements>
+        <activiti:formProperty id="planStartTime" name="变更开始时间" type="date" expression="${change.planStartTime}" datePattern="yyyy-MM-dd"></activiti:formProperty>
+        <activiti:formProperty id="planEndTime" name="变更结束时间" type="date" expression="${change.planEndTime}" datePattern="yyyy-MM-dd"></activiti:formProperty>
+        <activiti:formProperty id="template" name="变更模板" type="enum" expression="${change.template}">
+          <activiti:value id="NULL" name="不使用模板"></activiti:value>
+          <activiti:value id="SERVER_CHANGE" name="服务器变更"></activiti:value>
+          <activiti:value id="SWITCH_CHANGE" name="网络变更"></activiti:value>
+        </activiti:formProperty>
+        <activiti:formProperty id="delegateUser" name="变更实施人" type="string" expression="${change.delegateUser}"></activiti:formProperty>
+      </extensionElements>
+    </userTask>
+    <userTask id="changeClose" name="变更关闭" activiti:candidateGroups="CHANGE_MANAGER">
+      <extensionElements>
+        <activiti:formProperty id="template" name="变更模板" type="enum" expression="${change.template}" writable="false">
+          <activiti:value id="NULL" name="不使用模板"></activiti:value>
+          <activiti:value id="SERVER_CHANGE" name="服务器变更"></activiti:value>
+          <activiti:value id="SWITCH_CHANGE" name="网络变更"></activiti:value>
+        </activiti:formProperty>
+        <activiti:formProperty id="result" name="变更结果描述" type="bigtext" expression="${change.result}"></activiti:formProperty>
+      </extensionElements>
+    </userTask>
+    <endEvent id="endChangeManage" name="End"></endEvent>
+    <sequenceFlow id="flow5" sourceRef="changeClose" targetRef="endChangeManage"></sequenceFlow>
+    <userTask id="changeAuditStep" name="变更审批" activiti:candidateGroups="CHANGE_MANAGER">
+      <extensionElements>
+        <activiti:formProperty id="planStartTime" name="变更开始时间" type="date" expression="${change.planStartTime}" writable="false"></activiti:formProperty>
+        <activiti:formProperty id="planEndTime" name="变更结束时间" type="date" expression="${change.planEndTime}" writable="false"></activiti:formProperty>
+        <activiti:formProperty id="solution" name="变更方案" type="bigtext" expression="${change.solution]" writable="false"></activiti:formProperty>
+        <activiti:formProperty id="fallback" name="回退计划" type="bigtext" expression="${change.fallback}" writable="false"></activiti:formProperty>
+        <activiti:formProperty id="delegateUser" name="变更实施人" type="string" expression="${change.delegateUser}" writable="false"></activiti:formProperty>
+        <activiti:formProperty id="changeAudit" name="审批" type="enum">
+          <activiti:value id="true" name="通过"></activiti:value>
+          <activiti:value id="false" name="不通过"></activiti:value>
+        </activiti:formProperty>
+        <activiti:formProperty id="approve" name="审批意见" type="bigtext" expression="${change.approve}"></activiti:formProperty>
+      </extensionElements>
+    </userTask>
+    <exclusiveGateway id="exclusivegateway2" name="Exclusive Gateway"></exclusiveGateway>
+    <sequenceFlow id="flow7" sourceRef="changeAuditStep" targetRef="exclusivegateway2"></sequenceFlow>
+    <sequenceFlow id="flow8" sourceRef="exclusivegateway2" targetRef="changePlan">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${changeAudit=='true'}]]></conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="flow9" sourceRef="exclusivegateway2" targetRef="changeConstruction">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${changeAudit=='false'}]]></conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="flow10" sourceRef="changeConstruction" targetRef="changeAuditStep"></sequenceFlow>
+    <userTask id="changeDo" name="实施变更" activiti:assignee="${change.delegateUser}">
+      <extensionElements>
+        <activiti:formProperty id="template" name="变更模板" type="enum" expression="${change.template}">
+          <activiti:value id="NULL" name="不使用模板"></activiti:value>
+          <activiti:value id="SERVER_CHANGE" name="服务器变更"></activiti:value>
+          <activiti:value id="SWITCH_CHANGE" name="网络变更"></activiti:value>
+        </activiti:formProperty>
+        <activiti:formProperty id="result" name="变更结果描述" type="bigtext" expression="${change.result}"></activiti:formProperty>
+      </extensionElements>
+    </userTask>
+    <sequenceFlow id="flow11" sourceRef="changePlan" targetRef="changeDo"></sequenceFlow>
+    <sequenceFlow id="flow12" sourceRef="changeDo" targetRef="changeClose"></sequenceFlow>
+  </process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_CHANGE">
+    <bpmndi:BPMNPlane bpmnElement="CHANGE" id="BPMNPlane_CHANGE">
+      <bpmndi:BPMNShape bpmnElement="startChangeManage" id="BPMNShape_startChangeManage">
+        <omgdc:Bounds height="35.0" width="35.0" x="80.0" y="108.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="changeConstruction" id="BPMNShape_changeConstruction">
+        <omgdc:Bounds height="71.0" width="105.0" x="160.0" y="90.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="changePlan" id="BPMNShape_changePlan">
+        <omgdc:Bounds height="55.0" width="105.0" x="450.0" y="183.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="changeClose" id="BPMNShape_changeClose">
+        <omgdc:Bounds height="55.0" width="105.0" x="610.0" y="98.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="endChangeManage" id="BPMNShape_endChangeManage">
+        <omgdc:Bounds height="35.0" width="35.0" x="645.0" y="193.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="changeAuditStep" id="BPMNShape_changeAuditStep">
+        <omgdc:Bounds height="55.0" width="105.0" x="302.0" y="98.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="exclusivegateway2" id="BPMNShape_exclusivegateway2">
+        <omgdc:Bounds height="40.0" width="40.0" x="334.0" y="190.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="changeDo" id="BPMNShape_changeDo">
+        <omgdc:Bounds height="55.0" width="105.0" x="450.0" y="98.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="flow1" id="BPMNEdge_flow1">
+        <omgdi:waypoint x="115.0" y="125.0"></omgdi:waypoint>
+        <omgdi:waypoint x="160.0" y="125.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow5" id="BPMNEdge_flow5">
+        <omgdi:waypoint x="662.0" y="153.0"></omgdi:waypoint>
+        <omgdi:waypoint x="662.0" y="193.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow7" id="BPMNEdge_flow7">
+        <omgdi:waypoint x="354.0" y="153.0"></omgdi:waypoint>
+        <omgdi:waypoint x="354.0" y="190.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow8" id="BPMNEdge_flow8">
+        <omgdi:waypoint x="374.0" y="210.0"></omgdi:waypoint>
+        <omgdi:waypoint x="450.0" y="210.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow9" id="BPMNEdge_flow9">
+        <omgdi:waypoint x="334.0" y="210.0"></omgdi:waypoint>
+        <omgdi:waypoint x="212.0" y="210.0"></omgdi:waypoint>
+        <omgdi:waypoint x="212.0" y="161.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow10" id="BPMNEdge_flow10">
+        <omgdi:waypoint x="265.0" y="125.0"></omgdi:waypoint>
+        <omgdi:waypoint x="302.0" y="125.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow11" id="BPMNEdge_flow11">
+        <omgdi:waypoint x="502.0" y="183.0"></omgdi:waypoint>
+        <omgdi:waypoint x="502.0" y="153.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow12" id="BPMNEdge_flow12">
+        <omgdi:waypoint x="555.0" y="125.0"></omgdi:waypoint>
+        <omgdi:waypoint x="610.0" y="125.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>

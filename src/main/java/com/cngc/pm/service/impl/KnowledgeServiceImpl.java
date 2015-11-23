@@ -50,6 +50,14 @@ public class KnowledgeServiceImpl implements KnowledgeService{
 	
 	@Override
 	@Transactional
+	public boolean delById(Long id)
+	{
+		knowledgeDao.removeById(id);
+		return true;
+	}
+	
+	@Override
+	@Transactional
 	public Knowledge getById(Long id){
 		return knowledgeDao.find(id);
 	}

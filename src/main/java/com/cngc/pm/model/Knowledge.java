@@ -23,7 +23,8 @@ public class Knowledge implements Serializable {
 	private String keyword;
 	private String applyUser;
 	private Date applyTime;
-	private int status;
+	private boolean status;
+	private boolean locked;
 	private String processInstanceId;
 	private String currentActivityId;
 	private String currentActivityName;
@@ -48,7 +49,7 @@ public class Knowledge implements Serializable {
 		this.title = title;
 	}
 
-	@Column(name = "desc")
+	@Column(name = "desc_")
 	public String getDesc() {
 		return desc;
 	}
@@ -90,11 +91,20 @@ public class Knowledge implements Serializable {
 		this.applyTime = applyTime;
 	}
 	
-	@Column(name="status")
-	public int getStatus(){
+	@Column(name="is_locked")
+	public boolean isLocked() {
+		return locked;
+	}
+
+	public void setLocked(boolean locked) {
+		this.locked = locked;
+	}
+	
+	@Column(name="status_")
+	public boolean getStatus(){
 		return status;
 	}
-	public void setStatus(int status){
+	public void setStatus(boolean status){
 		this.status = status;
 	}
 	

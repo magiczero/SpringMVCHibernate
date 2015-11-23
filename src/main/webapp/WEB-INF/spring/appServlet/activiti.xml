@@ -72,6 +72,12 @@
         <property name="jpaEntityManagerFactory" ref="entityManagerFactory" />
         <property name="jpaHandleTransaction" value="false" />
         <property name="jpaCloseEntityManager" value="false" />
+        <!-- 自定义表单类型 -->
+        <property name="customFormTypes">
+        	<list>
+        		<bean class="com.cngc.pm.activiti.formtype.BigtextFormType" />
+        	</list>
+        </property>
     </bean>	
     
     <bean id="processEngine" class="org.activiti.spring.ProcessEngineFactoryBean">

@@ -58,6 +58,10 @@ var formFieldCreator = {
 		var result = "<div class='col-md-3'>" + prop.name + "：</div><div class='col-md-8'><input type='text' id='" + prop.id + "' name='fp_" + prop.id + "' class='" + className + "' /></div>";
 		return result;
 	},
+	long: function(formData, prop, className) {
+		var result = "<div class='col-md-3'>" + prop.name + "：</div><div class='col-md-8'><input type='text' id='" + prop.id + "' name='fp_" + prop.id + "' class='" + className + "' /></div>";
+		return result;
+	},
 	date: function(formData, prop, className) {
 		var result = "<div class='col-md-3'>" + prop.name + "：</div><div class='col-md-8'><input type='text' id='" + prop.id + "' name='fp_" + prop.id + "' class='dateISO " + className + "' /></div>";
 		return result;

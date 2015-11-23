@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.cngc.com.cn">
-  <process id="myProcess" name="My process" isExecutable="true">
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.cngc.com.cn/leadertask">
+  <process id="LEADERTASK" name="领导交办" isExecutable="true">
     <extensionElements>
       <activiti:executionListener event="start" expression="${execution.setVariable('mytask', taskEntityManager.newTask(execution))}"></activiti:executionListener>
     </extensionElements>
@@ -18,25 +18,25 @@
         <activiti:formProperty id="toUser" name="交办对象" type="string" expression="${mytask.toUser}" writable="false"></activiti:formProperty>
         <activiti:formProperty id="taskTitle" name="任务标题" type="string" expression="${mytask.taskTitle}" writable="false"></activiti:formProperty>
         <activiti:formProperty id="taskDesc" name="任务描述" type="string" expression="${mytask.taskDesc}" writable="false"></activiti:formProperty>
-        <activiti:formProperty id="taskResult" name="工作结果" type="string" expression="${mytask.taskResult}"></activiti:formProperty>
+        <activiti:formProperty id="taskResult" name="工作结果" type="bigtext" expression="${mytask.taskResult}"></activiti:formProperty>
       </extensionElements>
     </userTask>
     <sequenceFlow id="flow1" sourceRef="startevent1" targetRef="userTodo"></sequenceFlow>
-    <userTask id="usertask1" name="任务审核" activiti:assignee="andyhe">
+    <userTask id="usertask1" name="任务审核" activiti:candidateGroups="SERVICE_DESK">
       <extensionElements>
         <activiti:formProperty id="fromUser" name="交办领导" type="string" expression="${mytask.fromUser}" writable="false"></activiti:formProperty>
         <activiti:formProperty id="toUser" name="交办对象" type="string" expression="${mytask.toUser}" writable="false"></activiti:formProperty>
         <activiti:formProperty id="taskTitle" name="任务标题" type="string" expression="${mytask.taskTitle}" writable="false"></activiti:formProperty>
         <activiti:formProperty id="taskDesc" name="任务描述" type="string" expression="${mytask.taskDesc}" writable="false"></activiti:formProperty>
-        <activiti:formProperty id="taskResult" name="工作结果" type="string" expression="${mytask.taskResult}" writable="false"></activiti:formProperty>
+        <activiti:formProperty id="taskResult" name="工作结果" type="bigtext" expression="${mytask.taskResult}" writable="false"></activiti:formProperty>
       </extensionElements>
     </userTask>
     <endEvent id="endevent1" name="End"></endEvent>
     <sequenceFlow id="flow2" sourceRef="usertask1" targetRef="endevent1"></sequenceFlow>
     <sequenceFlow id="flow3" sourceRef="userTodo" targetRef="usertask1"></sequenceFlow>
   </process>
-  <bpmndi:BPMNDiagram id="BPMNDiagram_myProcess">
-    <bpmndi:BPMNPlane bpmnElement="myProcess" id="BPMNPlane_myProcess">
+  <bpmndi:BPMNDiagram id="BPMNDiagram_LEADERTASK">
+    <bpmndi:BPMNPlane bpmnElement="LEADERTASK" id="BPMNPlane_LEADERTASK">
       <bpmndi:BPMNShape bpmnElement="startevent1" id="BPMNShape_startevent1">
         <omgdc:Bounds height="35.0" width="35.0" x="150.0" y="60.0"></omgdc:Bounds>
       </bpmndi:BPMNShape>

@@ -45,7 +45,7 @@ public class LoginController {
 			//更新登录时间
 			user.setLastWhile(new java.sql.Timestamp(new java.util.Date().getTime()));
 			userService.update(user);
-			return "redirect:/document/list";
+			return "redirect:/workflow/task/list";
 		}
 		
 		return "login";

@@ -1,0 +1,21 @@
+                        
+<div class="tabs-vertical-env tabs-vertical-bordered">
+	<ul class="nav tabs-vertical">
+		<li class="active"><a href="#v4-step1" data-toggle="tab">服务器变更</a></li>
+	</ul>
+	<div class="tab-content">				
+		<div class="tab-pane active" id="v4-step8">
+			<p>系统安装时间：<input type="text" name="os_install_time"></p>
+			<p>硬盘序列号：<input type="text" name="disk_number"></p>
+			<p>设备型号：<input type="text" name="computer_type"></p>
+			<p>IP地址：<input type="text" name="ip_address"></p>
+			<p>MAC地址：<input type="text" name="mac_address"></p>
+			<p>涉密标签粘贴，涉密编号：<input type="text" name="secret_number"></p>
+		</div>
+	</div>
+</div>
+<div class="toolbar nopadding-toolbar clear clearfix">
+	<div class="right btn-group">
+	<button class='btn btn-warning' id="lnk_save_template"> 保存模板数据 </button>   
+	</div>
+</div>          	

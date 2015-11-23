@@ -1,0 +1,19 @@
+                        
+<div class="tabs-vertical-env tabs-vertical-bordered">
+	<ul class="nav tabs-vertical">
+		<li class="active"><a href="#v4-step1" data-toggle="tab">第一步：设置网络</a></li>
+	</ul>
+	<div class="tab-content">				
+		<div class="tab-pane active" id="v4-step8">
+			<p>IP地址、MAC地址绑定</p>
+			<p>交换机端口号：<input type="text" name="switch_port"></p>
+			<p>配线架端口号：<input type="text" name="distribution_port"></p>
+			<p>跳线编号：<input type="text" name="jumper_port"></p>
+		</div>
+	</div>
+</div>
+<div class="toolbar nopadding-toolbar clear clearfix">
+	<div class="right btn-group">
+	<button class='btn btn-warning' id="lnk_save_template"> 保存模板数据 </button>   
+	</div>
+</div>          	

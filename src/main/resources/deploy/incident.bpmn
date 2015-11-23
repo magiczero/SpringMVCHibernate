@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.cngc.com.cn/incident">
+  <process id="INCIDENT" name="事件管理流程" isExecutable="true">
+    <extensionElements>
+      <activiti:executionListener event="start" expression="${execution.setVariable('incident', incidentEntityManager.getIncident(execution))}"></activiti:executionListener>
+      <activiti:executionListener event="end" expression="${incidentEntityManager.setIncidentStatus(execution)}"></activiti:executionListener>
+    </extensionElements>
+    <startEvent id="startIncidentManage" name="Start">
+      <extensionElements>
+        <activiti:formProperty id="id" name="标识符" type="long" required="true"></activiti:formProperty>
+      </extensionElements>
+    </startEvent>
+    <userTask id="incidentClassify" name="事件分类与初步支持" activiti:candidateGroups="SERVICE_DESK">
+      <extensionElements>
+        <activiti:formProperty id="currentDelegateGroup" name="受派组" type="string" expression="${incident.currentDelegateGroup}"></activiti:formProperty>
+        <activiti:formProperty id="currentDelegateUser" name="受派人" type="string" expression="${incident.currentDelegateUser}"></activiti:formProperty>
+        <activiti:formProperty id="firstResult" name="解决情况" type="enum">
+          <activiti:value id="false" name="未解决"></activiti:value>
+          <activiti:value id="true" name="已解决"></activiti:value>
+        </activiti:formProperty>
+        <activiti:formProperty id="solution" name="解决方案" type="bigtext" expression="${incident.solution}"></activiti:formProperty>
+      </extensionElements>
+    </userTask>
+    <sequenceFlow id="flow1" sourceRef="startIncidentManage" targetRef="incidentClassify"></sequenceFlow>
+    <exclusiveGateway id="exclusivegateway1" name="Exclusive Gateway"></exclusiveGateway>
+    <sequenceFlow id="flow2" sourceRef="incidentClassify" targetRef="exclusivegateway1"></sequenceFlow>
+    <userTask id="incidentConfirm" name="事件确认" activiti:candidateGroups="SERVICE_DESK">
+      <extensionElements>
+        <activiti:formProperty id="solution" name="解决方案" type="bigtext" expression="${incident.solution}"></activiti:formProperty>
+      </extensionElements>
+    </userTask>
+    <sequenceFlow id="flow3" sourceRef="exclusivegateway1" targetRef="incidentConfirm">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${firstResult=='true'}]]></conditionExpression>
+    </sequenceFlow>
+    <userTask id="incidentClose" name="事件关闭" activiti:candidateGroups="INCIDENT_MANAGER">
+      <extensionElements>
+        <activiti:formProperty id="solution" name="解决方案" type="bigtext" expression="${incident.solution}"></activiti:formProperty>
+      </extensionElements>
+    </userTask>
+    <sequenceFlow id="flow4" sourceRef="incidentConfirm" targetRef="incidentClose"></sequenceFlow>
+    <endEvent id="endevent1" name="End"></endEvent>
+    <sequenceFlow id="flow5" sourceRef="incidentClose" targetRef="endevent1"></sequenceFlow>
+    <userTask id="incidentDeal" name="事件解决与恢复" activiti:assignee="${incident.currentDelegateUser}">
+      <extensionElements>
+        <activiti:formProperty id="influence" name="影响度" type="string" expression="${incident.influence}"></activiti:formProperty>
+        <activiti:formProperty id="ctritical" name="紧急度" type="string" expression="${incident.critical}"></activiti:formProperty>
+        <activiti:formProperty id="cateogry" name="事件分类" type="string" expression="${incident.category}"></activiti:formProperty>
+        <activiti:formProperty id="secondResult" name="解决情况" type="enum">
+          <activiti:value id="false" name="未解决"></activiti:value>
+          <activiti:value id="true" name="已解决"></activiti:value>
+        </activiti:formProperty>
+        <activiti:formProperty id="solution" name="解决方案" type="bigtext" expression="${incident.solution}"></activiti:formProperty>
+      </extensionElements>
+    </userTask>
+    <sequenceFlow id="flow6" sourceRef="exclusivegateway1" targetRef="incidentDeal">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${firstResult=='false'}]]></conditionExpression>
+    </sequenceFlow>
+    <exclusiveGateway id="exclusivegateway2" name="Exclusive Gateway"></exclusiveGateway>
+    <sequenceFlow id="flow7" sourceRef="incidentDeal" targetRef="exclusivegateway2"></sequenceFlow>
+    <sequenceFlow id="flow8" sourceRef="exclusivegateway2" targetRef="incidentConfirm">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${secondResult=='true'}]]></conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="flow9" sourceRef="exclusivegateway2" targetRef="incidentClassify">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${secondResult=='false'}]]></conditionExpression>
+    </sequenceFlow>
+  </process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_INCIDENT">
+    <bpmndi:BPMNPlane bpmnElement="INCIDENT" id="BPMNPlane_INCIDENT">
+      <bpmndi:BPMNShape bpmnElement="startIncidentManage" id="BPMNShape_startIncidentManage">
+        <omgdc:Bounds height="35.0" width="35.0" x="80.0" y="108.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="incidentClassify" id="BPMNShape_incidentClassify">
+        <omgdc:Bounds height="71.0" width="105.0" x="160.0" y="90.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="exclusivegateway1" id="BPMNShape_exclusivegateway1">
+        <omgdc:Bounds height="40.0" width="40.0" x="310.0" y="106.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="incidentConfirm" id="BPMNShape_incidentConfirm">
+        <omgdc:Bounds height="55.0" width="105.0" x="600.0" y="98.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="incidentClose" id="BPMNShape_incidentClose">
+        <omgdc:Bounds height="55.0" width="105.0" x="740.0" y="98.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="endevent1" id="BPMNShape_endevent1">
+        <omgdc:Bounds height="35.0" width="35.0" x="775.0" y="180.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="incidentDeal" id="BPMNShape_incidentDeal">
+        <omgdc:Bounds height="55.0" width="105.0" x="380.0" y="98.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="exclusivegateway2" id="BPMNShape_exclusivegateway2">
+        <omgdc:Bounds height="40.0" width="40.0" x="520.0" y="105.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="flow1" id="BPMNEdge_flow1">
+        <omgdi:waypoint x="115.0" y="125.0"></omgdi:waypoint>
+        <omgdi:waypoint x="160.0" y="125.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow2" id="BPMNEdge_flow2">
+        <omgdi:waypoint x="265.0" y="125.0"></omgdi:waypoint>
+        <omgdi:waypoint x="310.0" y="126.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow3" id="BPMNEdge_flow3">
+        <omgdi:waypoint x="330.0" y="146.0"></omgdi:waypoint>
+        <omgdi:waypoint x="330.0" y="195.0"></omgdi:waypoint>
+        <omgdi:waypoint x="493.0" y="195.0"></omgdi:waypoint>
+        <omgdi:waypoint x="652.0" y="195.0"></omgdi:waypoint>
+        <omgdi:waypoint x="652.0" y="153.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow4" id="BPMNEdge_flow4">
+        <omgdi:waypoint x="705.0" y="125.0"></omgdi:waypoint>
+        <omgdi:waypoint x="740.0" y="125.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow5" id="BPMNEdge_flow5">
+        <omgdi:waypoint x="792.0" y="153.0"></omgdi:waypoint>
+        <omgdi:waypoint x="792.0" y="180.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow6" id="BPMNEdge_flow6">
+        <omgdi:waypoint x="350.0" y="126.0"></omgdi:waypoint>
+        <omgdi:waypoint x="380.0" y="125.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow7" id="BPMNEdge_flow7">
+        <omgdi:waypoint x="485.0" y="125.0"></omgdi:waypoint>
+        <omgdi:waypoint x="520.0" y="125.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow8" id="BPMNEdge_flow8">
+        <omgdi:waypoint x="560.0" y="125.0"></omgdi:waypoint>
+        <omgdi:waypoint x="600.0" y="125.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow9" id="BPMNEdge_flow9">
+        <omgdi:waypoint x="540.0" y="105.0"></omgdi:waypoint>
+        <omgdi:waypoint x="540.0" y="53.0"></omgdi:waypoint>
+        <omgdi:waypoint x="212.0" y="53.0"></omgdi:waypoint>
+        <omgdi:waypoint x="212.0" y="90.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>

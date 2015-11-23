@@ -10,6 +10,8 @@ public interface KnowledgeService {
 	
 	boolean delByIds(String ids);
 	
+	boolean delById(Long id);
+	
 	Knowledge getById(Long id);
 	
 	List<Knowledge> getAll();

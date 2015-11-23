@@ -100,6 +100,15 @@ var formFieldCreator = {
 		}
 		return result;
 	},
+	'bigtext': function(prop, datas, className) {
+		var result = "<div class='col-md-3'>" + prop.name + "：</div>";
+		if (prop.writable === true) {
+			result += "<div class='col-md-8'><textarea id='" + prop.id + "' name='fp_" + prop.id + "' class='" + className + "' value='" + prop.value + "' /></div>";
+		} else {
+			result += "<div class='col-md-8'>" + prop.value + "</div>";
+		}
+		return result;
+	},
 	'date': function(prop, datas, className) {
 		var result = "<div class='col-md-3'>" + prop.name + "：</div>";
 		if (prop.writable === true) {
@@ -118,7 +127,7 @@ var formFieldCreator = {
 			});
 			result += "</select></div>";
 		} else {
-			result += "<div class='col-md-8'>" + prop.value + "</div>";
+			result += "<div class='col-md-8'>" + datas[prop.id][prop.value] + "</div>";
 		}
 		return result;
 	},

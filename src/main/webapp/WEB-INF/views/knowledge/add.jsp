@@ -102,8 +102,9 @@
     <script type="text/javascript">
             $(document).ready(function () {
             	$(".header").load("${contextPath }/header");
-                $(".menu").load("${contextPath }/menu", function () { $(".navigation > li:eq(9)").addClass("active"); });
+                $(".menu").load("${contextPath }/menu", function () { $(".navigation > li:eq(6)").addClass("active"); });
                 $(".breadLine .buttons").load("${contextPath }/contentbuttons");
+                //$("#myeditor").cleditor({width:"100%", height:"300px"});
             });
     </script>
 </head>
@@ -142,10 +143,10 @@
                         <div class="head clearfix">
                             <div class="isw-documents"></div>
                             <h1>新建知识</h1>
-                        </div><c:url var="addAction" value="/knowledge/save" ></c:url>
-						<form:form action="${addAction}" commandName="knowledge">
+                        </div>
+                        <c:url var="addAction" value="/knowledge/save" ></c:url>
+						<form:form action="${addAction}" commandName="knowledge" method="post">
                         <div class="block-fluid">                        
-
                             <div class="row-form clearfix">
                                 <div class="col-md-2"><form:label path="title">知识标题:</form:label></div>
                                 <div class="col-md-10"><form:input path="title"></form:input></div>
@@ -156,18 +157,14 @@
                             </div> 
                             <div class="row-form clearfix">
                                 <div class="col-md-2"><form:label path="solution">解决办法</form:label></div>
-                                <div class="col-md-10" id="wysiwyg_container"><form:textarea path="solution" id="wysiwyg" cssStyle="height:100px;"></form:textarea></div>   
+                                <div class="col-md-10" id="wysiwyg_container"><form:textarea path="solution" id="solution" ></form:textarea></div>   
                             </div>  
                             <div class="row-form clearfix">
                                 <div class="col-md-2"><form:label path="keyword">关键字:</form:label></div>
                                 <div class="col-md-10"><form:input path="keyword" type="text" class="tags"></form:input></div>
-                            </div> 
-                            <div class="row-form clearfix">
-                                <div class="col-md-2"><form:label path="applyUser">知识提交者:</form:label></div>
-                                <div class="col-md-10"><form:input path="applyUser"></form:input></div>
-                            </div>                                       
+                            </div>                                      
 
-                            <div class="footer tar">
+                            <div class="footer tar">                        	
                                 <button class="btn btn-primary center-block"> 保 存 </button>
                             </div>                            
                         </div>

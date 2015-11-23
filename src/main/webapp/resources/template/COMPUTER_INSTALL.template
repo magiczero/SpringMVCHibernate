@@ -1,0 +1,59 @@
+<div class="tabs-vertical-env tabs-vertical-bordered">
+	<ul class="nav tabs-vertical">
+		<li class="active"><a href="#v4-step1" data-toggle="tab">第一步：初始化</a></li>
+		<li><a href="#v4-step2" data-toggle="tab">第二步：安装操作系统</a></li>
+		<li><a href="#v4-step3" data-toggle="tab">第三步：安装常用软件</a></li>
+		<li><a href="#v4-step4" data-toggle="tab">第四步：安装安全软件</a></li>
+		<li><a href="#v4-step5" data-toggle="tab">第五步：安装插件</a></li>
+		<li><a href="#v4-step6" data-toggle="tab">第六步：系统设置</a></li>
+		<li><a href="#v4-step7" data-toggle="tab">第七步：登记台账</a></li>
+		<li><a href="#v4-step8" data-toggle="tab">第八步：设置网络</a></li>
+	</ul>
+	<div class="tab-content">
+		<div class="tab-pane active" id="v4-step1">
+			<p>1、备份文件</p>
+			<p>2、在BIOS设置管理员密码 </p>
+			<p>3、开启启动项列表、启动设置光盘启动</p>				
+		</div>
+		<div class="tab-pane" id="v4-step2">
+			<p>1、设置硬盘模式，分区（C:80G）格式化</p>
+			<p>2、安装操作系统设置用户名、密码</p>
+			<p>用户名：<input type="text" name="os_username"></p>
+			<p>密码：<input type="text" name="os_password"></p>
+		</div>
+		<div class="tab-pane" id="v4-step3">
+			<p>Winrar 输入法 PDF阅读器 IE7 Flash插件 office2007 军工屏保</p>
+		</div>
+		<div class="tab-pane" id="v4-step4">
+			<p>一KEY通 三合一 顶盾 防水墙 瑞星</p>
+		</div>
+		<div class="tab-pane" id="v4-step5">
+			<p>OA插件 签章 浏览器设置</p>
+		</div>
+		<div class="tab-pane" id="v4-step6">
+			<p>BIOS开机密码 启动项设置 密码校验设置 禁用启动项列表</p>
+			<p>拆光驱线 铅封</p>
+		</div>
+		<div class="tab-pane" id="v4-step7">
+			<p>系统安装时间：<input type="text" name="os_install_time"></p>
+			<p>硬盘序列号：<input type="text" name="disk_number"></p>
+			<p>设备型号：<input type="text" name="computer_type"></p>
+			<p>IP地址：<input type="text" name="ip_address"></p>
+			<p>MAC地址：<input type="text" name="mac_address"></p>
+			<p>涉密标签粘贴，涉密编号：<input type="text" name="secret_number"></p>
+		</div>
+		<div class="tab-pane" id="v4-step8">
+			<p>IP地址、MAC地址绑定</p>
+			<p>交换机端口号：<input type="text" name="switch_port"></p>
+			<p>配线架端口号：<input type="text" name="distribution_port"></p>
+			<p>跳线编号：<input type="text" name="jumper_port"></p>
+		</div>
+	</div>
+</div>	
+
+<div class="toolbar nopadding-toolbar clear clearfix">
+	<div class="right btn-group">
+	<button class='btn btn-warning' id="lnk_save_template"> 保存模板数据 </button>   
+	</div>
+</div>  
+                        	

@@ -24,6 +24,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.cngc.pm.common.web.common.UserUtil;
+
 @Controller
 @RequestMapping("/workflow/task")
 public class TaskController {
@@ -44,12 +46,12 @@ public class TaskController {
 	 * @return
 	 */
 	@RequestMapping(value = "/list", method = RequestMethod.GET)
-	public String taskList(Model model) {
+	public String taskList(Model model,HttpSession session) {
 		// User user = UserUtil.getUserFromSession(request.getSession());
 
 		List<Task> tasks = new ArrayList<Task>();
 
-		tasks = taskService.createTaskQuery().taskCandidateOrAssigned("andyhe")
+		tasks = taskService.createTaskQuery().taskCandidateOrAssigned(UserUtil.getUserId(session))
 				.active().orderByTaskId().desc().list();
 
 		model.addAttribute("tasks", tasks);
@@ -71,7 +73,7 @@ public class TaskController {
 	public String claim(@PathVariable("id") String taskId, HttpSession session,
 			HttpServletRequest request, RedirectAttributes redirectAttributes) {
 		// String userId = UserUtil.getUserFromSession(session).getId();
-		taskService.claim(taskId, "andyhe");
+		taskService.claim(taskId, UserUtil.getUserId(session));
 		redirectAttributes.addFlashAttribute("message", "任务已签收");
 		
 		return "redirect:/workflow/task/list";
@@ -88,7 +90,7 @@ public class TaskController {
 	@RequestMapping(value = "/complete/{taskId}")
 	@SuppressWarnings("unchecked")
 	public String completeTask(@PathVariable("taskId") String taskId,
-			RedirectAttributes redirectAttributes, HttpServletRequest request) {
+			RedirectAttributes redirectAttributes, HttpServletRequest request,HttpSession session) {
 		Map<String, String> formProperties = new HashMap<String, String>();
 
 		// 从request中读取参数然后转换
@@ -112,7 +114,7 @@ public class TaskController {
 		// return "redirect:/login?timeout=true";
 		// }
 		try {
-			identityService.setAuthenticatedUserId("andyhe");
+			identityService.setAuthenticatedUserId(UserUtil.getUserId(session));
 			formService.submitTaskFormData(taskId, formProperties);
 		} finally {
 			identityService.setAuthenticatedUserId(null);

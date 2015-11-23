@@ -343,6 +343,7 @@ li{line-height: 20px;}
                     
             
             /* Messaging */
+            /* modified by andy 2015-11-21 */
             .form-horizontal .form-group{margin-left: 0px; margin-right: 0px;}
             .form-control{height: 30px;}
             .row-form{border-bottom: 1px solid #DDD; border-top: 1px solid white; padding: 19px 16px; vertical-align: baseline;}

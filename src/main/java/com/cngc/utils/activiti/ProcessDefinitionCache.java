@@ -4,10 +4,12 @@ import java.util.List;
 import java.util.Map;
 
 import org.activiti.engine.RepositoryService;
+import org.activiti.engine.RuntimeService;
 import org.activiti.engine.impl.RepositoryServiceImpl;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.impl.pvm.process.ActivityImpl;
 import org.activiti.engine.repository.ProcessDefinition;
+import org.activiti.engine.runtime.ProcessInstance;
 import org.apache.commons.lang3.ObjectUtils;
 
 import com.google.common.collect.Maps;
@@ -26,6 +28,8 @@ public class ProcessDefinitionCache {
     private static Map<String, ActivityImpl> singleActivity = Maps.newHashMap();
 
     private static RepositoryService repositoryService;
+
+    private static RuntimeService runtimeService;
 
     public static ProcessDefinition get(String processDefinitionId) {
         ProcessDefinition processDefinition = map.get(processDefinitionId);
@@ -74,7 +78,22 @@ public class ProcessDefinitionCache {
         return null;
     }
     
+    public static String getActivityName(String processInstanceId){
+    	
+    	ProcessInstance processInstance = runtimeService.createProcessInstanceQuery().processInstanceId(processInstanceId).singleResult();
+    	
+    	if(processInstance !=null)
+    		return getActivityName( processInstance.getProcessDefinitionId(),processInstance.getActivityId() );
+    	else
+    		return "";
+    }
+    
     public static void setRepositoryService(RepositoryService repositoryService) {
         ProcessDefinitionCache.repositoryService = repositoryService;
     }
+
+	public static void setRuntimeService(RuntimeService runtimeService) {
+		ProcessDefinitionCache.runtimeService = runtimeService;
+	}
+    
 }

@@ -1,4 +1,4 @@
-﻿
+
 /* add by andy 2015-6-19 15:01*/                   
 .dialog .headInfo{background-color: #F1F1F1; border: 1px solid #D5D5D5; padding: 5px; position: relative;
                 -moz-border-top-left-radius: 3px; -webkit-border-top-left-radius: 3px; border-top-left-radius: 3px;
@@ -16,4 +16,57 @@
 .dialog  .dialog_block{border: 0px; padding: 0px; padding-right: 10px; background: transparent; }
 
 .messages .item .image{text-align:center;}
+
+    
+.tabs-vertical-env {
+  display: table;
+  margin-bottom: 30px;
+  width: 100%;
+}
+.tabs-vertical-env .nav.tabs-vertical,
+.tabs-vertical-env .tab-content {
+  display: table-cell;
+  vertical-align: top;
+}
+.tabs-vertical-env .nav.tabs-vertical {
+  min-width: 120px;
+  width: 150px;
+}
+.tabs-vertical-env .nav.tabs-vertical li > a {
+  background-color: #f4f4f4;
+  margin-bottom: 5px;
+  text-align: left;
+  white-space: nowrap;
+}
+.tabs-vertical-env .nav.tabs-vertical li.active > a {
+  background-color: #fff;
+}
+.tabs-vertical-env .nav.tabs-vertical li:last-child {
+  padding-bottom: 20px;
+}
+.tabs-vertical-env .tab-content {
+  padding: 30px;
+  background: #FFF;
+}
+.tabs-vertical-env .tab-content * > p:last-child {
+  margin-bottom: 0;
+}
+.tabs-vertical-env.tabs-vertical-bordered .tab-content,
+.tabs-vertical-env.tabs-vertical-bordered .nav.tabs-vertical > li > a {
+  border: 1px solid #dddddd;
+}
+.tabs-vertical-env.tabs-vertical-bordered .nav.tabs-vertical {
+  position: relative;
+  right: -1px;
+}
+.tabs-vertical-env.tabs-vertical-bordered .nav.tabs-vertical > li.active > a {
+  border-right-color: #fff;
+}
+.tabs-vertical-env.tabs-vertical-bordered.right-aligned .nav.tabs-vertical {
+  right: 1px;
+}
+.tabs-vertical-env.tabs-vertical-bordered.right-aligned .nav.tabs-vertical > li.active > a {
+  border-left-color: #fff;
+  border-right-color: #dddddd;
+}
 

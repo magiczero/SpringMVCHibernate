@@ -86,6 +86,7 @@
     <script type='text/javascript' src='${contextPath }/resources/js/plugins.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/settings.js'></script>    
     <script type='text/javascript' src='${contextPath }/resources/js/faq.js'></script>
+    <script type='text/javascript' src='${contextPath }/resources/js/activiti-start-form.js'></script>
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
       <script src="${contextPath }/resources/js/html5shiv.js"></script>
@@ -101,6 +102,7 @@
                 	if(!confirm("确定要执行该操作?"))
                 		return false;
                 });
+                $("#lnk_start_inspection").bind("click",showDynamicFormDialog);
             });
     </script>
 </head>
@@ -157,7 +159,10 @@
                             <div class="isw-grid"></div>
                             <h1>记录列表</h1>  
 
-                            <ul class="buttons">                          
+                            <ul class="buttons">   
+                            	<li>
+                                    <a href="${contextPath }/incident/add" class="isw-plus tipb" id="lnk_start_inspection" title="发起巡检"></a>
+                                </li>                       
                                 <li>
                                     <a href="#" class="isw-settings tipl" title="操作 "></a>
                                     <ul class="dd-list">
@@ -203,7 +208,20 @@
             </div>
             <!--workplace end-->
         </div>   
-
+        <!-- 动态表单 -->
+        <div class="modal fade" id="dynamicForm" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>                        
+                        <h4>流程启动</h4>
+                    </div>
+					<div class="dynamic-form-dialog">
+					</div>
+                </div>
+            </div>
+        </div>
+        <!-- 动态表单 end -->
     </div>
 </body>
 

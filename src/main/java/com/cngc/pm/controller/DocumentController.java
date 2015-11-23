@@ -266,8 +266,10 @@ public class DocumentController {
 		
 		model.addAttribute("styles", docService.getListStyle());
 		model.addAttribute("listCheckItems", docService.getAllCheckItems());
-		model.addAttribute("listDocs", docService.getByItem(itemid));
-		
+		//model.addAttribute("listDocs", docService.getByItem(itemid));
+		model.addAttribute("listDocs", result.getResult());
+		model.addAttribute("count", result.getTotalCount());
+		model.addAttribute("offset", offset);
 		model.addAttribute("styleid", itemid);
 		model.addAttribute("document", new Document());
 		model.addAttribute("url", request.getRequestURI()+"/"+itemid);

@@ -2,7 +2,6 @@ package com.cngc.pm.service.impl;
 
 import static com.cngc.utils.Common.isNumeric;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -252,11 +251,10 @@ public class DocumentServiceImpl implements DocumentService {
 	public SearchResult<Document> getAllByItem(Long itemid, Integer offset,
 			Integer maxResults) {
 		// TODO Auto-generated method stub
-		Search search = new Search();
+		Search search = new Search(Document.class);
 		search.setFirstResult(offset == null?0:offset);
 		search.setMaxResults(maxResults==null?10:maxResults);
-		search.addFilterCustom("?1 = {checkItems}", itemid);
-		//search.addFilterEqual("checkItems.id", itemid);
+		search.addFilterSome("checkItems", Filter.equal("id", itemid));
 		search.addSort("id", true);
 		
 		return docDao.searchAndCount(search);

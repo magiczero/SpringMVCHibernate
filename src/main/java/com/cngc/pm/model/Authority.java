@@ -109,6 +109,7 @@ public class Authority implements Serializable {
 		this.message = message;
 	}
 
+	@Column(name="enable",nullable = false, insertable = false, updatable = true)
 	public boolean isEnable() {
 		return enable;
 	}
@@ -117,7 +118,7 @@ public class Authority implements Serializable {
 		this.enable = enable;
 	}
 
-	@Column(name="issys")
+	@Column(name="issys", nullable=false, insertable=false, updatable=true)
 	public boolean isSys() {
 		return sys;
 	}

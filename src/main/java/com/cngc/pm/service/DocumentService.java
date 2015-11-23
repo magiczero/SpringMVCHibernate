@@ -7,6 +7,7 @@ import java.util.Set;
 import com.cngc.pm.model.Attachment;
 import com.cngc.pm.model.Document;
 import com.cngc.pm.model.Style;
+import com.googlecode.genericdao.search.SearchResult;
 
 public interface DocumentService {
 
@@ -45,4 +46,29 @@ public interface DocumentService {
 	List<Document> getAllLastVersion();
 
 	Document getById(long docid);
+
+	List<Style> getAllCheckItems();
+
+	void update(Document document);
+
+	List<Document> getByStyle(long styleid);
+
+	List<Document> getByItem(long itemid);
+
+	int getModuleParentIdByURL(String url);
+	
+	/**
+	 * 分页查询
+	 * @param offset 页码
+	 * @param maxResults 每页数量 
+	 * @return
+	 */
+	List<Document> getListWithPagination(Integer offset, Integer maxResults);
+
+	SearchResult<Document> getAll(Integer offset,
+			Integer maxResults);
+	
+	SearchResult<Document> getAllByStyle(Long styleid, Integer offset, Integer maxResults);
+	
+	SearchResult<Document> getAllByItem(Long itemid, Integer offset, Integer maxResults);
 }

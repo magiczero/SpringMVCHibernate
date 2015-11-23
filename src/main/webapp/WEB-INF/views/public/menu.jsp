@@ -44,12 +44,12 @@
                             </a>                  
                         </li>
                         <li>
-                            <a href="${contextPath }//workflow/task/list">
+                            <a href="${contextPath }/workflow/task/list">
                                 <span class="glyphicon glyphicon-th-large"></span><span class="text">待办任务</span>
                             </a>                  
                         </li>
                         <li>
-                            <a href="${contextPath }//workflow/processinstance/finished">
+                            <a href="${contextPath }/workflow/processinstance/finished">
                                 <span class="glyphicon glyphicon-th-large"></span><span class="text">已结束流程</span>
                             </a>                  
                         </li>
@@ -96,205 +96,23 @@
                         </li>                       
                     </ul>                
                 </li> 
-               <li class="openable">
-                    <a href="#">
-                        <span class="isw-list"></span><span class="text">事件管理</span>
+                <c:forEach items="${menu1 }" var="mod1">
+                <li id="node_${mod1.id }" class="openable">
+                	<a href="${mod1.url }">
+                        <span class="${mod1.styleClass }"></span><span class="text">${mod1.name }</span>
                     </a>
                     <ul>
-                        <li>
-                            <a href="event_new.html">
-                                <span class="glyphicon glyphicon-plus"></span><span class="text">创建事件</span>
+                    <c:forEach items="${menu2 }" var="mod2">
+                    <c:if test="${mod2.parent.id == mod1.id }">
+                    	<li>
+                    	 	<a href="${contextPath }${mod2.url }">
+                                <span class="${mod2.styleClass }"></span><span class="text">${mod2.name }</span>
                             </a>                  
                         </li> 
-                        <li>
-                            <a href="event_control.html">
-                                <span class="glyphicon glyphicon-th-large"></span><span class="text">事件控制台</span>
-                            </a>    
-                            <a href="event_control.html" class="caption yellow link_navPopMessages">9</a>              
-                        </li>    
-                        <li>
-                            <a href="event.html">
-                                <span class="glyphicon glyphicon-th-large"></span><span class="text">事件信息管理</span>
-                            </a>    
-                        </li>                    
-                        <li>
-                            <a href="event_chart.html">
-                                <span class="glyphicon glyphicon-chevron-right"></span><span class="text">报表</span>
-                            </a>                  
-                        </li>                           
-                    </ul>                
-                </li>         
-                <li class="openable">
-                    <a href="#">
-                        <span class="isw-archive"></span><span class="text">变更管理</span>                 
-                    </a>
-                    <ul>
-                        <li>
-                            <a href="change_new.html">
-                                <span class="glyphicon glyphicon-th"></span><span class="text">创建变更请求</span>
-                            </a>                  
-                        </li>    
-                        <li>
-                            <a href="change_control.html">
-                                <span class="glyphicon glyphicon-th-large"></span><span class="text">变更控制台</span>
-                            </a>    
-                            <a href="event.html" class="caption yellow link_navPopMessages">1</a>               
-                        </li>    
-                        <li>
-                            <a href="change.html">
-                                <span class="glyphicon glyphicon-chevron-right"></span><span class="text">变更信息管理</span>
-                            </a>                  
-                        </li>                  
-                        <li>
-                            <a href="change_chart.html">
-                                <span class="glyphicon glyphicon-chevron-right"></span><span class="text">报表</span>
-                            </a>                  
-                        </li>                           
-                    </ul> 
-                </li>                                                           
-                <li class="openable">
-                    <a href="#">
-                        <span class="isw-graph"></span><span class="text">问题管理</span>
-                    </a>
-                    <ul>
-                        <li>
-                            <a href="problem_new.html">
-                                <span class="glyphicon glyphicon-th"></span><span class="text">创建问题</span>
-                            </a>                  
-                        </li>   
-                        <li>
-                            <a href="problem_control.html">
-                                <span class="glyphicon glyphicon-th-large"></span><span class="text">问题管理控制台</span>
-                            </a>                  
-                        </li>  
-                        <li>
-                            <a href="problem.html">
-                                <span class="glyphicon glyphicon-th-large"></span><span class="text">问题信息管理</span>
-                            </a>                  
-                        </li>                    
-                        <li>
-                            <a href="problem_chart.html">
-                                <span class="glyphicon glyphicon-chevron-right"></span><span class="text">报表</span>
-                            </a>                  
-                        </li>                           
-                    </ul> 
-                </li>                                    
-                <li class="openable">
-                    <a href="#">
-                        <span class="isw-text_document"></span><span class="text">资产管理</span>
-                    </a>
-                    <ul>
-                        <li>
-                            <a href="${contextPath }/Asset/init">
-                                <span class="glyphicon glyphicon-th"></span><span class="text">新资产</span>
-                            </a>                  
-                        </li>    
-                        <li>
-                            <a href="${contextPath }/Asset/list">
-                                <span class="glyphicon glyphicon-th-large"></span><span class="text">资产信息管理</span>
-                            </a>                  
-                        </li>                    
-                        <li>
-                            <a href="asset_chart.html">
-                                <span class="glyphicon glyphicon-chevron-right"></span><span class="text">报表</span>
-                            </a>                  
-                        </li>                           
-                    </ul> 
-                </li>   
-                <li class="openable">
-                    <a href="#">
-                        <span class="isw-text_document"></span><span class="text">文档管理</span>
-                    </a>
-                    <ul>
-                        <li>
-                            <a href="${contextPath }/document/add">
-                                <span class="glyphicon glyphicon-th"></span><span class="text">创建文档</span>
-                            </a>                  
-                        </li>    
-                        <li>
-                            <a href="${contextPath }/document/list">
-                                <span class="glyphicon glyphicon-th-large"></span><span class="text">文档管理</span>
-                            </a>                  
-                        </li>                    
-                    </ul> 
-                </li>  
-                <li class="openable">
-                    <a href="#">
-                        <span class="isw-documents"></span><span class="text">配置管理</span>
-                    </a>
-                    <ul>
-                        <li>
-                            <a href="config.html">
-                                <span class="glyphicon glyphicon-info-sign"></span><span class="text">配置信息管理</span>
-                            </a>       
-                        </li>
-                        <li>
-                            <a href="config_chart.html">
-                                <span class="glyphicon glyphicon-user"></span><span class="text">报表</span>
-                            </a>                  
-                        </li>                                                         
-                    </ul>                                
-                </li>          
-                <li class="openable">
-                    <a href="#">
-                        <span class="isw-zoom"></span><span class="text">终端管理</span>                    
-                    </a>
-                    <ul>
-                        <li>
-                            <a href="computer.html">
-                                <span class="glyphicon glyphicon-picture"></span><span class="text">终端信息管理</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="computer_check.html">
-                                <span class="glyphicon glyphicon-pencil"></span><span class="text">终端健康管理</span>
-                            </a>
-                        </li>             
-                        <li>
-                            <a href="computer_chart.html">
-                                <span class="glyphicon glyphicon-share"></span><span class="text">报表</span>
-                            </a>
-                        </li>                                                                    
+                    </c:if>
+                    </c:forEach>
                     </ul>
-                </li> 
-                <li class="openable">
-                    <a href="#">
-                        <span class="isw-cancel"></span><span class="text">合同管理</span>                    
-                    </a>
-                    <ul>                    
-                        <li><a href="contract_new.html"><span class="glyphicon glyphicon-warning-sign"></span><span class="text">新合同</span></a></li>
-                        <li><a href="contract.html"><span class="glyphicon glyphicon-warning-sign"></span><span class="text">合同信息管理</span></a></li>
-                    </ul>
-                </li>  
-                <li class="openable">
-                    <a href="#">
-                        <span class="isw-list"></span><span class="text">知识库管理</span>                    
-                    </a>
-                    <ul>                    
-                        <li><a href="${contextPath}/knowledge/add"><span class="glyphicon glyphicon-plus"></span><span class="text">新知识</span></a></li>
-                        <li><a href="knowledge_control.html"><span class="glyphicon glyphicon-list-alt"></span><span class="text">知识管理控制台</span></a></li>
-                        <li><a href="knowledge.html"><span class="glyphicon glyphicon-list-alt"></span><span class="text">知识库</span></a></li>
-                        <li><a href="knowledge_chart.html"><span class="glyphicon glyphicon-list-alt"></span><span class="text">知识统计</span></a></li>
-                    </ul>
-                </li> 
-                <li class="openable">
-                    <a href="#">
-                        <span class="isw-chat"></span><span class="text">系统管理</span>                    
-                    </a>
-                    <ul>                    
-                        <li><a href="users.html"><span class="glyphicon glyphicon-warning-sign"></span><span class="text">账户管理</span></a></li>
-                        <li><a href="rules.html"><span class="glyphicon glyphicon-warning-sign"></span><span class="text">系统规则</span></a></li>
-                    </ul>
-                </li>   
-                <li class="openable">
-                    <a href="#">
-                        <span class="isw-documents"></span><span class="text">数据字典</span>                    
-                    </a>
-                    <ul>                    
-                        <li><a href="users.html"><span class="glyphicon glyphicon-warning-sign"></span><span class="text">部门</span></a></li>
-                        <li><a href="rules.html"><span class="glyphicon glyphicon-user"></span><span class="text">员工</span></a></li>
-                        <li><a href="${contextPath }/manufacturer/list"><span class="glyphicon glyphicon-share"></span><span class="text">厂商</span></a></li>
-                    </ul>
-                </li>  
+                </li>
+                </c:forEach>
             </ul>
 <script type='text/javascript' src='${contextPath }/resources/js/mymenu.js'></script> 

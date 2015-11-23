@@ -9,15 +9,21 @@ import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.cngc.pm.dao.AttachmentDAO;
 import com.cngc.pm.dao.DocumentDAO;
+import com.cngc.pm.dao.ResourcesDAO;
 import com.cngc.pm.dao.StyleDAO;
 import com.cngc.pm.model.Attachment;
 import com.cngc.pm.model.Document;
+import com.cngc.pm.model.Resources;
 import com.cngc.pm.model.Style;
 import com.cngc.pm.service.DocumentService;
+import com.googlecode.genericdao.search.Filter;
+import com.googlecode.genericdao.search.Search;
+import com.googlecode.genericdao.search.SearchResult;
 
 @Service
 public class DocumentServiceImpl implements DocumentService {
@@ -30,6 +36,9 @@ public class DocumentServiceImpl implements DocumentService {
 	
 	@Autowired
 	private StyleDAO styleDao;
+	
+	@Autowired
+	private ResourcesDAO resDao;
 
 	@Override
 	@Transactional(readOnly=true)
@@ -163,5 +172,93 @@ public class DocumentServiceImpl implements DocumentService {
 		// TODO Auto-generated method stub
 		return docDao.find(docid);
 	}
+
+	@Override
+	@Transactional(readOnly=true)
+	public List<Style> getAllCheckItems() {
+		// TODO Auto-generated method stub
+		return styleDao.getListByType(47);
+	}
+
+	@Override
+	@Transactional(readOnly = false, propagation = Propagation.REQUIRED)
+	public void update(Document document) {
+		// TODO Auto-generated method stub
+		docDao.update(document);
+	}
+
+	@Override
+	@Transactional(readOnly=true)
+	public List<Document> getByStyle(long styleid) {
+		// TODO Auto-generated method stub
+		Filter f = new Filter("style.id", styleid, Filter.OP_EQUAL);
+		
+		return docDao.search(new Search().addFilter(f));
+		//return docDao.getByStyle(styleid);
+	}
+
+	@Override
+	@Transactional(readOnly=true)
+	public List<Document> getByItem(long itemid) {
+		// TODO Auto-generated method stub
+		return docDao.getByItem(itemid);
+	}
+
+	@Override
+	@Transactional(readOnly=true)
+	public int getModuleParentIdByURL(String url) {
+		// TODO Auto-generated method stub
+		Resources r = resDao.getByURL(url);
+		
+		return r.getModule().getParent().getId().intValue();
+	}
+
+	@Override
+	@Transactional(readOnly=true)
+	public List<Document> getListWithPagination(Integer offset,
+			Integer maxResults) {
+		// TODO Auto-generated method stub
+		return docDao.getListWithPage(offset, maxResults);
+	}
+	
+	@Override
+	@Transactional(readOnly=true)
+	public SearchResult<Document> getAll(Integer offset,
+			Integer maxResults) {
+		Search search = new Search();
+		search.setFirstResult(offset == null?0:offset);
+		search.setMaxResults(maxResults==null?10:maxResults);
+		search.addSort("id", true);
+		
+		return docDao.searchAndCount(search);
+	}
+
+	@Override
+	@Transactional(readOnly = true)
+	public SearchResult<Document> getAllByStyle(Long id, Integer offset, Integer maxResults) {
+		// TODO Auto-generated method stub
+		Search search = new Search();
+		search.setFirstResult(offset == null?0:offset);
+		search.setMaxResults(maxResults==null?10:maxResults);
+		search.addFilterEqual("style.id", id);
+		search.addSort("id", true);
+		
+		return docDao.searchAndCount(search);
+	}
+
+	@Override
+	@Transactional(readOnly = true)
+	public SearchResult<Document> getAllByItem(Long itemid, Integer offset,
+			Integer maxResults) {
+		// TODO Auto-generated method stub
+		Search search = new Search(Document.class);
+		search.setFirstResult(offset == null?0:offset);
+		search.setMaxResults(maxResults==null?10:maxResults);
+		search.addFilterSome("checkItems", Filter.equal("id", itemid));
+		search.addSort("id", true);
+		
+		return docDao.searchAndCount(search);
+	}
+
 	
 }

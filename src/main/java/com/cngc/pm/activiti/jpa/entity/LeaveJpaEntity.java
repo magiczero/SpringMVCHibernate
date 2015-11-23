@@ -19,7 +19,11 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 @Entity(name = "LEAVE_JPA")
 public class LeaveJpaEntity implements Serializable {
 
-    private Long id;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 8099328374832152673L;
+	private Long id;
     private String processInstanceId;
     private String userId;
     private Date startTime;

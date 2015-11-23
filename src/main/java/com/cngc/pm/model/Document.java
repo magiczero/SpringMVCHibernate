@@ -5,6 +5,7 @@ import java.sql.Date;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -14,8 +15,11 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -48,8 +52,9 @@ public class Document implements Serializable {
 	private SysUser user;
 	
 	private Style style;
-	//private Set<Style> styles = new HashSet<>();
-	private Set<Attachment> attachs = new HashSet<>();
+	
+	private Set<Style> checkItems = new HashSet<>();								//检查项
+	private Set<Attachment> attachs = new HashSet<>();							//附件
 	
 	@OneToMany(targetEntity=Attachment.class, fetch = FetchType.EAGER)
 	@JoinColumn(name="type_id", referencedColumnName="id")
@@ -142,15 +147,15 @@ public class Document implements Serializable {
 		this.auth = auth;
 	}
 	
-//	@ManyToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE },fetch=FetchType.EAGER)  
-//	@JoinTable(name = "doc_style", joinColumns = { @JoinColumn(name = "doc_id") }, inverseJoinColumns = { @JoinColumn(name = "style_id") })  
-//	@OrderBy("id")  
-//	public Set<Style> getStyles() {
-//		return styles;
-//	}
-//	public void setStyles(Set<Style> styles) {
-//		this.styles = styles;
-//	}
+	@ManyToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE },fetch=FetchType.EAGER)  
+	@JoinTable(name = "doc_style", joinColumns = { @JoinColumn(name = "doc_id") }, inverseJoinColumns = { @JoinColumn(name = "style_id") })  
+	@OrderBy("id")  
+	public Set<Style> getCheckItems() {
+		return checkItems;
+	}
+	public void setCheckItems(Set<Style> checkItems) {
+		this.checkItems = checkItems;
+	}
 	
 	@ManyToOne(targetEntity=SysUser.class)
 	@JoinColumn(name="user_id", referencedColumnName="user_id")

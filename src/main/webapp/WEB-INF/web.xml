@@ -119,7 +119,6 @@
   <filter-mapping>
     <filter-name>AttachmentAuth</filter-name>
     <url-pattern>/attachment/*</url-pattern>
-  </filter-mapping>
  
   </filter-mapping> -->
     <!-- <filter>  

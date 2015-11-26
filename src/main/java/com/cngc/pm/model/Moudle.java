@@ -26,7 +26,7 @@ import org.hibernate.annotations.DynamicUpdate;
 @DynamicUpdate(true)  
 @DynamicInsert(true)
 @Table(name = "sys_modules")  
-@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)  
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region="moudle")  
 public class Moudle implements Serializable {				//module故意写错，怕与关键字冲突
 
 	/**

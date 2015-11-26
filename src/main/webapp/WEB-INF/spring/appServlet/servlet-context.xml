@@ -22,6 +22,7 @@
 			<mapping path="/moudle/*"/>
 			<mapping path="/resource/*"/>
 			<mapping path="/authority/*"/>
+			<mapping path="/user/*"/>
 			<beans:bean class="com.cngc.pm.interceptor.MyInterceptor"></beans:bean>
 		</interceptor>
 	</interceptors>
@@ -87,23 +88,30 @@
 		</beans:property> -->
 		<beans:property name="hibernateProperties">
 			<beans:props>
-				<beans:prop key="hibernate.dialect">org.hibernate.dialect.MySQLDialect
-				</beans:prop>
+				<beans:prop key="hibernate.dialect">org.hibernate.dialect.MySQLDialect</beans:prop>
 				<beans:prop key="hibernate.show_sql">true</beans:prop>
-				<beans:prop key="cache.provider_configuration_file_resource_path">WEB-INF/classes/ehcache.xml</beans:prop>
-				<beans:prop key="hibernate.cache.region.factory_class">org.hibernate.cache.ehcache.EhCacheRegionFactory</beans:prop>
+				<!-- <beans:prop key="cache.provider_configuration_file_resource_path">WEB-INF/classes/ehcache.xml</beans:prop>
+				<beans:prop key="hibernate.cache.region.factory_class">org.hibernate.cache.ehcache.EhCacheRegionFactory</beans:prop> -->
+				<!-- 开启查询缓存 -->
 				<beans:prop key="cache.use_query_cache">true</beans:prop>
+				<!-- 开启二级缓存 -->
+				<beans:prop key="hibernate.cache.use_second_level_cache">true</beans:prop>
+				<!-- 高速缓存提供程序 -->
+				<!-- 由于spring也使用了Ehcache, 保证双方都使用同一个缓存管理器 -->
+				<beans:prop key="hibernate.cache.region.factory_class">
+				     org.hibernate.cache.ehcache.SingletonEhCacheRegionFactory
+				</beans:prop>
 			</beans:props>
 		</beans:property>
 	</beans:bean>
-	<!-- 
-	<beans:bean id="personDAO" class="com.cngc.pm.dao.PersonDAOImpl">
-		<beans:property name="sessionFactory" ref="hibernate4AnnotatedSessionFactory" />
-	</beans:bean>
-	<beans:bean id="personService" class="com.cngc.pm.service.PersonServiceImpl">
-		<beans:property name="personDAO" ref="personDAO"></beans:property>
-	</beans:bean>
-	  -->
+	<!-- cacheManager, 指定ehcache.xml的位置 -->
+    <beans:bean id="cacheManagerEhcache" class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean">
+        <beans:property name="configLocation">
+            <beans:value>classpath:ehcache.xml</beans:value>
+        </beans:property>
+        <!-- 由于hibernate也使用了Ehcache, 保证双方都使用同一个缓存管理器 -->
+        <beans:property name="shared" value="true"/>
+    </beans:bean>
 	
 	<tx:annotation-driven transaction-manager="transactionManager"/>
 	

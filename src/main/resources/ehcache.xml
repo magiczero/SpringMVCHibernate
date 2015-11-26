@@ -3,13 +3,42 @@
          xsi:noNamespaceSchemaLocation="ehcache.xsd">  
     <diskStore path="D:\cache" />
 
-    <defaultCache maxElementsInMemory="10000" eternal="false"
-        timeToIdleSeconds="3600" timeToLiveSeconds="3600"
-        overflowToDisk="true" diskPersistent="false"
+    <defaultCache 
+    	maxElementsInMemory="10000" 
+    	eternal="false"
+        timeToIdleSeconds="120" 
+        timeToLiveSeconds="120"
+        overflowToDisk="true" 
+        maxElementsOnDisk="10000000"
+        diskPersistent="false"
         diskExpiryThreadIntervalSeconds="120"
-        memoryStoreEvictionPolicy="LRU" />
-    <cache name="com.cngc.pm.model.Person"  
+        memoryStoreEvictionPolicy="LRU" 
+    />
+    <!-- <cache name="com.cngc.pm.model.Person"  
         maxElementsInMemory="800" eternal="false" overflowToDisk="false"  
-        timeToIdleSeconds="3600" timeToLiveSeconds="3600"   /> 
-   
+        timeToIdleSeconds="3600" timeToLiveSeconds="3600"   /> -->
+        
+    <cache name="org.hibernate.cache.spi.UpdateTimestampsCache"
+           maxElementsInMemory="5000"
+           eternal="true"
+           overflowToDisk="true" />
+    <cache name="org.hibernate.cache.internal.StandardQueryCache"
+           maxElementsInMemory="10000"
+           eternal="false"
+           timeToLiveSeconds="120"
+           overflowToDisk="true" />  
+     
+    <!--
+    java文件注解查找cache方法名的策略：如果不指定java文件注解中的region="ehcache.xml中的name的属性值", 
+    则使用name名为com.lysoft.bean.user.User的cache(即类的全路径名称), 如果不存在与类名匹配的cache名称, 则用 defaultCache
+    如果User包含set集合, 则需要另行指定其cache
+    例如User包含citySet集合, 则也需要
+    添加配置到ehcache.xml中
+    -->   
+    <cache name="moudle" maxElementsInMemory="2000" eternal="false"
+           timeToIdleSeconds="120" timeToLiveSeconds="120"
+           overflowToDisk="true" />   
+    <cache name="sys_user" maxElementsInMemory="2000" eternal="false"
+           timeToIdleSeconds="120" timeToLiveSeconds="120"
+           overflowToDisk="true" />   
 </ehcache>

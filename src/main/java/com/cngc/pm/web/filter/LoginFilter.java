@@ -16,6 +16,11 @@ import com.cngc.pm.model.Resources;
 import com.cngc.pm.model.Role;
 import com.cngc.pm.model.SysUser;
 
+/**
+ * 登录及权限验证，已过时
+ * @author HP
+ *
+ */
 public class LoginFilter implements Filter {
 	
 	private FilterConfig config;

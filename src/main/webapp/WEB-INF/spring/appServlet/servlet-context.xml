@@ -17,6 +17,7 @@
 	<beans:bean id="exceptionHandler" class="com.cngc.exception.MyExceptionHandler" />
 	<!-- 以后有好的方法，这个应该就用不到了 -->
 	<interceptors>
+		<beans:bean class="com.cngc.pm.interceptor.AuthInterceptor"></beans:bean>
 		<interceptor>
 			<mapping path="/document/*"/>
 			<mapping path="/moudle/*"/>

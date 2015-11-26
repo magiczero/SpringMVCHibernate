@@ -57,4 +57,9 @@ public class LoginController {
 		
 		return "redirect:/initLogin";
 	}
+	
+	@RequestMapping(value = "/403", method = RequestMethod.GET)
+	public String noAuth(HttpSession session) {
+		return "403";
+	}
 }

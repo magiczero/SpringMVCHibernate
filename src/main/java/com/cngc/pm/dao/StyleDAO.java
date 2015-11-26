@@ -16,4 +16,6 @@ public interface StyleDAO extends GenericDAO<Style, Long> {
 	List<Style> getListByType(int type);
 
 	Set<Style> getSet(Long[] ids);
+	
+	Style getByCode(String code);
 }

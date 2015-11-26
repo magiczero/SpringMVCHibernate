@@ -38,6 +38,7 @@ public class Style implements Serializable {
 	private Long id;
 	private String name;
 	private String desc;
+	private String code;
 	
 	private Style style;
 	private Set<Style> child = new HashSet<Style>();
@@ -89,4 +90,14 @@ public class Style implements Serializable {
 	public void setId(Long id) {
 		this.id = id;
 	}
+	
+	@Column(name="code_")
+	public String getCode() {
+		return code;
+	}
+
+	public void setCode(String code) {
+		this.code = code;
+	}
+	
 }

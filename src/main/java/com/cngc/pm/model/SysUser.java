@@ -56,7 +56,7 @@ public class SysUser implements Serializable {
 	
 	private Set<Role> roles = new LinkedHashSet<Role>();						//角色列表
 
-	@ManyToMany(cascade = { CascadeType.REFRESH },fetch=FetchType.EAGER)
+	@ManyToMany(cascade = { CascadeType.REFRESH },fetch=FetchType.LAZY)
 	@JoinTable(name="sys_users_roles", joinColumns={@JoinColumn(name="user_id")}, inverseJoinColumns={@JoinColumn(name="role_id")})
 	@OrderBy("id")
 	@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)

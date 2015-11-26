@@ -10,6 +10,7 @@ import org.springframework.stereotype.Repository;
 
 import com.cngc.pm.dao.StyleDAO;
 import com.cngc.pm.model.Style;
+import com.googlecode.genericdao.search.Search;
 
 @Repository
 public class StyleDAOImpl extends BaseDAOImpl<Style, Long>  implements StyleDAO {
@@ -39,6 +40,15 @@ public class StyleDAOImpl extends BaseDAOImpl<Style, Long>  implements StyleDAO 
 			set.add(this.find(id));
 		}
 		return set;
+	}
+
+	@Override
+	public Style getByCode(String code) {
+		// TODO Auto-generated method stub
+		Search search = new Search(Style.class);
+		search.addFilterEqual("code", code);
+		
+		return (Style)this._searchUnique(search);
 	}
 
 }

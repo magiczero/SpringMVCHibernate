@@ -14,6 +14,10 @@ import javax.persistence.Table;
 @Table(name = "wk_update_record")
 public class Record implements Serializable{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -60102640015327809L;
 	private Long id;
 	private String name;
 	private String version;

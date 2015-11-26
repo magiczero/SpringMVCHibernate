@@ -29,7 +29,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 @DynamicUpdate(true)  
 @DynamicInsert(true)
 @Table(name = "sys_users")  
-@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)  
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region="sys_user")  
 public class SysUser implements Serializable {
 
 	/**
@@ -56,7 +56,7 @@ public class SysUser implements Serializable {
 	
 	private Set<Role> roles = new LinkedHashSet<Role>();						//角色列表
 
-	@ManyToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE },fetch=FetchType.EAGER)
+	@ManyToMany(cascade = { CascadeType.REFRESH },fetch=FetchType.EAGER)
 	@JoinTable(name="sys_users_roles", joinColumns={@JoinColumn(name="user_id")}, inverseJoinColumns={@JoinColumn(name="role_id")})
 	@OrderBy("id")
 	@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)

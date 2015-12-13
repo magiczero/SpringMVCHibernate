@@ -10,7 +10,7 @@ import javax.persistence.Id;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
-@Entity(name = "kg_knowledge")
+@Entity(name = "wk_knowledge")
 public class KnowledgeJpaEntity {
 	
 	private Long id;
@@ -20,11 +20,10 @@ public class KnowledgeJpaEntity {
 	private String keyword;
 	private String applyUser;
 	private Date applyTime;
-	private boolean status;
+	private String category;
+	private String status;
 	private boolean locked;
 	private String processInstanceId;
-	private String currentActivityId;
-	private String currentActivityName;
 
 	@Id
 	@Column(name = "id")
@@ -98,10 +97,10 @@ public class KnowledgeJpaEntity {
 	}
 	
 	@Column(name="status_")
-	public boolean getStatus(){
+	public String getStatus(){
 		return status;
 	}
-	public void setStatus(boolean status){
+	public void setStatus(String status){
 		this.status = status;
 	}
 	
@@ -112,21 +111,13 @@ public class KnowledgeJpaEntity {
 	public void setProcessInstanceId(String processInstanceId){
 		this.processInstanceId = processInstanceId;
 	}
-	
-	@Column(name="current_activity_id")
-	public String getCurrentAcitityId(){
-		return currentActivityId;
+	@Column(name="category")
+	public String getCategory() {
+		return category;
 	}
-	public void setCurrentAcitityId(String currentActivityId){
-		this.currentActivityId = currentActivityId;
-	}
-	
-	@Column(name="current_activity_name")
-	public String getCurrentAcitivityName(){
-		return currentActivityName;
-	}
-	public void setCurrentAcitivityName(String currentActivityName){
-		this.currentActivityName = currentActivityName;
+
+	public void setCategory(String category) {
+		this.category = category;
 	}
 	
     @Override

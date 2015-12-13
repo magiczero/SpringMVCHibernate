@@ -1,8 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>    <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
 <c:set var="contextPath" value="${pageContext.request.contextPath}"></c:set>
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>        
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
@@ -10,7 +10,7 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <![endif]-->
     
-    <title>知识库--运维管理系统</title>
+    <title>知识库管理--运维管理系统</title>
 
     <link rel="icon" type="image/ico" href="favicon.ico"/>
     
@@ -62,17 +62,6 @@
     
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/fancybox/jquery.fancybox.pack.js'></script>
     
-    <!-- 
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/plupload/plupload.js'></script>
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/plupload/plupload.gears.js'></script>
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/plupload/plupload.silverlight.js'></script>
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/plupload/plupload.flash.js'></script>
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/plupload/plupload.browserplus.js'></script>
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/plupload/plupload.html4.js'></script>
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/plupload/plupload.html5.js'></script>
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/plupload/jquery.plupload.queue/jquery.plupload.queue.js'></script>
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/plupload/i18n/cn.js'></script>
-     -->
     <script type='text/javascript' src='${contextPath }/resources/plupload/js/plupload.full.min.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/plupload/js/jquery.plupload.queue/jquery.plupload.queue.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/plupload/js/i18n/zh_CN.js'></script>   
@@ -87,6 +76,12 @@
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/scrollup/jquery.scrollUp.min.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/tagsinput/jquery.tagsinput.min.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/multiselect/jquery.multi-select.js'></script>
+    <script type='text/javascript' src='${contextPath }/resources/js/plugins/treeview/bootstrap-treeview.min.js'></script>
+    <!-- umeditor -->
+    <link type="text/css"  href="${contextPath }/resources/js/plugins/umeditor/themes/default/css/umeditor.css" rel="stylesheet">
+    <script type='text/javascript' src='${contextPath }/resources/js/plugins/umeditor/umeditor.config.js'></script>
+    <script type='text/javascript' src='${contextPath }/resources/js/plugins/umeditor/umeditor.min.js'></script>
+    <script type='text/javascript' src='${contextPath }/resources/js/plugins/umeditor/lang/zh-cn/zh-cn.js'></script>
     
     <script type='text/javascript' src='${contextPath }/resources/js/cookies.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/actions.js'></script>
@@ -94,17 +89,24 @@
     <script type='text/javascript' src='${contextPath }/resources/js/plugins.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/settings.js'></script>    
     <script type='text/javascript' src='${contextPath }/resources/js/faq.js'></script>
+    <script type='text/javascript' src='${contextPath }/resources/js/pm-common.js'></script>
+    <script type='text/javascript' src='${contextPath }/resources/js/pm-message.js'></script>
+    <script type='text/javascript' src='${contextPath }/resources/js/pm-select.js'></script>
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
       <script src="${contextPath }/resources/js/html5shiv.js"></script>
       <script src="${contextPath }/resources/js/respond.min.js"></script>
     <![endif]-->
     <script type="text/javascript">
+    	var ctx = "${contextPath}";
             $(document).ready(function () {
             	$(".header").load("${contextPath }/header");
                 $(".menu").load("${contextPath }/menu", function () { $(".navigation > li:eq(6)").addClass("active"); });
                 $(".breadLine .buttons").load("${contextPath }/contentbuttons");
-                //$("#myeditor").cleditor({width:"100%", height:"300px"});
+                 $("input[name='category']").bind("click",function(){
+               		act_dialog_select('INCIDENT_CATEGORY','category');
+            	});
+                var um = UM.getEditor('solution');
             });
     </script>
 </head>
@@ -125,7 +127,7 @@
 
                 <ul class="breadcrumb">
                     <li><a href="#">运维管理系统</a> <span class="divider">></span></li>
-                    <li><a href="#">知识库管理</a> <span class="divider">></span></li>         
+                    <li><a href="${contextPath }/knowledge/list">知识库管理</a> <span class="divider">></span></li>         
                     <li class="active">知识维护</li>
                 </ul>
 
@@ -152,17 +154,20 @@
                                 <div class="col-md-10"><form:input path="title"></form:input></div>
                             </div>
                             <div class="row-form clearfix">
+                                <div class="col-md-2"><form:label path="keyword">关键字:</form:label></div>
+                                <div class="col-md-4"><form:input path="keyword" type="text" class="tags"></form:input></div>
+                                <div class="col-md-2"><form:label path="category">分类：</form:label></div>
+                                <div class="col-md-4"><form:input path="category"></form:input></div>
+                            </div>  
+                            <div class="row-form clearfix">
                                 <div class="col-md-2"><form:label path="desc">故障描述:</form:label></div>
                                 <div class="col-md-10"><form:textarea path="desc"></form:textarea></div>
                             </div> 
                             <div class="row-form clearfix">
                                 <div class="col-md-2"><form:label path="solution">解决办法</form:label></div>
-                                <div class="col-md-10" id="wysiwyg_container"><form:textarea path="solution" id="solution" ></form:textarea></div>   
+                                <div class="col-md-10"><form:textarea path="solution" id="solution"  cssStyle="width:100%;height:240px;"></form:textarea></div>   
                             </div>  
-                            <div class="row-form clearfix">
-                                <div class="col-md-2"><form:label path="keyword">关键字:</form:label></div>
-                                <div class="col-md-10"><form:input path="keyword" type="text" class="tags"></form:input></div>
-                            </div>                                      
+                                    
 
                             <div class="footer tar">                        	
                                 <button class="btn btn-primary center-block"> 保 存 </button>
@@ -176,6 +181,8 @@
             </div>
             <!--workplace end-->
         </div>   
+        <!-- 分类 -->
+    	<div class="dialog" id="b_popup_select" style="display: none;" title="分类"></div>
     </div>
     
 </body>

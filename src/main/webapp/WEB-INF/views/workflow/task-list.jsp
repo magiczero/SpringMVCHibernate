@@ -12,7 +12,7 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <![endif]-->
     
-    <title>流程管理--运维管理系统</title>
+    <title>任务管理--运维管理系统</title>
 
     <link rel="icon" type="image/ico" href="favicon.ico"/>
     
@@ -86,7 +86,7 @@
     <script type='text/javascript' src='${contextPath }/resources/js/plugins.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/settings.js'></script>    
     <script type='text/javascript' src='${contextPath }/resources/js/faq.js'></script>
-    <script type='text/javascript' src='${contextPath }/resources/js/activiti-dynamic-form-handler.js'></script>
+    <script type='text/javascript' src='${contextPath }/resources/js/pm-common.js'></script>
     <script type="text/javascript">
     	var processType = '${empty processType ? param.processType:processType}';
     	var ctx = "${contextPath}"; 
@@ -99,14 +99,15 @@
     <script type="text/javascript">
     var ctx = "${contextPath}";
             $(document).ready(function () {
-                $("#eventTable").dataTable();
+                $("#eventTable").dataTable({"aaSorting":[[6,'desc']]});
                 $(".header").load("../../header");
-                $(".menu").load("../../menu", function () { $(".navigation > li:eq(0)").addClass("active"); });
+                $(".menu").load("../../menu", function () { $(".navigation > li:eq(7)").addClass("active"); });
                 $(".breadLine .buttons").load("../../contentbuttons");
                 $(".confirm").bind("click",function(){
                 	if(!confirm("确定要执行该操作?"))
                 		return false;
                 });
+                $(".handle").bind("click",task_setting);
                 // 流程跟踪
                 $("#b_popup_trace").dialog({
                     autoOpen: false,
@@ -121,6 +122,12 @@
                 	$("#b_popup_trace").dialog('open');
                 });
             });
+            function task_setting(){
+            	var taskId = $(this).parents('tr').find('.taskid').text();
+            	$("#taskId").attr('value',taskId);
+                $("#newFormDialog").modal('show');
+                return false;
+            }
     </script>
 </head>
 <body>
@@ -141,7 +148,7 @@
                 <ul class="breadcrumb">
                     <li><a href="#">运维管理系统</a> <span class="divider">></span></li>
                     <li><a href="${contextPath }/Asset/list">流程管理</a> <span class="divider">></span></li>       
-                    <li class="active">待办任务</li>
+                    <li class="active">任务管理</li>
                 </ul>
 
                 <ul class="buttons"></ul>
@@ -162,7 +169,7 @@
                     <div class="col-md-12">                    
                         <div class="head clearfix">
                             <div class="isw-grid"></div>
-                            <h1>待办任务</h1>  
+                            <h1>运行中的任务</h1>  
 
                             <ul class="buttons">                          
                                 <li>
@@ -179,31 +186,38 @@
                             <table class="table" id="eventTable">
                                 <thead>
 									<tr>
-										<th width="100px">任务ID</th>
+										<th width="100px" >任务ID</th>
 										<th>流程名称</th>
 										<th width="150px">任务名称</th>
-										<th width="70px">优先级</th>
-										<th width="150px">任务创建日期</th>
+										<th width="100px">受理人</th>
+										<th width="100px">候选人</th>
+										<th width="100px">候选组</th>
+										<th width="140px">任务创建日期</th>
 										<th width="100px">操作</th>
 									</tr>
                                 </thead>
                                 <tbody>
 								<c:forEach items="${tasks }" var="task">
 								<c:set var="pdid" value="${task.processDefinitionId }" />
+								<c:set var="taskid" value="${task.id }" />
 								<tr>
-									<td>${task.id }</td>
+									<td class="taskid">${task.id }</td>
 									<td><%=ProcessDefinitionCache.getProcessName(pageContext.getAttribute("pdid").toString()) %></td>
 									<td><a class="lnk_trace" href='#' pid="${task.processInstanceId }" pdid="${task.processDefinitionId}" title="点击查看流程图">${task.name }</a></td>
-									<td>${task.priority }</td>
+									<td>${task.assignee }</td>
+									<td>
+										<c:forEach items="${candidate[taskid]}" var="i">
+										${i.userId }
+										</c:forEach>
+									</td>
+									<td>
+									<c:forEach items="${candidate[taskid]}" var="i">
+										${i.groupId }
+										</c:forEach>
+									</td>
 									<td><fmt:formatDate value="${task.createTime }" pattern="yyyy/MM/dd HH:mm:ss" /></td>
 									<td>
-										<c:if test="${empty task.assignee }">
-											<a class="claim confirm" href="${contextPath }/workflow/task/claim/${task.id}">签收</a>
-										</c:if>
-										<c:if test="${not empty task.assignee }">
-											<%-- 此处用tkey记录当前节点的名称 --%>
-											<a class="handle" tkey='${task.taskDefinitionKey }' tname='${task.name }' tid='${task.id }' href="#">办理</a>
-										</c:if>
+										<a class="handle" tkey='${task.taskDefinitionKey }' tname='${task.name }' tid='${task.id }' href="#">设置用户</a>
 									</td>
 								</tr>
 								</c:forEach> 
@@ -217,26 +231,51 @@
             </div>
             <!--workplace end-->
         </div>   
-        <!-- 动态表单 -->
-        <div class="modal fade" id="dynamicForm" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		<!-- 新建用户 modal form -->
+        <div class="modal fade" id="newFormDialog" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>                        
-                        <h4>动态表单</h4>
+                        <h4 id="dialogTitle">任务用户</h4>
                     </div>
-					<div class="dynamic-form-dialog">
-					</div>
+                    <form id="userForm" action="${contextPath}/workflow/task/setuser" method="post">
+                    <div class="modal-body modal-body-np">
+                        <div class="row">
+                            <div class="block-fluid">
+                                <div class="row-form clearfix">
+                                    <div class="col-md-3">任务办理人:</div>
+                                    <div class="col-md-9"><input id="assignee" name="assignee" type="text" /></div>
+                                </div>                                                           
+                            </div>                
+                        </div>
+                        <div class="row">
+                            <div class="block-fluid">
+                                <div class="row-form clearfix">
+                                    <div class="col-md-3">候选人:</div>
+                                    <div class="col-md-9"><input id="candidateUser" name="candidateUser" type="text" /></div>
+                                </div>                                                           
+                            </div>                
+                        </div>
+                        <div class="row">
+                            <div class="block-fluid">
+                                <div class="row-form clearfix">
+                                    <div class="col-md-3">候选组:</div>
+                                    <div class="col-md-9"><input id="candidateGroup" name="candidateGroup" type="text"></input></div>
+                                </div>                                                           
+                            </div>                
+                        </div>
+                    </div>   
+                    <div class="modal-footer">
+                        <button class="btn btn-primary" aria-hidden="true">保存</button> 
+                        <button class="btn btn-default" data-dismiss="modal" aria-hidden="true">关闭</button>            
+                    </div>
+                    <input type="hidden" id="taskId"  name="taskId" value="0" /> 
+                    </form>
                 </div>
             </div>
         </div>
-    	<!-- 动态表单 end -->
-    	<!-- 流程跟踪 -->
-    	<div class="dialog" id="b_popup_trace" style="display: none;" title="流程跟踪">
-	    	<div class="block dialog_block  uploads" id="trace_content">
-			                                
-			</div>
-    	</div>
+    	<!-- 新建用户 end from -->
     </div>
 </body>
 

@@ -5,55 +5,79 @@
       <activiti:executionListener event="start" expression="${execution.setVariable('inspection', inspectionEntityManager.newInspection(execution))}"></activiti:executionListener>
       <activiti:executionListener event="end" expression="${inspectionEntityManager.setInspectionStatus(execution)}"></activiti:executionListener>
     </extensionElements>
-    <startEvent id="startevent1" name="Start">
+    <startEvent id="startInspection" name="Start">
       <extensionElements>
         <activiti:formProperty id="user" name="分配工程师" type="string"></activiti:formProperty>
       </extensionElements>
     </startEvent>
-    <userTask id="usertask1" name="执行巡检任务" activiti:assignee="${inspection.executionUser}">
+    <userTask id="taskDoInspection" name="巡检任务执行中" activiti:assignee="${inspection.executionUser}">
       <extensionElements>
         <activiti:formProperty id="template" name="巡检模板" type="enum" expression="${inspection.template}">
           <activiti:value id="INSPECTION" name="日常巡检模板"></activiti:value>
         </activiti:formProperty>
-      </extensionElements>
-    </userTask>
-    <sequenceFlow id="flow1" sourceRef="startevent1" targetRef="usertask1"></sequenceFlow>
-    <userTask id="usertask2" name="服务台确认" activiti:candidateGroups="SERVICE_DESK">
-      <extensionElements>
-        <activiti:formProperty id="template" name="巡检模板" type="enum" expression="${inspection.template}" writable="false">
-          <activiti:value id="INSPECTION" name="日常巡检模板"></activiti:value>
+        <activiti:formProperty id="status" name="是否正常" type="enum">
+          <activiti:value id="01" name="正常"></activiti:value>
+          <activiti:value id="02" name="异常"></activiti:value>
         </activiti:formProperty>
       </extensionElements>
     </userTask>
-    <sequenceFlow id="flow2" sourceRef="usertask1" targetRef="usertask2"></sequenceFlow>
-    <endEvent id="endevent1" name="End"></endEvent>
-    <sequenceFlow id="flow3" sourceRef="usertask2" targetRef="endevent1"></sequenceFlow>
+    <sequenceFlow id="flow1" sourceRef="startInspection" targetRef="taskDoInspection"></sequenceFlow>
+    <exclusiveGateway id="exclusivegateway1" name="Exclusive Gateway"></exclusiveGateway>
+    <sequenceFlow id="flow3" sourceRef="taskDoInspection" targetRef="exclusivegateway1"></sequenceFlow>
+    <endEvent id="endInspection" name="End"></endEvent>
+    <sequenceFlow id="flow4" sourceRef="exclusivegateway1" targetRef="endInspection">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${status=='01'}]]></conditionExpression>
+    </sequenceFlow>
+    <userTask id="taskCreatIncident" name="生成工单中">
+      <extensionElements>
+        <activiti:formProperty id="abstract" name="故障描述" type="bigtext" default="巡检发现异常"></activiti:formProperty>
+        <activiti:formProperty id="influence" name="影响度" type="string" default="01"></activiti:formProperty>
+        <activiti:formProperty id="critical" name="紧急度" type="string" default="01"></activiti:formProperty>
+        <activiti:formProperty id="priority" name="优先级" type="string" default="01"></activiti:formProperty>
+      </extensionElements>
+    </userTask>
+    <sequenceFlow id="flow5" sourceRef="exclusivegateway1" targetRef="taskCreatIncident">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${status=='02'}]]></conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="flow6" sourceRef="taskCreatIncident" targetRef="endInspection"></sequenceFlow>
   </process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_INSPECTION">
     <bpmndi:BPMNPlane bpmnElement="INSPECTION" id="BPMNPlane_INSPECTION">
-      <bpmndi:BPMNShape bpmnElement="startevent1" id="BPMNShape_startevent1">
-        <omgdc:Bounds height="35.0" width="35.0" x="170.0" y="130.0"></omgdc:Bounds>
+      <bpmndi:BPMNShape bpmnElement="startInspection" id="BPMNShape_startInspection">
+        <omgdc:Bounds height="35.0" width="35.0" x="30.0" y="20.0"></omgdc:Bounds>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape bpmnElement="usertask1" id="BPMNShape_usertask1">
-        <omgdc:Bounds height="55.0" width="105.0" x="250.0" y="120.0"></omgdc:Bounds>
+      <bpmndi:BPMNShape bpmnElement="taskDoInspection" id="BPMNShape_taskDoInspection">
+        <omgdc:Bounds height="55.0" width="105.0" x="120.0" y="10.0"></omgdc:Bounds>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape bpmnElement="usertask2" id="BPMNShape_usertask2">
-        <omgdc:Bounds height="55.0" width="105.0" x="400.0" y="120.0"></omgdc:Bounds>
+      <bpmndi:BPMNShape bpmnElement="exclusivegateway1" id="BPMNShape_exclusivegateway1">
+        <omgdc:Bounds height="40.0" width="40.0" x="270.0" y="18.0"></omgdc:Bounds>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape bpmnElement="endevent1" id="BPMNShape_endevent1">
-        <omgdc:Bounds height="35.0" width="35.0" x="550.0" y="130.0"></omgdc:Bounds>
+      <bpmndi:BPMNShape bpmnElement="endInspection" id="BPMNShape_endInspection">
+        <omgdc:Bounds height="35.0" width="35.0" x="385.0" y="20.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="taskCreatIncident" id="BPMNShape_taskCreatIncident">
+        <omgdc:Bounds height="55.0" width="105.0" x="350.0" y="112.0"></omgdc:Bounds>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge bpmnElement="flow1" id="BPMNEdge_flow1">
-        <omgdi:waypoint x="205.0" y="147.0"></omgdi:waypoint>
-        <omgdi:waypoint x="250.0" y="147.0"></omgdi:waypoint>
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge bpmnElement="flow2" id="BPMNEdge_flow2">
-        <omgdi:waypoint x="355.0" y="147.0"></omgdi:waypoint>
-        <omgdi:waypoint x="400.0" y="147.0"></omgdi:waypoint>
+        <omgdi:waypoint x="65.0" y="37.0"></omgdi:waypoint>
+        <omgdi:waypoint x="120.0" y="37.0"></omgdi:waypoint>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="flow3" id="BPMNEdge_flow3">
-        <omgdi:waypoint x="505.0" y="147.0"></omgdi:waypoint>
-        <omgdi:waypoint x="550.0" y="147.0"></omgdi:waypoint>
+        <omgdi:waypoint x="225.0" y="37.0"></omgdi:waypoint>
+        <omgdi:waypoint x="270.0" y="38.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow4" id="BPMNEdge_flow4">
+        <omgdi:waypoint x="310.0" y="38.0"></omgdi:waypoint>
+        <omgdi:waypoint x="385.0" y="37.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow5" id="BPMNEdge_flow5">
+        <omgdi:waypoint x="290.0" y="58.0"></omgdi:waypoint>
+        <omgdi:waypoint x="290.0" y="139.0"></omgdi:waypoint>
+        <omgdi:waypoint x="350.0" y="139.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow6" id="BPMNEdge_flow6">
+        <omgdi:waypoint x="402.0" y="112.0"></omgdi:waypoint>
+        <omgdi:waypoint x="402.0" y="55.0"></omgdi:waypoint>
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>

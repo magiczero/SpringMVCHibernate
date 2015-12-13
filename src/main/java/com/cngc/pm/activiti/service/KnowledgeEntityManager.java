@@ -9,6 +9,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 import com.cngc.pm.activiti.jpa.entity.KnowledgeJpaEntity;
+import com.cngc.utils.PropertyFileUtil;
 
 @Service
 public class KnowledgeEntityManager {
@@ -20,7 +21,7 @@ public class KnowledgeEntityManager {
 		KnowledgeJpaEntity knowledge = entityManager.find(KnowledgeJpaEntity.class, Long.valueOf(execution.getVariable("id").toString()) );
 		knowledge.setProcessInstanceId(execution.getProcessInstanceId());
 		knowledge.setLocked(true);
-		knowledge.setStatus(false);
+		knowledge.setStatus( PropertyFileUtil.getStringValue("syscode.knowledge.status.checking") );
 		entityManager.persist(knowledge);
 		return knowledge;
 	}
@@ -31,23 +32,19 @@ public class KnowledgeEntityManager {
 		String type = execution.getVariable("type").toString();
 		if(StringUtils.equals(type, "PUBLISH"))
 		{
-			knowledge.setStatus(true);
-			knowledge.setLocked(true);
+			knowledge.setStatus( PropertyFileUtil.getStringValue("syscode.knowledge.status.published") );
 			entityManager.persist(knowledge);
 		}
 		if(StringUtils.equals(type, "MODIFY"))
 		{
-			knowledge.setStatus(false);
 			knowledge.setLocked(false);
 			entityManager.persist(knowledge);
 		}
 		if(StringUtils.equals(type, "DELETE"))
 		{
-			//knowledge.setStatus(false);
-			//knowledge.setLocked(false);
-			entityManager.remove(knowledge);
+			knowledge.setStatus( PropertyFileUtil.getStringValue("syscode.knowledge.status.deleted") );
+			entityManager.persist(knowledge);
 		}
-		
 		return true;
 	} 
 

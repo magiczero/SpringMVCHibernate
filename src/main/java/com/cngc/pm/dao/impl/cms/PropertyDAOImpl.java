@@ -3,6 +3,7 @@ package com.cngc.pm.dao.impl.cms;
 import static com.cngc.utils.Common.isNumeric;
 
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
@@ -12,6 +13,8 @@ import org.springframework.stereotype.Repository;
 import com.cngc.pm.dao.cms.PropertyDAO;
 import com.cngc.pm.dao.impl.BaseDAOImpl;
 import com.cngc.pm.model.cms.Property;
+import com.googlecode.genericdao.search.Search;
+import com.googlecode.genericdao.search.SearchResult;
 
 @Repository
 public class PropertyDAOImpl extends BaseDAOImpl<Property, Long> implements PropertyDAO {
@@ -62,5 +65,27 @@ public class PropertyDAOImpl extends BaseDAOImpl<Property, Long> implements Prop
 			properties = this.findAll();
 
 		return properties;
+	}
+	@Override
+	public List<Property> getFields()
+	{
+		Search search = new Search();
+		search.addFilterLike("propertyId", "CMS_FIELD_%");
+		
+		return this.search(search);
+	}
+	@Override
+	public SearchResult<Property> getByPropertyIds(String propertyIds)
+	{
+		Search search = new Search();
+		String properties[] = propertyIds.split(",");
+		List<String> list = new LinkedList<String>();
+		for(String s:properties)
+		{
+			list.add(s);
+		}
+		search.addFilterIn("propertyId", list);
+		
+		return this.searchAndCount(search);
 	}
 }

@@ -1,16 +1,19 @@
 package com.cngc.pm.controller.cms;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.Map.Entry;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
-import org.apache.cxf.common.util.StringUtils;
 import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -25,10 +28,13 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.cngc.pm.common.web.common.UserUtil;
 import com.cngc.pm.model.cms.Category;
 import com.cngc.pm.model.cms.Ci;
+import com.cngc.pm.service.ItilRelationService;
+import com.cngc.pm.service.SysCodeService;
 import com.cngc.pm.service.cms.CategoryRelationService;
 import com.cngc.pm.service.cms.CategoryService;
 import com.cngc.pm.service.cms.CiService;
-import com.ctc.wstx.util.StringUtil;
+import com.cngc.pm.service.cms.PropertyService;
+import com.cngc.utils.PropertyFileUtil;
 
 @Controller
 @RequestMapping(value="/cms/ci")
@@ -40,11 +46,17 @@ public class CiController {
 	private CategoryService categoryService;
 	@Resource
 	private CategoryRelationService categoryRelationService;
+	@Resource
+	private SysCodeService syscodeService;
+	@Resource
+	private ItilRelationService itilrelationService;
+	@Resource
+	private PropertyService propertyService;
 	
-
 	@RequestMapping(value="/add")
 	public String add(Model model){
 		model.addAttribute("ci",new Ci());
+		model.addAttribute("status", syscodeService.getAllByType(PropertyFileUtil.getStringValue("syscode.cms.ci.status")).getResult());
 		return "cms/ci-add";
 	}
 	
@@ -67,11 +79,53 @@ public class CiController {
 		model.addAttribute("properties", map);
 		return "cms/ci-addproperty";
 	}
+	@RequestMapping(value="/getproperty/{id}")
+	@ResponseBody
+	public Map<String,Object> getProperty(@PathVariable("id") long id,Model model){
+		Map<String,Object> result = new HashMap<String,Object>();
+		Ci ci = ciService.getById(id);
+		String code = ci.getCategoryCode();
+		String tmpcode = code.substring(0,2);
+		Map<String,Object> map = new LinkedHashMap<String,Object>();
+		while(tmpcode.length()<=code.length())
+		{
+			//根据code分级判断
+			Category category = categoryService.getByCode(tmpcode);
+			map.put(category.getCategoryName(), category.getProperties());
+			if(tmpcode.length()+2>code.length())
+				break;
+			tmpcode = code.substring(0,tmpcode.length()+2);
+		}
+		result.put("properties", map);
+		result.put("fields", propertyService.getFields());
+
+		return result;
+	}
+	@RequestMapping(value="/getpropertybycode/{code}")
+	@ResponseBody
+	public Map<String,Object> getProperty(@PathVariable("code") String code,Model model){
+		Map<String,Object> result = new HashMap<String,Object>();
+		String tmpcode = code.substring(0,2);
+		Map<String,Object> map = new LinkedHashMap<String,Object>();
+		while(tmpcode.length()<=code.length())
+		{
+			//根据code分级判断
+			Category category = categoryService.getByCode(tmpcode);
+			map.put(category.getCategoryName(), category.getProperties());
+			if(tmpcode.length()+2>code.length())
+				break;
+			tmpcode = code.substring(0,tmpcode.length()+2);
+		}
+		result.put("properties", map);
+
+		return result;
+	}
 
 	@RequestMapping(value="/save",method = RequestMethod.POST)
 	public String save(@Valid @ModelAttribute("ci") Ci ci, HttpServletRequest request){
 		
-		ci.setStatus("01");
+		ci.setReviewStatus("02");
+		ci.setDeleteStatus("01");
 		ci.setCreatedTime(new Date());
 		ci.setLastUpdateTime(new Date());
 		ci.setLastUpdateUser(UserUtil.getUserId(request.getSession()));
@@ -79,13 +133,20 @@ public class CiController {
 		
 		return "redirect:list";
 	}
+	@SuppressWarnings("unchecked")
 	@RequestMapping(value="/saveproperty/{id}",method=RequestMethod.POST)
 	public String saveProperty(@PathVariable("id") long id,HttpServletRequest request){	
 		ObjectMapper mapper = new ObjectMapper();
 		Ci ci = ciService.getById(id);
 		try
 		{
-			ci.setPropertiesData(mapper.writeValueAsString(request.getParameterMap()));
+			Set<Entry<String, String[]>> entrySet = request.getParameterMap().entrySet();
+			Map<String,String> parameters = new HashMap<String,String>();
+			for (Entry<String, String[]> entry : entrySet)
+			{
+				parameters.put(entry.getKey(), entry.getValue()[0]);
+			}
+			ci.setPropertiesData(mapper.writeValueAsString(parameters));
 			
 		}catch(JsonGenerationException e){
 			
@@ -144,6 +205,7 @@ public class CiController {
 		}
 		model.addAttribute("properties", map);
 		model.addAttribute("relations", categoryRelationService.getByPrimaryCode(ci.getCategoryCode()));
+		//itilrelationService.
 		
 		return "cms/ci-detail";
 	}
@@ -168,6 +230,23 @@ public class CiController {
 		
 		return "redirect:/cms/ci/detail/" + primaryId;
 	}
+	@RequestMapping(value="/saverelations")
+	@ResponseBody
+	public Map<String,Object> saveRelations(HttpServletRequest request,Model model)
+	{
+		Map<String,Object> map = new HashMap<String,Object>();
+		Long primaryId = Long.valueOf(request.getParameter("primary_id").toString());
+		String secondaryId = request.getParameter("secondary_ids").toString();
+		String relationId = request.getParameter("relation_id").toString();
+		
+		String ids[] = secondaryId.split(",");
+		for(String id:ids)
+			ciService.saveRelation(primaryId, Long.valueOf(id), relationId);
+		
+		map.put("result","true");
+		
+		return map;
+	}
 	@RequestMapping(value="/deleterelation")
 	public String deleteRelation(HttpServletRequest request,Model model)
 	{
@@ -178,5 +257,21 @@ public class CiController {
 		ciService.deleteRelation(primaryId, secondaryId, relationId);
 		
 		return "redirect:/cms/ci/detail/" + primaryId;
+	}
+	@RequestMapping(value="/getjson/{ids}")
+	@ResponseBody
+	public Map<String,Object> getCi(@PathVariable("ids") String ids,HttpServletRequest request,Model model)
+	{
+		Map<String,Object> map = new HashMap<String,Object>();
+		List<Long> list = new ArrayList<Long>();
+		
+		String sids[] = ids.split(",");
+		for(String s:sids)
+			list.add(Long.valueOf(s));
+		
+		List<Ci> cilist = ciService.getByIds(list).getResult();
+		map.put("cis", cilist);
+		
+		return map;
 	}
 }

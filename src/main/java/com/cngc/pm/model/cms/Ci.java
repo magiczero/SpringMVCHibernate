@@ -8,7 +8,9 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
+import org.hibernate.annotations.Formula;
 import org.springframework.format.annotation.DateTimeFormat;
 
 /**
@@ -49,6 +51,15 @@ public class Ci {
 	private Date lastUpdateTime;
 	private String remark;
 	private String propertiesData;
+	
+	@Transient
+	private String statusName;
+	@Transient
+	private String reviewStatusName;
+	@Transient
+	private String deleteStatusName;
+	@Transient
+	private String categoryName;
 
 	@Id
 	@Column(name = "id")
@@ -310,5 +321,36 @@ public class Ci {
 	public void setPropertiesData(String propertiesData) {
 		this.propertiesData = propertiesData;
 	}
+	@Formula(value="(SELECT a.code_name FROM sys_code a WHERE a.type_='CI_STATUS' AND a.code_= status_)")
+	public String getStatusName() {
+		return statusName;
+	}
+	public void setStatusName(String statusName) {
+		this.statusName = statusName;
+	}
+	@Formula(value="(SELECT a.code_name FROM sys_code a WHERE a.type_='CI_REVIEW_STATUS' AND a.code_= review_status)")
+	public String getReviewStatusName() {
+		return reviewStatusName;
+	}
 
+	public void setReviewStatusName(String reviewStatusName) {
+		this.reviewStatusName = reviewStatusName;
+	}
+	@Formula(value="(SELECT a.code_name FROM sys_code a WHERE a.type_='CI_DELETE_STATUS' AND a.code_= delete_status)")
+	public String getDeleteStatusName() {
+		return deleteStatusName;
+	}
+
+	public void setDeleteStatusName(String deleteStatusName) {
+		this.deleteStatusName = deleteStatusName;
+	}
+	@Formula(value="(SELECT a.category_name FROM cms_category a WHERE a.category_code = category_code)")
+	public String getCategoryName() {
+		return categoryName;
+	}
+
+	public void setCategoryName(String categoryName) {
+		this.categoryName = categoryName;
+	}
+	
 }

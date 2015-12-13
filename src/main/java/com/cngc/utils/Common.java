@@ -7,6 +7,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -24,8 +26,7 @@ public class Common {
 	 * @return
 	 */
 	public static boolean isEmpty(String s) {
-		if (null == s || "".equals(s) || "".equals(s.trim())
-				|| "null".equalsIgnoreCase(s)) {
+		if (null == s || "".equals(s) || "".equals(s.trim()) || "null".equalsIgnoreCase(s)) {
 			return true;
 		} else {
 			return false;
@@ -34,6 +35,7 @@ public class Common {
 
 	/**
 	 * 判断是否为数字
+	 * 
 	 * @param str
 	 * @return
 	 */
@@ -45,17 +47,19 @@ public class Common {
 		}
 		return true;
 	}
-	
-	/** 
-     * 获得一个UUID 
-     * @return String UUID 
-     */ 
-    public static String getUUID(){ 
-        return UUID.randomUUID().toString(); 
-    }
+
+	/**
+	 * 获得一个UUID
+	 * 
+	 * @return String UUID
+	 */
+	public static String getUUID() {
+		return UUID.randomUUID().toString();
+	}
 
 	/**
 	 * 上传文件
+	 * 
 	 * @param in
 	 * @param destFile
 	 * @param log
@@ -65,11 +69,9 @@ public class Common {
 		try {
 			// plupload 配置了chunk的时候新上传的文件append到文件末尾
 			if (destFile.exists()) {
-				out = new BufferedOutputStream(new FileOutputStream(destFile,
-						true), BUFFER_SIZE);
+				out = new BufferedOutputStream(new FileOutputStream(destFile, true), BUFFER_SIZE);
 			} else {
-				out = new BufferedOutputStream(new FileOutputStream(destFile),
-						BUFFER_SIZE);
+				out = new BufferedOutputStream(new FileOutputStream(destFile), BUFFER_SIZE);
 			}
 			in = new BufferedInputStream(in, BUFFER_SIZE);
 
@@ -93,4 +95,28 @@ public class Common {
 			}
 		}
 	}
+
+	public static Object getFieldValueByName( Object o, String fieldName) {
+		try {
+			String firstLetter = fieldName.substring(0, 1).toUpperCase();
+			String getter = "get" + firstLetter + fieldName.substring(1);
+			Method method = o.getClass().getMethod(getter, new Class[] {});
+			Object value = method.invoke(o, new Object[] {});
+			return value;
+		} catch (Exception e) {
+			System.out.print(e.getMessage());
+			return null;
+		}
+	}
+	public static void setFieldValueByName( Object o, String fieldName,Object value) {
+		try {
+			String firstLetter = fieldName.substring(0, 1).toUpperCase();
+			String setter = "set" + firstLetter + fieldName.substring(1);
+			Method method = o.getClass().getMethod(setter, new Class[] {String.class});
+			method.invoke(o,value.toString());
+		} catch (Exception e) {
+			System.out.print(e.getMessage());
+		}
+	}
+
 }

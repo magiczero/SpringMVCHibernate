@@ -87,7 +87,7 @@
         <url-pattern>/*</url-pattern>  
     </filter-mapping> 
     <!-- 权限 -->
-     
+  <!-- 
   <filter>
     <filter-name>LoginValidateFilter</filter-name>
     <filter-class>com.cngc.pm.web.filter.LoginFilter</filter-class>
@@ -104,6 +104,7 @@
     <filter-name>LoginValidateFilter</filter-name>
     <url-pattern>/*</url-pattern>
   </filter-mapping>
+     -->
   <!-- <filter>
     <filter-name>DocumentAuth</filter-name>
     <filter-class>com.cngc.pm.web.filter.DocumentFilter</filter-class>
@@ -119,12 +120,10 @@
   <filter-mapping>
     <filter-name>AttachmentAuth</filter-name>
     <url-pattern>/attachment/*</url-pattern>
-<<<<<<< HEAD
   </filter-mapping>
- 
-=======
+
   </filter-mapping> -->
->>>>>>> master
+
     <!-- <filter>  
         <filter-name>hibernateFilter</filter-name>  
         <filter-class>org.springframework.orm.hibernate4.support.OpenSessionInViewFilter</filter-class>  

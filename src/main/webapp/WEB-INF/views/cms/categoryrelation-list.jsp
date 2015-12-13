@@ -88,6 +88,7 @@
     <script type='text/javascript' src='${contextPath }/resources/js/plugins.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/settings.js'></script>    
     <script type='text/javascript' src='${contextPath }/resources/js/faq.js'></script>
+    <script type='text/javascript' src='${contextPath }/resources/js/pm-common.js'></script>
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
       <script src="${contextPath }/resources/js/html5shiv.js"></script>
@@ -144,11 +145,13 @@
                             <div class="isw-grid"></div>
                             <h1>CI模型管理</h1>  
 
-                            <ul class="buttons">                          
+                            <ul class="buttons">  
+                            	<li>
+                                    <a href="#newForm" role="button" data-toggle="modal" class="isw-plus tipb" title="创建新记录"></a>
+                                </li>                         
                                 <li>
                                     <a href="#" class="isw-settings tipl" title="操作 "></a>
                                     <ul class="dd-list">
-                                    	<li><a href="#newForm" role="button" data-toggle="modal"><span class="isw-ok"></span> 创建新关系</a></li>
                                         <li><a href="javascript:void(0);" id="delBtn"><span class="isw-list"></span> 删除</a></li>
                                         <li><a href="#"><span class="isw-refresh"></span> 刷新</a></li>
                                     </ul>
@@ -159,17 +162,15 @@
                             <table class="table" id="eventTable">
                                 <thead>
                                 	<tr>
-                                		<th width="60px">ID</th>
-										<th width="200px">主分类</th>
-										<th width="200px">从分类</th>
+										<th width="250px">主分类</th>
+										<th width="250px">从分类</th>
 										<th>关系</th>
-										<th width="150px">操作</th>
+										<th width="100px">操作</th>
 									</tr>
                                 </thead>
                                 <tbody>
                                 	<c:forEach items="${list}" var="categoryRelation">
 									<tr>
-										<td>${categoryRelation.id }</td>
 										<td>${categoryRelation.categoryPrimary.categoryCode } - ${categoryRelation.categoryPrimary.categoryName }</td>
 										<td>${categoryRelation.categorySecondary.categoryCode } - ${categoryRelation.categorySecondary.categoryName }</td>
 										<td>${categoryRelation.relation.relationName }</td>
@@ -201,27 +202,25 @@
                         <div class="row">
                             <div class="block-fluid">
                                 <div class="row-form clearfix">
-                                    <div class="col-md-3"><form:label path="categoryCodePrimary">主分类代码：</form:label></div>
-                                    <div class="col-md-9"><form:input path="categoryCodePrimary"></form:input></div>
+                                    <div class="col-md-2"><form:label path="categoryCodePrimary">主分类：</form:label></div>
+                                    <div class="col-md-4"><form:input path="categoryCodePrimary"></form:input></div>
+                                    <div class="col-md-2"><form:label path="categoryCodeSecondary">辅分类：</form:label></div>
+                                    <div class="col-md-4"><form:input path="categoryCodeSecondary"></form:input></div>
                                 </div>                                                           
                             </div>                
                         </div>
                         <div class="row">
                             <div class="block-fluid">
                                 <div class="row-form clearfix">
-                                    <div class="col-md-3"><form:label path="categoryCodeSecondary">辅分类代码：</form:label></div>
-                                    <div class="col-md-9"><form:input path="categoryCodeSecondary"></form:input></div>
+                                    <div class="col-md-2"><form:label path="relationId">关系代码：</form:label></div>
+                                    <div class="col-md-10"><form:select path="relationId" items="${relations }" itemLabel="relationName" itemValue="relationId"></form:select></div>
                                 </div>                                                           
                             </div>                
                         </div>
-                        <div class="row">
-                            <div class="block-fluid">
-                                <div class="row-form clearfix">
-                                    <div class="col-md-3"><form:label path="relationId">关系代码：</form:label></div>
-                                    <div class="col-md-9"><form:input path="relationId"></form:input></div>
-                                </div>                                                           
-                            </div>                
-                        </div>
+                        <div class="dr"><span></span></div>
+                        <div class="block">                
+                            <p>请按照规则填写分类代码，每两位数字代表一个分类。</p>
+                     	</div>
                     </div>   
                     <div class="modal-footer">
                         <button class="btn btn-primary" aria-hidden="true">提交</button> 

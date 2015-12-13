@@ -11,6 +11,7 @@ import javax.validation.Valid;
 import org.activiti.engine.FormService;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.RuntimeService;
+import org.activiti.engine.TaskService;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -22,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import com.cngc.pm.common.web.common.UserUtil;
 import com.cngc.pm.model.Contract;
 import com.cngc.pm.service.ContractService;
+import com.cngc.utils.PropertyFileUtil;
 
 @Controller
 @RequestMapping(value="/contract")
@@ -35,6 +37,9 @@ public class ContractController {
 	private RepositoryService repositoryService;
 	@Resource
 	private FormService formService;
+	@Resource
+	private TaskService taskService;
+
 	
 	@RequestMapping(value="/add")
 	public String add(Model model){
@@ -57,6 +62,7 @@ public class ContractController {
 		model.addAttribute("list", contractService.getAll());
 		model.addAttribute("runtime",runtimeService);
 		model.addAttribute("res", repositoryService);
+		model.addAttribute("task", taskService);
 		return "contract/list";
 	}
 	
@@ -71,8 +77,9 @@ public class ContractController {
 	@RequestMapping(value="/manage/{id}/{type}", method = RequestMethod.GET)
 	public String publish(@PathVariable("id") long id,@PathVariable("type") String type,Model model){
 		
+		String processKey = PropertyFileUtil.getStringValue("workflow.processkey.contract");
 		ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery()
-				.processDefinitionKey("CONTRACT").latestVersion().singleResult();
+				.processDefinitionKey( processKey ).latestVersion().singleResult();
 		Map<String,String> variables = new HashMap<String,String>();
 		variables.put("id", String.valueOf(id));
 		variables.put("type", type.toUpperCase());

@@ -1,6 +1,8 @@
 package com.cngc.pm.controller;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -30,10 +32,12 @@ import com.cngc.pm.common.web.common.UserUtil;
 import com.cngc.pm.model.Income;
 import com.cngc.pm.model.Inspection;
 import com.cngc.pm.model.Training;
+import com.cngc.pm.service.IncidentService;
 import com.cngc.pm.service.IncomeService;
 import com.cngc.pm.service.InspectionService;
-import com.cngc.pm.service.RecordService;
+import com.cngc.pm.service.SecJobService;
 import com.cngc.pm.service.TrainingService;
+import com.cngc.pm.service.UpdateService;
 
 @Controller
 @RequestMapping(value="/record")
@@ -45,7 +49,7 @@ public class RecordController {
 	@Resource
 	private FormService formService;
 	@Resource
-	private RecordService recordService;
+	private UpdateService updateService;
 	@Resource
 	private InspectionService inspectionService;
 	@Resource
@@ -54,17 +58,43 @@ public class RecordController {
 	private IncomeService incomeService;
 	@Resource
 	private TrainingService trainingService;
+	@Resource
+	private IncidentService incidentService;
+	@Resource
+	private SecJobService secjobService;
 	
-	@RequestMapping(value="/list",method = RequestMethod.GET)
-	public String list(Model model){
-		model.addAttribute("list", recordService.getAll());
+	@RequestMapping(value="/update",method = RequestMethod.GET)
+	public String list(Model model,HttpServletRequest request){
+		String startTime = request.getParameter("startTime");
+		String endTime = request.getParameter("endTime");
+		SimpleDateFormat formatter = new SimpleDateFormat ("yyyy-MM-dd"); 
+		Calendar now = Calendar.getInstance();
+		if(startTime==null || startTime.isEmpty())
+			startTime = String.valueOf( now.get(Calendar.YEAR) ) + "-01-01";
+		if(endTime==null || endTime.isEmpty())
+		{
+			endTime = formatter.format( now.getTime());
+		}
+		
+		model.addAttribute("list", updateService.search(startTime, endTime).getResult());
 		model.addAttribute("runtime",runtimeService);
 		model.addAttribute("res", repositoryService);
-		return "record/list";
+		model.addAttribute("task",taskService);
+		return "record/update-list";
 	}
 	@RequestMapping(value="/inspection",method = RequestMethod.GET)
-	public String inspection(Model model){
-		model.addAttribute("list", inspectionService.getAll());
+	public String inspection(Model model,HttpServletRequest request){
+		String startTime = request.getParameter("startTime");
+		String endTime = request.getParameter("endTime");
+		SimpleDateFormat formatter = new SimpleDateFormat ("yyyy-MM-dd"); 
+		Calendar now = Calendar.getInstance();
+		if(startTime==null || startTime.isEmpty())
+			startTime = String.valueOf( now.get(Calendar.YEAR) ) + "-01-01";
+		if(endTime==null || endTime.isEmpty())
+		{
+			endTime = formatter.format( now.getTime());
+		}
+		model.addAttribute("list", inspectionService.search(startTime, endTime).getResult());
 		model.addAttribute("runtime",runtimeService);
 		model.addAttribute("res", repositoryService);
 		return "record/inspection-list";
@@ -154,7 +184,7 @@ public class RecordController {
 		
 		return result;
 	}
-	
+
 	@RequestMapping(value="/training",method = RequestMethod.GET)
 	public String training(Model model){
 		model.addAttribute("list", trainingService.getAll());
@@ -178,5 +208,24 @@ public class RecordController {
 		trainingService.save(training);
 		
 		return "redirect:/record/training";
+	}
+	@RequestMapping(value="/secjob",method = RequestMethod.GET)
+	public String secjob(Model model,HttpServletRequest request){
+		String startTime = request.getParameter("startTime");
+		String endTime = request.getParameter("endTime");
+		SimpleDateFormat formatter = new SimpleDateFormat ("yyyy-MM-dd"); 
+		Calendar now = Calendar.getInstance();
+		if(startTime==null || startTime.isEmpty())
+			startTime = String.valueOf( now.get(Calendar.YEAR) ) + "-01-01";
+		if(endTime==null || endTime.isEmpty())
+		{
+			endTime = formatter.format( now.getTime());
+		}
+		
+		model.addAttribute("list", secjobService.search(startTime, endTime).getResult());
+		model.addAttribute("runtime",runtimeService);
+		model.addAttribute("res", repositoryService);
+		model.addAttribute("task",taskService);
+		return "record/secjob-list";
 	}
 }

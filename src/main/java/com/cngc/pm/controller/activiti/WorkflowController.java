@@ -4,9 +4,10 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.zip.ZipInputStream;
 
 import javax.annotation.Resource;
@@ -19,8 +20,12 @@ import org.activiti.bpmn.converter.BpmnXMLConverter;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.editor.constants.ModelDataJsonConstants;
 import org.activiti.editor.language.json.converter.BpmnJsonConverter;
+import org.activiti.engine.HistoryService;
 import org.activiti.engine.IdentityService;
+import org.activiti.engine.ManagementService;
 import org.activiti.engine.RepositoryService;
+import org.activiti.engine.event.EventLogEntry;
+import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.repository.ProcessDefinitionQuery;
@@ -52,6 +57,10 @@ public class WorkflowController {
 	private IdentityService identityService;
 	@Resource
 	private RepositoryService repositoryService;
+	@Resource
+	private ManagementService managementService;
+	@Resource
+	private HistoryService historyService;
 	
 	/**
 	 * 获取所有流程信息
@@ -234,4 +243,22 @@ public class WorkflowController {
         List<Map<String, Object>> activityInfos = traceService.traceProcess(processInstanceId);
         return activityInfos;
     }*/
+    @RequestMapping(value="/eventlog/list/{processInstanceId}")
+    @ResponseBody
+    public Map<String,Object> getEventLogList(@PathVariable("processInstanceId") String processInstanceId, Model model){
+    	Map<String,Object> result = new LinkedHashMap<String,Object>();
+    	List<EventLogEntry> list = managementService.getEventLogEntriesByProcessInstanceId(processInstanceId);
+    	
+    	// 提取任务任务名称
+        List<HistoricTaskInstance> tasklist = historyService.createHistoricTaskInstanceQuery().processInstanceId(processInstanceId).list();
+        Map<String, String> taskNames = new HashMap<String, String>();
+        for (HistoricTaskInstance historicTaskInstance : tasklist) {
+            taskNames.put(historicTaskInstance.getId(), historicTaskInstance.getName());
+        }
+        result.put("taskNames", taskNames);
+        
+    	result.put("eventlogs", list );
+    	
+    	return result;
+    }
 }

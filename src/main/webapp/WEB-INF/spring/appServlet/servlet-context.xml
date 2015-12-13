@@ -137,4 +137,5 @@
 	
 	<beans:import resource="spring-datasource.xml" />
 	<beans:import resource="activiti.xml" />
+	<beans:import resource="quartz.xml" />
 </beans:beans>

@@ -10,8 +10,10 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+
 import com.cngc.pm.model.cms.CategoryRelation;
 import com.cngc.pm.service.cms.CategoryRelationService;
+import com.cngc.pm.service.cms.RelationService;
 
 @Controller
 @RequestMapping(value="/cms/categoryrelation")
@@ -19,6 +21,8 @@ public class CategoryRelationController {
 
 	@Resource
 	private CategoryRelationService categoryRelationService;
+	@Resource
+	private RelationService relationService;
 	
 
 	@RequestMapping(value="/add")
@@ -39,6 +43,7 @@ public class CategoryRelationController {
 	public String list(Model model){
 		model.addAttribute("list", categoryRelationService.getAll());
 		model.addAttribute("categoryRelation",new CategoryRelation());
+		model.addAttribute("relations",relationService.getAll());
 		return "cms/categoryrelation-list";
 	}
 	

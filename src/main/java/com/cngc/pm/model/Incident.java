@@ -8,7 +8,14 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
+
+import org.hibernate.annotations.Formula;
+import org.hibernate.annotations.Where;
 
 @Entity
 @Table(name = "wk_incident")
@@ -37,6 +44,27 @@ public class Incident implements Serializable{
 	private Date recoverTime;
 	private String attachment;
 	private String processInstanceId;
+	private String satisfaction;
+	private String feedback;
+	
+	@Transient
+	private String priorityName;
+	@Transient
+	private String categoryName;
+	@Transient
+	private String typeName;
+	@Transient
+	private String influenceName;
+	@Transient
+	private String criticalName;
+	@Transient
+	private String sourceName;
+	@Transient
+	private String statusName;
+	@Transient
+	private String applyUserName;
+	@Transient
+	private String satisfactionName;
 	
 	@Id
 	@Column(name="id")
@@ -124,7 +152,7 @@ public class Incident implements Serializable{
 	public void setPriority(String priority) {
 		this.priority = priority;
 	}
-	@Column(name = "event_type")
+	@Column(name = "type_")
 	public String getType() {
 		return type;
 	}
@@ -187,5 +215,82 @@ public class Incident implements Serializable{
 	public void setProcessInstanceId(String processInstanceId) {
 		this.processInstanceId = processInstanceId;
 	}
-
+	@Formula(value="(SELECT a.code_name FROM sys_code a WHERE a.type_='INCIDENT_CATEGORY' AND a.code_= category)")
+	public String getCategoryName() {
+		return categoryName;
+	}
+	public void setCategoryName(String categoryName) {
+		this.categoryName = categoryName;
+	}
+	@Formula(value="(SELECT a.code_name FROM sys_code a WHERE a.type_='PRIORITY' AND a.code_= priority)")
+	public String getPriorityName() {
+		return priorityName;
+	}
+	public void setPriorityName(String priorityName) {
+		this.priorityName = priorityName;
+	}
+	@Formula(value="(SELECT a.code_name FROM sys_code a WHERE a.type_='INCIDENT_TYPE' AND a.code_= type_)")
+	public String getTypeName() {
+		return typeName;
+	}
+	public void setTypeName(String typeName) {
+		this.typeName = typeName;
+	}
+	@Formula(value="(SELECT a.code_name FROM sys_code a WHERE a.type_='INFLUENCE' AND a.code_= influence)")
+	public String getInfluenceName() {
+		return influenceName;
+	}
+	public void setInfluenceName(String influenceName) {
+		this.influenceName = influenceName;
+	}
+	@Formula(value="(SELECT a.code_name FROM sys_code a WHERE a.type_='CRITICAL' AND a.code_= critical)")
+	public String getCriticalName() {
+		return criticalName;
+	}
+	public void setCriticalName(String criticalName) {
+		this.criticalName = criticalName;
+	}
+	@Formula(value="(SELECT a.code_name FROM sys_code a WHERE a.type_='INCIDENT_SOURCE' AND a.code_= source)")
+	public String getSourceName() {
+		return sourceName;
+	}
+	public void setSourceName(String sourceName) {
+		this.sourceName = sourceName;
+	}
+	@Formula(value="(SELECT a.code_name FROM sys_code a WHERE a.type_='INCIDENT_STATUS' AND a.code_= status_)")
+	public String getStatusName() {
+		return statusName;
+	}
+	public void setStatusName(String statusName) {
+		this.statusName = statusName;
+	}
+	@Formula(value="(SELECT a.NAME FROM sys_users a WHERE a.USERNAME=apply_user)")
+	public String getApplyUserName() {
+		return applyUserName;
+	}
+	public void setApplyUserName(String applyUserName) {
+		this.applyUserName = applyUserName;
+	}
+	@Column(name="satisfaction")
+	public String getSatisfaction() {
+		return satisfaction;
+	}
+	public void setSatisfaction(String satisfaction) {
+		this.satisfaction = satisfaction;
+	}
+	@Column(name="feedback")
+	public String getFeedback() {
+		return feedback;
+	}
+	public void setFeedback(String feedback) {
+		this.feedback = feedback;
+	}
+	@Formula(value="(SELECT a.code_name FROM sys_code a WHERE a.type_='INCIDENT_SATISFACTION' AND a.code_= satisfaction)")
+	public String getSatisfactionName() {
+		return satisfactionName;
+	}
+	public void setSatisfactionName(String satisfactionName) {
+		this.satisfactionName = satisfactionName;
+	}
+	
 }

@@ -29,11 +29,7 @@
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/cookie/jquery.cookies.2.2.0.min.js'></script>
     
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/bootstrap.min.js'></script>
-    
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/charts/jquery.flot.js'></script>    
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/charts/jquery.flot.stack.js'></script>    
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/charts/jquery.flot.pie.js'></script>
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/charts/jquery.flot.resize.js'></script>
+   
     
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/sparklines/jquery.sparkline.min.js'></script>
     
@@ -59,16 +55,7 @@
     
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/fancybox/jquery.fancybox.pack.js'></script>
         
-    <!-- <script type='text/javascript' src='../../../bp.yahooapis.com/2.4.21/browserplus-min.js'></script> -->
-
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/plupload/plupload.js'></script>
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/plupload/plupload.gears.js'></script>
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/plupload/plupload.silverlight.js'></script>
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/plupload/plupload.flash.js'></script>
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/plupload/plupload.browserplus.js'></script>
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/plupload/plupload.html4.js'></script>
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/plupload/plupload.html5.js'></script>
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/plupload/jquery.plupload.queue/jquery.plupload.queue.js'></script>    
+    <!-- <script type='text/javascript' src='../../../bp.yahooapis.com/2.4.21/browserplus-min.js'></script> -->   
     
     <script type="text/javascript" src="${contextPath }/resources/js/plugins/elfinder/elfinder.min.js"></script>
     
@@ -78,6 +65,7 @@
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/ibutton/jquery.ibutton.min.js'></script>
     
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/scrollup/jquery.scrollUp.min.js'></script>
+    <script type='text/javascript' src='${contextPath }/resources/js/plugins/treeview/bootstrap-treeview.min.js'></script>
     
     <script type='text/javascript' src='${contextPath }/resources/js/cookies.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/myactions.js'></script>
@@ -85,7 +73,9 @@
     <script type='text/javascript' src='${contextPath }/resources/js/plugins.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/settings.js'></script>    
     <script type='text/javascript' src='${contextPath }/resources/js/faq.js'></script>
-    <script type='text/javascript' src='${contextPath }/resources/js/jquery.form.js'></script>
+    <script type='text/javascript' src='${contextPath }/resources/js/pm-common.js'></script>
+    <script type='text/javascript' src='${contextPath }/resources/js/pm-cms.js'></script>
+
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
       <script src="${contextPath }/resources/js/html5shiv.js"></script>
@@ -93,7 +83,7 @@
     <![endif]-->
     <script type="text/javascript">
    		var ctx = "${contextPath}"; 
-   		var propertiesdata = ${ci.propertiesData };
+   		var propertiesdata = '${ci.propertiesData }';
    		var ciId = "${ci.id}";
    		
             $(document).ready(function () {
@@ -102,46 +92,23 @@
                 $(".menu").load("${contextPath}/menu", function () { $(".navigation > li:eq(3)").addClass("active"); });
                 $(".breadLine .buttons").load("${contextPath}/contentbuttons");
 
-                $.each(propertiesdata, function(k,v){
-        			$("div[name='"+k+"']").html(v);
-        		});
-                
+                if(propertiesdata!="")
+                {
+                	propertiesdata = $.parseJSON(propertiesdata);
+	                $.each(propertiesdata, function(k,v){
+	        			$("div[name='"+k+"']").html(v);
+	        		});
+                }
+                pm_cms_initselectdialog('ci');
+                pm_cms_getIncident();
+                pm_cms_getChange();
             });
             function deleteConfirm()
             {
             	if(!confirm("确定要执行该操作?"))
             		return false;
             }
-            function initTable(relationId)
-            {
-            	$.getJSON(ctx + '/cms/ci/getrelation/'+ciId+'/'+relationId+'?t=' + Math.random() , function(data) {
-            		if(data.cis==null)
-            			return;
-            		var trs;
-            		for(i=0;i<data.cis.length;i++)
-            		{
-            			$("#table_"+relationId+" tbody tr").remove();
-            			trs += "<tr>"
-            				+ "<td>"+data.cis[i]["name"]+"</td>"
-            				+ "<td>"+data.cis[i]["userInMaintenance"]+"</td>"
-            				+ "<td>"+data.cis[i]["status"]+"</td>"
-            				+ "<td><a class='confirm' href='"+ctx+"/cms/ci/deleterelation?primary_id="+ciId+"&secondary_id="+data.cis[i]["id"]+"&relation_id="+relationId+"'><span class='glyphicon glyphicon-remove'></span></a></td>"
-            				+ "</tr>";           			
-            		}
-            		$("#table_"+relationId+" tbody").append(trs);
-                    $(".confirm").bind("click",function(){
-                    	if(!confirm("确定要执行该操作?"))
-                    		return false;
-                    });
-            	});
-            }
-            function addRelation(relationId)
-            {
-            	$("#secondary_id").attr("value","");
-            	$("#relation_id").attr("value",relationId);
-            	//$("#relation_id").attr("disabled","disabled");
-            	$("#relationFormDialog").modal('show');
-            }
+
     </script>
 </head>
 <body>
@@ -178,42 +145,53 @@
                	  <div class="col-md-3">
                        <div class="headInfo">
                             <div class="toolbar nopadding-toolbar clear clearfix">
-                                <div class="left"><h4>配置项信息</h4></div>
+                                <div class="left text-info"><h4>配置项信息</h4></div>
                             </div>                                  
                         </div>
-                         <div class="info">                                                                
+                         <div class="block-fluid ucard">                                                                
                             <ul class="rows">
                             <li>
                                 <div class="title">名称:</div>
-                                <div class="text">${ci.name}</div>
+                                <div class="text"><c:if test="${empty ci.name }">-</c:if>${ci.name}</div>
                             </li>
                              <li>
                                 <div class="title">物理位置:</div>
-                                <div class="text">${ci.location} </div>
+                                <div class="text"><c:if test="${empty ci.location }">-</c:if>${ci.location} </div>
                             </li>
                             <li>
                                 <div class="title">使用部门:</div>
-                                <div class="text">${ci.departmentInUse }</div>
+                                <div class="text"><c:if test="${empty ci.departmentInUse }">-</c:if>${ci.departmentInUse }</div>
                             </li> 
                             <li>
                                 <div class="title">维护人:</div>
-                                <div class="text">${ci.userInMaintenance }</div>
+                                <div class="text"><c:if test="${empty ci.userInMaintenance }">-</c:if>${ci.userInMaintenance }</div>
                             </li>
                             <li>
                                 <div class="title">服务提供商:</div>
-                                <div class="text">${ci.serviceProvider }</div>
+                                <div class="text"><c:if test="${empty ci.serviceProvider }">-</c:if>${ci.serviceProvider }</div>
                             </li>
                             <li>
                                 <div class="title">状态:</div>
-                                <div class="text">${ci.status }</div>
+                                <div class="text"><c:if test="${empty ci.status }">-</c:if>${ci.statusName }</div>
+                            </li>
+                            <li>
+                                <div class="title">审核状态:</div>
+                                <div class="text"><c:if test="${empty ci.reviewStatus }">-</c:if>${ci.reviewStatusName }</div>
+                            </li>
+                            <li>
+                                <div class="title">删除状态:</div>
+                                <div class="text"><c:if test="${empty ci.deleteStatus }">-</c:if>${ci.deleteStatusName }</div>
                             </li>
                             <li>
                                 <div class="title">用途:</div>
-                                <div class="text">${ci.purpose }</div>
+                                <div class="text"><c:if test="${empty ci.purpose }">-</c:if>${ci.purpose }</div>
                             </li>
                             <li>
                                 <div class="title">最近更新时间:</div>
-                                <div class="text">${ci.lastUpdateTime }</div>
+                                <div class="text">
+                                	<c:if test="${empty ci.lastUpdateTime }">-</c:if>
+                                	<fmt:formatDate value="${ci.lastUpdateTime }" pattern="yyyy-MM-dd HH:mm:ss"></fmt:formatDate>
+                                </div>
                             </li>   
                             </ul>                                                      
                         </div>                     
@@ -222,7 +200,7 @@
 				<c:forEach items="${properties}" var="map">
                    <div class="col-md-3">
                         <div class="head clearfix">
-                            <div class="isw-cloud"></div>
+                            <div class="isw-grid"></div>
                             <h1>${map.key }</h1>
                             <ul class="buttons">        
                                 <li class="toggle"><a href="#"></a></li>
@@ -234,7 +212,7 @@
                             <c:forEach items="${map.value }" var="property"> 
 	                            <li>
 	                                <div class="title">${property.propertyName}:</div>
-	                                <div class="text" id="${property.propertyId}" name="${property.propertyId}">&nbsp;</div>
+	                                <div class="text" id="${property.propertyId}" name="${property.propertyId}">-</div>
 	                            </li>
                             </c:forEach>
                             </ul>                                                      
@@ -248,109 +226,126 @@
             	<div class="dr"><span></span></div>
             	
             	<div class="row">
-            	
-            		<div class="col-md-3 clearfix" id="mails_navigation">
-            			<div class="block-fluid sNavigation">
-                            <ul>
-                            	<c:forEach items="${relations }" var="categoryRelation">
-                                	<li><a href="#"><span class="glyphicon glyphicon-inbox"></span>${categoryRelation.relation.relationName }</a><span class="arrow"></span></li>
-                                </c:forEach>
-                            </ul>
+	            	<div class="col-md-6">
+	            		<div class="head clearfix">
+	                        <div class="isw-attachment"></div>
+	                    	<h1>关联关系</h1>
+	                    </div>
+	                    <div class="block-fluid tabs">
+	                        <ul>
+	                        	<c:forEach items="${relations }" var="categoryRelation">
+                                <li><a href="#tabs-${categoryRelation.relation.relationId }">${categoryRelation.relation.relationName }</a></li>
+                             	</c:forEach>
+                            </ul> 
+                            <c:forEach items="${relations }" var="categoryRelation">
+                            <script>
+		            			$(document).ready(function(){
+		            				pm_cms_inittable('${categoryRelation.relation.relationId }');
+		            			});         				
+	            			</script>
+                            <div id="tabs-${categoryRelation.relation.relationId }">
+                            	<div style="height:300px;">
+                                <table cellpadding="0" cellspacing="0" width="100%" class="table" id="table_${categoryRelation.relation.relationId}">
+	                                <thead>
+	                                    <tr>
+	                                        <th>配置项名称</th>
+	                                        <th  width="100">维护人</th>
+	                                        <th width="60">状态</th>
+	                                        <th width="40">操作</th>                                
+	                                    </tr>
+	                                </thead>
+	                                <tbody>                                            
+	                                </tbody>
+	                            </table>                    
+                            	</div>
+	                            <div class="toolbar bottom-toolbar clearfix">
+	                                <div class="left">
+	                                    <div class="btn-group">
+	                                        <button onclick="pm_cms_addRelations('${categoryRelation.relation.relationId}')" type="button" class="btn btn-sm btn-warning tip" title="新增"><span class="glyphicon glyphicon-plus glyphicon glyphicon-white"></span></button>
+	                                    </div>                                
+	                                </div>                            
+	                                <div class="right">                                       
+	                                    <ul class="pagination pagination-sm">
+	                                        <li class="disabled"><a href="#">Prev</a></li>
+	                                        <li class="disabled"><a href="#">1</a></li>
+	                                        <li><a href="#">2</a></li>
+	                                        <li><a href="#">Next</a></li>
+	                                    </ul>                                        
+	                                </div>                        
+	                            </div> 
+                            </div>  
+                            </c:forEach>
+	                    </div>
+	            	</div>
+   					<div class="col-md-6">
+   						<div class="head clearfix">
+                            <div class="isw-list"></div>
+                            <h1>关联信息</h1>
                         </div>
-            		</div>
-            		
-            		<div class="col-md-9">
-            		<c:forEach items="${relations }" var="categoryRelation">
-            			<script>
-            			$(document).ready(function(){
-            				initTable('${categoryRelation.relation.relationId }');
-            			});         				
-            			
-            			</script>
-                        <div class="head clearfix">
-                            <div class="isw-cloud"></div>
-                            <h1>${categoryRelation.relation.relationName }</h1>
-                            <ul class="buttons">        
-                                <li class="toggle"><a href="#"></a></li>
-                            </ul>                         
-                        </div>
-                        
-  						<div class="block-fluid" >                      
-                            <table cellpadding="0" cellspacing="0" width="100%" class="table" id="table_${categoryRelation.relation.relationId}">
+                        <div class="block-fluid tabs">
+	                        <ul>
+	                        	<li><a href="#tabs-incident"> 事 件 </a></li>
+	                       		<li><a href="#tabs-change"> 变 更 </a></li>
+	                        </ul> 
+	                        <div id="tabs-incident">
+                            	<div style="height:300px;">
+                                <table cellpadding="0" cellspacing="0" width="100%" class="table" id="incidentTable">
                                 <thead>
-                                    <tr>
-                                        <th>配置项名称</th>
-                                        <th  width="100">维护人</th>
-                                        <th width="60">状态</th>
-                                        <th width="40">操作</th>                                
+                                    <tr>                                    
+                                        <th>摘要</th>
+                                        <th width="120px">申报时间</th>
+                                        <th width="60px">状态</th>
                                     </tr>
                                 </thead>
-                                <tbody>                                            
+                                <tbody>
+										
                                 </tbody>
-                            </table>                    
-
-                            <div class="toolbar bottom-toolbar clearfix">
-                                <div class="left">
-                                    <div class="btn-group">
-                                        <button onclick="addRelation('${categoryRelation.relation.relationId}')" type="button" class="btn btn-sm btn-warning tip" title="新增"><span class="glyphicon glyphicon-plus glyphicon glyphicon-white"></span></button>
-                                        <button type="button" class="btn btn-sm btn-danger tip" title="删除"><span class="glyphicon glyphicon-remove glyphicon glyphicon-white"></span></button>
-                                    </div>                                
-                                </div>                            
-                                <div class="right">                                       
-                                    <ul class="pagination pagination-sm">
-                                        <li class="disabled"><a href="#">Prev</a></li>
-                                        <li class="disabled"><a href="#">1</a></li>
-                                        <li><a href="#">2</a></li>
-                                        <li><a href="#">Next</a></li>
-                                    </ul>                                        
-                                </div>                        
-                            </div>                    
-
+                            	</table>
+                            	</div>
+                            	<div class="toolbar bottom-toolbar clearfix">                         
+	                                <div class="right">                                       
+	                                    <ul class="pagination pagination-sm">
+	                                        <li class="disabled"><a href="#">Prev</a></li>
+	                                        <li class="disabled"><a href="#">1</a></li>
+	                                        <li><a href="#">2</a></li>
+	                                        <li><a href="#">Next</a></li>
+	                                    </ul>                                        
+	                                </div>                        
+                           		 </div>
+                            </div><!-- incident end -->
+                            <div id="tabs-change">
+                            	<div style="height:300px;">
+                                <table cellpadding="0" cellspacing="0" width="100%" class="table" id="changeTable">
+                                <thead>
+                                    <tr>                                    
+                                        <th>摘要</th>
+                                        <th width="120px">申报时间</th>
+                                        <th width="60px">状态</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+										
+                                </tbody>
+                            	</table>
+                            	</div>
+                            	<div class="toolbar bottom-toolbar clearfix">                         
+	                                <div class="right">                                       
+	                                    <ul class="pagination pagination-sm">
+	                                        <li class="disabled"><a href="#">Prev</a></li>
+	                                        <li class="disabled"><a href="#">1</a></li>
+	                                        <li><a href="#">2</a></li>
+	                                        <li><a href="#">Next</a></li>
+	                                    </ul>                                        
+	                                </div>                        
+                           		 </div>
+                            </div><!-- change end -->
                         </div>
-					</c:forEach>
-                    </div>
-   
-            	</div>
+   					</div>
+            	</div><!-- row end -->
             </div>
             <!--workplace end-->
         </div>   
-        <!-- relation modal form -->
-        <div class="modal fade" id="relationFormDialog" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>                        
-                        <h4 id="dialogTitle">添加关联</h4>
-                    </div>
-                    <form id="userForm" action="${contextPath}/cms/ci/saverelation" method="post">
-                    <div class="modal-body modal-body-np">
-                        <div class="row">
-                            <div class="block-fluid">
-                                <div class="row-form clearfix">
-                                    <div class="col-md-3">配置项ID:</div>
-                                    <div class="col-md-9"><input id="secondary_id" name="secondary_id" type="text" /></div>
-                                </div>                                                           
-                            </div>                
-                        </div>
-                        <div class="row">
-                            <div class="block-fluid">
-                                <div class="row-form clearfix">
-                                    <div class="col-md-3">关系名:</div>
-                                    <div class="col-md-9"><input id="relation_id" name="relation_id" type="text" /></div>
-                                </div>                                                           
-                            </div>                
-                        </div>
-                    </div>   
-                    <div class="modal-footer">
-                        <button class="btn btn-primary" aria-hidden="true">保存</button> 
-                        <button class="btn btn-default" data-dismiss="modal" aria-hidden="true">关闭</button>            
-                    </div>
-                    <input type="hidden" id="primary_id"  name="primary_id" value="${ci.id }" /> 
-                    </form>
-                </div>
-            </div>
-        </div>
-    	<!-- relation end from -->
+
     </div>
 </body>
 

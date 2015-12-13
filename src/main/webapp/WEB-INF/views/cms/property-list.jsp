@@ -87,12 +87,14 @@
     <script type='text/javascript' src='${contextPath }/resources/js/plugins.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/settings.js'></script>    
     <script type='text/javascript' src='${contextPath }/resources/js/faq.js'></script>
+    <script type='text/javascript' src='${contextPath }/resources/js/pm-common.js'></script>
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
       <script src="${contextPath }/resources/js/html5shiv.js"></script>
       <script src="${contextPath }/resources/js/respond.min.js"></script>
     <![endif]-->
     <script type="text/javascript">
+    var ctx="${contextPath}";
             $(document).ready(function () {
                 $("#eventTable").dataTable();
                 $(".header").load("${contextPath}/header");
@@ -142,11 +144,13 @@
                             <div class="isw-grid"></div>
                             <h1>属性池管理</h1>  
 
-                            <ul class="buttons">                          
+                            <ul class="buttons"> 
+                           		<li>
+                                    <a href="#newForm" role="button" data-toggle="modal" class="isw-plus tipb" title="创建新记录"></a>
+                                </li>                         
                                 <li>
                                     <a href="#" class="isw-settings tipl" title="操作 "></a>
                                     <ul class="dd-list">
-                                    	<li><a href="#newForm" role="button" data-toggle="modal"><span class="isw-ok"></span> 创建新属性</a></li>
                                         <li><a href="javascript:void(0);" id="delBtn"><span class="isw-list"></span> 删除</a></li>
                                         <li><a href="#"><span class="isw-refresh"></span> 刷新</a></li>
                                     </ul>
@@ -157,10 +161,9 @@
                             <table class="table" id="eventTable">
                                 <thead>
                                 	<tr>
-										<th  width="100px">ID</th>
 										<th>属性ID</th>
 										<th width="150px">属性名称</th>
-										<th width="150px">属性类型</th>
+										<th width="100px">属性类型</th>
 										<th width="200px">属性约束条件</th>
 										<th width="100px">操作</th>
 									</tr>
@@ -168,12 +171,11 @@
                                 <tbody>
                                 	<c:forEach items="${list}" var="property">
 									<tr>
-										<td>${property.id }</td>
 										<td>${property.propertyId }</td>
 										<td>${property.propertyName }</td>
 										<td>${property.propertyType }</td>
 										<td>${property.propertyConstraint }</td>
-										<td><a href="${contextPath}/cms/property/delete/${property.id}">删除</a></td>
+										<td><a class="confirm" href="${contextPath}/cms/property/delete/${property.id}">删除</a></td>
 									</tr>
 								</c:forEach>   
                                 </tbody>

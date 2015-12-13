@@ -1,6 +1,7 @@
 package com.cngc.pm.service.cms;
 
 import java.util.List;
+import java.util.Map;
 
 import com.cngc.pm.model.cms.Ci;
 import com.googlecode.genericdao.search.SearchResult;
@@ -22,4 +23,10 @@ public interface CiService {
 	boolean deleteRelation(Long primaryId, Long secondaryId, String relationId);
 
 	boolean saveRelation(Long primaryId, Long secondaryId, String relationId);
+	
+	SearchResult<Ci> getByIds(List<Long> ids);
+	
+	Map<String,Object> getStats(String column,String row,String status);
+	
+	SearchResult<Ci> getByUser(String user);
 }

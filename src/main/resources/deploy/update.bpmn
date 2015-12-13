@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.cngc.com.cn/virus">
+  <process id="UPDATE" name="病毒库、补丁升级管理" isExecutable="true">
+    <extensionElements>
+      <activiti:executionListener event="start" expression="${execution.setVariable('update', updateEntityManager.newUpdate(execution))}"></activiti:executionListener>
+      <activiti:executionListener event="end" expression="${updateEntityManager.setUpdateStatus(execution)}"></activiti:executionListener>
+    </extensionElements>
+    <startEvent id="startUpdate" name="Start">
+      <extensionElements>
+        <activiti:formProperty id="updateType" name="升级名称" type="enum">
+          <activiti:value id="01" name="瑞星病毒库"></activiti:value>
+          <activiti:value id="02" name="补丁"></activiti:value>
+          <activiti:value id="03" name="漏洞扫描"></activiti:value>
+          <activiti:value id="04" name="入侵检测"></activiti:value>
+        </activiti:formProperty>
+        <activiti:formProperty id="user" name="分配工程师" type="string"></activiti:formProperty>
+      </extensionElements>
+    </startEvent>
+    <userTask id="taskDoUpdate" name="升级执行中" activiti:assignee="${update.userId}">
+      <extensionElements>
+        <activiti:formProperty id="updateType" name="升级名称" type="enum" expression="${update.updateType}" writable="false">
+          <activiti:value id="01" name="瑞星病毒库"></activiti:value>
+          <activiti:value id="02" name="补丁"></activiti:value>
+          <activiti:value id="03" name="漏洞扫描"></activiti:value>
+          <activiti:value id="04" name="入侵检测"></activiti:value>
+        </activiti:formProperty>
+        <activiti:formProperty id="version" name="版本号" type="string" expression="${update.version}"></activiti:formProperty>
+        <activiti:formProperty id="updateTime" name="升级时间" type="date" expression="${update.updateTime}" datePattern="yyyy-MM-dd"></activiti:formProperty>
+      </extensionElements>
+    </userTask>
+    <sequenceFlow id="flow1" sourceRef="startUpdate" targetRef="taskDoUpdate"></sequenceFlow>
+    <endEvent id="endUpdate" name="End"></endEvent>
+    <sequenceFlow id="flow2" sourceRef="taskDoUpdate" targetRef="endUpdate"></sequenceFlow>
+  </process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_UPDATE">
+    <bpmndi:BPMNPlane bpmnElement="UPDATE" id="BPMNPlane_UPDATE">
+      <bpmndi:BPMNShape bpmnElement="startUpdate" id="BPMNShape_startUpdate">
+        <omgdc:Bounds height="35.0" width="35.0" x="20.0" y="20.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="taskDoUpdate" id="BPMNShape_taskDoUpdate">
+        <omgdc:Bounds height="55.0" width="105.0" x="100.0" y="10.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="endUpdate" id="BPMNShape_endUpdate">
+        <omgdc:Bounds height="35.0" width="35.0" x="260.0" y="20.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="flow1" id="BPMNEdge_flow1">
+        <omgdi:waypoint x="55.0" y="37.0"></omgdi:waypoint>
+        <omgdi:waypoint x="100.0" y="37.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow2" id="BPMNEdge_flow2">
+        <omgdi:waypoint x="205.0" y="37.0"></omgdi:waypoint>
+        <omgdi:waypoint x="260.0" y="37.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>

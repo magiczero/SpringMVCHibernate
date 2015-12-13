@@ -1,9 +1,11 @@
 package com.cngc.pm.dao.cms;
 
 import java.util.List;
+import java.util.Map;
 
 import com.cngc.pm.model.cms.Ci;
 import com.googlecode.genericdao.dao.hibernate.GenericDAO;
+import com.googlecode.genericdao.search.SearchResult;
 
 public interface CiDAO extends GenericDAO<Ci, Long> {
 
@@ -35,4 +37,10 @@ public interface CiDAO extends GenericDAO<Ci, Long> {
 	 * @return
 	 */
 	boolean saveRelation(Long primaryId, Long secondaryId, String relationId);
+	
+	SearchResult<Ci> getByIds(List<Long> ids);
+	
+	Map<String,Object> getStats(String column,String row,String status);
+	
+	SearchResult<Ci> getByUser(String user);
 }

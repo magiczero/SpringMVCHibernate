@@ -20,6 +20,7 @@ public class InspectionJpaEntity {
 	private String status;
 	private String processInstanceId;
 	private Date createdTime;
+	private Long incidentId;
 	
 	@Id
 	@Column(name = "id")
@@ -79,8 +80,17 @@ public class InspectionJpaEntity {
 	public void setCreatedTime(Date createdTime) {
 		this.createdTime = createdTime;
 	}
-    @Override
+	@Column(name="incident_id")
+    public Long getIncidentId() {
+		return incidentId;
+	}
+	public void setIncidentId(Long incidentId) {
+		this.incidentId = incidentId;
+	}
+	
+	@Override
     public String toString() {
         return ToStringBuilder.reflectionToString(this);
     }
+    
 }

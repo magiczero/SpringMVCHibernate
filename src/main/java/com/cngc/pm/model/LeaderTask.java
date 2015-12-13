@@ -9,6 +9,9 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Transient;
+
+import org.hibernate.annotations.Formula;
 
 @Entity
 @Table(name = "wk_task")
@@ -18,13 +21,16 @@ public class LeaderTask implements Serializable{
 	private String fromUser;
 	private String toUser;
 	private String taskTitle;
-	private String taskDesc;
 	private String taskResult;
 	private String processInstanceId;
-	private String currentActivityId;
-	private String currentActivityName;
 	private Date applyTime;
+	private Date dueTime;
 	private String userId;
+	private Date executionTime;
+	@Transient
+	private String fromUserName;
+	@Transient
+	private String toUserName;
 	
 	@Id
 	@Column(name = "id")
@@ -56,13 +62,6 @@ public class LeaderTask implements Serializable{
 	public void setTaskTitle(String taskTitle) {
 		this.taskTitle = taskTitle;
 	}
-	@Column(name="task_desc")
-	public String getTaskDesc() {
-		return taskDesc;
-	}
-	public void setTaskDesc(String taskDesc) {
-		this.taskDesc = taskDesc;
-	}
 	@Column(name="task_result")
 	public String getTaskResult() {
 		return taskResult;
@@ -77,26 +76,19 @@ public class LeaderTask implements Serializable{
 	public void setProcessInstanceId(String processInstanceId) {
 		this.processInstanceId = processInstanceId;
 	}
-	@Column(name="current_activity_id")
-	public String getCurrentActivityId() {
-		return currentActivityId;
-	}
-	public void setCurrentActivityId(String currentActivityId) {
-		this.currentActivityId = currentActivityId;
-	}
-	@Column(name="current_activity_name")
-	public String getCurrentActivityName() {
-		return currentActivityName;
-	}
-	public void setCurrentActivityName(String currentActivityName) {
-		this.currentActivityName = currentActivityName;
-	}
 	@Column(name="apply_time")
 	public Date getApplyTime() {
 		return applyTime;
 	}
 	public void setApplyTime(Date applyTime) {
 		this.applyTime = applyTime;
+	}
+	@Column(name="due_time")
+	public Date getDueTime() {
+		return dueTime;
+	}
+	public void setDueTime(Date dueTime) {
+		this.dueTime = dueTime;
 	}
 	@Column(name="user_id")
 	public String getUserId() {
@@ -105,4 +97,26 @@ public class LeaderTask implements Serializable{
 	public void setUserId(String userId) {
 		this.userId = userId;
 	}
+	@Column(name="execution_time")
+	public Date getExecutionTime() {
+		return executionTime;
+	}
+	public void setExecutionTime(Date executionTime) {
+		this.executionTime = executionTime;
+	}
+	@Formula(value="(SELECT a.NAME FROM sys_users a WHERE a.USERNAME=from_user)")
+	public String getFromUserName() {
+		return fromUserName;
+	}
+	public void setFromUserName(String fromUserName) {
+		this.fromUserName = fromUserName;
+	}
+	@Formula(value="(SELECT a.NAME FROM sys_users a WHERE a.USERNAME=to_user)")
+	public String getToUserName() {
+		return toUserName;
+	}
+	public void setToUserName(String toUserName) {
+		this.toUserName = toUserName;
+	}
+	
 }

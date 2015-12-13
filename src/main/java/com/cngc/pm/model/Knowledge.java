@@ -9,9 +9,12 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Transient;
+
+import org.hibernate.annotations.Formula;
 
 @Entity
-@Table(name = "kg_knowledge")
+@Table(name = "wk_knowledge")
 public class Knowledge implements Serializable {
 	
 	private static final long serialVersionUID = 5466613587566562481L;
@@ -23,11 +26,19 @@ public class Knowledge implements Serializable {
 	private String keyword;
 	private String applyUser;
 	private Date applyTime;
-	private boolean status;
+	private String category;
+	private String status;
 	private boolean locked;
 	private String processInstanceId;
-	private String currentActivityId;
-	private String currentActivityName;
+	private Long hits;
+	private Date lastReadTime;
+	
+	@Transient
+	private String statusName;
+	@Transient
+	private String categoryName;
+	@Transient
+	private String applyUserName;
 
 	@Id
 	@Column(name = "id")
@@ -101,10 +112,10 @@ public class Knowledge implements Serializable {
 	}
 	
 	@Column(name="status_")
-	public boolean getStatus(){
+	public String getStatus(){
 		return status;
 	}
-	public void setStatus(boolean status){
+	public void setStatus(String status){
 		this.status = status;
 	}
 	
@@ -116,20 +127,51 @@ public class Knowledge implements Serializable {
 		this.processInstanceId = processInstanceId;
 	}
 	
-	@Column(name="current_activity_id")
-	public String getCurrentAcitityId(){
-		return currentActivityId;
-	}
-	public void setCurrentAcitityId(String currentActivityId){
-		this.currentActivityId = currentActivityId;
-	}
-	
-	@Column(name="current_activity_name")
-	public String getCurrentAcitivityName(){
-		return currentActivityName;
-	}
-	public void setCurrentAcitivityName(String currentActivityName){
-		this.currentActivityName = currentActivityName;
+	@Column(name="category")
+	public String getCategory() {
+		return category;
 	}
 
+	public void setCategory(String category) {
+		this.category = category;
+	}
+	@Formula(value="(SELECT a.code_name FROM sys_code a WHERE a.type_='KNOWLEDGE_STATUS' AND a.code_= status_)")
+	public String getStatusName() {
+		return statusName;
+	}
+	public void setStatusName(String statusName) {
+		this.statusName = statusName;
+	}
+	@Formula(value="(SELECT a.code_name FROM sys_code a WHERE a.type_='INCIDENT_CATEGORY' AND a.code_= category)")
+	public String getCategoryName() {
+		return categoryName;
+	}
+	public void setCategoryName(String categoryName) {
+		this.categoryName = categoryName;
+	}
+	@Column(name="hits")
+	public Long getHits() {
+		return hits;
+	}
+
+	public void setHits(Long hits) {
+		this.hits = hits;
+	}
+	@Column(name="last_read_time")
+	public Date getLastReadTime() {
+		return lastReadTime;
+	}
+
+	public void setLastReadTime(Date lastReadTime) {
+		this.lastReadTime = lastReadTime;
+	}
+	@Formula(value="(SELECT a.NAME FROM sys_users a WHERE a.USERNAME=apply_user)")
+	public String getApplyUserName() {
+		return applyUserName;
+	}
+
+	public void setApplyUserName(String applyUserName) {
+		this.applyUserName = applyUserName;
+	}
+	
 }

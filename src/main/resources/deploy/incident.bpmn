@@ -2,8 +2,8 @@
 <definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.cngc.com.cn/incident">
   <process id="INCIDENT" name="事件管理流程" isExecutable="true">
     <extensionElements>
-      <activiti:executionListener event="start" expression="${execution.setVariable('incident', incidentEntityManager.getIncident(execution))}"></activiti:executionListener>
-      <activiti:executionListener event="end" expression="${incidentEntityManager.setIncidentStatus(execution)}"></activiti:executionListener>
+      <activiti:executionListener event="start" expression="${execution.setVariable(&quot;incident&quot;, incidentEntityManager.getIncident(execution))}"></activiti:executionListener>
+      <activiti:executionListener event="end" expression="${incidentEntityManager.setIncidentStatus(execution,&quot;06&quot;)}"></activiti:executionListener>
     </extensionElements>
     <startEvent id="startIncidentManage" name="Start">
       <extensionElements>
@@ -26,7 +26,16 @@
     <sequenceFlow id="flow2" sourceRef="incidentClassify" targetRef="exclusivegateway1"></sequenceFlow>
     <userTask id="incidentConfirm" name="事件确认" activiti:candidateGroups="SERVICE_DESK">
       <extensionElements>
+        <activiti:formProperty id="satisfaction" name="满意度" type="enum" expression="${incident.satisfaction}">
+          <activiti:value id="01" name="非常好"></activiti:value>
+          <activiti:value id="02" name="较好"></activiti:value>
+          <activiti:value id="03" name="好"></activiti:value>
+          <activiti:value id="04" name="一般"></activiti:value>
+          <activiti:value id="05" name="较好"></activiti:value>
+        </activiti:formProperty>
+        <activiti:formProperty id="feedback" name="用户反馈" type="bigtext" expression="${incident.feedback}"></activiti:formProperty>
         <activiti:formProperty id="solution" name="解决方案" type="bigtext" expression="${incident.solution}"></activiti:formProperty>
+        <activiti:taskListener event="create" expression="${incidentEntityManager.setIncidentStatus(execution,&quot;04&quot;)}"></activiti:taskListener>
       </extensionElements>
     </userTask>
     <sequenceFlow id="flow3" sourceRef="exclusivegateway1" targetRef="incidentConfirm">
@@ -34,7 +43,16 @@
     </sequenceFlow>
     <userTask id="incidentClose" name="事件关闭" activiti:candidateGroups="INCIDENT_MANAGER">
       <extensionElements>
+        <activiti:formProperty id="satisfaction" name="满意度" type="enum" expression="${incident.satisfaction}" writable="false">
+          <activiti:value id="01" name="非常好"></activiti:value>
+          <activiti:value id="02" name="较好"></activiti:value>
+          <activiti:value id="03" name="好"></activiti:value>
+          <activiti:value id="04" name="一般"></activiti:value>
+          <activiti:value id="05" name="较差"></activiti:value>
+        </activiti:formProperty>
+        <activiti:formProperty id="feedback" name="用户反馈" type="bigtext" expression="${incident.feedback}" writable="false"></activiti:formProperty>
         <activiti:formProperty id="solution" name="解决方案" type="bigtext" expression="${incident.solution}"></activiti:formProperty>
+        <activiti:taskListener event="create" expression="${incidentEntityManager.setIncidentStatus(execution,&quot;05&quot;)}"></activiti:taskListener>
       </extensionElements>
     </userTask>
     <sequenceFlow id="flow4" sourceRef="incidentConfirm" targetRef="incidentClose"></sequenceFlow>
@@ -50,6 +68,8 @@
           <activiti:value id="true" name="已解决"></activiti:value>
         </activiti:formProperty>
         <activiti:formProperty id="solution" name="解决方案" type="bigtext" expression="${incident.solution}"></activiti:formProperty>
+        <activiti:taskListener event="create" expression="${incidentEntityManager.setIncidentStatus(execution,&quot;02&quot;)}"></activiti:taskListener>
+        <activiti:taskListener event="assignment" expression="${incidentEntityManager.setIncidentStatus(execution,&quot;03&quot;)}"></activiti:taskListener>
       </extensionElements>
     </userTask>
     <sequenceFlow id="flow6" sourceRef="exclusivegateway1" targetRef="incidentDeal">
@@ -67,69 +87,68 @@
   <bpmndi:BPMNDiagram id="BPMNDiagram_INCIDENT">
     <bpmndi:BPMNPlane bpmnElement="INCIDENT" id="BPMNPlane_INCIDENT">
       <bpmndi:BPMNShape bpmnElement="startIncidentManage" id="BPMNShape_startIncidentManage">
-        <omgdc:Bounds height="35.0" width="35.0" x="80.0" y="108.0"></omgdc:Bounds>
+        <omgdc:Bounds height="35.0" width="35.0" x="30.0" y="63.0"></omgdc:Bounds>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape bpmnElement="incidentClassify" id="BPMNShape_incidentClassify">
-        <omgdc:Bounds height="71.0" width="105.0" x="160.0" y="90.0"></omgdc:Bounds>
+        <omgdc:Bounds height="71.0" width="105.0" x="110.0" y="45.0"></omgdc:Bounds>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape bpmnElement="exclusivegateway1" id="BPMNShape_exclusivegateway1">
-        <omgdc:Bounds height="40.0" width="40.0" x="310.0" y="106.0"></omgdc:Bounds>
+        <omgdc:Bounds height="40.0" width="40.0" x="250.0" y="60.0"></omgdc:Bounds>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape bpmnElement="incidentConfirm" id="BPMNShape_incidentConfirm">
-        <omgdc:Bounds height="55.0" width="105.0" x="600.0" y="98.0"></omgdc:Bounds>
+        <omgdc:Bounds height="55.0" width="105.0" x="580.0" y="55.0"></omgdc:Bounds>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape bpmnElement="incidentClose" id="BPMNShape_incidentClose">
-        <omgdc:Bounds height="55.0" width="105.0" x="740.0" y="98.0"></omgdc:Bounds>
+        <omgdc:Bounds height="55.0" width="105.0" x="740.0" y="53.0"></omgdc:Bounds>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape bpmnElement="endevent1" id="BPMNShape_endevent1">
-        <omgdc:Bounds height="35.0" width="35.0" x="775.0" y="180.0"></omgdc:Bounds>
+        <omgdc:Bounds height="35.0" width="35.0" x="775.0" y="150.0"></omgdc:Bounds>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape bpmnElement="incidentDeal" id="BPMNShape_incidentDeal">
-        <omgdc:Bounds height="55.0" width="105.0" x="380.0" y="98.0"></omgdc:Bounds>
+        <omgdc:Bounds height="55.0" width="105.0" x="330.0" y="53.0"></omgdc:Bounds>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape bpmnElement="exclusivegateway2" id="BPMNShape_exclusivegateway2">
-        <omgdc:Bounds height="40.0" width="40.0" x="520.0" y="105.0"></omgdc:Bounds>
+        <omgdc:Bounds height="40.0" width="40.0" x="480.0" y="62.0"></omgdc:Bounds>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge bpmnElement="flow1" id="BPMNEdge_flow1">
-        <omgdi:waypoint x="115.0" y="125.0"></omgdi:waypoint>
-        <omgdi:waypoint x="160.0" y="125.0"></omgdi:waypoint>
+        <omgdi:waypoint x="65.0" y="80.0"></omgdi:waypoint>
+        <omgdi:waypoint x="110.0" y="80.0"></omgdi:waypoint>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="flow2" id="BPMNEdge_flow2">
-        <omgdi:waypoint x="265.0" y="125.0"></omgdi:waypoint>
-        <omgdi:waypoint x="310.0" y="126.0"></omgdi:waypoint>
+        <omgdi:waypoint x="215.0" y="80.0"></omgdi:waypoint>
+        <omgdi:waypoint x="250.0" y="80.0"></omgdi:waypoint>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="flow3" id="BPMNEdge_flow3">
-        <omgdi:waypoint x="330.0" y="146.0"></omgdi:waypoint>
-        <omgdi:waypoint x="330.0" y="195.0"></omgdi:waypoint>
-        <omgdi:waypoint x="493.0" y="195.0"></omgdi:waypoint>
-        <omgdi:waypoint x="652.0" y="195.0"></omgdi:waypoint>
-        <omgdi:waypoint x="652.0" y="153.0"></omgdi:waypoint>
+        <omgdi:waypoint x="270.0" y="100.0"></omgdi:waypoint>
+        <omgdi:waypoint x="270.0" y="159.0"></omgdi:waypoint>
+        <omgdi:waypoint x="632.0" y="159.0"></omgdi:waypoint>
+        <omgdi:waypoint x="632.0" y="110.0"></omgdi:waypoint>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="flow4" id="BPMNEdge_flow4">
-        <omgdi:waypoint x="705.0" y="125.0"></omgdi:waypoint>
-        <omgdi:waypoint x="740.0" y="125.0"></omgdi:waypoint>
+        <omgdi:waypoint x="685.0" y="82.0"></omgdi:waypoint>
+        <omgdi:waypoint x="740.0" y="80.0"></omgdi:waypoint>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="flow5" id="BPMNEdge_flow5">
-        <omgdi:waypoint x="792.0" y="153.0"></omgdi:waypoint>
-        <omgdi:waypoint x="792.0" y="180.0"></omgdi:waypoint>
+        <omgdi:waypoint x="792.0" y="108.0"></omgdi:waypoint>
+        <omgdi:waypoint x="792.0" y="150.0"></omgdi:waypoint>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="flow6" id="BPMNEdge_flow6">
-        <omgdi:waypoint x="350.0" y="126.0"></omgdi:waypoint>
-        <omgdi:waypoint x="380.0" y="125.0"></omgdi:waypoint>
+        <omgdi:waypoint x="290.0" y="80.0"></omgdi:waypoint>
+        <omgdi:waypoint x="330.0" y="80.0"></omgdi:waypoint>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="flow7" id="BPMNEdge_flow7">
-        <omgdi:waypoint x="485.0" y="125.0"></omgdi:waypoint>
-        <omgdi:waypoint x="520.0" y="125.0"></omgdi:waypoint>
+        <omgdi:waypoint x="435.0" y="80.0"></omgdi:waypoint>
+        <omgdi:waypoint x="480.0" y="82.0"></omgdi:waypoint>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="flow8" id="BPMNEdge_flow8">
-        <omgdi:waypoint x="560.0" y="125.0"></omgdi:waypoint>
-        <omgdi:waypoint x="600.0" y="125.0"></omgdi:waypoint>
+        <omgdi:waypoint x="520.0" y="82.0"></omgdi:waypoint>
+        <omgdi:waypoint x="580.0" y="82.0"></omgdi:waypoint>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="flow9" id="BPMNEdge_flow9">
-        <omgdi:waypoint x="540.0" y="105.0"></omgdi:waypoint>
-        <omgdi:waypoint x="540.0" y="53.0"></omgdi:waypoint>
-        <omgdi:waypoint x="212.0" y="53.0"></omgdi:waypoint>
-        <omgdi:waypoint x="212.0" y="90.0"></omgdi:waypoint>
+        <omgdi:waypoint x="500.0" y="62.0"></omgdi:waypoint>
+        <omgdi:waypoint x="500.0" y="11.0"></omgdi:waypoint>
+        <omgdi:waypoint x="163.0" y="11.0"></omgdi:waypoint>
+        <omgdi:waypoint x="162.0" y="45.0"></omgdi:waypoint>
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>

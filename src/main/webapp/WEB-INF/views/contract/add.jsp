@@ -173,6 +173,12 @@
                                 <div class="col-md-10"><form:input path="signTime" cssClass="dateISO"></form:input></div>
                             </div>
                             <div class="row-form clearfix">
+                                <div class="col-md-2"><form:label path="startTime">开始时间:</form:label></div>
+                                <div class="col-md-4"><form:input path="startTime" cssClass="dateISO"></form:input></div>
+                                <div class="col-md-2"><form:label path="endTime">结束时间:</form:label></div>
+                                <div class="col-md-4"><form:input path="endTime" cssClass="dateISO"></form:input></div>
+                            </div>
+                            <div class="row-form clearfix">
                                 <div class="col-md-2"><form:label path="attachment">附件:</form:label></div>
                                 <div class="col-md-10"><form:input path="attachment" ></form:input></div>
                             </div>                                      

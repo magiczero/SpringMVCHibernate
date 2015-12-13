@@ -9,7 +9,9 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
+import org.hibernate.annotations.Formula;
 import org.springframework.format.annotation.DateTimeFormat;
 
 @Entity
@@ -25,6 +27,8 @@ public class Income  implements Serializable{
 	private Date outTime;
 	private Date createdTime;
 	private String createdUser;
+	@Transient
+	private String createdUserName;
 	
 	@Id
 	@Column(name = "id")
@@ -93,4 +97,12 @@ public class Income  implements Serializable{
 	public void setCreatedUser(String createdUser) {
 		this.createdUser = createdUser;
 	}
+	@Formula(value="(SELECT a.NAME FROM sys_users a WHERE a.USERNAME=created_user)")
+	public String getCreatedUserName() {
+		return createdUserName;
+	}
+	public void setCreatedUserName(String createdUserName) {
+		this.createdUserName = createdUserName;
+	}
+	
 }

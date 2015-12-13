@@ -86,21 +86,27 @@
     <script type='text/javascript' src='${contextPath }/resources/js/plugins.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/settings.js'></script>    
     <script type='text/javascript' src='${contextPath }/resources/js/faq.js'></script>
+    <script type='text/javascript' src='${contextPath }/resources/js/pm-common.js'></script>
+    <script type='text/javascript' src='${contextPath }/resources/js/pm-workflow.js'></script>
+    <script type='text/javascript' src='${contextPath }/resources/js/pm-knowledge.js'></script>
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
       <script src="${contextPath }/resources/js/html5shiv.js"></script>
       <script src="${contextPath }/resources/js/respond.min.js"></script>
     <![endif]-->
     <script type="text/javascript">
+    	var ctx = "${contextPath}";
             $(document).ready(function () {
-                $("#eventTable").dataTable();
-                $(".header").load("../header");
-                $(".menu").load("../menu", function () { $(".navigation > li:eq(2)").addClass("active"); });
-                $(".breadLine .buttons").load("../contentbuttons");
+                $("#myTable").dataTable({"aaSorting":[[3,'desc']]});
+                $(".header").load("${contextPath}/header");
+                $(".menu").load("${contextPath}/menu", function () { $(".navigation > li:eq(2)").addClass("active"); });
+                $(".breadLine .buttons").load("${contextPath}/contentbuttons");
                 $(".confirm").bind("click",function(){
                 	if(!confirm("确定要执行该操作?"))
                 		return false;
                 });
+                pm_knowledge_initdialog();
+                pm_workflow_inittracedialog();
             });
     </script>
 </head>
@@ -145,11 +151,18 @@
                     <div class="col-md-9">                    
                         <div class="head clearfix">
                             <div class="isw-grid"></div>
-                            <h1>待处理变更</h1>  
+                            <h1>
+                               <c:if test="${not empty status }">
+                            		${status.codeName }变更
+                            	</c:if>
+                            	<c:if test="${empty status }">
+                            	未关闭变更
+                            	</c:if>
+                            </h1>  
 
                             <ul class="buttons">
                                 <li>
-                                    <a href="${contextPath }/event/add" class="isw-text_document tipb" title="新事件"></a>
+                                    <a href="${contextPath }/change/add" class="isw-text_document tipb" title="新变更"></a>
                                 </li>                            
                                 <li>
                                     <a href="#" class="isw-settings tipl" title="操作 "></a>
@@ -163,30 +176,39 @@
                             </ul>                             
                         </div>
                         <div class="block-fluid table-sorting clearfix">
-                            <table cellpadding="0" cellspacing="0" width="100%" class="table" id="eventTable">
+                            <table cellpadding="0" cellspacing="0" width="100%" class="table" id="myTable">
                                 <thead>
                                     <tr>
-                                        <th width="40px"><input type="checkbox" name="checkall"/></th>
-                                        <th width="80px">变更ID</th>
                                         <th>摘要</th>
-                                        <th width="80px">优先级</th>
-                                        <th width="80px">影响</th>
-                                        <th width="80px">状态</th>
-                                        <th width="100px">变更实施人</th>
-                                        <th width="120px">申请日期</th>                                    
+                                        <th width="90px">变更申请人</th>
+                                        <th width="120px">流程步骤</th>
+                                        <th width="120px">申请日期</th>
+                                        <th width="80px">状态</th>  
+                                        <th width="60px">操作</th>                                  
                                     </tr>
                                 </thead>
                                 <tbody>
                                 	<c:forEach items="${list }" var="change">
+                                	<c:set var="pdid" value="${change.processInstanceId }" />
                                     <tr>
-                                        <td><input type="checkbox" name="checkbox"/></td>
-                                        <td><a href="${contextPath }/change/deal/${change.id}">${change.id }</a></td>
-                                        <td>${change.description}</td>
-                                        <td>${change.priority }</td>
-                                        <td>${change.influence }</td>
-                                        <td>${change.status }</td>
-                                        <td>${change.delegateUser }</td>
+                                        <td>
+	                                        <span class="label label-warning tipb" title="优先级">${change.priorityName }</span>
+	                                        ${change.description}
+                                        </td>
+                                         <td>${change.applyUserName }</td>
+                                        <td><c:if test="${not empty change.processInstanceId }">
+												<a class="lnk_trace" href='#' pid="${change.processInstanceId }" pdid="<%=ProcessDefinitionCache.getProcessDefinitionId(pageContext.getAttribute("pdid").toString()) %>" title="点击查看流程图">
+													<%=ProcessDefinitionCache.getActivityName(pageContext.getAttribute("pdid").toString()) %>
+												</a>
+											</c:if></td>
+                                       
                                         <td><fmt:formatDate value="${change.applyTime }" pattern="MM/dd HH:mm:ss" /></td>
+                                        <td>${change.statusName }</td>
+                                        <td>
+                                        	<c:if test="${empty change.endTime }">
+                                        		<a href="${contextPath }/change/deal/${change.id}">办理</a>
+                                        	</c:if>
+                                        </td>
                                     </tr>
                                    </c:forEach>
                                 </tbody>
@@ -203,83 +225,30 @@
                             <h3>计数</h3>
                             <div>
                                 <ul>
-                                    <li><a href="#">打开</a><span style="float:right;margin-right:20px;">9</span></li>
-                                    <li><a href="#">未指派</a><span style="float:right;margin-right:20px;">0</span></li>
-                                    <li><a href="#">未确认</a><span style="float:right;margin-right:20px;">0</span></li>
-                                    <li><a href="#">已超期</a><span style="float:right;margin-right:20px;">1</span></li>
+                                	<c:forEach items="${group }" var="code">
+                                		<c:set var="id" value="${code.code }" />
+                                		<li><a href="${contextPath }/change/list/${code.code}">${code.codeName }</a>
+                                		<span style="float:right;margin-right:20px;">
+                                			<c:if test="${empty count[id] }">
+                                			0
+                                			</c:if>
+                                			${count[id] }
+                                		</span></li>
+                                	</c:forEach>
                                 </ul>                                              
                             </div>
 
                             <h3>功能</h3>
                             <div>
                                 <ul>
-                                    <li><a href="#">创建新事件</a></li>
+                                    <li><a href="${contextPath }/change/add">创建新变更</a></li>
+                                    <li><a href="${contextPath }/change/list">待处理变更</a></li>
                                     <li><a href="#" id="lnk_knowledge">知识库</a></li>
                                 </ul>                                                
                             </div>                     
 
                         </div>
 
-                        <div class="head clearfix">
-                            <div class="isw-edit"></div>
-                            <h1>广播消息</h1>
-                            <ul class="buttons">                            
-                                <li>
-                                    <a href="#" class="isw-text_document tipb" title="新消息"></a>
-                                </li>                            
-                                <li>
-                                    <a href="#" class="isw-settings tipl" title="操作"></a>
-                                    <ul class="dd-list">
-                                        <li><a href="#"><span class="isw-list"></span> 查看全部</a></li>
-                                        <li><a href="#"><span class="isw-edit"></span> 新消息</a></li>
-                                        <li><a href="#"><span class="isw-refresh"></span> 刷新</a></li>
-                                    </ul>
-                                </li>
-                            </ul>                        
-                        </div>
-                        <div class="block news scrollBox">
-
-                            <div class="scroll" style="height: 240px;">
-
-                                <div class="item">
-                                    <a href="#" id="lnk_message">打印服务升级.</a>
-                                    <p>[事件E4059560] 6月12日 9:00-12:00 对打印服务器进行升级，在此过程中可能影响到终端打印.</p>
-                                    <span class="date">2015-6-12 08:23</span>
-                                    <div class="controls">                                    
-                                        <a href="#" class="glyphicon glyphicon-trash tip" title="已阅"></a>
-                                    </div>
-                                </div>
-
-                                <div class="item">
-                                    <a href="#">打印服务升级.</a>
-                                    <p>[变更C495859] 6月12日 9:00-12:00 对打印服务器进行升级，在此过程中可能影响到打印.</p>
-                                    <span class="date">2012.6.12 08:23</span>
-                                    <div class="controls">                                    
-                                        <a href="#" class="glyphicon glyphicon-trash tip" title="已阅"></a>
-                                    </div>
-                                </div>
-
-                                <div class="item">
-                                    <a href="#">打印服务升级.</a>
-                                    <p>6月12日 9:00-12:00 对打印服务器进行升级，在此过程中可能影响到打印.</p>
-                                    <span class="date">2012.6.12 08:23</span>
-                                    <div class="controls">                                    
-                                        <a href="#" class="glyphicon glyphicon-trash tip" title="已阅"></a>
-                                    </div>
-                                </div>                           
-
-                                <div class="item">
-                                    <a href="#">打印服务升级.</a>
-                                    <p>6月12日 9:00-12:00 对打印服务器进行升级，在此过程中可能影响到打印.</p>
-                                    <span class="date">2012.6.12 08:23</span>
-                                    <div class="controls">                                    
-                                        <a href="#" class="glyphicon glyphicon-trash tip" title="已阅"></a>
-                                    </div>
-                                </div>                         
-
-                            </div>
-
-                        </div>
                     </div> 
                 </div>
                 
@@ -287,7 +256,7 @@
             </div>
             <!--workplace end-->
         </div>   
-        
+    	<div class="dialog" id="b_popup_knowledge" style="display: none" title="知识库"></div>
     </div>
 </body>
 

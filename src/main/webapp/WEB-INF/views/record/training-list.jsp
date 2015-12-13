@@ -87,17 +87,19 @@
     <script type='text/javascript' src='${contextPath }/resources/js/plugins.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/settings.js'></script>    
     <script type='text/javascript' src='${contextPath }/resources/js/faq.js'></script>
+    <script type='text/javascript' src='${contextPath }/resources/js/pm-common.js'></script>
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
       <script src="${contextPath }/resources/js/html5shiv.js"></script>
       <script src="${contextPath }/resources/js/respond.min.js"></script>
     <![endif]-->
     <script type="text/javascript">
+    var ctx = "${contextPath}";
             $(document).ready(function () {
                 $("#eventTable").dataTable();
-                $(".header").load("../header");
-                $(".menu").load("../menu", function () { $(".navigation > li:eq(5)").addClass("active"); });
-                $(".breadLine .buttons").load("../contentbuttons");
+                $(".header").load("${contextPath}/header");
+                $(".menu").load("${contextPath}/menu", function () { $(".navigation > li:eq(5)").addClass("active"); });
+                $(".breadLine .buttons").load("${contextPath}/contentbuttons");
                 $(".confirm").bind("click",function(){
                 	if(!confirm("确定要执行该操作?"))
                 		return false;
@@ -141,10 +143,8 @@
                    <div class="col-md-3 clearfix" id="mails_navigation">                    
                         <div class="block-fluid sNavigation">
                             <ul>
-                            	<li><a href="${contextPath }/record/inspection"><span class="glyphicon glyphicon-envelope"></span> 日常巡检</a><span class="arrow"></span></li>
-                                <li><a href="${contextPath }/record/list"><span class="glyphicon glyphicon-inbox"></span> 病毒库升级</a><span class="arrow"></span></li>
-                                <li><a href="${contextPath }/record/income"><span class="glyphicon glyphicon-envelope"></span> 机房人员出入</a><span class="arrow"></span></li>
-                                <li class="active"><a href="${contextPath }/record/training"><span class="glyphicon glyphicon-envelope"></span> 三员培训</a><span class="arrow"></span></li>
+                                <li><a href="${contextPath }/record/income"><span class="glyphicon glyphicon-arrow-right"></span> 机房人员出入</a><span class="arrow"></span></li>
+                                <li class="active"><a href="${contextPath }/record/training"><span class="glyphicon glyphicon-user"></span> 三员培训</a><span class="arrow"></span></li>
                             </ul>
                         </div>                      
                     </div>
@@ -153,11 +153,13 @@
                             <div class="isw-grid"></div>
                             <h1>记录列表</h1>  
 
-                            <ul class="buttons">                          
+                            <ul class="buttons"> 
+                            	<li>
+                                    <a href="#newForm" role="button" data-toggle="modal" class="isw-plus tipb" title="创建新记录"></a>
+                                </li>                         
                                 <li>
                                     <a href="#" class="isw-settings tipl" title="操作 "></a>
                                     <ul class="dd-list">
-                                    	<li><a href="#newForm" role="button" data-toggle="modal"><span class="isw-ok"></span> 创建新记录</a></li>
                                         <li><a href="javascript:void(0);" id="delBtn"><span class="isw-list"></span> 删除</a></li>
                                         <li><a href="#"><span class="isw-refresh"></span> 刷新</a></li>
                                     </ul>
@@ -168,7 +170,6 @@
                             <table class="table" id="eventTable">
                                 <thead>
                                 	<tr>
-										<th  width="60px">ID</th>
 										<th>培训人</th>
 										<th width="200px">培训单位</th>
 										<th width="100px">证书</th>
@@ -180,7 +181,6 @@
                                 <tbody>
                                 	<c:forEach items="${list}" var="training">
 									<tr>
-										<td>${training.id }</td>
 										<td>${training.userName }</td>
 										<td>${training.company }</td>
 										<td>${training.certification }</td>
@@ -206,7 +206,7 @@
                 <div class="modal-content">
                     <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>                        
-                        <h4>机房人员出入</h4>
+                        <h4>三员培训记录</h4>
                     </div>
                     <form:form action="${contextPath}/record/training/save" commandName="training" method="post">
                     <div class="modal-body modal-body-np">

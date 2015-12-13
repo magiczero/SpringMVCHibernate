@@ -46,9 +46,23 @@ public class StyleDAOImpl extends BaseDAOImpl<Style, Long>  implements StyleDAO 
 	public Style getByCode(String code) {
 		// TODO Auto-generated method stub
 		Search search = new Search(Style.class);
+		
 		search.addFilterEqual("code", code);
+		search.addSortAsc("order");
 		
 		return (Style)this._searchUnique(search);
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<Style> getAllByCode(String code) {
+		// TODO Auto-generated method stub
+		Search search = new Search(Style.class);
+		
+		search.addFilterEqual("style.code", code);
+		search.addSortAsc("order");
+		
+		return this._search(search);
 	}
 
 }

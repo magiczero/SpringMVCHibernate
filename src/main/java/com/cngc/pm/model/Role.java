@@ -4,16 +4,15 @@ import java.io.Serializable;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
 import javax.persistence.Table;
 
@@ -44,26 +43,63 @@ public class Role implements Serializable {
 	private boolean enable;
 	private boolean sys;
 	//private Long moduleId;
+//	private Set<SysUser> users = new LinkedHashSet<>();
+//	
+//	@ManyToMany(targetEntity=SysUser.class)
+//	@JoinTable(name="sys_users_roles", joinColumns={@JoinColumn(name="role_id", referencedColumnName="role_id")}, inverseJoinColumns={@JoinColumn(name="user_id",referencedColumnName="user_id")})
+//	@OrderBy("id")
+//	@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+//	@JsonBackReference
+//	public Set<SysUser> getUsers() {
+//		return users;
+//	}
+//	@JsonBackReference
+//	public void setUsers(Set<SysUser> users) {
+//		this.users = users;
+//	}
 	
+	private Set<UserRole> userRoles = new LinkedHashSet<>();
+	private Set<RoleAuth> roleAuths = new LinkedHashSet<>();
+	
+	@OneToMany(targetEntity=RoleAuth.class, mappedBy="role")
+	public Set<RoleAuth> getRoleAuths() {
+		return roleAuths;
+	}
+
+	public void setRoleAuths(Set<RoleAuth> roleAuths) {
+		this.roleAuths = roleAuths;
+	}
+
+	@OneToMany(targetEntity=UserRole.class, mappedBy="role")
+//	@JoinColumn(name="role_id", referencedColumnName="role_id")
+//	@Fetch(value = FetchMode.SUBSELECT)
+	public Set<UserRole> getUserRoles() {
+		return userRoles;
+	}
+
+	public void setUserRoles(Set<UserRole> userRoles) {
+		this.userRoles = userRoles;
+	}
+
 	private Set<Moudle> modules = new LinkedHashSet<>();
 
-	private Set<Authority> auths = new LinkedHashSet<Authority>();
-
-	@ManyToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE },fetch=FetchType.EAGER)  
-	@JoinTable(name = "sys_roles_authorities", joinColumns = { @JoinColumn(name = "ROLE_ID") }, inverseJoinColumns = { @JoinColumn(name = "AUTHORITY_ID") })  
-	@OrderBy("id")  
-	@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)  
-	public Set<Authority> getAuths() {
-		return auths;
-	}
-
-	public void setAuths(Set<Authority> auths) {
-		this.auths = auths;
-	}
+//	private Set<Authority> auths = new LinkedHashSet<Authority>();
+//
+//	@ManyToMany(targetEntity=Authority.class)  
+//	@JoinTable(name = "sys_roles_authorities", joinColumns = { @JoinColumn(name = "ROLE_ID") }, inverseJoinColumns = { @JoinColumn(name = "AUTHORITY_ID") })  
+//	@OrderBy("id")  
+//	@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)  
+//	public Set<Authority> getAuths() {
+//		return auths;
+//	}
+//
+//	public void setAuths(Set<Authority> auths) {
+//		this.auths = auths;
+//	}
 	
-	@ManyToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE },fetch=FetchType.EAGER)  
+	@ManyToMany(targetEntity=Moudle.class)  
 	@JoinTable(name = "sys_roles_moudles", joinColumns = { @JoinColumn(name = "ROLE_ID") }, inverseJoinColumns = { @JoinColumn(name = "MODULE_ID") })  
-	@OrderBy("id")  
+	@OrderBy("priority")  
 	@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)  
 	public Set<Moudle> getModules() {
 		return modules;

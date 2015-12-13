@@ -82,5 +82,19 @@ public class ResourcesServiceImpl implements ResourcesService {
 		// TODO Auto-generated method stub
 		return resourcesDao.getByURL(servletPath);
 	}
+
+//	@Override
+//	public List<Role> getRolesByURL(String url) {
+//		// TODO Auto-generated method stub
+//		Resources r = resourcesDao.getByURL(url);
+//		List<Role> list = new ArrayList<>();
+//		for(Authority auth : r.getAuthSet()) {
+//			for(Role role : auth.getRoleSet()) {
+//				list.add(role);
+//			}
+//		}
+//		
+//		return list;
+//	}
 	
 }

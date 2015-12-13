@@ -13,8 +13,6 @@
     
     <title>用户管理--运维管理系统</title>
 
-    <link rel="icon" type="image/ico" href="favicon.ico"/>
-    
     <link href="${contextPath }/resources/css/stylesheets.css" rel="stylesheet" type="text/css" />
     <!--[if lt IE 8]>
         <link href="${contextPath }/resources/css/ie7.css" rel="stylesheet" type="text/css" />
@@ -136,7 +134,7 @@
     	$.getJSON(ctx + '/user/getrole/' + userid +'?t=' + Math.random(),function(data){
     		for(var i=0;i<data.role.length;i++)
     		{
-    			$("#selRole").multiSelect("select",data.role[i].id);;
+    			$("#selRole").multiSelect("select",data.role[i].id);
     		}
     		$("#roleform_id").attr('value',userid);
         	$("#setRoleFormDialog").modal('show');
@@ -218,8 +216,8 @@
 										<td>${user.username}</td>
 										<td>${user.name}</td>
 										<td>
-										<c:forEach items="${user.roles }" var="role">
-										 ${role.roleDesc }<br> 										
+										<c:forEach items="${user.userRoles }" var="role">
+										 ${role.role.roleDesc }<br> 										
 										</c:forEach>
 										</td>
 										<td>${user.createWhile }</td>

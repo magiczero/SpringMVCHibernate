@@ -1,6 +1,5 @@
 package com.cngc.pm.controller;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -15,7 +14,6 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.cngc.pm.common.web.BaseController;
@@ -49,16 +47,16 @@ public class MoudleController extends BaseController {
 	@RequestMapping(value = "/list", method = RequestMethod.GET)
 	public String list(Model model) {
 		List<Moudle> list = moudleService.getAllMenu();
-		List<Moudle> list1 = new ArrayList<>();
+		//List<Moudle> list1 = new ArrayList<>();
 		model.addAttribute("listmoudle", list);
 		
-		for(Moudle m : list) {					//获取第一层菜单，只有他们才可以添加子菜单
-			if(m.getLevel() == 1)
-				list1.add(m);
-		}
+//		for(Moudle m : list) {					//获取第一层菜单，只有他们才可以添加子菜单
+//			if(m.getLevel() == 1)
+//				list1.add(m);
+//		}
 		
 		model.addAttribute("moudle", new Moudle());
-		model.addAttribute("list1", list1);
+//		model.addAttribute("list1", list1);
 		//model.addAttribute("type", ModuleType.values());
 		return "moudle/list";
 	}

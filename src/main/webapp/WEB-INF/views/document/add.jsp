@@ -234,12 +234,18 @@
                             <div class="row-form clearfix">
                                 <div class="col-md-12">
                                 <div id="uploader">
-					<p>您的浏览器未安装 Flash, Silverlight, Gears, BrowserPlus 或者支持 HTML5 .</p>
-				</div>
-                                
+									<p>您的浏览器未安装 Flash, Silverlight, Gears, BrowserPlus 或者支持 HTML5 .</p>
+								</div>
 								</div>
                             </div>
-
+							<div class="row-form clearfix">
+                                <div class="col-md-2">
+                                <label for="link">文档链接</label>
+                                </div>
+                                <div class="col-md-7">
+                                <form:input path="link" ></form:input> 上传文档与文档链接只能选择一项
+                                </div>
+                            </div>
                             <div class="footer tar">
                                <input type="submit" class="btn btn-primary center-block" value="提 交" />
                             </div>                            

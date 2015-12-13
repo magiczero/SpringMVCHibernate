@@ -1,20 +1,15 @@
 package com.cngc.pm.model;
 
 import java.io.Serializable;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.OrderBy;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.Cache;
@@ -49,19 +44,53 @@ public class Authority implements Serializable {
 	private boolean sys;
 	//private Long moduleId;			
 	
-	private Set<Resources> setResources = new HashSet<>();
+	//private Set<Resources> setResources = new LinkedHashSet<>();
+	private Set<AuthReso> authResos = new LinkedHashSet<>();
+	private Set<RoleAuth> roleAuths = new LinkedHashSet<>();
+//	private Set<Role> roleSet = new LinkedHashSet<>();
 	
-	@ManyToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE },fetch=FetchType.EAGER)  
-	@JoinTable(name = "sys_authorities_resources", joinColumns = { @JoinColumn(name = "AUTHORITY_ID") }, inverseJoinColumns = { @JoinColumn(name = "RESOURCE_ID") })  
-	@OrderBy("id")  
-	@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)  
-	public Set<Resources> getSetResources() {
-		return setResources;
+	@OneToMany(targetEntity=AuthReso.class, mappedBy="auth")
+	public Set<AuthReso> getAuthResos() {
+		return authResos;
 	}
 
-	public void setSetResources(Set<Resources> setResources) {
-		this.setResources = setResources;
+	public void setAuthResos(Set<AuthReso> authResos) {
+		this.authResos = authResos;
 	}
+
+//	
+//	@ManyToMany(targetEntity=Role.class)  
+//	@JoinTable(name = "sys_roles_authorities", joinColumns = { @JoinColumn(name = "AUTHORITY_ID") }, inverseJoinColumns = { @JoinColumn(name = "ROLE_ID") })  
+//	@OrderBy("id")  
+//	@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)  
+//	public Set<Role> getRoleSet() {
+//		return roleSet;
+//	}
+//
+//	public void setRoleSet(Set<Role> roleSet) {
+//		this.roleSet = roleSet;
+//	}
+
+	@OneToMany(targetEntity=RoleAuth.class, mappedBy="auth")
+	public Set<RoleAuth> getRoleAuths() {
+		return roleAuths;
+	}
+
+	public void setRoleAuths(Set<RoleAuth> roleAuths) {
+		this.roleAuths = roleAuths;
+	}
+
+//	@ManyToMany(targetEntity=Resources.class)  
+//	@JoinTable(name = "sys_authorities_resources", joinColumns = { @JoinColumn(name = "AUTHORITY_ID") }, inverseJoinColumns = { @JoinColumn(name = "RESOURCE_ID") })  
+//	@OrderBy("id")  
+//	@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)  
+//	public Set<Resources> getSetResources() {
+//		return setResources;
+//	}
+//
+//	public void setSetResources(Set<Resources> setResources) {
+//		this.setResources = setResources;
+//	}
 
 	@Id 
     @Column(name="authority_id")

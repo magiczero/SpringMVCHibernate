@@ -8,7 +8,6 @@ import java.util.Set;
 import org.springframework.stereotype.Repository;
 
 import com.cngc.pm.dao.RoleDAO;
-import com.cngc.pm.model.Attachment;
 import com.cngc.pm.model.Role;
 
 @Repository

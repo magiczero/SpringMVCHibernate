@@ -13,6 +13,8 @@ import javax.validation.Valid;
 
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.springframework.beans.propertyeditors.CustomCollectionEditor;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -32,6 +34,7 @@ import com.cngc.pm.model.SecretLevel;
 import com.cngc.pm.model.Style;
 import com.cngc.pm.model.SysUser;
 import com.cngc.pm.service.DocumentService;
+import com.cngc.pm.service.UserService;
 import com.cngc.utils.Common;
 import com.googlecode.genericdao.search.SearchResult;
 
@@ -41,6 +44,8 @@ public class DocumentController {
 
 	@Resource
 	private DocumentService docService;
+	@Resource
+	private UserService userService;
 	
 	@InitBinder
     protected void initBinder(WebDataBinder binder) {
@@ -208,7 +213,9 @@ public class DocumentController {
 		Set<Attachment> setAttach = docService.getSetAttach(names);
 		
 		//获取用户
-		SysUser user = (SysUser)request.getSession().getAttribute("user");
+//		SysUser user = (SysUser)request.getSession().getAttribute("user");
+		UserDetails user1 = (UserDetails)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		SysUser user = userService.getByUsername(user1.getUsername());
 		
 		document.setDocId(Common.getUUID());
 		document.setLast(true);
@@ -226,7 +233,7 @@ public class DocumentController {
 		SearchResult<Document> result = docService.getAll(offset, maxResults);
 		
 		model.addAttribute("styles", docService.getListStyle());
-		model.addAttribute("listCheckItems", docService.getAllCheckItems());
+		//model.addAttribute("listCheckItems", docService.getAllCheckItems());
 		model.addAttribute("listDocs", result.getResult());
 		model.addAttribute("count", result.getTotalCount());
 		model.addAttribute("offset", offset);
@@ -288,17 +295,17 @@ public class DocumentController {
 		return "document/list2";
 	}
 	
-	//关联检查项
-	@RequestMapping(value="/relation-item", method = RequestMethod.POST)
-	public String relationItem( @ModelAttribute("document") Document document) {
-		if(document.getId() != null && document.getCheckItems() != null) {
-			Document doc = docService.getById(document.getId());
-			doc.setCheckItems(document.getCheckItems());
-			docService.update(doc);
-		}
-		
-		return "redirect:/document/list";
-	}
+//	//关联检查项
+//	@RequestMapping(value="/relation-item", method = RequestMethod.POST)
+//	public String relationItem( @ModelAttribute("document") Document document) {
+//		if(document.getId() != null && document.getCheckItems() != null) {
+//			Document doc = docService.getById(document.getId());
+//			doc.setCheckItems(document.getCheckItems());
+//			docService.update(doc);
+//		}
+//		
+//		return "redirect:/document/list";
+//	}
 	
 	@RequestMapping(value = "/delete")
 	@ResponseBody  

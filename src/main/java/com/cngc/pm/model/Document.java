@@ -5,7 +5,6 @@ import java.sql.Date;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -15,11 +14,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-import javax.persistence.OrderBy;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -49,11 +45,13 @@ public class Document implements Serializable {
 	private String docNum;						//文档编号
 	private SecretLevel secretLevel;		//密级
 	
+	private String link;
+	
 	private SysUser user;
 	
 	private Style style;
 	
-	private Set<Style> checkItems = new HashSet<>();								//检查项
+	//private Set<Style> checkItems = new HashSet<>();								//检查项
 	private Set<Attachment> attachs = new HashSet<>();							//附件
 	
 	@OneToMany(targetEntity=Attachment.class, fetch = FetchType.EAGER)
@@ -147,15 +145,15 @@ public class Document implements Serializable {
 		this.auth = auth;
 	}
 	
-	@ManyToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE },fetch=FetchType.EAGER)  
-	@JoinTable(name = "doc_style", joinColumns = { @JoinColumn(name = "doc_id") }, inverseJoinColumns = { @JoinColumn(name = "style_id") })  
-	@OrderBy("id")  
-	public Set<Style> getCheckItems() {
-		return checkItems;
-	}
-	public void setCheckItems(Set<Style> checkItems) {
-		this.checkItems = checkItems;
-	}
+//	@ManyToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE },fetch=FetchType.EAGER)  
+//	@JoinTable(name = "doc_style", joinColumns = { @JoinColumn(name = "doc_id") }, inverseJoinColumns = { @JoinColumn(name = "style_id") })  
+//	@OrderBy("id")  
+//	public Set<Style> getCheckItems() {
+//		return checkItems;
+//	}
+//	public void setCheckItems(Set<Style> checkItems) {
+//		this.checkItems = checkItems;
+//	}
 	
 	@ManyToOne(targetEntity=SysUser.class)
 	@JoinColumn(name="user_id", referencedColumnName="user_id")
@@ -191,5 +189,13 @@ public class Document implements Serializable {
 	}
 	public void setStyle(Style style) {
 		this.style = style;
+	}
+	
+	@Column(name="link_")
+	public String getLink() {
+		return link;
+	}
+	public void setLink(String link) {
+		this.link = link;
 	}
 }

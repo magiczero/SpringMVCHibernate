@@ -1,10 +1,11 @@
 <%@ page language="java" contentType="text/html; charset=utf-8"
     pageEncoding="utf-8"%>
-    <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %><c:set var="contextPath" value="${pageContext.request.contextPath}"></c:set><%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %> 
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %><c:set var="contextPath" value="${pageContext.request.contextPath}"></c:set><%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
             <div class="breadLine">            
                 <div class="arrow"></div>
                 <div class="adminControl active">
-                    ${user.username }
+                    <sec:authentication property="name"/>
                 </div>
             </div>
 
@@ -15,10 +16,10 @@
                 <ul class="control">                
                     <li><span class="glyphicon glyphicon-comment"></span> <a href="messages.html">短消息</a> <a href="messages.html" class="caption red">12</a></li>
                     <li><span class="glyphicon glyphicon-cog"></span> <a href="forms.html">设置</a></li>
-                    <li><span class="glyphicon glyphicon-share-alt"></span> <a href="${contextPath }/loginout">退出</a></li>
+                    <li><span class="glyphicon glyphicon-share-alt"></span> <a href="${contextPath }/logout">退出</a></li>
                 </ul>
                 <div class="info">
-                    <span>欢迎回来！上次登录:<fmt:formatDate pattern="yyyy-MM-dd hh:mm:ss" value="${lastLogin }" /></span>
+                    <span>欢迎回来！上次登录:<fmt:formatDate pattern="yyyy-MM-dd HH:mm:ss" value="${lastLogin }" /></span>
                 </div>
             </div>
 

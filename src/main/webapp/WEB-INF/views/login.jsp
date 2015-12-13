@@ -55,6 +55,7 @@
     <script type="text/javascript">
 	    $(document).ready(function(){
 	    	$("#validation").validationEngine({promptPosition : "topLeft", scroll: true});
+	    	$(".row-form,.row,.dialog,.loginBox,.block,.block-fluid").find("input:checkbox, input:radio, input:file").not(".skip, input.ibtn").uniform();
 	    });
     </script>
 </head>
@@ -62,7 +63,7 @@
 <div class="loginBlock" id="login" style="display: block;">
         <h1>欢迎使用，请登录</h1>
         <div class="dr"><span></span></div>
-        <div class="loginForm">
+        <div class="loginForm">${sessionScope.SPRING_SECURITY_LAST_EXCEPTION.message} 
             <form class="form-horizontal" action="${contextPath }/login" method="POST" id="validation">
                 <div class="form-group">
                     <div class="input-group">
@@ -78,6 +79,9 @@
                 </div>
                 <div class="row">
                     <div class="col-md-8">
+                    <div class="form-group" style="margin-top: 5px;">
+                            <label class="checkbox"><input name="remember-me" type="checkbox" />  Remember me</label>                                                
+                        </div>  
                     </div>
                     <div class="col-md-4">
                         <button type="submit" class="btn btn-default btn-block">登 录</button>       
@@ -87,9 +91,9 @@
             <div class="dr"><span></span></div>
             <div class="controls">
                 <div class="row">
-                    <div class="col-md-6">
+                    <div class="col-md-6">&nbsp;
                     </div>                    
-                    <div class="col-md-6">
+                    <div class="col-md-6">&nbsp;
                     </div>
                 </div>
             </div>

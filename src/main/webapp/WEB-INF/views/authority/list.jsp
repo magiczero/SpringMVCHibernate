@@ -93,21 +93,21 @@
                 
                 $("#authority").validationEngine({promptPosition : "topLeft", scroll: true});
                 
-                if($("#setResources").length > 0){
-                    $("#setResources").multiSelect({
+                if($("#resos").length > 0){
+                    $("#resos").multiSelect({
                         selectableHeader: "<div class='multipleselect-header'>所有资源</div>",
                         selectedHeader: "<div class='multipleselect-header'>已选择</div>"
                     });
                     $('#multiselect-selectAll').click(function(){
-                        $('#setResources').multiSelect('select_all');
+                        $('#resos').multiSelect('select_all');
                         return false;
                     });
                     $('#multiselect-deselectAll').click(function(){
-                        $('#setResources').multiSelect('deselect_all');
+                        $('#resos').multiSelect('deselect_all');
                         return false;
                     });
                     $('#multiselect-selectIndia').click(function(){
-                        $('#setResources').multiSelect('select', 'in');
+                        $('#resos').multiSelect('select', 'in');
                         return false;
                     });         
                  }
@@ -201,8 +201,8 @@
                                         <td><input type="checkbox" name="checkbox"/></td>
                                         <td>${auth.authorityName }</td>
 										<td>
-											<c:forEach items="${auth.setResources }" var="reso">
-												${reso.name }<br />
+											<c:forEach items="${auth.authResos }" var="reso">
+												${reso.resources.name }<br />
 											</c:forEach>
 										</td>
 										<td>${auth.authorityDesc}</td>
@@ -238,9 +238,14 @@
                                 <div class="row">
                                     
 										<div class="block">                        
-											<form:select multiple="true" path="setResources" class="validate[required] multiselect">
+											<%-- <form:select multiple="true" path="setResources" class="validate[required] multiselect">
 												<form:options items="${listResources}" itemValue="id" itemLabel="name"/>
-											</form:select>
+											</form:select>--%>
+											<select multiple id="resos" name="resos" class="validate[required] multiselect">
+												<c:forEach items="${listResources }" var="resources">
+												<option value="${resources.id }">${resources.name }</option>
+												</c:forEach>
+											</select>
                             
 				                            <div class="btn-group">
 				                                <button class="btn btn-default btn-xs" id="multiselect-selectAll" type="button">全选</button>

@@ -13,8 +13,6 @@
     
     <title>角色管理--运维管理系统</title>
 
-    <link rel="icon" type="image/ico" href="favicon.ico"/>
-    
     <link href="${contextPath }/resources/css/stylesheets.css" rel="stylesheet" type="text/css" />
     <!--[if lt IE 8]>
         <link href="${contextPath }/resources/css/ie7.css" rel="stylesheet" type="text/css" />
@@ -78,6 +76,7 @@
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/ibutton/jquery.ibutton.min.js'></script>
     
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/scrollup/jquery.scrollUp.min.js'></script>
+    <script type='text/javascript' src='${contextPath }/resources/js/plugins/multiselect/jquery.multi-select.js'></script>
     
     <script type='text/javascript' src='${contextPath }/resources/js/cookies.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/myactions.js'></script>
@@ -95,7 +94,7 @@
             $(document).ready(function () {
                 $("#eventTable").dataTable();
                 $(".header").load("../header");
-                $(".menu").load("../menu", function () { $(".navigation > li:eq(10)").addClass("active"); });
+                $(".menu").load("${contextPath }/menu", function() {$("#node_${moduleId}").addClass("active");});
                 $(".breadLine .buttons").load("../contentbuttons");
                 $(".confirm").bind("click",function(){
                 	if(!confirm("确定要执行该操作?"))
@@ -103,6 +102,14 @@
                 });
                 $(".lnk_modify").bind("click", modifyRole);
             	$(".lnk_new").bind("click",newRole);
+            	$(".set_auth").bind("click", setAuth);
+            	
+            	if($("#selAuth").length > 0){
+                    $("#selAuth").multiSelect({
+                        selectableHeader: "<div class=''>Selectable item</div>",
+                        selectedHeader: "<div class=''>Selected items</div>"
+                    });
+            	}
             });
     function newRole(){
 		$("#dialogTitle").html("新建角色");
@@ -123,6 +130,18 @@
     		
     		$("#roleForm").modal('show');
     	});
+    }
+    function setAuth() {
+    	var roleid = $(this).parents('tr').find('.roleid').text();
+    	$("#selAuth").multiSelect("deselect_all");
+    	$.getJSON(ctx + '/role/getauth/' + roleid +'?t=' + Math.random(),function(data){
+    		for(var i=0;i<data.auth.length;i++)
+    		{
+    			$("#selAuth").multiSelect("select",data.auth[i].id);
+    		}
+    		$("#authform_id").attr('value',roleid);
+    		$("#setAuthFormDialog").modal();
+    	});	
     }
     </script>
 </head>
@@ -192,6 +211,7 @@
 										<td>${role.roleName}</td>
 										<td>${role.roleDesc}</td>
 										<td>
+											<a class="set_auth" href="javascript:void(0);">设置权限</a>
 											<a class="lnk_modify" href="#">编辑</a>
 					                        <a class="confirm" href="${contextPath}/role/delete/${role.id}">删除</a>
 										</td>
@@ -244,6 +264,39 @@
             </div>
         </div>
     	<!-- 新建用户 end -->
+    	<div class="modal fade" id="setAuthFormDialog" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>                        
+                        <h4>设置角色权限</h4>
+                    </div>
+                    <form id="setAuthForm" action="${contextPath}/role/updateauth" method="post">
+                    <div class="modal-body modal-body-np">
+                        <div class="row">
+                            <div class="block-fluid">
+                                <div class="row-form clearfix">
+                                    <div class="col-md-12">
+                                     <select multiple class="multiselect" id="selAuth" name="test[]">   
+                                    <c:forEach items="${authList }" var="auth">                             
+                                        <option value="${auth.id}">${auth.authorityName}</option>
+                                    </c:forEach>
+                                    </select>
+                                    </div>
+                                </div>                                                           
+                            </div>                
+                        </div>
+                    </div>   
+                    <div class="modal-footer">
+                        <button class="btn btn-primary" id="btn_set_role">保存</button> 
+                        <button class="btn btn-default" data-dismiss="modal" aria-hidden="true">关闭</button>            
+                    </div>
+                    <input type="hidden" id="authform_id" name="roleform_id" value="0" /> 
+                    <input type="hidden" id="authfrom_roleauth" name="authfrom_roleauth" value="0" />
+                    </form>
+                </div>
+            </div>
+        </div>
     </div>
 </body>
 

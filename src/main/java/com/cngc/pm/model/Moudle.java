@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -83,7 +84,7 @@ public class Moudle implements Serializable {				//module故意写错，怕与�
 		this.type = type;
 	}
 	
-	@ManyToOne
+	@ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.MERGE },fetch=FetchType.LAZY)
 	@JoinColumn(name = "parent")
 	public Moudle getParent() {
 		return parent;

@@ -1,6 +1,8 @@
 package com.cngc.pm.model;
 
 import java.io.Serializable;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -9,6 +11,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.Cache;
@@ -44,6 +47,28 @@ public class Resources implements Serializable {
 	
 	private Moudle module;
 	
+	private Set<AuthReso> authResos = new LinkedHashSet<>();
+	
+//	private Set<Authority> authSet = new LinkedHashSet<>();
+//	
+//	@ManyToMany(targetEntity=Authority.class)  
+//	@JoinTable(name = "sys_authorities_resources", joinColumns = { @JoinColumn(name = "RESOURCE_ID") }, inverseJoinColumns = { @JoinColumn(name = "AUTHORITY_ID") })  
+//	@OrderBy("id")  
+//	@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)  
+//	public Set<Authority> getAuthSet() {
+//		return authSet;
+//	}
+//	public void setAuthSet(Set<Authority> authSet) {
+//		this.authSet = authSet;
+//	}
+	
+	@OneToMany(targetEntity=AuthReso.class, mappedBy="resources")
+	public Set<AuthReso> getAuthResos() {
+		return authResos;
+	}
+	public void setAuthResos(Set<AuthReso> authResos) {
+		this.authResos = authResos;
+	}
 	@ManyToOne
 	@JoinColumn(name="module_id", referencedColumnName="module_id")
 	public Moudle getModule() {
@@ -52,6 +77,7 @@ public class Resources implements Serializable {
 	public void setModule(Moudle module) {
 		this.module = module;
 	}
+	
 	@Id 
     @Column(name="resource_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)  

@@ -2,7 +2,6 @@
     pageEncoding="UTF-8"%>
 <%@ page import="java.util.List,com.cngc.pm.model.Style" %>
     <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>    <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
-    <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
     <%@ taglib prefix="tag" uri="/WEB-INF/taglibs/customTaglib.tld"%>
     <c:set var="contextPath" value="${pageContext.request.contextPath}"></c:set>
 <!DOCTYPE html>
@@ -93,7 +92,7 @@
 	
 		return arrs;
 	}
-    
+    <%--
     function transferId() {
     	var arr3 = checkedBox();
     	if(arr3=='' || arr3.length > 1) {
@@ -103,7 +102,7 @@
     	$('#id').val(arr3[0]);
     	$('#fModal').modal();
     }
-	
+	--%>
             $(document).ready(function () {
 
                 $(".header").load("${contextPath }/header");
@@ -120,7 +119,7 @@
 		    			return false;
             		}
                 });
-                
+                <%--
                  if($("#checkItems").length > 0){
                     $("#checkItems").multiSelect({
                         selectableHeader: "<div class='multipleselect-header'>所有检查项</div>",
@@ -139,7 +138,7 @@
                         return false;
                     });         
                  }
-                
+                --%>
                 $("#delBtn").click(function() {
                 		if(confirm("确定执行删除操作？")) {
         		    		//var arr = [];
@@ -230,7 +229,7 @@
                                         <button id="btnCreate" class="btn btn-sm btn-success tip" title="新建文档">新建文档</button>
                                         <button id="btnUpdateVersion" class="btn btn-sm btn-warning tip" title="更新版本">更新版本</button>
                                         <button class="btn btn-sm btn-danger tip" title="删除文档" id="delBtn">删除文档</button>
-                                        <button class="btn btn-sm btn-info tip" onclick="transferId();" data-toggle="modal">关联检查项</button>
+                                        <%-- <button class="btn btn-sm btn-info tip" onclick="transferId();" data-toggle="modal">关联检查项</button> --%>
                                     </div>
                                 </div>
                             </div>
@@ -246,7 +245,7 @@
 										<th width="7%">编号</th>
 										<th width="10%">录入时间</th>
 										<th width="5%">版本</th>
-										<th>检查项</th>
+										<th>链接</th>
 										<th width="10%">存放位置</th>
 										<th>附件</th>                                                                        
                                     </tr>
@@ -263,11 +262,9 @@
 										<td>${doc.docNum}</td>
 										<td><fmt:formatDate pattern="yyyy-MM-dd" value="${doc.createDate }" /></td>
 										<td>${doc.versions}</td>
-										<td><c:forEach items="${doc.checkItems }" var="item">
-											${item.name }<br />
-										</c:forEach></td>
+										<td><c:choose><c:when test="${empty doc.link}">-</c:when><c:otherwise><a href="${doc.link }" target="_blank">文件</a></c:otherwise></c:choose></td>
 										<td>${doc.deposit}</td>
-										<td><c:forEach items="${doc.attachs}" var="attach"><a href="${contextPath }/attachment/download/${attach.id}">${attach.name }</a><br/></c:forEach></td>
+										<td><c:choose><c:when test="${empty doc.link}"><c:forEach items="${doc.attachs}" var="attach"><a href="${contextPath }/attachment/download/${attach.id}">${attach.name }</a><br/></c:forEach></c:when><c:otherwise>-</c:otherwise></c:choose></td>
                                     </tr>
                                     </c:forEach>                                
                                 </tbody>
@@ -284,7 +281,7 @@
             </div>
             <!--workplace end-->
         </div>
-        <div class="modal fade" id="fModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <%-- <div class="modal fade" id="fModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -296,15 +293,15 @@
                     <div class="modal-body modal-body-np">
                         <div class="row">
                            <div class="block">                        
-							<form:select multiple="true" path="checkItems" class="validate[required] multiselect">
-								<form:options items="${listCheckItems}" itemValue="id" itemLabel="name"/>
-							</form:select>
-                            
-                            <div class="btn-group">
-                                <button class="btn btn-default btn-xs" id="multiselect-selectAll" type="button">全选</button>
-                                <button class="btn btn-default btn-xs" id="multiselect-deselectAll" type="button">全不选</button>
-                            </div>                             
-                        </div>
+								<form:select multiple="true" path="checkItems" class="validate[required] multiselect">
+									<form:options items="${listCheckItems}" itemValue="id" itemLabel="name"/>
+								</form:select>
+	                            
+	                            <div class="btn-group">
+	                                <button class="btn btn-default btn-xs" id="multiselect-selectAll" type="button">全选</button>
+	                                <button class="btn btn-default btn-xs" id="multiselect-deselectAll" type="button">全不选</button>
+	                            </div>                             
+                        	</div>
                         </div>
                     </div>   
                     <div class="modal-footer">
@@ -314,7 +311,7 @@
                     </form:form>
                 </div>
             </div>
-        </div>   
+        </div>   --%>
     </div>
     <script type="text/javascript">
     var tree = [
@@ -360,26 +357,6 @@
                       ]<%}%>
                     }<%if(i<size) out.print(",");
                     }%>
-                  ]
-                },
-                
-                {
-                  text: "检查项",
-                  nodes : [
-					<%
-					x++;
-					List<Style> listItems = (List<Style>)request.getAttribute("listCheckItems"); 
-					int k=0, sizek = listItems.size();
-					for(Style style3 : listItems) {
-						k++; x++;
-						map.put(style3.getId().intValue(), x);
-					%>
-					{
-						text: "<%=style3.getName()%>",
-						icon: "glyphicon glyphicon-leaf",
-                        href: "${contextPath }/document/list/item/<%=style3.getId()%>"
-					}
-					<%if(k<sizek) out.print(",");}%>
                   ]
                 }
               ];     

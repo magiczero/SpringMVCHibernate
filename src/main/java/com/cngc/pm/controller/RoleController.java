@@ -1,6 +1,8 @@
 package com.cngc.pm.controller;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
@@ -15,7 +17,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.cngc.pm.model.Authority;
 import com.cngc.pm.model.Role;
+import com.cngc.pm.service.AuthorityService;
 import com.cngc.pm.service.RoleService;
 
 @Controller
@@ -25,10 +29,14 @@ public class RoleController {
 	private RoleService roleService;
 	@Resource
 	private IdentityService identityService;
+	@Resource
+	private AuthorityService authService;
 
 	@RequestMapping(value = "/list", method = RequestMethod.GET)
 	public String list(Model model) {
 		model.addAttribute("list", roleService.getAll());
+		model.addAttribute("authList", authService.getAll());
+		
 		return "sysmanage/role-list";
 	}
 	
@@ -74,6 +82,25 @@ public class RoleController {
 		
 		Role role = roleService.getById(id);
 		map.put("role",role);
+		
+		return map;
+	}
+	
+	@RequestMapping(value="/getauth/{id}", method = RequestMethod.GET)
+	@ResponseBody
+	public Map<String,Object> getAuth(@PathVariable("id") long id,Model model){
+		Map<String,Object> map = new HashMap<String,Object>();
+		//SysUser user = userService.getById(id);
+		//map.put("role", user.getRoles());
+		List<Map<String, String>> list = new ArrayList<>();
+		for(Authority auth : roleService.getAuthsByRole(id)) {
+			Map<String, String> map1 = new HashMap<>();
+			map1.put("id", auth.getId().toString());
+			map1.put("name", auth.getAuthorityName());
+			list.add(map1);
+		}
+		
+		map.put("auth", list);
 		
 		return map;
 	}

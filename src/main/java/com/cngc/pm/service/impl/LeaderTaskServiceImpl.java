@@ -7,7 +7,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.cngc.pm.dao.LeaderTaskDAO;
-import com.cngc.pm.model.Knowledge;
 import com.cngc.pm.model.LeaderTask;
 import com.cngc.pm.service.LeaderTaskService;
 

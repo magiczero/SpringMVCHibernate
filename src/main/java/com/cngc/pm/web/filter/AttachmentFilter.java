@@ -11,11 +11,6 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.cngc.pm.model.Authority;
-import com.cngc.pm.model.Resources;
-import com.cngc.pm.model.Role;
-import com.cngc.pm.model.SysUser;
-
 public class AttachmentFilter  implements Filter {
 
 	@Override
@@ -29,21 +24,21 @@ public class AttachmentFilter  implements Filter {
 			FilterChain chain) throws IOException, ServletException {
 		// TODO Auto-generated method stub
 		HttpServletRequest req = (HttpServletRequest)request;
-		String path = req.getRequestURI();
-		SysUser user = (SysUser)req.getSession().getAttribute("user");
+//		String path = req.getRequestURI();
+//		SysUser user = (SysUser)req.getSession().getAttribute("user");
 		HttpServletResponse res = (HttpServletResponse)response;
 		String ctp=req.getSession().getServletContext().getContextPath();
 		
-		for(Role role : user.getRoles()) {
-			for(Authority auth : role.getAuths()) {
-				for(Resources resource: auth.getSetResources()) {
-					if(path.endsWith(resource.getPath()) || path.replaceAll("/[^/]+$","").endsWith(resource.getPath()) ) {
-						chain.doFilter(request, response);	
-						return;
-					}
-				}
-			}
-		}
+//		for(Role role : user.getRoles()) {
+//			for(Authority auth : role.getAuths()) {
+//				for(Resources resource: auth.getSetResources()) {
+//					if(path.endsWith(resource.getPath()) || path.replaceAll("/[^/]+$","").endsWith(resource.getPath()) ) {
+//						chain.doFilter(request, response);	
+//						return;
+//					}
+//				}
+//			}
+//		}
 		
 		
 		res.sendRedirect(ctp+"/403.jsp");		//无权限

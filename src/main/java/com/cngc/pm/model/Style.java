@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -13,12 +14,14 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
+
 /**
  * @author HP
  *	通用类型类
@@ -39,11 +42,21 @@ public class Style implements Serializable {
 	private String name;
 	private String desc;
 	private String code;
+	private Integer order;
 	
+	@Column(name="order_")
+	public Integer getOrder() {
+		return order;
+	}
+
+	public void setOrder(Integer order) {
+		this.order = order;
+	}
+
 	private Style style;
 	private Set<Style> child = new HashSet<Style>();
 	
-	@Column
+	@Column(name="desc_")
 	public String getDesc() {
 		return desc;
 	}
@@ -52,8 +65,8 @@ public class Style implements Serializable {
 		this.desc = desc;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "parent_id", nullable = false, insertable = false, updatable = false)
+	@ManyToOne(cascade = { CascadeType.PERSIST },fetch=FetchType.EAGER, optional=true)
+	@JoinColumn(name = "parent_id")
 	public Style getStyle() {
 		return style;
 	}
@@ -62,7 +75,8 @@ public class Style implements Serializable {
 		this.style = style;
 	}
 
-	@OneToMany(fetch = FetchType.EAGER, mappedBy = "style")
+	@OneToMany(cascade={CascadeType.REFRESH,CascadeType.PERSIST,CascadeType.REMOVE,CascadeType.MERGE},fetch=FetchType.EAGER, mappedBy = "style")
+	@OrderBy(value="order")
 	public Set<Style> getChild() {
 		return child;
 	}
@@ -71,7 +85,7 @@ public class Style implements Serializable {
 		this.child = child;
 	}
 
-	@Column
+	@Column(name="name_")
 	public String getName() {
 		return name;
 	}

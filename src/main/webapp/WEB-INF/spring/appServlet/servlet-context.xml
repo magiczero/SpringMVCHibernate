@@ -17,7 +17,7 @@
 	<beans:bean id="exceptionHandler" class="com.cngc.exception.MyExceptionHandler" />
 	<!-- 以后有好的方法，这个应该就用不到了 -->
 	<interceptors>
-		<beans:bean class="com.cngc.pm.interceptor.AuthInterceptor"></beans:bean>
+		<!-- <beans:bean class="com.cngc.pm.interceptor.AuthInterceptor"></beans:bean> -->
 		<interceptor>
 			<mapping path="/document/*"/>
 			<mapping path="/moudle/*"/>
@@ -56,14 +56,6 @@
 	<resources mapping="/editor/**" location="/editor/" />
 	<resources mapping="/explorer/**" location="/explorer/" />
 	<resources mapping="/diagram-viewer/**" location="/diagram-viewer/" />
-
-	<!-- Resolves views selected for rendering by @Controllers to .jsp resources 
-		in the /WEB-INF/views directory -->
-	<beans:bean
-		class="org.springframework.web.servlet.view.InternalResourceViewResolver">
-		<beans:property name="prefix" value="/WEB-INF/views/" />
-		<beans:property name="suffix" value=".jsp" />
-	</beans:bean>
 
 	<!-- <beans:bean id="dataSource1" class="org.apache.commons.dbcp.BasicDataSource"
 		destroy-method="close">

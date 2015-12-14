@@ -12,6 +12,8 @@
                 <div class="col-md-10">
                     	<label class="checkbox checkbox-inline"><input type="radio" name="server_oa" value="true" checked/> 正常</label>
                         <label class="checkbox checkbox-inline"><input type="radio" name="server_oa" value="false"/> 异常</label>
+                        &nbsp;&nbsp;<label>异常说明</label>
+                        <label><input type="text" name="server_oa_remark" /></label>
             	</div>
            </div> 
            <div class="row-form clearfix">
@@ -19,6 +21,8 @@
                 <div class="col-md-10">
                     	<label class="checkbox checkbox-inline"><input type="radio" name="server_mail" value="true" checked/> 正常</label>
                         <label class="checkbox checkbox-inline"><input type="radio" name="server_mail" value="false"/> 异常</label>
+                         &nbsp;&nbsp;<label>异常说明</label>
+                        <label><input type="text" name="server_mail_remark" /></label>
             	</div>
            </div>
            <div class="row-form clearfix">
@@ -26,6 +30,8 @@
                 <div class="col-md-10">
                     	<label class="checkbox checkbox-inline"><input type="radio" name="server_gw" value="true" checked/> 正常</label>
                         <label class="checkbox checkbox-inline"><input type="radio" name="server_gw" value="false"/> 异常</label>
+                         &nbsp;&nbsp;<label>异常说明</label>
+                        <label><input type="text" name="server_gw_remark" /></label>
             	</div>
            </div>		
 		</div>
@@ -35,6 +41,8 @@
                 <div class="col-md-10">
                     	<label class="checkbox checkbox-inline"><input type="radio" name="net_gateway" value="true" checked/> 正常</label>
                         <label class="checkbox checkbox-inline"><input type="radio" name="net_gateway" value="false"/> 异常</label>
+                         &nbsp;&nbsp;<label>异常说明</label>
+                        <label><input type="text" name="net_gateway_remark" /></label>
             	</div>
            </div>
            <div class="row-form clearfix">
@@ -42,6 +50,8 @@
                 <div class="col-md-10">
                     	<label class="checkbox checkbox-inline"><input type="radio" name="net_switch" value="true" checked/> 正常</label>
                         <label class="checkbox checkbox-inline"><input type="radio" name="net_switch" value="false"/> 异常</label>
+                          &nbsp;&nbsp;<label>异常说明</label>
+                        <label><input type="text" name="net_switch_remark" /></label>
             	</div>
            </div>
 		</div>
@@ -51,6 +61,8 @@
                 <div class="col-md-10">
                     	<label class="checkbox checkbox-inline"><input type="radio" name="sec_bxy" value="true" checked/> 正常</label>
                         <label class="checkbox checkbox-inline"><input type="radio" name="sec_bxy" value="false"/> 异常</label>
+                          &nbsp;&nbsp;<label>异常说明</label>
+                        <label><input type="text" name="sec_bxy_remark" /></label>
             	</div>
            </div>
            <div class="row-form clearfix">
@@ -58,6 +70,8 @@
                 <div class="col-md-10">
                     	<label class="checkbox checkbox-inline"><input type="radio" name="sec_rising" value="true" checked/> 正常</label>
                         <label class="checkbox checkbox-inline"><input type="radio" name="sec_rising" value="false"/> 异常</label>
+                          &nbsp;&nbsp;<label>异常说明</label>
+                        <label><input type="text" name="sec_rising_remark" /></label>
             	</div>
            </div>
 		</div>
@@ -67,16 +81,12 @@
                 	<div class="col-md-10">
                     	<label class="checkbox checkbox-inline"><input type="radio" name="radio2" checked/> 正常</label>
                         <label class="checkbox checkbox-inline"><input type="radio" name="radio2" /> 异常</label>
+                          &nbsp;&nbsp;<label>异常说明</label>
+                        <label><input type="text" name="radio2_remark" /></label>
                     </div>
             	</div>
            </div> 
 		</div>
 	</div>
 </div>	
-
-<div class="toolbar nopadding-toolbar clear clearfix">
-	<div class="right btn-group">
-	<button class='btn btn-warning' id="lnk_save_template"> 保存巡检数据 </button>   
-	</div>
-</div>  
                         	

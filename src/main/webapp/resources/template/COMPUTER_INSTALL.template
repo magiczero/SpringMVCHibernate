@@ -49,11 +49,5 @@
 			<p>跳线编号：<input type="text" name="jumper_port"></p>
 		</div>
 	</div>
-</div>	
-
-<div class="toolbar nopadding-toolbar clear clearfix">
-	<div class="right btn-group">
-	<button class='btn btn-warning' id="lnk_save_template"> 保存模板数据 </button>   
-	</div>
-</div>  
+</div>	 
                         	

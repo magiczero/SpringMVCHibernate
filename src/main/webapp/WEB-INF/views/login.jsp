@@ -80,7 +80,7 @@
                 <div class="row">
                     <div class="col-md-8">
                     <div class="form-group" style="margin-top: 5px;">
-                            <label class="checkbox"><input name="remember-me" type="checkbox" />  Remember me</label>                                                
+                            <label class="checkbox"><input name="remember-me" type="checkbox" />  记住我的信息</label>                                                
                         </div>  
                     </div>
                     <div class="col-md-4">

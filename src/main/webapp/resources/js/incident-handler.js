@@ -18,7 +18,7 @@ function get_deal_form(taskId) {
 	// 读取启动时的表单
 	$.getJSON(ctx + '/workflow/dynamicform/get-form/task/' + taskId, function(datas) {
 		var divs = "";
-		$.each(datas.taskFormData.formProperties, function() {
+		$.each(datas.form.formProperties, function() {
 			var className = this.required === true ? "required" : "";
 			this.value = this.value ? this.value : "";
 			divs += "<div class='row-form clearfix'>" + createFieldHtml(this, datas, className)

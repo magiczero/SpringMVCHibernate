@@ -9,6 +9,9 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Transient;
+
+import org.hibernate.annotations.Formula;
 
 @Entity
 @Table(name = "wk_inspection")
@@ -22,6 +25,11 @@ public class Inspection implements Serializable{
 	private String status;
 	private String processInstanceId;
 	private Date createdTime;
+	private Long incidentId;
+	@Transient
+	private String statusName;
+	@Transient
+	private String executionUserName;
 	
 	@Id
 	@Column(name = "id")
@@ -81,5 +89,27 @@ public class Inspection implements Serializable{
 	public void setCreatedTime(Date createdTime) {
 		this.createdTime = createdTime;
 	}
+	@Formula(value="(SELECT a.code_name FROM sys_code a WHERE a.type_='INSPECTION_STATUS' AND a.code_= status_)")
+	public String getStatusName() {
+		return statusName;
+	}
+	public void setStatusName(String statusName) {
+		this.statusName = statusName;
+	}
+	@Formula(value="(SELECT a.NAME FROM sys_users a WHERE a.USERNAME=execution_user)")
+	public String getExecutionUserName() {
+		return executionUserName;
+	}
+	public void setExecutionUserName(String executionUserName) {
+		this.executionUserName = executionUserName;
+	}
+	@Column(name="incident_id")
+	public Long getIncidentId() {
+		return incidentId;
+	}
+	public void setIncidentId(Long incidentId) {
+		this.incidentId = incidentId;
+	}
+	
 	
 }

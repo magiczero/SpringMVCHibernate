@@ -1,8 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>    <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
 <c:set var="contextPath" value="${pageContext.request.contextPath}"></c:set>
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>        
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
@@ -23,6 +23,7 @@
         <link href="${contextPath }/resources/css/ie7.css" rel="stylesheet" type="text/css" />
     <![endif]-->    
     <link rel='stylesheet' type='text/css' href='${contextPath }/resources/css/fullcalendar.print.css' media='print' />
+    <link rel='stylesheet' type='text/css' href='${contextPath }/resources/css/bootstrap-treeview.css' media='print' />
     
    <script type='text/javascript' src='${contextPath }/resources/js/plugins/jquery/jquery-1.10.2.min.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/jquery/jquery-ui-1.10.1.custom.min.js'></script>
@@ -85,6 +86,8 @@
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/ibutton/jquery.ibutton.min.js'></script>
     
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/scrollup/jquery.scrollUp.min.js'></script>
+    <script type='text/javascript' src='${contextPath }/resources/js/plugins/treeview/bootstrap-treeview.min.js'></script>
+    
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/tagsinput/jquery.tagsinput.min.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/multiselect/jquery.multi-select.js'></script>
     
@@ -94,18 +97,28 @@
     <script type='text/javascript' src='${contextPath }/resources/js/plugins.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/settings.js'></script>    
     <script type='text/javascript' src='${contextPath }/resources/js/faq.js'></script>
+    <script type='text/javascript' src='${contextPath }/resources/js/pm-common.js'></script>
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
       <script src="${contextPath }/resources/js/html5shiv.js"></script>
       <script src="${contextPath }/resources/js/respond.min.js"></script>
     <![endif]-->
     <script type="text/javascript">
+    	var ctx = "${contextPath}";
             $(document).ready(function () {
             	$(".header").load("${contextPath }/header");
-                $(".menu").load("${contextPath }/menu", function () { $(".navigation > li:eq(2)").addClass("active"); });
+                $(".menu").load("${contextPath }/menu", function () { $(".navigation > li:eq(3)").addClass("active"); });
                 $(".breadLine .buttons").load("${contextPath }/contentbuttons");
-                //$("#myeditor").cleditor({width:"100%", height:"300px"});
+                init();
             });
+            
+            function init()
+            {
+            	$("select[name='risk'] option[value='04']").attr("selected","selected");
+            	$("select[name='influence'] option[value='04']").attr("selected","selected");
+            	$("select[name='critical'] option[value='04']").attr("selected","selected");
+            	$("select[name='priority'] option[value='04']").attr("selected","selected");
+            }
     </script>
 </head>
 <body>
@@ -147,33 +160,30 @@
 	                        <c:url var="addAction" value="/change/save" ></c:url>
 	                        <form:form action="${addAction}" commandName="change" method="post">
 	                        <div class="block-fluid">                        
-	                            <div class="row-form clearfix">
-	                                <div class="col-md-2"><form:label path="applyUser">变更申请人:</form:label></div>
-	                                <div class="col-md-4"><form:input path="applyUser"></form:input></div>
-	                                <div class="col-md-2"><form:label path="changeType">变更分类:</form:label></div>
-	                                <div class="col-md-4"><form:input path="changeType"></form:input></div>
-	                            </div>
+
 	                            <div class="row-form clearfix">
 	                                <div class="col-md-2"><form:label path="description">变更描述:</form:label></div>
 	                                <div class="col-md-10"><form:textarea path="description"></form:textarea>
 	                                </div>
 	                            </div>
-	                            <div class="row-form clearfix">
-	                                <div class="col-md-2"><form:label path="influence">影响:</form:label></div>
-	                                <div class="col-md-4"><form:input path="influence"></form:input></div>
-	                                <div class="col-md-2"><form:label path="critical">紧急性:</form:label></div>
-	                                <div class="col-md-4"><form:input path="critical"></form:input></div>
-	                            </div> 
-	                             <div class="row-form clearfix">
-	                                <div class="col-md-2"><form:label path="priority">优先级:</form:label></div>
-	                                <div class="col-md-4"><form:input path="priority"></form:input></div>
-	                                <div class="col-md-2"><form:label path="risk">风险等级:</form:label></div>
-	                                <div class="col-md-4"><form:input path="risk"></form:input></div>
+	                           <div class="row-form clearfix">
+	                                <div class="col-md-2"><form:label path="applyUser">变更申请人:</form:label></div>
+	                                <div class="col-md-4"><form:input path="applyUser"></form:input></div>
+	                                <div class="col-md-2"><form:label path="changeType">变更分类:</form:label></div>
+	                                <div class="col-md-4"><form:select path="changeType" items="${category }" itemLabel="codeName" itemValue="code"></form:select></div>
 	                            </div>
-	                            <div class="row-form clearfix">
-	                                <div class="col-md-2"><form:label path="attachment">附件:</form:label></div>
-	                                <div class="col-md-4"><form:input path="attachment"></form:input></div>
-	                            </div>                                                               
+	                            <div class="row-form clearfix">     
+	                                <div class="col-md-2"><form:label path="risk">风险等级:</form:label></div>
+	                                <div class="col-md-4"><form:select path="risk" items="${risk }" itemLabel="codeName" itemValue="code"></form:select></div>
+	                                <div class="col-md-2"><form:label path="influence">影响度:</form:label></div>
+	                                <div class="col-md-4"><form:select path="influence" items="${influence }" itemLabel="codeName" itemValue="code"></form:select></div>
+	                             </div>
+	                            <div class="row-form clearfix">    
+	                                <div class="col-md-2"><form:label path="critical">紧急度:</form:label></div>
+	                                <div class="col-md-4"><form:select path="critical" items="${critical }" itemLabel="codeName" itemValue="code"></form:select></div>
+	                                <div class="col-md-2"><form:label path="priority">优先级:</form:label></div>
+	                                <div class="col-md-4"><form:select path="priority" items="${priority }" itemLabel="codeName" itemValue="code"></form:select></div>
+	                            </div>                                                            
 	                            <div class="footer tar">
 	                                <button class="btn btn-primary center-block"> 保 存 </button>
 	                            </div>                            

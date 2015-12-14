@@ -1,8 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <c:set var="contextPath" value="${pageContext.request.contextPath}"></c:set>
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>        
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
@@ -48,25 +48,30 @@
     <script type='text/javascript' src='${contextPath }/resources/js/actions.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/settings.js'></script>    
-    <script type='text/javascript' src='${contextPath }/resources/js/common.js'></script>
+    <script type='text/javascript' src='${contextPath }/resources/js/pm-common.js'></script>
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
       <script src="${contextPath }/resources/js/html5shiv.js"></script>
       <script src="${contextPath }/resources/js/respond.min.js"></script>
     <![endif]-->
     <script type="text/javascript">
+    	var ctx = "${contextPath}";
     	// 获取ci属性的JSON值
-    	var propertiesdata = ${ci.propertiesData };
+    	var propertiesdata = null; 
+    	propertiesdata = '${ci.propertiesData }';
     		
     	$(document).ready(function () {
         	$(".header").load("${contextPath }/header");
-            $(".menu").load("${contextPath }/menu", function () { $(".navigation > li:eq(3)").addClass("active"); });
+            $(".menu").load("${contextPath }/menu", function () { $(".navigation > li:eq(4)").addClass("active"); });
             $(".breadLine .buttons").load("${contextPath }/contentbuttons");
 
             // 将属性值附加到表单中
-        	$.each(propertiesdata, function(k,v){
-        		$("input[name='"+k+"']").val(v);
-        	});	
+            if(propertiesdata!="")
+            {   propertiesdata = $.parseJSON(propertiesdata);	
+	        	$.each(propertiesdata, function(k,v){
+	        		$("input[name='"+k+"']").val(v);
+	        	});	
+    		}
     	}); 
     </script>
 </head>

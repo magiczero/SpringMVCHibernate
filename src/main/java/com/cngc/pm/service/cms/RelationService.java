@@ -13,4 +13,6 @@ public interface RelationService {
 	Relation getById(String id);
 
 	List<Relation> getAll();
+	
+	List<Relation> getByCode(String code);
 }

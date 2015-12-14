@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.cngc.com.cn/secjob">
+  <process id="SECJOB" name="三员工作管理" isExecutable="true">
+    <extensionElements>
+      <activiti:executionListener event="start" expression="${execution.setVariable('secjob', secJobEntityManager.newSecJob(execution))}"></activiti:executionListener>
+      <activiti:executionListener event="end" expression="${secJobEntityManager.setSecJobStatus(execution)}"></activiti:executionListener>
+    </extensionElements>
+    <startEvent id="startSecJob" name="Start">
+      <extensionElements>
+        <activiti:formProperty id="type" name="工作名称" type="enum">
+          <activiti:value id="01" name="审计报告"></activiti:value>
+          <activiti:value id="02" name="风险评估报告"></activiti:value>
+          <activiti:value id="03" name="漏洞扫描报告"></activiti:value>
+          <activiti:value id="04" name="应急演练"></activiti:value>
+        </activiti:formProperty>
+        <activiti:formProperty id="user" name="分配工程师" type="string"></activiti:formProperty>
+      </extensionElements>
+    </startEvent>
+    <userTask id="taskDoSecJob" name="三员工作执行中" activiti:assignee="${secjob.userId}">
+      <extensionElements>
+        <activiti:formProperty id="type" name="工作名称" type="enum" expression="${secjob.type}" writable="false">
+          <activiti:value id="01" name="审计报告"></activiti:value>
+          <activiti:value id="02" name="风险评估报告"></activiti:value>
+          <activiti:value id="03" name="漏洞扫描报告"></activiti:value>
+          <activiti:value id="04" name="应急演练"></activiti:value>
+        </activiti:formProperty>
+        <activiti:formProperty id="attachment" name="附件" type="string" expression="${secjob.attachment}"></activiti:formProperty>
+      </extensionElements>
+    </userTask>
+    <sequenceFlow id="flow1" sourceRef="startSecJob" targetRef="taskDoSecJob"></sequenceFlow>
+    <endEvent id="endSecJob" name="End"></endEvent>
+    <sequenceFlow id="flow2" sourceRef="taskDoSecJob" targetRef="endSecJob"></sequenceFlow>
+  </process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_SECJOB">
+    <bpmndi:BPMNPlane bpmnElement="SECJOB" id="BPMNPlane_SECJOB">
+      <bpmndi:BPMNShape bpmnElement="startSecJob" id="BPMNShape_startSecJob">
+        <omgdc:Bounds height="35.0" width="35.0" x="20.0" y="20.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="taskDoSecJob" id="BPMNShape_taskDoSecJob">
+        <omgdc:Bounds height="55.0" width="105.0" x="100.0" y="10.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="endSecJob" id="BPMNShape_endSecJob">
+        <omgdc:Bounds height="35.0" width="35.0" x="260.0" y="20.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="flow1" id="BPMNEdge_flow1">
+        <omgdi:waypoint x="55.0" y="37.0"></omgdi:waypoint>
+        <omgdi:waypoint x="100.0" y="37.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow2" id="BPMNEdge_flow2">
+        <omgdi:waypoint x="205.0" y="37.0"></omgdi:waypoint>
+        <omgdi:waypoint x="260.0" y="37.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>

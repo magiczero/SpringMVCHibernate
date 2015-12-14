@@ -1,6 +1,7 @@
 package com.cngc.pm.service.impl.cms;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -71,5 +72,23 @@ public class CiServiceImpl implements CiService{
 	public boolean saveRelation(Long primaryId,Long secondaryId,String relationId)
 	{
 		return ciDao.saveRelation(primaryId, secondaryId, relationId);
+	}
+	@Override
+	@Transactional
+	public SearchResult<Ci> getByIds(List<Long> ids)
+	{
+		return ciDao.getByIds(ids);
+	}
+	@Override
+	@Transactional
+	public Map<String,Object> getStats(String column,String row,String status)
+	{
+		return ciDao.getStats(column, row, status);
+	}
+	@Override
+	@Transactional
+	public SearchResult<Ci> getByUser(String user)
+	{
+		return ciDao.getByUser(user);
 	}
 }

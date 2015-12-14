@@ -34,6 +34,8 @@ public class IncidentJpaEntity {
 	private Date recoverTime;
 	private String attachment;
 	private String processInstanceId;
+	private String satisfaction;
+	private String feedback;
 	
 	@Id
 	@Column(name="id")
@@ -121,7 +123,7 @@ public class IncidentJpaEntity {
 	public void setPriority(String priority) {
 		this.priority = priority;
 	}
-	@Column(name = "event_type")
+	@Column(name = "type_")
 	public String getType() {
 		return type;
 	}
@@ -183,6 +185,20 @@ public class IncidentJpaEntity {
 	}
 	public void setProcessInstanceId(String processInstanceId) {
 		this.processInstanceId = processInstanceId;
+	}
+	@Column(name="satisfaction")
+	public String getSatisfaction() {
+		return satisfaction;
+	}
+	public void setSatisfaction(String satisfaction) {
+		this.satisfaction = satisfaction;
+	}
+	@Column(name="feedback")
+	public String getFeedback() {
+		return feedback;
+	}
+	public void setFeedback(String feedback) {
+		this.feedback = feedback;
 	}
 	@Override
     public String toString() {

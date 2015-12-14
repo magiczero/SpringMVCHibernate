@@ -1,5 +1,6 @@
 package com.cngc.pm.controller;
 
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,8 +33,10 @@ public class SystemController {
 	
 	@RequestMapping(value = "/menu", method = RequestMethod.GET)
 	public String menu(Model model, HttpSession session) {
+
 		UserDetails user1 = (UserDetails)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		SysUser user = userService.getByUsername(user1.getUsername());
+
 		List<Moudle> menu1 = new ArrayList<>();
 		List<Moudle> menu2 = new ArrayList<>();
 		//for(Role role : user.getRoles()) {
@@ -52,7 +55,9 @@ public class SystemController {
 		
 		model.addAttribute("menu1", menu1);
 		model.addAttribute("menu2", menu2);
+
 		model.addAttribute("lastLogin", user.getLastWhile());
+
 		
 		return "public/menu";
 	}

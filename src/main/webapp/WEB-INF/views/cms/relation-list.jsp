@@ -88,6 +88,8 @@
     <script type='text/javascript' src='${contextPath }/resources/js/plugins.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/settings.js'></script>    
     <script type='text/javascript' src='${contextPath }/resources/js/faq.js'></script>
+    <script type='text/javascript' src='${contextPath }/resources/js/pm-common.js'></script>
+    
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
       <script src="${contextPath }/resources/js/html5shiv.js"></script>
@@ -98,7 +100,7 @@
             $(document).ready(function () {
                 $("#eventTable").dataTable();
                 $(".header").load("${contextPath}/header");
-                $(".menu").load("${contextPath}/menu", function () { $(".navigation > li:eq(3)").addClass("active"); });
+                $(".menu").load("${contextPath}/menu", function () { $(".navigation > li:eq(4)").addClass("active"); });
                 $(".breadLine .buttons").load("${contextPath}/contentbuttons");
                 $(".confirm").bind("click",function(){
                 	if(!confirm("确定要执行该操作?"))
@@ -144,11 +146,13 @@
                             <div class="isw-grid"></div>
                             <h1>关系管理</h1>  
 
-                            <ul class="buttons">                          
+                            <ul class="buttons">
+                            	<li>
+                                    <a href="#newForm" role="button" data-toggle="modal" class="isw-plus tipb" title="创建新关系"></a>
+                                </li>                          
                                 <li>
                                     <a href="#" class="isw-settings tipl" title="操作 "></a>
                                     <ul class="dd-list">
-                                    	<li><a href="#newForm" role="button" data-toggle="modal"><span class="isw-ok"></span> 创建新关系</a></li>
                                         <li><a href="javascript:void(0);" id="delBtn"><span class="isw-list"></span> 删除</a></li>
                                         <li><a href="#"><span class="isw-refresh"></span> 刷新</a></li>
                                     </ul>
@@ -159,10 +163,10 @@
                             <table class="table" id="eventTable">
                                 <thead>
                                 	<tr>
-										<th width="200px">关系标识</th>
+										<th width="250px">关系标识</th>
 										<th width="200px">关系名</th>
 										<th>关系描述</th>
-										<th width="150px">操作</th>
+										<th width="100px">操作</th>
 									</tr>
                                 </thead>
                                 <tbody>
@@ -216,7 +220,7 @@
                             <div class="block-fluid">
                                 <div class="row-form clearfix">
                                     <div class="col-md-3"><form:label path="relationDescription">关系描述：</form:label></div>
-                                    <div class="col-md-9"><form:input path="relationDescription"></form:input></div>
+                                    <div class="col-md-9"><form:textarea path="relationDescription"></form:textarea></div>
                                 </div>                                                           
                             </div>                
                         </div>

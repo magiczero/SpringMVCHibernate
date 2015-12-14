@@ -29,68 +29,54 @@
                         <span class="isw-attachment"></span><span class="text">快速链接</span>
                     </a>
                     <ul>
-                    	
                         <li>
-                            <a href="${contextPath }/workflow/task/list">
+                            <a href="${contextPath }/workflow/task/mytask">
                                 <span class="glyphicon glyphicon-th-large"></span><span class="text">待办任务</span>
-                            </a>                  
+                            </a> 
+                            <a href="#" class="caption yellow link_navPopMessages">0</a>                   
                         </li>
                         <li>
-
-                            <a href="${contextPath }/workflow/processinstance/finished">
-                                <span class="glyphicon glyphicon-th-large"></span><span class="text">已结束流程</span>
-                            </a>                  
-                        </li>
-                        <li>
-                            <a href="${contextPath }/workflow/model/list">
-                                <span class="glyphicon glyphicon-th-large"></span><span class="text">模型工作区</span>
-                            </a>                  
-                        </li>
-                        <li>
-
-                            <a href="board4engineer.html">
-                                <span class="glyphicon glyphicon-th-large"></span><span class="text">工程师控制台</span>
+                            <a href="${contextPath }/incident/list">
+                                <span class="glyphicon glyphicon-th-large"></span><span class="text">事件控制台</span>
                             </a>                  
                         </li>    
                         <li>
-                            <a href="board4manager.html">
-                                <span class="glyphicon glyphicon-th-large"></span><span class="text">运维主管控制台</span>
-                            </a>                  
-                        </li>                    
-                        <li>
-                            <a href="board4leader.html">
-                                <span class="glyphicon glyphicon-th-large"></span><span class="text">IT主管控制台</span>
-                            </a>                  
-                        </li>      
-                        <li>
-                            <a href="mywork.html">
-                                <span class="glyphicon glyphicon-briefcase"></span><span class="text">我的工作</span>
-                            </a>
-                            <a href="event.html" class="caption yellow link_navPopMessages">2</a>                  
-                        </li>  
-                        <li>
-                            <a href="inspection.html">
-                                <span class="glyphicon glyphicon-hdd"></span><span class="text">日常巡检</span>
+                            <a href="${contextPath }/change/list">
+                                <span class="glyphicon glyphicon-th-large"></span><span class="text">变更控制台</span>
                             </a>                  
                         </li> 
-                        <li>
-                            <a href="task_leader.html">
-                                <span class="glyphicon glyphicon-file"></span><span class="text">领导交办</span>
-                            </a>                  
-                        </li>
-                        <li>
-                            <a href="document.html">
-                                <span class="glyphicon glyphicon-list-alt"></span><span class="text">文档管理</span>
+                       <li>
+                            <a href="${contextPath }/leadertask/list">
+                                <span class="glyphicon glyphicon-star"></span><span class="text">领导交办</span>
                             </a>                  
                         </li>                       
+                        <li>
+                            <a href="${contextPath }/record/inspection">
+                                <span class="glyphicon glyphicon-search"></span><span class="text">日常巡检</span>
+                            </a>                  
+                        </li> 
+
+                        <li>
+                            <a href="${contextPath }/knowledge/search">
+                                <span class="glyphicon glyphicon-search"></span><span class="text">知识库</span>
+                            </a>                  
+                        </li>   
+                         <li>
+                            <a href="${contextPath }/message/list">
+                                <span class="glyphicon glyphicon-envelope"></span><span class="text">我的消息</span>
+                            </a>                  
+                        </li>                     
                     </ul>                
                 </li> 
+                
+                
                 <c:forEach items="${menu1 }" var="mod1">
                 <li id="node_${mod1.id }" class="openable">
                 	<a href="${mod1.url }">
                         <span class="${mod1.styleClass }"></span><span class="text">${mod1.name }</span>
                     </a>
                     <ul>
+
                     <c:forEach items="${menu2 }" var="mod2">
                     <c:if test="${mod2.parent.id == mod1.id }">
                     	<li>
@@ -103,5 +89,19 @@
                     </ul>
                 </li>
                 </c:forEach>
+
             </ul>
 <script type='text/javascript' src='${contextPath }/resources/js/mymenu.js'></script> 
+<script>
+$(document).ready(function(){
+	pm_getcount();
+});
+function pm_getcount()
+{
+	$.getJSON(ctx+"/workflow/task/getmytaskcount?t"+pm_random(),function(datas){
+		if(datas.count=="0")
+			return;
+		$(".link_navPopMessages").text( datas.count );
+	});
+}
+</script>

@@ -6,9 +6,11 @@ import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import com.cngc.pm.dao.cms.PropertyDAO;
 import com.cngc.pm.model.cms.Property;
 import com.cngc.pm.service.cms.PropertyService;
+import com.googlecode.genericdao.search.SearchResult;
 
 @Service
 public class PropertyServiceImpl implements PropertyService {
@@ -51,5 +53,17 @@ public class PropertyServiceImpl implements PropertyService {
 	@Transactional
 	public List<Property> getPropertyByNIds(List<Long> ids) {
 		return propertyDao.getSetByNIds(ids);
+	}
+	@Override
+	@Transactional
+	public List<Property> getFields()
+	{
+		return propertyDao.getFields();
+	}
+	@Override
+	@Transactional
+	public SearchResult<Property> getByPropertyIds(String propertyIds)
+	{
+		return propertyDao.getByPropertyIds(propertyIds);
 	}
 }

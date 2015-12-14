@@ -8,7 +8,9 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
+import org.hibernate.annotations.Formula;
 import org.springframework.format.annotation.DateTimeFormat;
 
 /**
@@ -23,7 +25,10 @@ public class Ci {
 
 	private Long id;
 	private String name;
+	private String model;
 	private String securityNo;
+	private String securityLevel;
+	private String system;
 	private String categoryCode;
 	private String incidence;
 	private String location;
@@ -49,6 +54,19 @@ public class Ci {
 	private Date lastUpdateTime;
 	private String remark;
 	private String propertiesData;
+	
+	@Transient
+	private String statusName;
+	@Transient
+	private String reviewStatusName;
+	@Transient
+	private String deleteStatusName;
+	@Transient
+	private String categoryName;
+	@Transient
+	private String securityLevelName;
+	@Transient
+	private String systemName;
 
 	@Id
 	@Column(name = "id")
@@ -68,6 +86,30 @@ public class Ci {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+	@Column(name="model")
+	public String getModel() {
+		return model;
+	}
+
+	public void setModel(String model) {
+		this.model = model;
+	}
+	@Column(name="security_level")
+	public String getSecurityLevel() {
+		return securityLevel;
+	}
+
+	public void setSecurityLevel(String securityLevel) {
+		this.securityLevel = securityLevel;
+	}
+	@Column(name="system")
+	public String getSystem() {
+		return system;
+	}
+
+	public void setSystem(String system) {
+		this.system = system;
 	}
 
 	@Column(name = "security_no")
@@ -310,5 +352,52 @@ public class Ci {
 	public void setPropertiesData(String propertiesData) {
 		this.propertiesData = propertiesData;
 	}
+	@Formula(value="(SELECT a.code_name FROM sys_code a WHERE a.type_='CI_STATUS' AND a.code_= status_)")
+	public String getStatusName() {
+		return statusName;
+	}
+	public void setStatusName(String statusName) {
+		this.statusName = statusName;
+	}
+	@Formula(value="(SELECT a.code_name FROM sys_code a WHERE a.type_='CI_REVIEW_STATUS' AND a.code_= review_status)")
+	public String getReviewStatusName() {
+		return reviewStatusName;
+	}
 
+	public void setReviewStatusName(String reviewStatusName) {
+		this.reviewStatusName = reviewStatusName;
+	}
+	@Formula(value="(SELECT a.code_name FROM sys_code a WHERE a.type_='CI_DELETE_STATUS' AND a.code_= delete_status)")
+	public String getDeleteStatusName() {
+		return deleteStatusName;
+	}
+
+	public void setDeleteStatusName(String deleteStatusName) {
+		this.deleteStatusName = deleteStatusName;
+	}
+	@Formula(value="(SELECT a.category_name FROM cms_category a WHERE a.category_code = category_code)")
+	public String getCategoryName() {
+		return categoryName;
+	}
+
+	public void setCategoryName(String categoryName) {
+		this.categoryName = categoryName;
+	}
+	@Formula(value="(SELECT a.code_name FROM sys_code a WHERE a.type_='CI_SECURITY_LEVEL' AND a.code_= security_level)")
+	public String getSecurityLevelName() {
+		return securityLevelName;
+	}
+
+	public void setSecurityLevelName(String securityLevelName) {
+		this.securityLevelName = securityLevelName;
+	}
+	@Formula(value="(SELECT a.code_name FROM sys_code a WHERE a.type_='CI_SYSTEM' AND a.code_= system)")
+	public String getSystemName() {
+		return systemName;
+	}
+
+	public void setSystemName(String systemName) {
+		this.systemName = systemName;
+	}
+	
 }

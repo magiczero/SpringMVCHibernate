@@ -1,5 +1,8 @@
 package com.cngc.pm.controller.cms;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
@@ -10,6 +13,8 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+
 import com.cngc.pm.model.cms.Property;
 import com.cngc.pm.service.cms.PropertyService;
 
@@ -47,5 +52,15 @@ public class PropertyController {
 			propertyService.delById(id);
 		
 		return "redirect:/cms/property/list";
+	}
+	
+	@RequestMapping(value="/getfield")
+	@ResponseBody
+	public Map<String,Object> getField(Model model){
+		Map<String,Object> map = new HashMap<String,Object>();
+		
+		map.put("fields", propertyService.getFields());
+		
+		return map;
 	}
 }

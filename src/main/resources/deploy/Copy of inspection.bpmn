@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.cngc.com.cn/inspection">
+  <process id="INSPECTION" name="日常巡检" isExecutable="true">
+    <extensionElements>
+      <activiti:executionListener event="start" expression="${execution.setVariable('inspection', inspectionEntityManager.newInspection(execution))}"></activiti:executionListener>
+      <activiti:executionListener event="end" expression="${inspectionEntityManager.setInspectionStatus(execution)}"></activiti:executionListener>
+    </extensionElements>
+    <startEvent id="startInspection" name="Start">
+      <extensionElements>
+        <activiti:formProperty id="user" name="分配工程师" type="string"></activiti:formProperty>
+      </extensionElements>
+    </startEvent>
+    <userTask id="taskDoInspection" name="巡检任务执行中" activiti:assignee="${inspection.executionUser}">
+      <extensionElements>
+        <activiti:formProperty id="template" name="巡检模板" type="enum" expression="${inspection.template}">
+          <activiti:value id="INSPECTION" name="日常巡检模板"></activiti:value>
+        </activiti:formProperty>
+        <activiti:formProperty id="status" name="是否正常" type="enum">
+          <activiti:value id="01" name="正常"></activiti:value>
+          <activiti:value id="02" name="异常"></activiti:value>
+        </activiti:formProperty>
+      </extensionElements>
+    </userTask>
+    <sequenceFlow id="flow1" sourceRef="startInspection" targetRef="taskDoInspection"></sequenceFlow>
+    <endEvent id="endInspection" name="End"></endEvent>
+    <sequenceFlow id="flow2" sourceRef="taskDoInspection" targetRef="endInspection"></sequenceFlow>
+  </process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_INSPECTION">
+    <bpmndi:BPMNPlane bpmnElement="INSPECTION" id="BPMNPlane_INSPECTION">
+      <bpmndi:BPMNShape bpmnElement="startInspection" id="BPMNShape_startInspection">
+        <omgdc:Bounds height="35.0" width="35.0" x="30.0" y="20.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="taskDoInspection" id="BPMNShape_taskDoInspection">
+        <omgdc:Bounds height="55.0" width="105.0" x="120.0" y="10.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="endInspection" id="BPMNShape_endInspection">
+        <omgdc:Bounds height="35.0" width="35.0" x="270.0" y="20.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="flow1" id="BPMNEdge_flow1">
+        <omgdi:waypoint x="65.0" y="37.0"></omgdi:waypoint>
+        <omgdi:waypoint x="120.0" y="37.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow2" id="BPMNEdge_flow2">
+        <omgdi:waypoint x="225.0" y="37.0"></omgdi:waypoint>
+        <omgdi:waypoint x="270.0" y="37.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>

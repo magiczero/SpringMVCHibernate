@@ -14,15 +14,24 @@
 
 	<context:property-placeholder ignore-unresolvable="true" local-override="true"
                                   location="classpath*:/application.properties,classpath*:/application.local.properties"/>
-	<util:properties id="APP_PROPERTIES" location="classpath:application.properties" local-override="true"/>
-	
+	<bean id="APP_PROPERTIES" class="org.springframework.beans.factory.config.PropertiesFactoryBean">
+        <property name="locations">
+            <list>
+                <value>classpath:application.properties</value>
+                <value>classpath:application.local.properties</value>
+            </list>
+        </property>
+    </bean>
+    <bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PreferencesPlaceholderConfigurer">
+        <property name="properties" ref="APP_PROPERTIES" />
+    </bean> 
 	<!-- 数据源配置, 使用DBCP数据库连接池 -->
     <bean id="mydataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
         <!-- Connection Info -->
         <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
-        <property name="url" value="jdbc:mysql://localhost:3396/pmsys?useUnicode=true&amp;characterEncoding=utf8"/>
+        <property name="url" value="jdbc:mysql://localhost:3306/pmsys?useUnicode=true&amp;characterEncoding=utf8"/>
         <property name="username" value="root"/>
-        <property name="password" value="myoa888"/>
+        <property name="password" value="1234"/>
 
         <!-- Connection Pooling Info -->
         <property name="maxActive" value="20"/>
@@ -77,6 +86,16 @@
         	<list>
         		<bean class="com.cngc.pm.activiti.formtype.BigtextFormType" />
         	</list>
+        </property>
+        <!-- 开启日志 -->
+        <property name="enableDatabaseEventLogging" value="true" />
+        <!-- 全局监听器 -->
+        <property name="typedEventListeners">
+        	<map>
+        		<entry key="TASK_CREATED,TASK_ASSIGNED,TASK_COMPLETED,PROCESS_COMPLETED">
+        			<list><bean class="com.cngc.pm.activiti.listener.SendMessageListener" /></list>
+        		</entry>
+        	</map>
         </property>
     </bean>	
     

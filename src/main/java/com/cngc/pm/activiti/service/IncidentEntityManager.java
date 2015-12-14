@@ -8,7 +8,9 @@ import javax.transaction.Transactional;
 
 import org.activiti.engine.delegate.DelegateExecution;
 import org.springframework.stereotype.Service;
+
 import com.cngc.pm.activiti.jpa.entity.IncidentJpaEntity;
+import com.cngc.utils.PropertyFileUtil;
 
 @Service
 public class IncidentEntityManager {
@@ -24,10 +26,11 @@ public class IncidentEntityManager {
 	}
 	
 	@Transactional
-	public boolean setIncidentStatus(DelegateExecution execution){
+	public boolean setIncidentStatus(DelegateExecution execution,String status){
 		IncidentJpaEntity incident = (IncidentJpaEntity)execution.getVariable("incident");
-		incident.setStatus("07");
-		incident.setRecoverTime(new Date());
+		incident.setStatus(status);
+		if( status.equals(PropertyFileUtil.getStringValue("syscode.incident.status.finished")) )
+			incident.setRecoverTime(new Date());
 		entityManager.persist(incident);
 		return true;
 	} 

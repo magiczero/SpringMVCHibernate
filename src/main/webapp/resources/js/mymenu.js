@@ -33,6 +33,9 @@ $(document).ready(function () {
             par.find('.popup').hide();
             par.removeClass('active');
         } else {
+        	// add by andy
+        	$(".navigation .openable").find('.popup').hide();
+        	$(".navigation .openable").removeClass('active');
             par.addClass('active');
         }
         return false;

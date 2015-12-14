@@ -9,6 +9,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.springframework.format.annotation.DateTimeFormat;
 
 @Entity(name = "WK_TASK")
 public class TaskJpaEntity {
@@ -17,13 +18,12 @@ public class TaskJpaEntity {
     private String fromUser;
     private String toUser;
     private String taskTitle;
-    private String taskDesc;
     private String taskResult;
     private String processInstanceId;
-    private String currentActivityId;
-    private String currentActivityName;
     private Date applyTime;
+    private Date dueTime;
     private String userId;
+    private Date executionTime;
     
     @Id
     @Column(name="ID")
@@ -59,14 +59,6 @@ public class TaskJpaEntity {
     public void setTaskTitle(String taskTitle){
     	this.taskTitle = taskTitle;
     }
-    
-    @Column(name = "TASK_DESC")
-    public String getTaskDesc(){
-    	return taskDesc;
-    }
-    public void setTaskDesc(String taskDesc){
-    	this.taskDesc = taskDesc;
-    }
     @Column(name = "TASK_RESULT")
     public String getTaskResult(){
     	return taskResult;
@@ -83,22 +75,6 @@ public class TaskJpaEntity {
         this.processInstanceId = processInstanceId;
     }
     
-    @Column(name = "CURRENT_ACTIVITY_ID")
-    public String getCurrentActivityId(){
-    	return currentActivityId;
-    }
-    public void setCurrentActivityId(String currentActivityId){
-    	this.currentActivityId = currentActivityId;
-    }
-    
-    @Column(name = "CURRENT_ACTIVITY_NAME")
-    public String getCurrentActivityName(){
-    	return currentActivityName;
-    }
-    public void setCurrentActivityName(String currentActivityName){
-    	this.currentActivityName = currentActivityName;
-    }
-    
     @Column(name = "APPLY_TIME")
     public Date getApplyTime() {
         return applyTime;
@@ -107,7 +83,17 @@ public class TaskJpaEntity {
     public void setApplyTime(Date applyTime) {
         this.applyTime = applyTime;
     }
-    @Column(name = "USER_ID")
+    @DateTimeFormat(pattern="yyyy-MM-dd")
+    @Column(name="due_time")
+    public Date getDueTime() {
+		return dueTime;
+	}
+
+	public void setDueTime(Date dueTime) {
+		this.dueTime = dueTime;
+	}
+
+	@Column(name = "USER_ID")
     public String getUserId() {
         return userId;
     }
@@ -115,7 +101,16 @@ public class TaskJpaEntity {
     public void setUserId(String userId) {
         this.userId = userId;
     }
-    @Override
+    @Column(name="execution_time")
+    public Date getExecutionTime() {
+		return executionTime;
+	}
+
+	public void setExecutionTime(Date executionTime) {
+		this.executionTime = executionTime;
+	}
+
+	@Override
     public String toString() {
         return ToStringBuilder.reflectionToString(this);
     }

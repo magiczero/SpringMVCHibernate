@@ -81,7 +81,7 @@
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/ibutton/jquery.ibutton.min.js'></script>
     
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/scrollup/jquery.scrollUp.min.js'></script>
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/treeview/bootstrap-treeview.js'></script>
+    <script type='text/javascript' src='${contextPath }/resources/js/plugins/treeview/bootstrap-treeview.min.js'></script>
     
     <script type='text/javascript' src='${contextPath }/resources/js/cookies.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/myactions.js'></script>
@@ -89,6 +89,7 @@
     <script type='text/javascript' src='${contextPath }/resources/js/plugins.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/settings.js'></script>    
     <script type='text/javascript' src='${contextPath }/resources/js/faq.js'></script>
+    <script type='text/javascript' src='${contextPath }/resources/js/pm-common.js'></script>
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
       <script src="${contextPath }/resources/js/html5shiv.js"></script>
@@ -98,9 +99,9 @@
     	var ctx = "${contextPath}";
     	var jsonData = ${category};
             $(document).ready(function () {
-                $("#ciTable").dataTable();
+                $("#ciTable").dataTable({"bSort":false});
                 $(".header").load("${contextPath}/header");
-                $(".menu").load("${contextPath}/menu", function () { $(".navigation > li:eq(3)").addClass("active"); });
+                $(".menu").load("${contextPath }/menu", function() {$("#node_${moduleId}").addClass("active");});
                 $(".breadLine .buttons").load("${contextPath}/contentbuttons");
                 $(".confirm").bind("click",function(){
                 	if(!confirm("确定要执行该操作?"))
@@ -112,7 +113,6 @@
                     color: "#666666",
                     nodeIcon: 'glyphicon glyphicon-list',
                     onNodeSelected: function(event, node) {
-                      //$('#event_output').prepend('<p>You clicked ' + node.text + '</p>');
                       initTable(node.text.substring(0,node.text.indexOf(" ")));
                     }
                   });
@@ -121,7 +121,7 @@
             function initTable(code)
             {
             	
-            	$.getJSON(ctx + '/cms/ci/list/'+code+'/?t=' + Math.random() , function(data) {
+            	$.getJSON(ctx + '/cms/ci/list/'+code+'/?t=' + pm_random() , function(data) {
             		$("#ciTable tbody tr").remove();
             		if(data.list==null)
             			return;
@@ -129,17 +129,18 @@
             		for(i=0;i<data.list.length;i++)
             		{
             			trs += "<tr>"
-						+"<td><a href='"+ctx+"/cms/ci/detail/"+data.list[i]["id"]+"'>"+data.list[i]["id"]+"</a></td>"
-						+"<td>"+data.list[i]["name"]+"</td>"
+						+"<td><a href='"+ctx+"/cms/ci/detail/"+data.list[i]["id"]+"'>"+data.list[i]["name"]+"</a></td>"
 						+"<td>"+data.list[i]["securityNo"]+"</td>"
 						+"<td>"+data.list[i]["categoryCode"]+"</td>"
-						+"<td>"+data.list[i]["departmentInUser"]+"</td>"
+						+"<td>"+data.list[i]["departmentInUse"]+"</td>"
 						+"<td>"+data.list[i]["userInMaintenance"]+"</td>"
-						+"<td>"+data.list[i]["status"]+"</td>"
-						+"<td>"+data.list[i]["lastUpdateTime"]+"</td>"
+						+"<td>"+data.list[i]["statusName"]+"</td>"
+						+"<td>"+data.list[i]["reviewStatusName"]+"</td>"
+						+"<td>"+data.list[i]["deleteStatusName"]+"</td>"
+						+"<td>"+new Date(data.list[i]["lastUpdateTime"]).format('yyyy-MM-dd HH:mm:ss')+"</td>"
 						+"<td>"
-						+"<a href='"+ctx+"/cms/ci/addproperty/"+data.list[i]["id"]+"' >设置属性</a>"
-						+"<a href='"+ctx+"/cms/ci/delete/"+data.list[i]["id"]+"' class='confirm'>删除</a>"
+						+"<a href='"+ctx+"/cms/ci/addproperty/"+data.list[i]["id"]+"' >设置属性</a> "
+						+" <a href='"+ctx+"/cms/ci/delete/"+data.list[i]["id"]+"' class='confirm'>删除</a>"
 						+"</td>"
 						+"</tr>";
 						
@@ -195,6 +196,9 @@
                             <h1>配置项管理</h1>  
 
                             <ul class="buttons">                          
+                            	<li>
+                                    <a href="${contextPath }/cms/ci/add" role="button" data-toggle="modal" class="isw-plus tipb" title="创建配置项"></a>
+                                </li>
                                 <li>
                                     <a href="#" class="isw-settings tipl" title="操作 "></a>
                                     <ul class="dd-list">
@@ -209,15 +213,16 @@
                             <table class="table" id="ciTable">
                                 <thead>
                                 	<tr>
-										<th  width="100px">ID</th>
 										<th>名称</th>
 										<th width="100px">保密编号</th>
-										<th width="100px">分类</th>
-										<th width="150px">使用部门</th>
-										<th width="100px">维护人</th>
-										<th width="100px">状态</th>
-										<th width="150px">最后更新时间</th>
-										<th width="120px">操作</th>
+										<th width="80px">分类</th>
+										<th width="120px">使用部门</th>
+										<th width="80px">维护人</th>
+										<th width="60px">状态</th>
+										<th width="80px">审核状态</th>
+										<th width="80px">删除状态</th>
+										<th width="130px">最后更新时间</th>
+										<th width="100px">操作</th>
 									</tr>
                                 </thead>
                                 <tbody>

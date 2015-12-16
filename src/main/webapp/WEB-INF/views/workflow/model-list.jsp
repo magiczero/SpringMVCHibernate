@@ -94,7 +94,7 @@
             $(document).ready(function () {
                 $("#eventTable").dataTable();
                 $(".header").load("../../header");
-                $(".menu").load("../../menu", function () { $(".navigation > li:eq(7)").addClass("active"); });
+                $(".menu").load("../../menu", function () { $(".navigation > li:eq(10)").addClass("active"); });
                 $(".breadLine .buttons").load("../../contentbuttons");
                 $(".confirm").bind("click",function(){
                 	if(!confirm("确定要执行该操作?"))

@@ -13,8 +13,6 @@
     
     <title>角色管理--运维管理系统</title>
 
-    <link rel="icon" type="image/ico" href="favicon.ico"/>
-    
     <link href="${contextPath }/resources/css/stylesheets.css" rel="stylesheet" type="text/css" />
     <!--[if lt IE 8]>
         <link href="${contextPath }/resources/css/ie7.css" rel="stylesheet" type="text/css" />
@@ -78,6 +76,7 @@
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/ibutton/jquery.ibutton.min.js'></script>
     
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/scrollup/jquery.scrollUp.min.js'></script>
+    <script type='text/javascript' src='${contextPath }/resources/js/plugins/multiselect/jquery.multi-select.js'></script>
     
     <script type='text/javascript' src='${contextPath }/resources/js/cookies.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/myactions.js'></script>
@@ -85,6 +84,7 @@
     <script type='text/javascript' src='${contextPath }/resources/js/plugins.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/settings.js'></script>    
     <script type='text/javascript' src='${contextPath }/resources/js/faq.js'></script>
+    <script type='text/javascript' src='${contextPath }/resources/js/pm-common.js'></script>
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
       <script src="${contextPath }/resources/js/html5shiv.js"></script>
@@ -95,7 +95,7 @@
             $(document).ready(function () {
                 $("#eventTable").dataTable();
                 $(".header").load("../header");
-                $(".menu").load("../menu", function () { $(".navigation > li:eq(10)").addClass("active"); });
+                $(".menu").load("${contextPath }/menu", function() {$("#node_${moduleId}").addClass("active");});
                 $(".breadLine .buttons").load("../contentbuttons");
                 $(".confirm").bind("click",function(){
                 	if(!confirm("确定要执行该操作?"))
@@ -103,6 +103,17 @@
                 });
                 $(".lnk_modify").bind("click", modifyRole);
             	$(".lnk_new").bind("click",newRole);
+            	$(".set_auth").bind("click", setAuth);
+            	$(".set_menu").bind("click", setMenu);
+            	
+            	if($("#selAuth").length > 0){
+                    $("#selAuth").multiSelect({
+                        selectableHeader: "<div class=''>Selectable item</div>",
+                        selectedHeader: "<div class=''>Selected items</div>"
+                    });
+            	}
+            	
+            	if($("#selMenu").length > 0){$("#selMenu").multiSelect();}
             });
     function newRole(){
 		$("#dialogTitle").html("新建角色");
@@ -123,6 +134,30 @@
     		
     		$("#roleForm").modal('show');
     	});
+    }
+    function setAuth() {
+    	var roleid = $(this).parents('tr').find('.roleid').text();
+    	$("#selAuth").multiSelect("deselect_all");
+    	$.getJSON(ctx + '/role/getauth/' + roleid +'?t=' + Math.random(),function(data){
+    		for(var i=0;i<data.auth.length;i++)
+    		{
+    			$("#selAuth").multiSelect("select",data.auth[i].id);
+    		}
+    		$("#authform_id").attr('value',roleid);
+    		$("#setAuthFormDialog").modal();
+    	});	
+    }
+    function setMenu() {
+    	var roleid = $(this).parents('tr').find('.roleid').text();
+    	$("#selMenu").multiSelect("deselect_all");
+    	$.getJSON(ctx + '/role/getmenu/' + roleid +'?t=' + Math.random(),function(data){
+    		for(var i=0;i<data.menu.length;i++)
+    		{
+    			$("#selMenu").multiSelect("select",data.menu[i].id);
+    		}
+    		$("#menuform_id").attr('value',roleid);
+    		$("#setMenuFormDialog").modal();
+    	});	
     }
     </script>
 </head>
@@ -181,7 +216,9 @@
 								<tr>
 									<th width="80px">ID</th>
 									<th >角色名</th>
-									<th width="150px">角色描述</th>
+									<th width="15%">角色的权限</th>
+									<th width="15%">角色的菜单</th>
+									<th width="15%">角色描述</th>
 									<th width="150px">操作</th>
 								</tr>
                                 </thead>
@@ -190,8 +227,20 @@
 									<tr>
 										<td class="roleid">${role.id }</td>
 										<td>${role.roleName}</td>
+										<td>
+											<c:forEach items="${role.roleAuths }" var="ra">
+											${ra.auth.authorityName }<br/>
+											</c:forEach>
+										</td>
+										<td>
+										<c:forEach items="${role.modules }" var="menu">
+											${menu.name }<br/>
+										</c:forEach>
+										</td>
 										<td>${role.roleDesc}</td>
 										<td>
+											<a class="set_auth" href="javascript:void(0);">设置权限</a>
+											<a class="set_menu" href="javascript:void(0);">设置菜单</a>
 											<a class="lnk_modify" href="#">编辑</a>
 					                        <a class="confirm" href="${contextPath}/role/delete/${role.id}">删除</a>
 										</td>
@@ -244,6 +293,75 @@
             </div>
         </div>
     	<!-- 新建用户 end -->
+    	<!-- 设置权限 -->
+    	<div class="modal fade" id="setAuthFormDialog" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>                        
+                        <h4>设置角色权限</h4>
+                    </div>
+                    <form id="setAuthForm" action="${contextPath}/role/role-update-auth" method="post">
+                    <div class="modal-body modal-body-np">
+                        <div class="row">
+                            <div class="block-fluid">
+                                <div class="row-form clearfix">
+                                    <div class="col-md-12">
+                                     <select multiple class="multiselect" id="selAuth" name="auths">   
+                                    <c:forEach items="${authList }" var="auth">                             
+                                        <option value="${auth.id}">${auth.authorityName}</option>
+                                    </c:forEach>
+                                    </select>
+                                    </div>
+                                </div>                                                           
+                            </div>                
+                        </div>
+                    </div>   
+                    <div class="modal-footer">
+                        <button class="btn btn-primary" id="btn_set_role">保存</button> 
+                        <button class="btn btn-default" data-dismiss="modal" aria-hidden="true">关闭</button>            
+                    </div>
+                    <input type="hidden" id="authform_id" name="role_id" value="0" /> 
+                    </form>
+                </div>
+            </div>
+        </div>
+        <!-- 设置菜单 -->
+    	<div class="modal fade" id="setMenuFormDialog" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>                        
+                        <h4>设置角色菜单</h4>
+                    </div>
+                    <form id="setAuthForm" action="${contextPath}/role/role-set-menu" method="post">
+                    <div class="modal-body modal-body-np">
+                        <div class="row">
+                            <div class="block-fluid">
+                                <div class="row-form clearfix">
+                                    <div class="col-md-12">
+                                     <select multiple class="multiselect" id="selMenu" name="menus">   
+                                    <c:forEach items="${menuList }" var="menu">   
+	                                    <option value="${menu.id}">${menu.name}</option>
+	                                    <c:forEach items="${menu.child }" var="child">
+	                                    <option value="${child.id}">${menu.name}---${child.name}</option>
+	                                    </c:forEach>
+                                    </c:forEach>
+                                    </select>
+                                    </div>
+                                </div>                                                           
+                            </div>                
+                        </div>
+                    </div>   
+                    <div class="modal-footer">
+                        <button class="btn btn-primary" id="btn_set_role">保存</button> 
+                        <button class="btn btn-default" data-dismiss="modal" aria-hidden="true">关闭</button>            
+                    </div>
+                    <input type="hidden" id="menuform_id" name="role_id" value="0" /> 
+                    </form>
+                </div>
+            </div>
+        </div>
     </div>
 </body>
 

@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.cngc.pm.model.Moudle;
 import com.cngc.pm.model.Resources;
+import com.cngc.pm.model.Role;
 
 public interface ResourcesService {
 
@@ -20,5 +21,7 @@ public interface ResourcesService {
 	List<Moudle> getModules();
 
 	Resources getByURL(String servletPath);
+	
+	//List<Role> getRolesByURL(String url);
 
 }

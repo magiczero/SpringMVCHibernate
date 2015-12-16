@@ -2,7 +2,9 @@ package com.cngc.pm.service.cms;
 
 import java.util.List;
 import java.util.Set;
+
 import com.cngc.pm.model.cms.Property;
+import com.googlecode.genericdao.search.SearchResult;
 
 public interface PropertyService {
 
@@ -17,4 +19,8 @@ public interface PropertyService {
 	Set<Property> getPropertyByIds(String ids);
 
 	List<Property> getPropertyByNIds(List<Long> ids);
+	
+	List<Property> getFields();
+	
+	SearchResult<Property> getByPropertyIds(String propertyIds);
 }

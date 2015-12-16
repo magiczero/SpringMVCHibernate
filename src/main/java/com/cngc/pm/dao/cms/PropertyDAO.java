@@ -5,6 +5,7 @@ import java.util.Set;
 
 import com.cngc.pm.model.cms.Property;
 import com.googlecode.genericdao.dao.hibernate.GenericDAO;
+import com.googlecode.genericdao.search.SearchResult;
 
 public interface PropertyDAO extends GenericDAO<Property, Long> {
 	/**
@@ -22,4 +23,7 @@ public interface PropertyDAO extends GenericDAO<Property, Long> {
 	 * @return
 	 */
 	List<Property> getSetByNIds(List<Long> ids);
+	
+	List<Property> getFields();
+	SearchResult<Property> getByPropertyIds(String propertyIds);
 }

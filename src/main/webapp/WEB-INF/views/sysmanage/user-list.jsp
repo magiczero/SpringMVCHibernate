@@ -13,8 +13,6 @@
     
     <title>用户管理--运维管理系统</title>
 
-    <link rel="icon" type="image/ico" href="favicon.ico"/>
-    
     <link href="${contextPath }/resources/css/stylesheets.css" rel="stylesheet" type="text/css" />
     <!--[if lt IE 8]>
         <link href="${contextPath }/resources/css/ie7.css" rel="stylesheet" type="text/css" />
@@ -86,6 +84,7 @@
     <script type='text/javascript' src='${contextPath }/resources/js/plugins.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/settings.js'></script>    
     <script type='text/javascript' src='${contextPath }/resources/js/faq.js'></script>
+    <script type='text/javascript' src='${contextPath }/resources/js/pm-common.js'></script>
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
       <script src="${contextPath }/resources/js/html5shiv.js"></script>
@@ -95,9 +94,9 @@
     var ctx = "${contextPath}";
             $(document).ready(function () {
                 $("#eventTable").dataTable();
-                $(".header").load("../header");
-                $(".menu").load("../menu", function () { $(".navigation > li:eq(10)").addClass("active"); });
-                $(".breadLine .buttons").load("../contentbuttons");
+                $(".header").load("${contextPath }/header");
+                $(".menu").load("${contextPath }/menu", function() {$("#node_${moduleId}").addClass("active");});
+                $(".breadLine .buttons").load("${contextPath }/contentbuttons");
                 $(".confirm").bind("click",function(){
                 	if(!confirm("确定要执行该操作?"))
                 		return false;
@@ -136,7 +135,7 @@
     	$.getJSON(ctx + '/user/getrole/' + userid +'?t=' + Math.random(),function(data){
     		for(var i=0;i<data.role.length;i++)
     		{
-    			$("#selRole").multiSelect("select",data.role[i].id);;
+    			$("#selRole").multiSelect("select",data.role[i].id);
     		}
     		$("#roleform_id").attr('value',userid);
         	$("#setRoleFormDialog").modal('show');
@@ -218,8 +217,8 @@
 										<td>${user.username}</td>
 										<td>${user.name}</td>
 										<td>
-										<c:forEach items="${user.roles }" var="role">
-										 ${role.roleDesc }<br> 										
+										<c:forEach items="${user.userRoles }" var="role">
+										 ${role.role.roleDesc }<br> 										
 										</c:forEach>
 										</td>
 										<td>${user.createWhile }</td>

@@ -5,11 +5,13 @@ import java.util.Map;
 
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.RuntimeService;
+import org.activiti.engine.TaskService;
 import org.activiti.engine.impl.RepositoryServiceImpl;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.impl.pvm.process.ActivityImpl;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.ProcessInstance;
+import org.activiti.engine.task.Task;
 import org.apache.commons.lang3.ObjectUtils;
 
 import com.google.common.collect.Maps;
@@ -30,6 +32,8 @@ public class ProcessDefinitionCache {
     private static RepositoryService repositoryService;
 
     private static RuntimeService runtimeService;
+    
+    private static TaskService taskService;
 
     public static ProcessDefinition get(String processDefinitionId) {
         ProcessDefinition processDefinition = map.get(processDefinitionId);
@@ -87,13 +91,34 @@ public class ProcessDefinitionCache {
     	else
     		return "";
     }
-    
+    public static String getTaskId(String processInstanceId){
+    	Task task = taskService.createTaskQuery().processInstanceId(processInstanceId).singleResult();
+    	if(task==null)
+    		return "0";
+    	else
+    		return task.getId();
+    }
+    public static Task getTask(String processInstanceId){
+    	Task task = taskService.createTaskQuery().processInstanceId(processInstanceId).singleResult();
+
+    	return task;
+    }
+    public static String getProcessDefinitionId(String processInstanceId){
+    	ProcessInstance processInstance = runtimeService.createProcessInstanceQuery().processInstanceId(processInstanceId).singleResult();
+    	if(processInstance!=null)
+    		return processInstance.getProcessDefinitionId();
+    	else
+    		return "";
+    }
     public static void setRepositoryService(RepositoryService repositoryService) {
         ProcessDefinitionCache.repositoryService = repositoryService;
     }
 
 	public static void setRuntimeService(RuntimeService runtimeService) {
 		ProcessDefinitionCache.runtimeService = runtimeService;
+	}
+	public static void setTaskService(TaskService taskService){
+		ProcessDefinitionCache.taskService = taskService;
 	}
     
 }

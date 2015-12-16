@@ -88,6 +88,7 @@
     <script type='text/javascript' src='${contextPath }/resources/js/plugins.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/settings.js'></script>    
     <script type='text/javascript' src='${contextPath }/resources/js/faq.js'></script>
+    <script type='text/javascript' src='${contextPath }/resources/js/pm-common.js'></script>
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
       <script src="${contextPath }/resources/js/html5shiv.js"></script>
@@ -96,26 +97,25 @@
     <script type="text/javascript">
     	var ctx = "${contextPath}";
             $(document).ready(function () {
-            	
                 $("#eventTable").dataTable({"bSort":false});
                 
                 $(".header").load("${contextPath}/header");
-                $(".menu").load("${contextPath}/menu", function () { $(".navigation > li:eq(3)").addClass("active"); });
+                $(".menu").load("${contextPath}/menu", function () { $(".navigation > li:eq(4)").addClass("active"); });
                 $(".breadLine .buttons").load("${contextPath}/contentbuttons");
                 $(".confirm").bind("click",function(){
                 	if(!confirm("确定要执行该操作?"))
                 		return false;
                 });
-                $(".lnk_setProperty").bind("click",setProperty);
+                //$(".lnk_setProperty").bind("click",setProperty);
             	$("#btn_property_submit").bind("click",getProperty);
            	 	if ($("#selProperty").length > 0) {
                     $("#selProperty").multiSelect();
                 }
             });
-            function setProperty(){
-            	var code = $(this).parents('tr').find('.code').text();
+            function setProperty(code){
+            	//var code = $(this).parents('tr').find('.code').text();
             	$("#selProperty").multiSelect("deselect_all");
-            	$.getJSON(ctx + '/cms/category/getpropertyforselect/' + code +'?t=' + Math.random(),function(data){
+            	$.getJSON(ctx + '/cms/category/getpropertyforselect/' + code +'?t=' + pm_random(),function(data){
             		$("#selProperty option").remove();
             		for(var i=0;i<data.properties.length;i++)
             		{
@@ -123,7 +123,7 @@
             		}
             		$("#selProperty").multiSelect('refresh');
             		
-                	$.getJSON(ctx + '/cms/category/getproperty/' + code +'?t=' + Math.random(),function(data){
+                	$.getJSON(ctx + '/cms/category/getproperty/' + code +'?t=' + pm_random(),function(data){
                 		for(var i=0;i<data.properties.length;i++)
                 		{
                 			$("#selProperty").multiSelect("select",data.properties[i].id);;
@@ -176,11 +176,13 @@
                             <div class="isw-grid"></div>
                             <h1>CI分类管理</h1>  
 
-                            <ul class="buttons">                          
+                            <ul class="buttons">  
+								<li>
+                                    <a href="#newForm" role="button" data-toggle="modal" class="isw-plus tipb" title="创建新分类"></a>
+                                </li>                       
                                 <li>
                                     <a href="#" class="isw-settings tipl" title="操作 "></a>
                                     <ul class="dd-list">
-                                    	<li><a href="#newForm" role="button" data-toggle="modal"><span class="isw-ok"></span> 创建新分类</a></li>
                                         <li><a href="javascript:void(0);" id="delBtn"><span class="isw-list"></span> 删除</a></li>
                                         <li><a href="#"><span class="isw-refresh"></span> 刷新</a></li>
                                     </ul>
@@ -191,7 +193,7 @@
                             <table class="table" id="eventTable">
                                 <thead>
                                 	<tr>
-										<th width="100px">分类代码</th>
+										<th width="150px">分类代码</th>
 										<th width="200px">分类名</th>
 										<th>属性</th>
 										<th width="150px">操作</th>
@@ -208,8 +210,8 @@
 											</c:forEach>
 										</td>
 										<td>
-											<a href="${contextPath}/cms/category/delete/${category.categoryCode}">删除</a>
-											<a href="#" class="lnk_setProperty">设置属性</a>
+											<a class="confirm" href="${contextPath}/cms/category/delete/${category.categoryCode}">删除</a>
+											<a href="#"  onclick="setProperty('${category.categoryCode}')">设置属性</a>
 										</td>
 									</tr>
 								</c:forEach>   
@@ -248,6 +250,10 @@
                                     <div class="col-md-9"><form:input path="categoryName"></form:input></div>
                                 </div>                                                           
                             </div>                
+                        </div>
+                    	<div class="dr"><span></span></div>
+                        <div class="block">                
+                            <p>请按照规则填写分类代码，每两位数字代表一个分类。</p>
                         </div>
                     </div>   
                     <div class="modal-footer">

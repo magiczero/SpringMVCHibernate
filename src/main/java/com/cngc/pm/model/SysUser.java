@@ -6,17 +6,12 @@ import java.sql.Timestamp;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.OrderBy;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.Cache;
@@ -29,7 +24,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 @DynamicUpdate(true)  
 @DynamicInsert(true)
 @Table(name = "sys_users")  
-@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)  
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region="sys_user")  
 public class SysUser implements Serializable {
 
 	/**
@@ -40,7 +35,7 @@ public class SysUser implements Serializable {
 	private Long id; 
 	private String username;
 	private String name;
-	private String password;
+	private transient String password;
 	private Date createWhile;						//创建时间
 	private Timestamp lastWhile;							//最后访问时间
 	private Date deadline;							//截止日期
@@ -54,18 +49,33 @@ public class SysUser implements Serializable {
 	private boolean accountNonLocked;				//是否锁定
 	private boolean creadentialsNonExpired;		//整数是否有效
 	
-	private Set<Role> roles = new LinkedHashSet<Role>();						//角色列表
+//	private Set<Role> roles = new LinkedHashSet<Role>();						//角色列表
+//
+//	@ManyToMany(targetEntity=Role.class)
+//	@JoinTable(name="sys_users_roles", joinColumns={@JoinColumn(name="user_id", referencedColumnName="user_id")}, inverseJoinColumns={@JoinColumn(name="role_id",referencedColumnName="role_id")})
+//	@OrderBy("id")
+//	@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+//	@JsonManagedReference
+//	public Set<Role> getRoles() {
+//		return roles;
+//	}
+//	@JsonManagedReference
+//	public void setRoles(Set<Role> roles) {
+//		this.roles = roles;
+//	}
+	
+	private Set<UserRole> userRoles = new LinkedHashSet<>();
 
-	@ManyToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE },fetch=FetchType.EAGER)
-	@JoinTable(name="sys_users_roles", joinColumns={@JoinColumn(name="user_id")}, inverseJoinColumns={@JoinColumn(name="role_id")})
-	@OrderBy("id")
-	@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-	public Set<Role> getRoles() {
-		return roles;
+	@OneToMany(targetEntity=UserRole.class,mappedBy="user")
+//	@JoinColumn(name="user_id", referencedColumnName="user_id")
+//	@Fetch(value = FetchMode.SELECT)
+	//@Filter(name = "user")
+	public Set<UserRole> getUserRoles() {
+		return userRoles;
 	}
 
-	public void setRoles(Set<Role> roles) {
-		this.roles = roles;
+	public void setUserRoles(Set<UserRole> userRoles) {
+		this.userRoles = userRoles;
 	}
 
 	@Id 

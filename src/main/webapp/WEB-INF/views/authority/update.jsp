@@ -1,4 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
+<%@ page import="com.cngc.pm.model.Authority, com.cngc.pm.model.AuthReso, com.cngc.pm.model.Resources, java.util.List" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>    <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
 <c:set var="contextPath" value="${pageContext.request.contextPath}"></c:set>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
@@ -89,23 +90,19 @@
                 
                 $("#authority").validationEngine({promptPosition : "topLeft", scroll: true});
                 
-                if($("#setResources").length > 0){
-                    $("#setResources").multiSelect({
+                if($("#resos").length > 0){
+                    $("#resos").multiSelect({
                         selectableHeader: "<div class='multipleselect-header'>未选资源</div>",
                         selectedHeader: "<div class='multipleselect-header'>已选择</div>"
                     });
                     $('#multiselect-selectAll').click(function(){
-                        $('#setResources').multiSelect('select_all');
+                        $('#resos').multiSelect('select_all');
                         return false;
                     });
                     $('#multiselect-deselectAll').click(function(){
-                        $('#setResources').multiSelect('deselect_all');
+                        $('#resos').multiSelect('deselect_all');
                         return false;
                     });
-                    $('#multiselect-selectIndia').click(function(){
-                        $('#setResources').multiSelect('select', 'in');
-                        return false;
-                    });         
                  }
             });
     </script>
@@ -158,14 +155,40 @@
                           <div class="row clearfix"><br/>
                           <div class="col-md-1"></div>
                                 <div class="col-md-10">
-											<form:select multiple="true" path="setResources" class="validate[required] multiselect">
+									<%-- <form:select multiple="true" path="setResources" class="validate[required] multiselect">
 												<c:forEach items="${listResources }" var="res1"><option value="${res1.id }" <c:forEach items="${authority.setResources }" var="res2"><c:if test="${res2.id == res1.id }">selected="true"</c:if></c:forEach>>${res1.name }</option></c:forEach>
-											</form:select>
-                            
-				                            <div class="btn-group">
-				                                <button class="btn btn-default btn-xs" id="multiselect-selectAll" type="button">全选</button>
-				                                <button class="btn btn-default btn-xs" id="multiselect-deselectAll" type="button">全不选</button>
-				                            </div>                          
+											</form:select>--%>
+                            		<select multiple id="resos" name="resos" class="validate[required] multiselect">
+										
+										<%
+											@SuppressWarnings("unchecked")
+											List<Resources> list = (List<Resources>)request.getAttribute("listResources");
+											Authority auth = (Authority)request.getAttribute("authority");
+											for(Resources resources : list) {
+												String option="<option value=\""+resources.getId()+"\" ";
+												for(AuthReso ar : auth.getAuthResos()) {
+													if(ar.getResources().getId() == resources.getId()) {
+														option+="selected=\"selected\"";
+													}
+												}
+												option+=" >"+resources.getName()+"</option>";
+												out.write(option);
+											}
+										%>
+										<%--<c:forEach items="${listResources }" var="resources"><option value='${resources.id }' 
+										<c:forEach items="${authority.authResos }" var="ar">
+										<c:choose>
+											<c:if test="${ar.resources.id == resources.id }">selected='selected'</c:if>
+										</c:choose>
+										>${resources.name }</option>
+										</c:forEach></c:forEach> --%>
+										
+									</select>
+									
+				                    <div class="btn-group">
+				                    	<button class="btn btn-default btn-xs" id="multiselect-selectAll" type="button">全选</button>
+				                        <button class="btn btn-default btn-xs" id="multiselect-deselectAll" type="button">全不选</button>
+				                    </div>                          
 				                        
 								</div>  <div class="col-md-1"></div>  
                                 </div>  

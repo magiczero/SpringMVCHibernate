@@ -47,21 +47,21 @@ public class MyExceptionHandler implements HandlerExceptionResolver {
 					response.setStatus(1000);//其他异常返回 1000
 					return new ModelAndView("exception/error", model);
 				}
-		 }else{
+		}else{
 			 try {  
-				 if(ex instanceof BusinessException) {
+				 	if(ex instanceof BusinessException) {
 						response.setStatus(1001);//业务异常返回 1001
-					}else if(ex instanceof ParameterException) {
+				 	}else if(ex instanceof ParameterException) {
 						response.setStatus(1002);//参数异常返回 1002
 					} else {
 						response.setStatus(1000);//其他异常返回 1000
 					}
-                 PrintWriter writer = response.getWriter();  
-                 writer.write(ex.getMessage());  
-                 writer.flush();  
+				 	PrintWriter writer = response.getWriter();  
+				 	writer.write(ex.getMessage());  
+				 	writer.flush();  
              } catch (IOException e) {  
-            	 model.put("ex", e);
-            	 return new ModelAndView("exception/error", model);
+            	 	model.put("ex", e);
+            	 	return new ModelAndView("exception/error", model);
              }  
              return null;  
 		 }

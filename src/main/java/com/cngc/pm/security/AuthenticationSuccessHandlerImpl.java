@@ -3,6 +3,7 @@ package com.cngc.pm.security;
 import java.io.IOException;
 import java.util.Date;
 
+import javax.annotation.Resource;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -11,10 +12,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.web.DefaultRedirectStrategy;
 import org.springframework.security.web.RedirectStrategy;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.util.StringUtils;
+
+import com.cngc.pm.model.SysUser;
+import com.cngc.pm.service.UserService;
 
 public class AuthenticationSuccessHandlerImpl implements
 		AuthenticationSuccessHandler, InitializingBean {
@@ -26,6 +31,9 @@ public class AuthenticationSuccessHandlerImpl implements
 	private RedirectStrategy redirectStrategy = new DefaultRedirectStrategy();  
 
 	private String defaultTargetUrl; 
+	
+	@Resource
+	private UserService userService;
 
 	@Override
 	public void afterPropertiesSet() throws Exception {
@@ -42,12 +50,16 @@ public class AuthenticationSuccessHandlerImpl implements
 			throws IOException, ServletException {
 		// TODO Auto-generated method stub
 
-		//this.saveLoginInfo(request, authentication);  
+		User user1 = (User)authentication.getPrincipal();
+		SysUser user = userService.getByUsername(user1.getUsername());
 		String ip = this.getIpAddress(request); 
-		
 		Date date = new Date();  
-		
 		logger.info("登录IP："+ip +"， 时间："+ date);
+		
+		//更新登录时间
+		user.setLastWhile(new java.sql.Timestamp(date.getTime()));
+		user.setLoginIP(ip);
+		userService.update(user);
         
         if(this.forwardToDestination){  
             logger.info("Login success,Forwarding to "+this.defaultTargetUrl);  

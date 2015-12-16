@@ -1,4 +1,4 @@
-<%@page import="com.cngc.utils.activiti.ProcessDefinitionCache,org.activiti.engine.RepositoryService,org.activiti.engine.RuntimeService"%>
+<%@page import="com.cngc.utils.activiti.ProcessDefinitionCache,org.activiti.engine.RepositoryService,org.activiti.engine.RuntimeService,org.activiti.engine.TaskService"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>    
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
@@ -86,14 +86,17 @@
     <script type='text/javascript' src='${contextPath }/resources/js/plugins.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/settings.js'></script>    
     <script type='text/javascript' src='${contextPath }/resources/js/faq.js'></script>
+    <script type='text/javascript' src='${contextPath }/resources/js/common.js'></script>
+    <script type='text/javascript' src='${contextPath }/resources/js/activiti-form.js'></script>
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
       <script src="${contextPath }/resources/js/html5shiv.js"></script>
       <script src="${contextPath }/resources/js/respond.min.js"></script>
     <![endif]-->
     <script type="text/javascript">
+    	var ctx = "${contextPath}";
             $(document).ready(function () {
-                $("#eventTable").dataTable();
+                $("#eventTable").dataTable({"aaSorting":[[3,'desc']]});
                 $(".header").load("../header");
                 $(".menu").load("../menu", function () { $(".navigation > li:eq(5)").addClass("active"); });
                 $(".breadLine .buttons").load("../contentbuttons");
@@ -121,7 +124,7 @@
 
                 <ul class="breadcrumb">
                     <li><a href="#">运维管理系统</a> <span class="divider">></span></li>
-                    <li><a href="${contextPath }/Asset/list">合同管理</a> <span class="divider">></span></li>       
+                    <li><a href="${contextPath }/contract/list">合同管理</a> <span class="divider">></span></li>       
                     <li class="active">合同列表</li>
                 </ul>
 
@@ -135,8 +138,10 @@
 			<%
 				RuntimeService runtimeService  = (RuntimeService)request.getAttribute("runtime");
 				RepositoryService repositoryService = (RepositoryService)request.getAttribute("res");
+				TaskService taskService = (TaskService)request.getAttribute("task");
 				ProcessDefinitionCache.setRuntimeService(runtimeService);
 				ProcessDefinitionCache.setRepositoryService(repositoryService);
+				ProcessDefinitionCache.setTaskService(taskService);
 			%>
 				<div class="alert alert-danger hide">                
                     <h4>错误!</h4>请至少选择一项
@@ -147,11 +152,13 @@
                             <div class="isw-grid"></div>
                             <h1>合同列表</h1>  
 
-                            <ul class="buttons">                          
+                            <ul class="buttons">
+                           		<li>
+                                    <a href="${contextPath}/contract/add" role="button" data-toggle="modal" class="isw-plus tipb" title="创建新记录"></a>
+                                </li>                           
                                 <li>
                                     <a href="#" class="isw-settings tipl" title="操作 "></a>
                                     <ul class="dd-list">
-                                    	<li><a href="${contextPath}/contract/add" role="button" data-toggle="modal"><span class="isw-ok"></span> 创建合同</a></li>
                                         <li><a href="javascript:void(0);" id="delBtn"><span class="isw-list"></span> 删除</a></li>
                                         <li><a href="#"><span class="isw-refresh"></span> 刷新</a></li>
                                     </ul>
@@ -162,12 +169,11 @@
                             <table class="table" id="eventTable">
                                 <thead>
                                 	<tr>
-										<th  width="100px">ID</th>
-										<th>合同名称</th>
-										<th width="150px">合同摘要</th>
-										<th width="150px">类型</th>
-										<th width="150px">签订时间</th>
-										<th width="150px">起止时间</th>
+										<th width="200px">合同名称</th>
+										<th>合同摘要</th>
+										<th width="100px">类型</th>
+										<th width="100px">签订时间</th>
+										<th width="170px">起止时间</th>
 										<th width="100px">是否锁定</th>
 										<th width="150px">操作</th>
 									</tr>
@@ -176,7 +182,6 @@
                                 	<c:forEach items="${list}" var="contract">
 									<c:set var="pdid" value="${contract.processInstanceId }" />
 									<tr>
-										<td>${contract.id }</td>
 										<td>${contract.name }</td>
 										<td>${contract.abs }</td>
 										<td>${contract.type }</td>
@@ -190,13 +195,16 @@
 											<c:if test="${!contract.locked }">
 												<a class="confirm" href='${contextPath }/contract/manage/${contract.id}/publish'>发布申请</a>
 											</c:if>
-											<c:if test="${contract.status }">
+											<c:if test="${contract.status=='02' }">
 												<a class="confirm" href='${contextPath }/contract/manage/${contract.id}/modify'>修改申请</a>
 												<a class="confirm" href='${contextPath }/contract/manage/${contract.id}/delete'>删除申请</a>
 											</c:if>
 											<c:if test="${!contract.locked }">
 										 		<a class="confirm" href='${contextPath }/contract/delete/${contract.id}'>删除</a>
 										 	</c:if>
+										 	<c:if test="${contract.locked }">
+												<a href="#" onclick="act_form_openTaskDialog('合同管理','<%=ProcessDefinitionCache.getTaskId(pageContext.getAttribute("pdid").toString()) %>','/contract/list')">办理</a>
+											</c:if>
 										</td>
 									</tr>
 								</c:forEach>   
@@ -204,45 +212,15 @@
                             </table>
                         </div>
                     </div>  
-                  
+                    <!-- 动态表单 -->
+			        <div class="modal fade" id="dynamicForm" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"></div>
+			    	<!-- 动态表单 end -->
                 </div>
                 <div class="dr"><span></span></div>
             </div>
             <!--workplace end-->
         </div>   
-        <!-- 流程部署 modal form -->
-        <div class="modal fade" id="deployForm" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>                        
-                        <h4>部署流程</h4>
-                    </div>
-                    <form action="${contextPath }/workflow/deploy" method="post" enctype="multipart/form-data">
-                    <div class="modal-body modal-body-np">
-                        <div class="row">
-                            <div class="block-fluid">
-                                <div class="row-form clearfix">
-                                    <div class="col-md-3">上传流程文件:</div>
-                                    <div class="col-md-9"><input type="file" name="file" /></div>
-                                </div>                                                           
-                            </div>                
-                        </div>
-                    </div>   
-                    <div class="modal-footer">
-                        <button class="btn btn-primary" aria-hidden="true">提交</button> 
-                        <button class="btn btn-default" data-dismiss="modal" aria-hidden="true">关闭</button>            
-                    </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-    	<!-- 资源读取 -->
-    	<div class="dialog" id="b_popup_resource" style="display: none;" title="流程资源">
-	    	<div class="block dialog_block  uploads" id="resource_content">
-			                                
-			</div>
-    	</div>
+       
     </div>
 </body>
 

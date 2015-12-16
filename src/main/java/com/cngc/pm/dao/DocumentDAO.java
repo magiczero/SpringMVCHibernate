@@ -26,4 +26,5 @@ public interface DocumentDAO extends GenericDAO<Document, Long> {
 	List<Document> getListWithPage(Integer offset, Integer maxResults);
 	
 	SearchResult<Document> getAllWithPage(Search search);
+	
 }

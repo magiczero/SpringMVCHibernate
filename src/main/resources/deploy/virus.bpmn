@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.cngc.com.cn/virus">
+  <process id="VIRUSUPDATE" name="病毒库升级" isExecutable="true">
+    <extensionElements>
+      <activiti:executionListener event="start" expression="${execution.setVariable('virus', virusUpdateEntityManager.newVirusUpdate(execution))}"></activiti:executionListener>
+      <activiti:executionListener event="end" expression="${virusUpdateEntityManager.setVirusUpdateStatus(execution)}"></activiti:executionListener>
+    </extensionElements>
+    <startEvent id="startVirusUpdate" name="Start">
+      <extensionElements>
+        <activiti:formProperty id="user" name="分配工程师" type="string"></activiti:formProperty>
+      </extensionElements>
+    </startEvent>
+    <userTask id="taskDoVirusUpdate" name="病毒升级执行中" activiti:assignee="${virus.userId}">
+      <extensionElements>
+        <activiti:formProperty id="name" name="病毒库" type="string" expression="${virus.name}"></activiti:formProperty>
+        <activiti:formProperty id="version" name="版本号" type="string" expression="${virus.version}"></activiti:formProperty>
+        <activiti:formProperty id="updateTime" name="升级时间" type="date" expression="${virus.updateTime}" datePattern="yyyy-MM-dd"></activiti:formProperty>
+      </extensionElements>
+    </userTask>
+    <sequenceFlow id="flow1" sourceRef="startVirusUpdate" targetRef="taskDoVirusUpdate"></sequenceFlow>
+    <endEvent id="endVirusUpdate" name="End"></endEvent>
+    <sequenceFlow id="flow2" sourceRef="taskDoVirusUpdate" targetRef="endVirusUpdate"></sequenceFlow>
+  </process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_VIRUSUPDATE">
+    <bpmndi:BPMNPlane bpmnElement="VIRUSUPDATE" id="BPMNPlane_VIRUSUPDATE">
+      <bpmndi:BPMNShape bpmnElement="startVirusUpdate" id="BPMNShape_startVirusUpdate">
+        <omgdc:Bounds height="35.0" width="35.0" x="20.0" y="20.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="taskDoVirusUpdate" id="BPMNShape_taskDoVirusUpdate">
+        <omgdc:Bounds height="55.0" width="105.0" x="100.0" y="10.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="endVirusUpdate" id="BPMNShape_endVirusUpdate">
+        <omgdc:Bounds height="35.0" width="35.0" x="260.0" y="20.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="flow1" id="BPMNEdge_flow1">
+        <omgdi:waypoint x="55.0" y="37.0"></omgdi:waypoint>
+        <omgdi:waypoint x="100.0" y="37.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow2" id="BPMNEdge_flow2">
+        <omgdi:waypoint x="205.0" y="37.0"></omgdi:waypoint>
+        <omgdi:waypoint x="260.0" y="37.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>

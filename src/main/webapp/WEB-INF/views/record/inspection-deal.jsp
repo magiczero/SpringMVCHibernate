@@ -85,7 +85,8 @@
     <script type='text/javascript' src='${contextPath }/resources/js/plugins.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/settings.js'></script>    
     <script type='text/javascript' src='${contextPath }/resources/js/faq.js'></script>
-    <script type='text/javascript' src='${contextPath }/resources/js/inspection-handler.js'></script>
+    <script type='text/javascript' src='${contextPath }/resources/js/pm-common.js'></script>
+    <script type='text/javascript' src='${contextPath }/resources/js/activiti-form.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/jquery.form.js'></script>
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
@@ -97,16 +98,17 @@
    		var tname = '${task.name }';
    		var taskid = '${task.id }';
    		var ctx = "${contextPath}"; 
-   		var eventid = '${inspection.id}'
+   		//使用模板必须定义模板数据的获取地址
+   		var get_templatedata_address = ctx + '/record/inspection/${inspection.id}/template/get?t=' + pm_random();
    		
-            $(document).ready(function () {
-                $("#eventTable").dataTable();
-                $(".header").load("${contextPath}/header");
-                $(".menu").load("${contextPath}/menu", function () { $(".navigation > li:eq(5)").addClass("active"); });
-                $(".breadLine .buttons").load("${contextPath}/contentbuttons");
+        $(document).ready(function () {
+            $("#eventTable").dataTable();
+            $(".header").load("${contextPath}/header");
+            $(".menu").load("${contextPath}/menu", function () { $(".navigation > li:eq(7)").addClass("active"); });
+            $(".breadLine .buttons").load("${contextPath}/contentbuttons");
 
-                get_deal_form(taskid);   
-            });
+            act_form_task(taskid,'/record/inspection');   
+        });
     </script>
 </head>
 <body>
@@ -126,8 +128,8 @@
 
                 <ul class="breadcrumb">
                     <li><a href="#">运维管理系统</a> <span class="divider">></span></li>
-                    <li><a href="${contextPath }/Asset/list">巡检管理</a> <span class="divider">></span></li>       
-                    <li class="active">巡检</li>
+                    <li><a href="#">运维记录管理</a> <span class="divider">></span></li>       
+                    <li class="active">日常巡检记录</li>
                 </ul>
 
                 <ul class="buttons"></ul>
@@ -151,7 +153,7 @@
                         	<div id="div_template" class=" row-form">                                                     
                             	<form id="form_template" action="${contextPath }/record/inspection/${inspection.id}/template/save/" method="post"></form>
                     		</div>
-                    		<div id="event_deal_form"></div>
+                    		<div id="workflow_task_form"></div>
                         </div>
                     </div>
                	

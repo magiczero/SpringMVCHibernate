@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.cngc.com.cn/knowledge/publish">
-  <process id="WK_KNOWLEDGE" name="知识管理流程" isExecutable="true">
+  <process id="KNOWLEDGE" name="知识管理流程" isExecutable="true">
     <extensionElements>
       <activiti:executionListener event="start" expression="${execution.setVariable('knowledge', knowledgeEntityManager.getKnowledge(execution))}"></activiti:executionListener>
       <activiti:executionListener event="end" expression="${ knowledgeEntityManager.setKnowledgeStauts(execution)}"></activiti:executionListener>
     </extensionElements>
-    <startEvent id="startKnowledgePublish" name="Start">
+    <startEvent id="startKnowledge" name="Start">
       <extensionElements>
         <activiti:formProperty id="id" name="标识符" type="long" required="true"></activiti:formProperty>
         <activiti:formProperty id="type" name="管理事项" type="enum" required="true">
@@ -15,11 +15,11 @@
         </activiti:formProperty>
       </extensionElements>
     </startEvent>
-    <userTask id="managerCheck" name="知识发布审批" activiti:candidateGroups="KNOWLEDGE_MANAGER">
+    <userTask id="taskKnowledgePublish" name="知识发布审批" activiti:candidateGroups="WK_MANAGER">
       <extensionElements>
         <activiti:formProperty id="title" name="标题" type="string" expression="${knowledge.title}" writable="false"></activiti:formProperty>
-        <activiti:formProperty id="desc" name="描述" type="string" expression="${knowledge.desc}"></activiti:formProperty>
-        <activiti:formProperty id="solution" name="解决方案" type="string" expression="${knowledge.solution}"></activiti:formProperty>
+        <activiti:formProperty id="desc" name="描述" type="string" expression="${knowledge.desc}" writable="false"></activiti:formProperty>
+        <activiti:formProperty id="solution" name="解决方案" type="bigtext" expression="${knowledge.solution}" writable="false"></activiti:formProperty>
         <activiti:formProperty id="type" name="管理事项" type="enum" writable="false">
           <activiti:value id="PUBLISH" name="发布"></activiti:value>
           <activiti:value id="MODIFY" name="修改"></activiti:value>
@@ -27,13 +27,13 @@
         </activiti:formProperty>
       </extensionElements>
     </userTask>
-    <endEvent id="endKnowledgePublish" name="End"></endEvent>
-    <sequenceFlow id="flow2" sourceRef="managerCheck" targetRef="endKnowledgePublish"></sequenceFlow>
-    <userTask id="usertask1" name="知识修改审批" activiti:candidateGroups="KNOWLEDGE_MANAGER">
+    <endEvent id="endKnowledge" name="End"></endEvent>
+    <sequenceFlow id="flow2" sourceRef="taskKnowledgePublish" targetRef="endKnowledge"></sequenceFlow>
+    <userTask id="taskKnowledgeModify" name="知识修改审批" activiti:candidateGroups="WK_MANAGER">
       <extensionElements>
         <activiti:formProperty id="title" name="标题" type="string" expression="${knowledge.title}" writable="false"></activiti:formProperty>
-        <activiti:formProperty id="desc" name="描述" type="string" expression="${knowledge.desc}"></activiti:formProperty>
-        <activiti:formProperty id="solution" name="解决方案" type="string" expression="${knowledge.solution}"></activiti:formProperty>
+        <activiti:formProperty id="desc" name="描述" type="string" expression="${knowledge.desc}" writable="false"></activiti:formProperty>
+        <activiti:formProperty id="solution" name="解决方案" type="bigtext" expression="${knowledge.solution}" writable="false"></activiti:formProperty>
         <activiti:formProperty id="type" name="管理事项" type="enum" writable="false">
           <activiti:value id="PUBLISH" name="发布"></activiti:value>
           <activiti:value id="MODIFY" name="修改"></activiti:value>
@@ -41,11 +41,11 @@
         </activiti:formProperty>
       </extensionElements>
     </userTask>
-    <userTask id="usertask2" name="知识删除审批" activiti:candidateGroups="KNOWLEDGE_MANAGER">
+    <userTask id="taskKnowledgeDelete" name="知识删除审批" activiti:candidateGroups="WK_MANAGER">
       <extensionElements>
         <activiti:formProperty id="title" name="标题" type="string" expression="${knowledge.title}" writable="false"></activiti:formProperty>
-        <activiti:formProperty id="desc" name="描述" type="string" expression="${knowledge.desc}"></activiti:formProperty>
-        <activiti:formProperty id="solution" name="解决方案" type="string" expression="${knowledge.solution}"></activiti:formProperty>
+        <activiti:formProperty id="desc" name="描述" type="string" expression="${knowledge.desc}" writable="false"></activiti:formProperty>
+        <activiti:formProperty id="solution" name="解决方案" type="bigtext" expression="${knowledge.solution}" writable="false"></activiti:formProperty>
         <activiti:formProperty id="type" name="管理事项" type="enum" writable="false">
           <activiti:value id="PUBLISH" name="发布"></activiti:value>
           <activiti:value id="MODIFY" name="修改"></activiti:value>
@@ -54,70 +54,70 @@
       </extensionElements>
     </userTask>
     <exclusiveGateway id="exclusivegateway1" name="Exclusive Gateway"></exclusiveGateway>
-    <sequenceFlow id="flow3" sourceRef="startKnowledgePublish" targetRef="exclusivegateway1"></sequenceFlow>
-    <sequenceFlow id="flow4" sourceRef="exclusivegateway1" targetRef="managerCheck">
+    <sequenceFlow id="flow3" sourceRef="startKnowledge" targetRef="exclusivegateway1"></sequenceFlow>
+    <sequenceFlow id="flow4" sourceRef="exclusivegateway1" targetRef="taskKnowledgePublish">
       <conditionExpression xsi:type="tFormalExpression"><![CDATA[${type== 'PUBLISH'}]]></conditionExpression>
     </sequenceFlow>
-    <sequenceFlow id="flow5" sourceRef="exclusivegateway1" targetRef="usertask1">
+    <sequenceFlow id="flow5" sourceRef="exclusivegateway1" targetRef="taskKnowledgeModify">
       <conditionExpression xsi:type="tFormalExpression"><![CDATA[${type== 'MODIFY'}]]></conditionExpression>
     </sequenceFlow>
-    <sequenceFlow id="flow6" sourceRef="exclusivegateway1" targetRef="usertask2">
+    <sequenceFlow id="flow6" sourceRef="exclusivegateway1" targetRef="taskKnowledgeDelete">
       <conditionExpression xsi:type="tFormalExpression"><![CDATA[${type== 'DELETE'}]]></conditionExpression>
     </sequenceFlow>
-    <sequenceFlow id="flow7" sourceRef="usertask1" targetRef="endKnowledgePublish"></sequenceFlow>
-    <sequenceFlow id="flow8" sourceRef="usertask2" targetRef="endKnowledgePublish"></sequenceFlow>
+    <sequenceFlow id="flow7" sourceRef="taskKnowledgeModify" targetRef="endKnowledge"></sequenceFlow>
+    <sequenceFlow id="flow8" sourceRef="taskKnowledgeDelete" targetRef="endKnowledge"></sequenceFlow>
   </process>
-  <bpmndi:BPMNDiagram id="BPMNDiagram_WK_KNOWLEDGE">
-    <bpmndi:BPMNPlane bpmnElement="WK_KNOWLEDGE" id="BPMNPlane_WK_KNOWLEDGE">
-      <bpmndi:BPMNShape bpmnElement="startKnowledgePublish" id="BPMNShape_startKnowledgePublish">
-        <omgdc:Bounds height="35.0" width="35.0" x="120.0" y="90.0"></omgdc:Bounds>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_KNOWLEDGE">
+    <bpmndi:BPMNPlane bpmnElement="KNOWLEDGE" id="BPMNPlane_KNOWLEDGE">
+      <bpmndi:BPMNShape bpmnElement="startKnowledge" id="BPMNShape_startKnowledge">
+        <omgdc:Bounds height="35.0" width="35.0" x="30.0" y="20.0"></omgdc:Bounds>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape bpmnElement="managerCheck" id="BPMNShape_managerCheck">
-        <omgdc:Bounds height="55.0" width="105.0" x="315.0" y="80.0"></omgdc:Bounds>
+      <bpmndi:BPMNShape bpmnElement="taskKnowledgePublish" id="BPMNShape_taskKnowledgePublish">
+        <omgdc:Bounds height="55.0" width="105.0" x="231.0" y="10.0"></omgdc:Bounds>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape bpmnElement="endKnowledgePublish" id="BPMNShape_endKnowledgePublish">
-        <omgdc:Bounds height="35.0" width="35.0" x="510.0" y="90.0"></omgdc:Bounds>
+      <bpmndi:BPMNShape bpmnElement="endKnowledge" id="BPMNShape_endKnowledge">
+        <omgdc:Bounds height="35.0" width="35.0" x="450.0" y="20.0"></omgdc:Bounds>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape bpmnElement="usertask1" id="BPMNShape_usertask1">
-        <omgdc:Bounds height="55.0" width="105.0" x="315.0" y="160.0"></omgdc:Bounds>
+      <bpmndi:BPMNShape bpmnElement="taskKnowledgeModify" id="BPMNShape_taskKnowledgeModify">
+        <omgdc:Bounds height="55.0" width="105.0" x="231.0" y="90.0"></omgdc:Bounds>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape bpmnElement="usertask2" id="BPMNShape_usertask2">
-        <omgdc:Bounds height="55.0" width="105.0" x="315.0" y="230.0"></omgdc:Bounds>
+      <bpmndi:BPMNShape bpmnElement="taskKnowledgeDelete" id="BPMNShape_taskKnowledgeDelete">
+        <omgdc:Bounds height="55.0" width="105.0" x="231.0" y="160.0"></omgdc:Bounds>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape bpmnElement="exclusivegateway1" id="BPMNShape_exclusivegateway1">
-        <omgdc:Bounds height="40.0" width="40.0" x="200.0" y="88.0"></omgdc:Bounds>
+        <omgdc:Bounds height="40.0" width="40.0" x="110.0" y="17.0"></omgdc:Bounds>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge bpmnElement="flow2" id="BPMNEdge_flow2">
-        <omgdi:waypoint x="420.0" y="107.0"></omgdi:waypoint>
-        <omgdi:waypoint x="510.0" y="107.0"></omgdi:waypoint>
+        <omgdi:waypoint x="336.0" y="37.0"></omgdi:waypoint>
+        <omgdi:waypoint x="450.0" y="37.0"></omgdi:waypoint>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="flow3" id="BPMNEdge_flow3">
-        <omgdi:waypoint x="155.0" y="107.0"></omgdi:waypoint>
-        <omgdi:waypoint x="200.0" y="108.0"></omgdi:waypoint>
+        <omgdi:waypoint x="65.0" y="37.0"></omgdi:waypoint>
+        <omgdi:waypoint x="110.0" y="37.0"></omgdi:waypoint>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="flow4" id="BPMNEdge_flow4">
-        <omgdi:waypoint x="240.0" y="108.0"></omgdi:waypoint>
-        <omgdi:waypoint x="315.0" y="107.0"></omgdi:waypoint>
+        <omgdi:waypoint x="150.0" y="37.0"></omgdi:waypoint>
+        <omgdi:waypoint x="231.0" y="37.0"></omgdi:waypoint>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="flow5" id="BPMNEdge_flow5">
-        <omgdi:waypoint x="220.0" y="128.0"></omgdi:waypoint>
-        <omgdi:waypoint x="220.0" y="187.0"></omgdi:waypoint>
-        <omgdi:waypoint x="315.0" y="187.0"></omgdi:waypoint>
+        <omgdi:waypoint x="130.0" y="57.0"></omgdi:waypoint>
+        <omgdi:waypoint x="149.0" y="117.0"></omgdi:waypoint>
+        <omgdi:waypoint x="231.0" y="117.0"></omgdi:waypoint>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="flow6" id="BPMNEdge_flow6">
-        <omgdi:waypoint x="220.0" y="128.0"></omgdi:waypoint>
-        <omgdi:waypoint x="220.0" y="257.0"></omgdi:waypoint>
-        <omgdi:waypoint x="315.0" y="257.0"></omgdi:waypoint>
+        <omgdi:waypoint x="130.0" y="57.0"></omgdi:waypoint>
+        <omgdi:waypoint x="130.0" y="187.0"></omgdi:waypoint>
+        <omgdi:waypoint x="231.0" y="187.0"></omgdi:waypoint>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="flow7" id="BPMNEdge_flow7">
-        <omgdi:waypoint x="420.0" y="187.0"></omgdi:waypoint>
-        <omgdi:waypoint x="482.0" y="187.0"></omgdi:waypoint>
-        <omgdi:waypoint x="527.0" y="125.0"></omgdi:waypoint>
+        <omgdi:waypoint x="336.0" y="117.0"></omgdi:waypoint>
+        <omgdi:waypoint x="439.0" y="117.0"></omgdi:waypoint>
+        <omgdi:waypoint x="467.0" y="55.0"></omgdi:waypoint>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="flow8" id="BPMNEdge_flow8">
-        <omgdi:waypoint x="420.0" y="257.0"></omgdi:waypoint>
-        <omgdi:waypoint x="527.0" y="257.0"></omgdi:waypoint>
-        <omgdi:waypoint x="527.0" y="125.0"></omgdi:waypoint>
+        <omgdi:waypoint x="336.0" y="187.0"></omgdi:waypoint>
+        <omgdi:waypoint x="467.0" y="187.0"></omgdi:waypoint>
+        <omgdi:waypoint x="467.0" y="55.0"></omgdi:waypoint>
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>

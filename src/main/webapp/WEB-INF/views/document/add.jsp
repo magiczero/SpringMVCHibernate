@@ -94,12 +94,14 @@
     <script type='text/javascript' src='${contextPath }/resources/js/plugins.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/settings.js'></script>    
     <script type='text/javascript' src='${contextPath }/resources/js/faq.js'></script>
+    <script type='text/javascript' src='${contextPath }/resources/js/pm-common.js'></script>
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
       <script src="${contextPath }/resources/js/html5shiv.js"></script>
       <script src="${contextPath }/resources/js/respond.min.js"></script>
     <![endif]-->
     <script type="text/javascript">
+    var ctx="${contextPath}";
             $(document).ready(function () {
             	$(".header").load("${contextPath }/header");
             	// $(".menu").load("${contextPath }/menu", function () { $(".navigation > li:eq(2)").addClass("active"); });
@@ -126,19 +128,20 @@
             			// Silverlight settings
             			silverlight_xap_url : '${contextPath }/resources/js/plugins/plupload/plupload.silverlight.xap'
             		});
-            		$('form').submit(function(e) {
+            		$('form[name=document]').submit(function(e) {
+            			if($('form[name=document]').validationEngine('validate')) {
             	        var uploader = $('#uploader').pluploadQueue();
             	        if (uploader.files.length > 0) {
             	            // When all files are uploaded submit form
             	            uploader.bind('StateChanged', function() {
             	                if (uploader.files.length === (uploader.total.uploaded + uploader.total.failed)) {
-            	                    $('form')[0].submit();
+            	                    $('form')[1].submit();
             	                }
             	            });
             	            uploader.start();
             	        } else {
             				alert('请先上传数据文件.');
-            			}
+            			}}
             	        return false;
                 	});
             	});
@@ -182,7 +185,8 @@
                             <div class="isw-documents"></div>
                             <h1>文档信息录入</h1>
                         </div><c:url var="addAction" value="/document/save" ></c:url>
-						<form:form action="${addAction}" commandName="document">
+						<form:form action="${addAction}" name="document" commandName="document">
+						<input type="hidden" name="versions" value="1" />
                         <div class="block-fluid">                        
                           <div class="row-form clearfix">
                                 <div class="col-md-2"><form:label path="name">文档名称*</form:label></div>
@@ -234,12 +238,18 @@
                             <div class="row-form clearfix">
                                 <div class="col-md-12">
                                 <div id="uploader">
-					<p>您的浏览器未安装 Flash, Silverlight, Gears, BrowserPlus 或者支持 HTML5 .</p>
-				</div>
-                                
+									<p>您的浏览器未安装 Flash, Silverlight, Gears, BrowserPlus 或者支持 HTML5 .</p>
+								</div>
 								</div>
                             </div>
-
+							<div class="row-form clearfix">
+                                <div class="col-md-2">
+                                <label for="link">文档链接</label>
+                                </div>
+                                <div class="col-md-7">
+                                <form:input path="link" ></form:input> 上传文档与文档链接只能选择一项
+                                </div>
+                            </div>
                             <div class="footer tar">
                                <input type="submit" class="btn btn-primary center-block" value="提 交" />
                             </div>                            

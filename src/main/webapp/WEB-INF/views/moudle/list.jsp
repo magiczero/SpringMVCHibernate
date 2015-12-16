@@ -216,15 +216,16 @@
                             <div class="block-fluid">
                                 <div class="row-form clearfix">
                                     <div class="col-md-3"><form:label path="name">菜单名称*：</form:label></div>
-                                    <div class="col-md-9"><form:input path="name" class="validate[required,minSize[2],maxSize[7]]"/></div>
+                                    <div class="col-md-9"><form:input path="name" class="validate[required,minSize[2],maxSize[12]]"/></div>
                                 </div>            
                                 <div class="row-form clearfix">
                                     <div class="col-md-3"><form:label path="parent.id">上级菜单：</form:label></div>
                                     <div class="col-md-9">
                                     	<form:select path="parent.id">
                                     		<form:option value=""></form:option>
-                                    		<c:forEach items="${list1 }" var="m1">
-                                    		<form:option value="${m1.id }">${m1.name }</form:option>
+                                    		<c:forEach items="${listmoudle}" var="moudle2">
+                                    		<c:if test="${moudle2.level == 1 }">
+                                    		<form:option value="${moudle2.id }">${moudle2.name }</form:option></c:if>
                                     		</c:forEach>
                                     	</form:select>
                                     </div>                    
@@ -235,8 +236,12 @@
                                 </div> 
                                 <div class="row-form clearfix">
                                     <div class="col-md-3"><form:label path="styleClass">样式*：</form:label></div>
-                                    <div class="col-md-9"><form:input path="styleClass" class="validate[required,minSize[2],maxSize[30]]"/></div>
-                                </div>                             
+                                    <div class="col-md-9"><form:input path="styleClass" class="validate[required,minSize[2],maxSize[50]]"/></div>
+                                </div>    
+                                <div class="row-form clearfix">
+                                    <div class="col-md-3"><form:label path="priority">优先级*：</form:label></div>
+                                    <div class="col-md-9"><form:input path="priority" class="validate[required,integer]" /></div>
+                                </div>                          
                                 <div class="row-form clearfix">
                                     <div class="col-md-3"><form:label path="desc">说明：</form:label></div>
                                     <div class="col-md-9"><form:textarea path="desc"/></div>

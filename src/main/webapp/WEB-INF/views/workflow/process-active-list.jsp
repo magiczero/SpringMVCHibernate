@@ -99,7 +99,7 @@
             $(document).ready(function () {
                 $("#eventTable").dataTable();
                 $(".header").load("../../header");
-                $(".menu").load("../../menu", function () { $(".navigation > li:eq(7)").addClass("active"); });
+                $(".menu").load("../../menu", function () { $(".navigation > li:eq(10)").addClass("active"); });
                 $(".breadLine .buttons").load("../../contentbuttons");
                 $(".process_start").bind("click",showDynamicFormDialog);
                 // 资源

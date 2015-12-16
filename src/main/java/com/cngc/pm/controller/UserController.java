@@ -1,15 +1,14 @@
 package com.cngc.pm.controller;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
 import org.activiti.engine.IdentityService;
-import org.activiti.engine.identity.Group;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.authentication.encoding.Md5PasswordEncoder;
 import org.springframework.stereotype.Controller;
@@ -21,8 +20,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.cngc.pm.model.Role;
 import com.cngc.pm.model.SysUser;
+import com.cngc.pm.model.UserRole;
 import com.cngc.pm.service.RoleService;
 import com.cngc.pm.service.UserService;
+import com.cngc.utils.Common;
 
 @Controller
 @RequestMapping(value = "/user")
@@ -82,37 +83,47 @@ public class UserController {
 	@RequestMapping(value="/updaterole", method = RequestMethod.POST)
 	public String updateRole(Model model,HttpServletRequest request){
 		String sid = request.getParameter("roleform_id");
-		String roles = request.getParameter("rolefrom_userrole");
+		String roleIds = request.getParameter("rolefrom_userrole");
 		Long id = Long.valueOf(sid);
 		if(id!=0)
 		{
 			SysUser user = userService.getById(id);
-			if(!StringUtils.equals(roles, "0"))
-			{
-				Set<Role> set = null;
-				if(StringUtils.isEmpty(roles))
-				{
-					//删除所有权限设置
-					user.setRoles(null);
-				}
-				else
-					set = roleService.getRoleByIds(roles);
-				user.setRoles(set);
+			
+			if(Common.isEmpty(roleIds)) {
+				//清空用户的所有角色
+				user.setUserRoles(null);
+				
 				userService.save(user);
+			} else {
+				userService.setRole(user,roleIds);
+			}
+			
+//			if(!StringUtils.equals(roles, "0"))
+//			{
+//				Set<Role> set = null;
+//				if(StringUtils.isEmpty(roles))
+//				{
+//					//删除所有权限设置
+//					user.setRoles(null);
+//				}
+//				else
+//					set = roleService.getRoleByIds(roles);
+//				user.setRoles(set);
+//				userService.save(user);
 				
 				//同步到activity的user-group，先删除再新增
-				List<Group> groups = identityService.createGroupQuery().groupMember(user.getUsername()).list();
+				List<org.activiti.engine.identity.Group> groups = identityService.createGroupQuery().groupMember(user.getUsername()).list();
 				if(groups!=null)
 				{
-					for(Group group:groups)
+					for(org.activiti.engine.identity.Group group:groups)
 						identityService.deleteMembership(user.getUsername(),group.getId());
 				}
-				if(set!=null)
+				if(user.getUserRoles() !=null)
 				{
-					for(Role role:set)
-						identityService.createMembership(user.getUsername(), role.getRoleName());
+					for(UserRole ur : user.getUserRoles())
+						identityService.createMembership(user.getUsername(), ur.getRole().getRoleName());
 				}
-			}
+//			}
 		}
 		return "redirect:/user/list";
 	}
@@ -120,8 +131,18 @@ public class UserController {
 	@ResponseBody
 	public Map<String,Object> getRole(@PathVariable("id") long id,Model model){
 		Map<String,Object> map = new HashMap<String,Object>();
-		SysUser user = userService.getById(id);
-		map.put("role", user.getRoles());
+		//SysUser user = userService.getById(id);
+		//map.put("role", user.getRoles());
+		List<Map<String, String>> list = new ArrayList<>();
+		for(Role role : userService.getRolesByUser(id)) {
+			Map<String, String> map1 = new HashMap<>();
+			map1.put("id", role.getId().toString());
+			map1.put("name", role.getRoleName());
+			list.add(map1);
+		}
+		
+		map.put("role", list);
+		
 		return map;
 	}
 	
@@ -144,7 +165,12 @@ public class UserController {
 		Map<String,Object> map = new HashMap<String,Object>();
 		
 		SysUser user = userService.getById(id);
-		map.put("user",user);
+		
+		Map<String, String> map1 = new HashMap<>();
+		map1.put("id", user.getId().toString());
+		map1.put("name", user.getUsername());
+		
+		map.put("user",map1);
 		
 		return map;
 	}

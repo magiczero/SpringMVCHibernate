@@ -128,4 +128,13 @@ public class CategoryController {
 		}
 		return map;
 	}
+	@RequestMapping(value="/getjson", method = RequestMethod.GET)
+	@ResponseBody
+	public Map<String,Object> getJson(Model model){
+		Map<String,Object> map = new HashMap<String,Object>();
+
+		map.put("json", categoryService.getJSON());
+		
+		return map;
+	}
 }

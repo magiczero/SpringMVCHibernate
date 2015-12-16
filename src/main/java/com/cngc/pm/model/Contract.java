@@ -27,8 +27,9 @@ public class Contract {
 	
 	@DateTimeFormat(pattern="yyyy-MM-dd")
 	private Date signTime;
-	
+	@DateTimeFormat(pattern="yyyy-MM-dd")
 	private Date startTime;
+	@DateTimeFormat(pattern="yyyy-MM-dd")
 	private Date endTime;
 	private String attachment;
 	private String createdUser;

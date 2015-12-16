@@ -8,6 +8,8 @@ import org.springframework.stereotype.Repository;
 import com.cngc.pm.dao.MoudleDAO;
 import com.cngc.pm.model.ModuleType;
 import com.cngc.pm.model.Moudle;
+import com.cngc.pm.model.SysUser;
+import com.googlecode.genericdao.search.Search;
 
 @Repository
 public class MoudleDAOImpl extends BaseDAOImpl<Moudle, Long> implements
@@ -17,7 +19,7 @@ public class MoudleDAOImpl extends BaseDAOImpl<Moudle, Long> implements
 	@Override
 	public List<Moudle> getAllMenus() {
 		// TODO Auto-generated method stub
-		String hql = "from Moudle m where m.type=:type";
+		String hql = "from Moudle m where m.type=:type order by m.priority";
 		Query query = this.getSession().createQuery(hql);
 		
 		query.setParameter("type", ModuleType.menu);
@@ -35,11 +37,20 @@ public class MoudleDAOImpl extends BaseDAOImpl<Moudle, Long> implements
 	@Override
 	public List<Moudle> getAllByLevel() {
 		// TODO Auto-generated method stub
-		String hql = "from Moudle m where m.level=:level";
+		String hql = "from Moudle m where m.level=:level order by m.priority";
 		Query query = this.getSession().createQuery(hql);
 		
 		query.setParameter("level", 2);
 		
 		return query.list();
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<Moudle> getAllByUser(SysUser user) {
+		// TODO Auto-generated method stub
+		Search search = new Search(Moudle.class);
+		
+		return this._search(search);
 	}
 }

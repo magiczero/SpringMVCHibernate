@@ -93,9 +93,9 @@
     <script type="text/javascript">
             $(document).ready(function () {
                 $("#eventTable").dataTable();
-                $(".header").load("../../header");
-                $(".menu").load("../../menu", function () { $(".navigation > li:eq(7)").addClass("active"); });
-                $(".breadLine .buttons").load("../../contentbuttons");
+                $(".header").load("${contextPath}/header");
+                $(".menu").load("${contextPath}/menu", function () { $(".navigation > li:eq(10)").addClass("active"); });
+                $(".breadLine .buttons").load("${contextPath}/contentbuttons");
                 $(".confirm").bind("click",function(){
                 	if(!confirm("确定要执行该操作?"))
                 		return false;

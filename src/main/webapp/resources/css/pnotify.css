@@ -9,9 +9,14 @@ Description:
 */
 /* -- Notice */
 .ui-pnotify {
-top: 10px;
+/*top: 10px;
 right: 10px;
-position: absolute;
+position: absolute;*/
+/* modified by andy */
+bottom:20px;
+right:40px; 
+top: auto; 
+
 height: auto;
 /* Ensures notices are above everything */
 z-index: 9999;

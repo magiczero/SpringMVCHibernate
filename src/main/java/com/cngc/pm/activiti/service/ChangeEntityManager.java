@@ -2,19 +2,25 @@ package com.cngc.pm.activiti.service;
 
 import java.util.Date;
 
+import javax.annotation.Resource;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
 
 import org.activiti.engine.delegate.DelegateExecution;
 import org.springframework.stereotype.Service;
+
 import com.cngc.pm.activiti.jpa.entity.ChangeJpaEntity;
+import com.cngc.pm.service.ChangeService;
+import com.cngc.utils.PropertyFileUtil;
 
 
 @Service
 public class ChangeEntityManager {
     @PersistenceContext
     private EntityManager entityManager;
+    @Resource
+    private ChangeService changeService;
     
 	@Transactional
 	public ChangeJpaEntity getChange(DelegateExecution execution){
@@ -26,10 +32,14 @@ public class ChangeEntityManager {
 	}
 	
 	@Transactional
-	public boolean setChangeStatus(DelegateExecution execution){
+	public boolean setChangeStatus(DelegateExecution execution,String status){
 		ChangeJpaEntity change = (ChangeJpaEntity)execution.getVariable("change");
-		change.setStatus("07");
-		change.setEndTime(new Date());
+		change.setStatus( status );
+		if( status.equals(PropertyFileUtil.getStringValue("syscode.change.status.finished")) )
+		{
+			changeService.updateCi(change.getId());
+			change.setEndTime(new Date());
+		}
 		entityManager.persist(change);
 		return true;
 	} 

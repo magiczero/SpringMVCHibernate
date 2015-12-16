@@ -1,32 +1,41 @@
 package com.cngc.pm.model;
 
+import java.beans.Transient;
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 
+import org.codehaus.jackson.annotate.JsonIgnore;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
+/**
+ * 菜单
+ * @author HP
+ *
+ */
 @Entity
 @DynamicUpdate(true)  
 @DynamicInsert(true)
-@Table(name = "sys_modules")  
-@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)  
+@Table(name = "sys_modules",uniqueConstraints = @UniqueConstraint(columnNames = { "MODULE_NAME", "PARENT" }))  
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region="moudle")  
 public class Moudle implements Serializable {				//module故意写错，怕与关键字冲突
 
 	/**
@@ -83,7 +92,7 @@ public class Moudle implements Serializable {				//module故意写错，怕与�
 		this.type = type;
 	}
 	
-	@ManyToOne
+	@ManyToOne(cascade = CascadeType.DETACH)
 	@JoinColumn(name = "parent")
 	public Moudle getParent() {
 		return parent;
@@ -133,7 +142,8 @@ public class Moudle implements Serializable {				//module故意写错，怕与�
 		this.priority = priority;
 	}
 	
-	@OneToMany(fetch = FetchType.EAGER, mappedBy = "parent")
+	@OneToMany(mappedBy = "parent")
+	@OrderBy("priority")
 	public Set<Moudle> getChild() {
 		return child;
 	}
@@ -141,4 +151,22 @@ public class Moudle implements Serializable {				//module故意写错，怕与�
 		this.child = child;
 	}
 	
+	/**
+	 * 计算层级，根节点以0开始
+	 * @return
+	 */
+	@Transient
+	@JsonIgnore
+	public int reaches() {
+		int reaches = 0;
+		return loopReaches(reaches, this);
+	}
+	
+	private int loopReaches(int reaches, Moudle moudle) {
+		Moudle parent = moudle.getParent();
+		if(parent != null && parent.getId() != null) {
+			return loopReaches(reaches+1, moudle.getParent());
+		}
+		return reaches;
+	}
 }

@@ -19,4 +19,7 @@ public interface AuthorityService {
 	
 	void update(Authority authority);
 
+	void save(Authority authority, String...resourcesIds );
+
+	void update(Authority authority, String...resourIds);
 }

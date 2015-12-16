@@ -66,9 +66,10 @@ public class AttachmentController {
 			String originalFileExtension = mpf.getOriginalFilename().substring(
 					mpf.getOriginalFilename().lastIndexOf(".")); // 扩展名
 			String newFilename = newFilenameBase + originalFileExtension; // 重命名
-			String storageDirectory = request.getSession().getServletContext()
-					.getRealPath("")
-					+ fileUploadDirectory;
+//			String storageDirectory = request.getSession().getServletContext()
+//					.getRealPath("")
+//					+ fileUploadDirectory;
+			String storageDirectory = fileUploadDirectory;
 			// String contentType = mpf.getContentType();
 			File folder = new File(storageDirectory);
 			if (!folder.exists())
@@ -139,8 +140,9 @@ public class AttachmentController {
 			log.info("chunk:[" + chunk + "] chunks:[" + chunks + "]");
 			// 检查文件目录，不存在则创建
 			String relativePath = fileUploadDirectory;
-			String realPath = session.getServletContext().getRealPath("");
-			File folder = new File(realPath + relativePath);
+			//String realPath = session.getServletContext().getRealPath("");
+			//File folder = new File(realPath + relativePath);
+			File folder = new File(relativePath);
 			if (!folder.exists()) {
 				folder.mkdirs();
 			}
@@ -180,7 +182,7 @@ public class AttachmentController {
 	public ResponseEntity<byte[]> download(@PathVariable("id") long id)
 			throws IOException {
 		Attachment attach = attachService.get(id);
-		String path = attach.getPath() + File.separator
+		String path = fileUploadDirectory + File.separator
 				+ attach.getNewFilename();
 		File file = new File(path);
 		HttpHeaders headers = new HttpHeaders();

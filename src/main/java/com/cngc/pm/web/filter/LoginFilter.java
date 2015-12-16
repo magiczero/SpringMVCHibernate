@@ -11,11 +11,11 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.cngc.pm.model.Authority;
-import com.cngc.pm.model.Resources;
-import com.cngc.pm.model.Role;
-import com.cngc.pm.model.SysUser;
-
+/**
+ * 登录及权限验证，已过时
+ * @author HP
+ *
+ */
 public class LoginFilter implements Filter {
 	
 	private FilterConfig config;
@@ -47,8 +47,8 @@ public class LoginFilter implements Filter {
 			return;
 		}
 		//chain.doFilter(request, response);
-		String path = req.getRequestURI();
-		SysUser user = (SysUser)req.getSession().getAttribute("user");
+//		String path = req.getRequestURI();
+//		SysUser user = (SysUser)req.getSession().getAttribute("user");
 		HttpServletResponse res = (HttpServletResponse)response;
 		String ctp=req.getSession().getServletContext().getContextPath();
 //		String requestPath = req.getServletPath();
@@ -56,17 +56,17 @@ public class LoginFilter implements Filter {
 //			res.sendRedirect(ctp+"/initLogin");	
 //			return;
 //		}
-		for(Role role : user.getRoles()) {
-			for(Authority auth : role.getAuths()) {
-				for(Resources resource: auth.getSetResources()) {
-					if(path.endsWith(resource.getPath()) || path.replaceAll("/[^/]+$","").endsWith(resource.getPath()) ) {
-						//System.out.println(resource.getId());
-						chain.doFilter(request, response);	
-						return;
-					}
-				}
-			}
-		}
+//		for(Role role : user.getRoles()) {
+//			for(Authority auth : role.getAuths()) {
+//				for(Resources resource: auth.getSetResources()) {
+//					if(path.endsWith(resource.getPath()) || path.replaceAll("/[^/]+$","").endsWith(resource.getPath()) ) {
+//						//System.out.println(resource.getId());
+//						chain.doFilter(request, response);	
+//						return;
+//					}
+//				}
+//			}
+//		}
 		
 		
 		//.getServletContext().getContextPath();

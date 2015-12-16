@@ -1,4 +1,4 @@
-<%@page import="com.cngc.utils.activiti.ProcessDefinitionCache,org.activiti.engine.RepositoryService,org.activiti.engine.RuntimeService"%>
+<%@page import="com.cngc.utils.activiti.ProcessDefinitionCache,org.activiti.engine.RepositoryService,org.activiti.engine.RuntimeService,org.activiti.engine.TaskService"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>    
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
@@ -61,15 +61,6 @@
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/fancybox/jquery.fancybox.pack.js'></script>
         
     <!-- <script type='text/javascript' src='../../../bp.yahooapis.com/2.4.21/browserplus-min.js'></script> -->
-
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/plupload/plupload.js'></script>
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/plupload/plupload.gears.js'></script>
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/plupload/plupload.silverlight.js'></script>
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/plupload/plupload.flash.js'></script>
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/plupload/plupload.browserplus.js'></script>
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/plupload/plupload.html4.js'></script>
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/plupload/plupload.html5.js'></script>
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/plupload/jquery.plupload.queue/jquery.plupload.queue.js'></script>    
     
     <script type="text/javascript" src="${contextPath }/resources/js/plugins/elfinder/elfinder.min.js"></script>
     
@@ -86,22 +77,51 @@
     <script type='text/javascript' src='${contextPath }/resources/js/plugins.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/settings.js'></script>    
     <script type='text/javascript' src='${contextPath }/resources/js/faq.js'></script>
+    <script type='text/javascript' src='${contextPath }/resources/js/pm-common.js'></script>
+    <script type='text/javascript' src='${contextPath }/resources/js/activiti-form.js'></script>
+    <script type='text/javascript' src='${contextPath }/resources/js/activiti-history.js'></script>
+    <script type='text/javascript' src='${contextPath }/resources/js/activiti-comment.js'></script>
+    <script type='text/javascript' src='${contextPath }/resources/js/pm-message.js'></script>
+    <script type='text/javascript' src='${contextPath }/resources/js/pm-workflow.js'></script>
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
       <script src="${contextPath }/resources/js/html5shiv.js"></script>
       <script src="${contextPath }/resources/js/respond.min.js"></script>
     <![endif]-->
     <script type="text/javascript">
-            $(document).ready(function () {
-                $("#eventTable").dataTable();
-                $(".header").load("../header");
-                $(".menu").load("../menu", function () { $(".navigation > li:eq(5)").addClass("active"); });
-                $(".breadLine .buttons").load("../contentbuttons");
-                $(".confirm").bind("click",function(){
-                	if(!confirm("确定要执行该操作?"))
-                		return false;
-                });
+    	var ctx = "${contextPath}";
+        $(document).ready(function () {
+            $("#eventTable").dataTable({"aaSorting":[[3,'desc']]});
+            $(".header").load("../header");
+            $(".menu").load("../menu", function () { $(".navigation > li:eq(7)").addClass("active"); });
+            $(".breadLine .buttons").load("../contentbuttons");
+            $(".confirm").bind("click",function(){
+               	if(!confirm("确定要执行该操作?"))
+               		return false;
             });
+            $(".dateISO").datepicker(); 
+            var starttime,endtime;
+            starttime = pm_getQueryString("startTime");
+            endtime = pm_getQueryString("endTime");
+            
+            if(starttime!=null)
+            	$("input[name='startTime']").attr("value",starttime);
+            else
+            	$("input[name='startTime']").attr("value",new Date().format("yyyy") +"-01-01");
+            
+            if(endtime!=null)
+            	$("input[name='endTime']").attr("value",endtime);
+            else
+            	$("input[name='endTime']").attr("value",new Date().format("yyyy-MM-dd"));
+            
+            $("#lnk_start_leadertask").bind("click",function(){
+               	act_form_openStartDialog("发起领导交办任务","LEADERTASK","/leadertask/list");
+            });
+            pm_workflow_inittracedialog();
+            act_commont_initdialog();
+            act_history_initdialog();
+        });
+
     </script>
 </head>
 <body>
@@ -121,7 +141,7 @@
 
                 <ul class="breadcrumb">
                     <li><a href="#">运维管理系统</a> <span class="divider">></span></li>
-                    <li><a href="${contextPath }/Asset/list">领导交办管理</a> <span class="divider">></span></li>       
+                    <li><a href="${contextPath }/leadertask/list">领导交办管理</a> <span class="divider">></span></li>       
                     <li class="active">领导交办</li>
                 </ul>
 
@@ -135,23 +155,47 @@
 			<%
 				RuntimeService runtimeService  = (RuntimeService)request.getAttribute("runtime");
 				RepositoryService repositoryService = (RepositoryService)request.getAttribute("res");
+				TaskService taskService = (TaskService)request.getAttribute("task");
 				ProcessDefinitionCache.setRuntimeService(runtimeService);
 				ProcessDefinitionCache.setRepositoryService(repositoryService);
+				ProcessDefinitionCache.setTaskService(taskService);
 			%>
 				<div class="alert alert-danger hide">                
                     <h4>错误!</h4>请至少选择一项
                 </div> 
                 <div class="row">
-                    <div class="col-md-12">                    
+                	<div class="col-md-3">
+                		<div class="block-fluid without-head">
+                			<div class="toolbar nopadding-toolbar clearfix">
+                                <h4>查询</h4>
+                            </div>
+                            <form action="${contextPath }/leadertask/list">
+	                            <div class="row-form clearfix">
+	                                <div class="col-md-4">开始时间</div>
+	                                <div class="col-md-8"><input type="text" name="startTime" class="dateISO"/></div>
+	                            </div> 
+	                             <div class="row-form clearfix">
+	                                <div class="col-md-4">截至时间</div>
+	                                <div class="col-md-8"><input type="text" name="endTime" class="dateISO"/></div>
+	                            </div> 
+	                            <div class="footer tac">
+	                            	<button class="btn btn-primary"> 查 询 </button>
+	                            </div>
+                            </form>
+                		</div>
+                	</div>
+                    <div class="col-md-9">                    
                         <div class="head clearfix">
                             <div class="isw-grid"></div>
                             <h1>领导交办</h1>  
 
-                            <ul class="buttons">                          
+                            <ul class="buttons">
+                             	<li>
+                                    <a href="#" id="lnk_start_leadertask" class="isw-plus tipb" title="发起领导交办任务"></a>
+                                </li>                           
                                 <li>
                                     <a href="#" class="isw-settings tipl" title="操作 "></a>
                                     <ul class="dd-list">
-                                    	<li><a href="${contextPath}/knowledge/add" role="button" data-toggle="modal"><span class="isw-ok"></span> 创建新知识</a></li>
                                         <li><a href="javascript:void(0);" id="delBtn"><span class="isw-list"></span> 删除</a></li>
                                         <li><a href="#"><span class="isw-refresh"></span> 刷新</a></li>
                                     </ul>
@@ -162,30 +206,45 @@
                             <table class="table" id="eventTable">
                                 <thead>
                                 	<tr>
-										<th  width="60px">ID</th>
-										<th width="300px">交办任务</th>
-										<th>任务描述</th>
-										<th width="100px">提交时间</th>
-										<th width="100px">交办领导</th>
+                                		<th width="120px">交办领导</th>
+										<th >任务内容</th>
 										<th width="100px">受派人</th>
-										<th width="100px">状态</th>
-										
+										<th width="100px">提交时间</th>
+										<th width="100px">到期时间</th>
+										<th width="140px">状态</th>
+										<th width="150px">操作</th>
 									</tr>
                                 </thead>
                                 <tbody>
                                 	<c:forEach items="${list}" var="leaderTask">
 									<c:set var="pdid" value="${leaderTask.processInstanceId }" />
 									<tr>
-										<td>${leaderTask.id }</td>
+										<td>${leaderTask.fromUserName }</td>
 										<td>${leaderTask.taskTitle }</td>
-										<td>${leaderTask.taskDesc }</td>
+										<td>${leaderTask.toUserName }</td>
 										<td><fmt:formatDate value="${leaderTask.applyTime }" pattern="yyyy-MM-dd"></fmt:formatDate></td>
-										<td>${leaderTask.fromUser }</td>
-										<td>${leaderTask.toUser }</td>
+										<td><fmt:formatDate value="${leaderTask.dueTime }" pattern="yyyy-MM-dd"></fmt:formatDate></td>
 										<td>
 											<c:if test="${not empty leaderTask.processInstanceId }">
-												<%=ProcessDefinitionCache.getActivityName(pageContext.getAttribute("pdid").toString()) %>
+												<a class="lnk_trace" href='#' pid="${leaderTask.processInstanceId }" pdid="<%=ProcessDefinitionCache.getProcessDefinitionId(pageContext.getAttribute("pdid").toString()) %>" title="点击查看流程图">
+													<%=ProcessDefinitionCache.getActivityName(pageContext.getAttribute("pdid").toString()) %>
+												</a>
 											</c:if>
+											<c:if test="${not empty leaderTask.executionTime }">
+												已完成
+											</c:if>
+										</td>
+										<td>
+											<c:if test="${empty leaderTask.executionTime }">
+												<a href="${contextPath }/leadertask/deal/${leaderTask.id}">办理</a>
+											</c:if>
+											<c:if test="${not empty leaderTask.executionTime }">
+												<a href="#" onclick="act_comment_open('${leaderTask.processInstanceId}',true)">查看意见</a>
+											</c:if>
+											<c:if test="${empty leaderTask.executionTime }">
+												<a href="#" onclick="act_comment_open('${leaderTask.processInstanceId}',false)">查看意见</a>
+											</c:if>
+											<a href="#" onclick="act_history_open('${leaderTask.processInstanceId}')">查看历史</a>
 										</td>
 									</tr>
 								</c:forEach>   
@@ -195,9 +254,13 @@
                     </div>  
                 </div>
                 <div class="dr"><span></span></div>
+   
             </div>
             <!--workplace end-->
-        </div>   
+        </div>  
+        <!-- 动态表单 -->
+        <div class="modal fade" id="dynamicForm" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"></div>
+    	<!-- 动态表单 end --> 
     </div>
 </body>
 

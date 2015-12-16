@@ -13,9 +13,4 @@
 			<p>涉密标签粘贴，涉密编号：<input type="text" name="secret_number"></p>
 		</div>
 	</div>
-</div>
-<div class="toolbar nopadding-toolbar clear clearfix">
-	<div class="right btn-group">
-	<button class='btn btn-warning' id="lnk_save_template"> 保存模板数据 </button>   
-	</div>
-</div>          	
+</div>       	

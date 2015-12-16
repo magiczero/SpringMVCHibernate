@@ -15,6 +15,11 @@ public interface ResourcesDAO extends GenericDAO<Resources, Long> {
 
 	Resources update(Resources re);
 
+	/**
+	 * 根据路径匹配相关资源
+	 * @param url
+	 * @return
+	 */
 	Resources getByURL(String url);
 
 }

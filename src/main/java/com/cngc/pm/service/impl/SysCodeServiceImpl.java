@@ -91,7 +91,7 @@ public class SysCodeServiceImpl implements SysCodeService{
 		return syscodeDAO.getCode(code, type);
 	}
 	@Override
-	@Transactional
+	@Transactional(readOnly=true)
 	public SearchResult<SysCode> getParentCodeByType(String type)
 	{
 		return syscodeDAO.getParentCodeByType(type);

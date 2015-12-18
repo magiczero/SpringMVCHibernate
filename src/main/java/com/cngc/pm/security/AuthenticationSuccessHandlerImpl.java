@@ -52,6 +52,7 @@ public class AuthenticationSuccessHandlerImpl implements
 
 		User user1 = (User)authentication.getPrincipal();
 		SysUser user = userService.getByUsername(user1.getUsername());
+		request.getSession().setAttribute("lastLogin", user.getLastWhile());
 		String ip = this.getIpAddress(request); 
 		Date date = new Date();  
 		logger.info("登录IP："+ip +"， 时间："+ date);

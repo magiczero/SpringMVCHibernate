@@ -112,6 +112,10 @@
                 $(".breadLine .buttons").load("${contextPath }/contentbuttons");
                 
                 $('[data-submenu]').submenupicker();
+                
+                $("#btnCreate").click(function() {
+                	window.location = "${contextPath }/document/increases/${syscode.id }";
+                });
                 $("#btnUpdateVersion").click(function() {
             		var arr1 = checkedBox ();
             		if(arr1.length == 1) {
@@ -121,26 +125,7 @@
 		    			return false;
             		}
                 });
-                <%--
-                 if($("#checkItems").length > 0){
-                    $("#checkItems").multiSelect({
-                        selectableHeader: "<div class='multipleselect-header'>所有检查项</div>",
-                        selectedHeader: "<div class='multipleselect-header'>已选择项</div>"
-                    });
-                    $('#multiselect-selectAll').click(function(){
-                        $('#checkItems').multiSelect('select_all');
-                        return false;
-                    });
-                    $('#multiselect-deselectAll').click(function(){
-                        $('#checkItems').multiSelect('deselect_all');
-                        return false;
-                    });
-                    $('#multiselect-selectIndia').click(function(){
-                        $('#checkItems').multiSelect('select', 'in');
-                        return false;
-                    });         
-                 }
-                --%>
+                
                 $("#delBtn").click(function() {
                 		if(confirm("确定执行删除操作？")) {
         		    		//var arr = [];
@@ -195,7 +180,7 @@
                 <ul class="breadcrumb">
                     <li><a href="#">运维管理系统</a> <span class="divider">></span></li>
                     <li><a href="${contextPath }/Asset/list">文档管理</a> <span class="divider">></span></li>       
-                    <li class="active">文档信息列表</li>
+                    <li class="active">${syscode.codeName }</li>
                 </ul>
 
                 <ul class="buttons"></ul>
@@ -211,19 +196,15 @@
                     <div class="col-md-12" >
                             
                       <ul class="nav nav-pills">
-                      <li class="active"><a tabindex="0">文档分类</a></li>
+                      <li class="active"><a tabindex="0" href="${contextPath }/document/sys-code/${syscode.id }">${syscode.codeName }</a></li>
                       <c:forEach items="${styles }" var="style">
                       <li class="dropdown">
 						<a tabindex="0" data-toggle="dropdown" data-submenu>${style.name } <span class="caret"></span></a>
 						<ul class="dropdown-menu">
-						<li><a tabindex="0" href="${contextPath }/document/list/style/${style.id}">${style.name }</a></li>
-						<li class="divider"></li>
 						<c:forEach items="${style.child }" var="children1">
 						<li <c:if test="${!empty children1.child }">class="dropdown-submenu"</c:if>><a href="${contextPath }/document/list/style/${children1.id }">${children1.name }</a>
 							<c:if test="${!empty children1.child }">
 							<ul class="dropdown-menu" >
-							<li><a tabindex="0" href="${contextPath }/document/list/style/${children1.id}">${children1.name }</a></li>
-							<li class="divider"></li>
 							<c:forEach items="${children1.child }" var="children2">
 			                <li><a tabindex="0" href="${contextPath }/document/list/style/${children2.id}">${children2.name }</a></li>
 			                </c:forEach>
@@ -239,7 +220,7 @@
                                     <div class="dr"></div>
 						<div class="head clearfix">
                             <div class="isw-grid"></div>
-                            <h2>文档列表 &gt; 三员管理</h2>      
+                            <h2><c:if test="${empty nav}">${syscode.codeName } &gt; 文档列表</c:if><c:if test="${!empty nav}">${nav }</c:if></h2>      
                             <ul class="buttons">
                                 <li>
                                     <a class="isw-settings" href="#"></a>
@@ -300,37 +281,6 @@
             </div>
             <!--workplace end-->
         </div>
-        <%-- <div class="modal fade" id="fModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>                        
-                        <h4>关联检查项</h4>
-                    </div><c:url var="actionUrl" value="/document/relation-item" ></c:url>
-                    <form:form action="${actionUrl }" commandName="document">
-                    <form:hidden path="id"/>
-                    <div class="modal-body modal-body-np">
-                        <div class="row">
-                           <div class="block">                        
-								<form:select multiple="true" path="checkItems" class="validate[required] multiselect">
-									<form:options items="${listCheckItems}" itemValue="id" itemLabel="name"/>
-								</form:select>
-	                            
-	                            <div class="btn-group">
-	                                <button class="btn btn-default btn-xs" id="multiselect-selectAll" type="button">全选</button>
-	                                <button class="btn btn-default btn-xs" id="multiselect-deselectAll" type="button">全不选</button>
-	                            </div>                             
-                        	</div>
-                        </div>
-                    </div>   
-                    <div class="modal-footer">
-                        <input type="submit" class="btn btn-warning" value=" 保存 " />
-                        <button class="btn btn-default" data-dismiss="modal" aria-hidden="true">Close</button>            
-                    </div>
-                    </form:form>
-                </div>
-            </div>
-        </div>   --%>
     </div>
 </body>
 

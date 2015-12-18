@@ -68,7 +68,12 @@ public interface DocumentService {
 	SearchResult<Document> getAll(Integer offset,
 			Integer maxResults);
 	
-	SearchResult<Document> getAllByStyle(Long styleid, Integer offset, Integer maxResults);
+	SearchResult<Document> getAllByStyle(Style style, Integer offset, Integer maxResults);
 	
 	SearchResult<Document> getAllByItem(Long itemid, Integer offset, Integer maxResults);
+
+	List<Style> getStyleListByCode(String code);
+
+	List<Document> getListByCode(String code);
+
 }

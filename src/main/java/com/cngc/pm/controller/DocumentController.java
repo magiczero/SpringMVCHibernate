@@ -27,15 +27,19 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.cngc.exception.ParameterException;
 import com.cngc.pm.model.Attachment;
 import com.cngc.pm.model.DocAuth;
 import com.cngc.pm.model.Document;
 import com.cngc.pm.model.SecretLevel;
 import com.cngc.pm.model.Style;
+import com.cngc.pm.model.SysCode;
 import com.cngc.pm.model.SysUser;
 import com.cngc.pm.service.DocumentService;
+import com.cngc.pm.service.SysCodeService;
 import com.cngc.pm.service.UserService;
 import com.cngc.utils.Common;
+import com.cngc.utils.PropertyFileUtil;
 import com.googlecode.genericdao.search.SearchResult;
 
 @Controller
@@ -46,6 +50,9 @@ public class DocumentController {
 	private DocumentService docService;
 	@Resource
 	private UserService userService;
+	
+	@Resource
+	private SysCodeService syscodeService;
 	
 	@InitBinder
     protected void initBinder(WebDataBinder binder) {
@@ -91,9 +98,39 @@ public class DocumentController {
 	
 	@RequestMapping
 	public String root(Model model) {
-		model.addAttribute("styles", docService.getListStyle());
+		//model.addAttribute("styles", docService.getListStyle());
+		//去数据库读取系统
+		model.addAttribute("syscodeList", syscodeService.getAllByType(PropertyFileUtil.getStringValue("syscode.cms.ci.system")).getResult());
 		
-		return "document/list";
+		return "document/system-list";
+	}
+	
+	@RequestMapping(value="/sys-code/{codeId}", method = RequestMethod.GET)
+	public String sysCodeList(Model model, @PathVariable() long codeId, Integer offset, Integer maxResults, HttpServletRequest request) {
+		//去数据库读取系统
+		SysCode code = syscodeService.getById(codeId);
+		
+		List<Document> list = docService.getListByCode(code.getCode());
+		int size = list.size();
+		
+		model.addAttribute("syscode", code);
+		model.addAttribute("styles", docService.getStyleListByCode(code.getCode()));
+		int toIndex = 0, startIndex = 0;
+		if(offset != null) startIndex = offset;
+		if(maxResults == null) {
+			toIndex = startIndex + 10;
+		} else {
+			toIndex = startIndex + maxResults;
+		}
+		if(toIndex > size) toIndex = size;
+		model.addAttribute("listDocs", list.subList(startIndex, toIndex));
+		
+		model.addAttribute("count",size);
+		model.addAttribute("offset", offset);
+		//model.addAttribute("document", new Document());
+		model.addAttribute("url", request.getRequestURI());
+		
+		return "document/list-by-code";
 	}
 	
 	@RequestMapping(value = "/list3", method = RequestMethod.POST)
@@ -185,6 +222,25 @@ public class DocumentController {
 //		}
 //	}
 	
+	/**
+	 * 添加文档
+	 * @return
+	 */
+	@RequestMapping(value="/increases/{syscodeId}", method = RequestMethod.GET) 
+	public String increases(Model model, @PathVariable() long syscodeId) {
+		//去数据库读取系统
+		SysCode code = syscodeService.getById(syscodeId);
+		
+		if(code == null) throw new ParameterException("无法初始化添加文档页面，因为找不到指定的系统");
+		
+		model.addAttribute("styleList", docService.getStyleListByCode(code.getCode()));
+		//密级
+		model.addAttribute("levels", SecretLevel.values());
+		model.addAttribute("document", new Document());
+		
+		return "document/save";
+	}
+	
 	@RequestMapping(value = "/add", method = RequestMethod.GET)
 	public String add(Model model) {
 //		String url = request.getServletPath();
@@ -253,18 +309,32 @@ public class DocumentController {
 	 */
 	@RequestMapping(value = "/list/style/{styleid}", method = RequestMethod.GET)
 	public String listBySytle(@PathVariable("styleid") long styleid, Model model, Integer offset, Integer maxResults, HttpServletRequest request) {
-		SearchResult<Document> result = docService.getAllByStyle(styleid, offset, maxResults);
+		Style style = docService.loadStyleById(styleid);
+		if(style == null) throw new ParameterException("无法根据类别找到文档列表，因为找不到文档类别");
 		
+		Style topStyle = getTopStyle(style);
+		
+		SysCode code = syscodeService.getCode(topStyle.getCode(), PropertyFileUtil.getStringValue("syscode.cms.ci.system"));
+		SearchResult<Document> result = docService.getAllByStyle(style, offset, maxResults);
+		
+		String nav = code.getCodeName() + " &gt; " + topStyle.getName();
+		Style child = style.getStyle();
+		if(child !=null && child.getId() != topStyle.getId()) {
+			nav += " &gt; " + child.getName();
+		}
+		
+		nav += " &gt; " + style.getName();
+		
+		model.addAttribute("nav", nav);
+		model.addAttribute("syscode", code);
 		model.addAttribute("styles", docService.getListStyle());
-		model.addAttribute("listCheckItems", docService.getAllCheckItems());
 		model.addAttribute("listDocs", result.getResult());
 		model.addAttribute("count", result.getTotalCount());
 		model.addAttribute("offset", offset);
-		model.addAttribute("styleid", styleid);
-		model.addAttribute("document", new Document());
+		//model.addAttribute("document", new Document());
 		model.addAttribute("url", request.getRequestURI()+"/"+styleid);
 		
-		return "document/list2";
+		return "document/list-by-code";
 	}
 	
 	@RequestMapping(value = "/list/item/{itemid}", method = RequestMethod.GET)
@@ -332,6 +402,14 @@ public class DocumentController {
 		map.put("flag", flag);
 		
 		return map;
+	}
+	
+	Style getTopStyle(Style style) {
+		if(style.getStyle()!=null && style.getCode() == null) {
+			return getTopStyle(style.getStyle());
+		} else {
+			return style;
+		}
 	}
 	
 	class AuthEnumEditor extends PropertyEditorSupport {

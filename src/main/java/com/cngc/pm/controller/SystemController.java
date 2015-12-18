@@ -1,11 +1,9 @@
 package com.cngc.pm.controller;
 
-
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.Resource;
-import javax.servlet.http.HttpSession;
 
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -32,7 +30,7 @@ public class SystemController {
 	}
 	
 	@RequestMapping(value = "/menu", method = RequestMethod.GET)
-	public String menu(Model model, HttpSession session) {
+	public String menu(Model model) {
 
 		UserDetails user1 = (UserDetails)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		SysUser user = userService.getByUsername(user1.getUsername());
@@ -57,8 +55,7 @@ public class SystemController {
 		model.addAttribute("menu1", menu1);
 		model.addAttribute("menu2", menu2);
 
-		model.addAttribute("lastLogin", user.getLastWhile());
-
+		//model.addAttribute("lastLogin", user.getLastWhile());
 		
 		return "public/menu";
 	}

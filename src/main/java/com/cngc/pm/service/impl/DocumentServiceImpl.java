@@ -2,6 +2,7 @@ package com.cngc.pm.service.impl;
 
 import static com.cngc.utils.Common.isNumeric;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -235,12 +236,13 @@ public class DocumentServiceImpl implements DocumentService {
 
 	@Override
 	@Transactional(readOnly = true)
-	public SearchResult<Document> getAllByStyle(Long id, Integer offset, Integer maxResults) {
+	public SearchResult<Document> getAllByStyle(Style style, Integer offset, Integer maxResults) {
 		// TODO Auto-generated method stub
+		
 		Search search = new Search();
 		search.setFirstResult(offset == null?0:offset);
 		search.setMaxResults(maxResults==null?10:maxResults);
-		search.addFilterEqual("style.id", id);
+		search.addFilterEqual("style", style);
 		search.addSort("id", true);
 		
 		return docDao.searchAndCount(search);
@@ -260,5 +262,39 @@ public class DocumentServiceImpl implements DocumentService {
 		return docDao.searchAndCount(search);
 	}
 
-	
+	@Override
+	@Transactional(readOnly = true)
+	public List<Style> getStyleListByCode(String code) {
+		// TODO Auto-generated method stub
+		Search search = new Search(Style.class);
+		
+		search.addFilterEqual("code", code);
+		search.addSortAsc("order");
+		
+		return styleDao.search(search);
+	}
+
+	@Override
+	@Transactional(readOnly = true)
+	public List<Document> getListByCode(String code) {
+		// TODO Auto-generated method stub
+		List<Document> listAll = docDao.findAll();
+		
+		List<Document> returnList = new ArrayList<>();
+		for(Document document : listAll) {
+			if(getTopStyle(document.getStyle()).getCode().equals(code)) {
+				returnList.add(document);
+			}
+		}
+		return returnList;
+	}
+
+	Style getTopStyle(Style style) {
+		if(style.getStyle()!=null && style.getCode() == null) {
+			return getTopStyle(style.getStyle());
+		} else {
+			return style;
+		}
+	}
+
 }

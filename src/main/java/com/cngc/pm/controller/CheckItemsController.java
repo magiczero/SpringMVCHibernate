@@ -24,6 +24,7 @@ import com.cngc.pm.model.CheckItems;
 import com.cngc.pm.model.Document;
 import com.cngc.pm.model.Style;
 import com.cngc.pm.service.CheckItemsService;
+import com.cngc.pm.service.StyleService;
 import com.googlecode.genericdao.search.SearchResult;
 
 @Controller
@@ -32,6 +33,9 @@ public class CheckItemsController {
 
 	@Resource
 	private CheckItemsService itemsService;
+	
+	@Resource
+	private StyleService styleService;
 	
 	@InitBinder
     protected void initBinder(WebDataBinder binder) {
@@ -108,36 +112,42 @@ public class CheckItemsController {
 	}
 	
 	@RequestMapping(value = "/list/items/{itemid}", method = RequestMethod.GET)
-	public String listByItems(@PathVariable() String itemid, Model model) throws Exception {
+	public String listByItems(@PathVariable() long itemid, Model model) throws Exception {
 		//验证参数
-		String[] itemlevel = itemid.split("-");
-		int level = Integer.valueOf(itemlevel[0]);
-		long itemsid = Long.valueOf(itemlevel[1]);
-
-		String code = itemsService.getCodeByTypeid(itemsid);
+//		String[] itemlevel = itemid.split("-");
+//		int level = Integer.valueOf(itemlevel[0]);
+//		long itemsid = Long.valueOf(itemlevel[1]);
+		
+		Style style = styleService.getById(itemid);
+		
+		String code = itemsService.getCodeByTypeid(itemid);
+		
+		int level = getLevel(style.getStyle(), code, 1);
 		
 		String returnStr = "";
 		switch(code) {
 			case	 "BMB22" :
-				returnStr = "bmb22-list";
+				returnStr = "bmb22-list-by-item";
 				break;
 			case "BMB20" :
-				returnStr = "bmb20-list";
+				returnStr = "bmb20-list-by-item";
 				break;
 			case "BMB17" : 
-				returnStr = "bmb17-list";
+				returnStr = "bmb17-list-by-item";
 				break;
 			default:
 				throw new Exception("请输入指定的参数");
 		}
 		
-		SearchResult<CheckItems> result = itemsService.getAllByLevelItemid(level, itemsid);
+		SearchResult<CheckItems> result = itemsService.getAllByLevelItemid(level, itemid);
 				
 		model.addAttribute("checkitemsList", result.getResult());
-		model.addAttribute("item", itemsService.getStyleByCode(code));
+		model.addAttribute("itemAll", itemsService.getStyleByCode(code));
+		model.addAttribute("item", style);
 		model.addAttribute("count", result.getTotalCount());
 		model.addAttribute("offset", null);
-		model.addAttribute("styleid", itemsid);
+		model.addAttribute("styleid", itemid);
+		model.addAttribute("level", level);
 		
 		model.addAttribute("style", new Style());
 		model.addAttribute("checkitems", new CheckItems());
@@ -192,5 +202,13 @@ public class CheckItemsController {
 		String code = itemsService.getCodeByTypeid(checkitems.getItem().getId());
 		
 		return "redirect:/checkitems/bmb-list/"+code;
+	}
+	
+	private int getLevel(Style style, String code, int grade) {
+		//Style parent = style.getStyle();
+		if(style != null && code.equals(style.getCode())) {
+			return grade;
+		} else
+			return getLevel(style.getStyle(), code, ++grade);
 	}
 }

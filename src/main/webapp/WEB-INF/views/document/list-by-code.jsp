@@ -1,6 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-<%@ page import="java.util.List,com.cngc.pm.model.Style" %>
     <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>    <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
     <%@ taglib prefix="tag" uri="/WEB-INF/taglibs/customTaglib.tld"%>
     <c:set var="contextPath" value="${pageContext.request.contextPath}"></c:set>
@@ -196,7 +195,7 @@
                     <div class="col-md-12" >
                             
                       <ul class="nav nav-pills">
-                      <li class="active"><a tabindex="0" href="${contextPath }/document/sys-code/${syscode.id }">${syscode.codeName }</a></li>
+                      <li class="active"><a tabindex="0" href="${contextPath }/document/sys-code-list/${syscode.id }">${syscode.codeName }</a></li>
                       <c:forEach items="${styles }" var="style">
                       <li class="dropdown">
 						<a tabindex="0" data-toggle="dropdown" data-submenu>${style.name } <span class="caret"></span></a>

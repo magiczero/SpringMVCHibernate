@@ -36,4 +36,11 @@ public class StyleServiceImpl implements StyleService {
 		styleDao.save(style);
 	}
 
+	@Override
+	@Transactional(readOnly=true)
+	public Style getById(long itemsid) {
+		// TODO Auto-generated method stub
+		return styleDao.find(itemsid);
+	}
+
 }

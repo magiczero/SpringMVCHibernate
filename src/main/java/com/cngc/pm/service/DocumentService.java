@@ -76,4 +76,8 @@ public interface DocumentService {
 
 	List<Document> getListByCode(String code);
 
+	void saveStyle(Style style);
+
+	boolean enabledByIds(String ids);
+
 }

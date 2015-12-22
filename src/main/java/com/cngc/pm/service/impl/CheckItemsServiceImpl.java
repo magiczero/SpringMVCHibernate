@@ -112,7 +112,7 @@ public class CheckItemsServiceImpl implements CheckItemsService {
 		
 		Search search = new Search(CheckItems.class);
 		
-		if(code.equals("BMB20") || code.equals("BMB22")) {
+		if(code.equals("BMB20") || code.equals("BMB17")) {
 			switch(level) {
 				case 3:
 					search.addFilterEqual("item.id", id);

@@ -1,6 +1,7 @@
 package com.cngc.pm.controller;
 
 import java.beans.PropertyEditorSupport;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -105,7 +106,46 @@ public class DocumentController {
 		return "document/system-list";
 	}
 	
-	@RequestMapping(value="/sys-code/{codeId}", method = RequestMethod.GET)
+	/**
+	 * 初始化添加类别
+	 * @param model
+	 * @return
+	 */
+	@RequestMapping(value="/add-style", method = RequestMethod.GET)
+	public String addStyle(Model model) {
+		List<SysCode> list = syscodeService.getAllByType(PropertyFileUtil.getStringValue("syscode.cms.ci.system")).getResult();
+		model.addAttribute("syscodeList", list);
+		
+		List<Style> styleList = new ArrayList<>();
+		
+		for(SysCode code : list) {
+			styleList.addAll(docService.getStyleListByCode(code.getCode()));
+		}
+		
+		model.addAttribute("styleList",styleList);
+		model.addAttribute("style", new Style());
+		
+		return "document/add-style";
+	}
+	
+	@RequestMapping(value="/save-style", method = RequestMethod.POST)
+	public String saveStyle(@ModelAttribute("style") Style style,Model model,HttpServletRequest request) {
+		String parent = request.getParameter("parent");
+		if(parent.indexOf("-")==-1) {
+			Style styleParent = docService.getStyleListByCode("document_").get(0);
+			style.setCode(parent);
+			style.setStyle(styleParent);
+		} else {
+			String parentid = parent.substring(parent.lastIndexOf("-"), parent.length());
+			style.setStyle(docService.loadStyleById(Long.valueOf(parentid)));
+		}
+		
+		docService.saveStyle(style);
+		
+		return "redirect:/document/add-style";
+	}
+	
+	@RequestMapping(value="/sys-code-list/{codeId}", method = RequestMethod.GET)
 	public String sysCodeList(Model model, @PathVariable() long codeId, Integer offset, Integer maxResults, HttpServletRequest request) {
 		//去数据库读取系统
 		SysCode code = syscodeService.getById(codeId);
@@ -191,37 +231,7 @@ public class DocumentController {
 			return "document/update_version";
 		}
 	}
-//	@RequestMapping(value = "/update_version_commit", method = RequestMethod.POST)
-//	public String updateVersion(@ModelAttribute("document") Document document, HttpServletRequest request) {
-//		long docid = document.getId();
-//		Document doc = docService.getById(docid);
-//		if(doc == null) {
-//			
-//			return "500";				//内部错误
-//		} else {
-//			int count = Integer.parseInt(request.getParameter("uploader_count"));
-//			
-//			String[] names = new String[count];
-//			for (int i = 0; i < count; i++) {
-//				//uploadFileName = request.getParameter("uploader_" + i + "_name");
-//				names[i] = request.getParameter("uploader_" + i + "_tmpname");
-//			}
-//	
-//			Set<Attachment> setAttach = docService.getSetAttach(names);
-//			
-//			//获取用户
-//			SysUser user = (SysUser)request.getSession().getAttribute("user");
-//			
-//			Document newDoc = new Document();
-//			
-//			newDoc.setAttachs(setAttach);				
-//			newDoc.setDeposit(doc.getDeposit());
-//			
-//			
-//			return "redirect:/document/list";
-//		}
-//	}
-	
+
 	/**
 	 * 添加文档
 	 * @return
@@ -233,6 +243,7 @@ public class DocumentController {
 		
 		if(code == null) throw new ParameterException("无法初始化添加文档页面，因为找不到指定的系统");
 		
+		model.addAttribute("syscode", code);
 		model.addAttribute("styleList", docService.getStyleListByCode(code.getCode()));
 		//密级
 		model.addAttribute("levels", SecretLevel.values());
@@ -278,10 +289,14 @@ public class DocumentController {
 		document.setVersions(1);
 		document.setUser(user);		
 		document.setAttachs(setAttach);
+		document.setEnabled(true);
 //		document.setStyles(setStyle);
 		docService.save(document);
 		
-		return "redirect:/document/list";
+		Style style = this.getTopStyle(docService.loadStyleById(document.getStyle().getId()));
+		SysCode code = syscodeService.getCode(style.getCode(), PropertyFileUtil.getStringValue("syscode.cms.ci.system"));
+		
+		return "redirect:/document/sys-code-list/"+code.getId();
 	}
 	
 	@RequestMapping(value = "/list", method = RequestMethod.GET)
@@ -327,7 +342,8 @@ public class DocumentController {
 		
 		model.addAttribute("nav", nav);
 		model.addAttribute("syscode", code);
-		model.addAttribute("styles", docService.getListStyle());
+		model.addAttribute("styles", docService.getStyleListByCode(code.getCode()));
+//		model.addAttribute("styles", docService.getListStyle());
 		model.addAttribute("listDocs", result.getResult());
 		model.addAttribute("count", result.getTotalCount());
 		model.addAttribute("offset", offset);
@@ -377,11 +393,23 @@ public class DocumentController {
 //		return "redirect:/document/list";
 //	}
 	
-	@RequestMapping(value = "/delete")
+	@RequestMapping(value = "/delete3-1314")
 	@ResponseBody  
 	public Map<String,Object> delete(@RequestParam String ids) {
 		Map<String, Object> map = new HashMap<String, Object>();
 		if(docService.delByIds(ids)) {
+			map.put("flag", "true");
+		} else {
+			map.put("flag", "false");
+		}
+		return map;
+	}
+	
+	@RequestMapping(value = "/delete")
+	@ResponseBody  
+	public Map<String,Object> delete_enabled(@RequestParam String ids) {
+		Map<String, Object> map = new HashMap<String, Object>();
+		if(docService.enabledByIds(ids)) {
 			map.put("flag", "true");
 		} else {
 			map.put("flag", "false");

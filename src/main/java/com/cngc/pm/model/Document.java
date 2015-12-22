@@ -44,7 +44,14 @@ public class Document implements Serializable {
 	private String deposit;						//存放位置
 	private String docNum;						//文档编号
 	private SecretLevel secretLevel;		//密级
+	private boolean enabled;					//删除标识位
 	
+	public boolean isEnabled() {
+		return enabled;
+	}
+	public void setEnabled(boolean enabled) {
+		this.enabled = enabled;
+	}
 	private String link;
 	
 	private SysUser user;

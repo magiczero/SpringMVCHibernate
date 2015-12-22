@@ -1,4 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page import="java.util.Set,com.cngc.pm.model.Style" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>    <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %> 
@@ -93,23 +94,6 @@
             $(".menu").load("${contextPath }/menu", function() {$("#node_${moduleId}").addClass("active");});
             $(".breadLine .buttons").load("${contextPath }/contentbuttons");
 
-            if($("#docSet").length > 0){
-                $("#docSet").multiSelect({
-                    selectableHeader: "<div class='multipleselect-header'>所有文档</div>",
-                    selectedHeader: "<div class='multipleselect-header'>已选择文档</div>"
-                });
-                $('#multiselect-selectAll').click(function(){
-                    $('#docSet').multiSelect('select_all');
-                    return false;
-                });
-                $('#multiselect-deselectAll').click(function(){
-                    $('#docSet').multiSelect('deselect_all');
-                    return false;
-                });
-            }
-            
-            $("#style").validationEngine({promptPosition : "topLeft", scroll: true});
-            
             $("#checkitems").validationEngine({promptPosition : "topLeft", scroll: true});
             
             $("#itemTable").rowspan(0);
@@ -142,42 +126,7 @@
         	});
         }
 	
-        function delItem(id, obj) {
-        	$.confirm({
-        		title:"删除项",
-        		content: "是否确定删除项？",
-        		confirm: function() {
-        			$.getJSON('${contextPath }/checkitems/delete/' + id,function(data){
-        	            		if(data.flag) {
-        	            			notify_e('Success','删除成功');
-        	            			location.reload();
-        	            		} else {
-        	            			notify_e('Error','删除失败');
-        	            		}
-        	            	});
-        		},
-        		cancel: function() {
-					     			
-        		}
-        	});
-        	//if(confirm('确定删除？')) {
-            //	$.getJSON('${contextPath }/checkitems/delete/' + id,function(data){
-            //		if(data.flag) {
-            //			notify_e('Success','删除成功');
-            //			$(obj).parent().parnet().hide();
-            //		} else {
-            //			notify_e('Error','删除失败');
-            //		}
-            //	});
-        	//}
-        	return false;
-        }
         
-        function addItem(id, name) {
-        	$("[id='item.id']").val(id);
-        	$('#itemName').html(name);
-        	$("#fModal3").modal();
-        }
     </script>
 </head>
 <body>
@@ -212,18 +161,9 @@
                 <div class="row">
 
                     <div class="col-md-12" id="mails">
-                        <%--<div class="headInfo">
-                            <div class="toolbar clearfix">
-                        		<div class="left">
-                                    <div class="btn-group">
-                                        <button class="btn btn-primary" type="button" id="popup_1"  data-toggle="modal" data-target="#fModal">测评项分类列表</button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div> --%>
                       <ul class="nav nav-pills">
-                      <li class="active"><a tabindex="0" href="${contextPath }/checkitems/bmb-list/BMB22">${item.name }</a></li>
-                      <c:forEach items="${item.child }" var="style">
+                      <li class="active"><a tabindex="0" href="${contextPath }/checkitems/bmb-list/BMB22">${itemAll.name }</a></li>
+                      <c:forEach items="${itemAll.child }" var="style">
                       <li class="dropdown">
 						<a tabindex="0" data-toggle="dropdown" data-submenu>${style.name } <span class="caret"></span></a>
 						<ul class="dropdown-menu">
@@ -261,7 +201,7 @@
                                     <div class="dr"></div>
 						<div class="head clearfix">
                             <div class="isw-grid"></div>
-                            <h1>BMB22-2007</h1>      
+                            <h1>BMB22-2007 &gt; ${item.name }</h1>      
                         </div>
                         <div class="block-fluid" id="inbox">
                             <table id="itemTable" class="table">
@@ -275,12 +215,12 @@
 										<th >对应条目</th>
 										<th width="5%">页数</th>
 										<th width="20%">相关记录或文档</th>
-										<th>操作</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                <c:forEach items="${item.child }" var="oneLevel">
-                                <c:forEach items="${oneLevel.child }" var="twoLevel">
+                                <c:choose>
+                                <c:when test="${level==1 }">
+                                <c:forEach items="${item.child }" var="twoLevel">
                                 <c:forEach items="${twoLevel.child }" var="threeLevel">
                                 <c:forEach items="${threeLevel.child }" var="fourLevel">
                                 <c:set var="itemsize" value="0" />
@@ -303,7 +243,6 @@
 										</c:otherwise>
 										</c:choose>
 										</td>
-										<td><a href="${contextPath }/checkitems/update/${ci.id}">编辑</a><br/><a href="javascript:void(0);" onclick="javascript:delItem(${ci.id}, this);">删除</a></td>
 									</tr>
                                 </c:if>
                                 </c:forEach>
@@ -316,18 +255,22 @@
 										<td></td>
 										<td></td>
 										<td></td>
-										<td><a href="javascript:void(0);" onclick="javascript:addItem(${fourLevel.id},'${fourLevel.name }');">添加</a></td></tr>
+										</tr>
                                 </c:if>
                                 </c:forEach>
                                 </c:forEach>
                                 </c:forEach>
-                                </c:forEach>
-                                <%-- <c:forEach items="${checkitemsList}" var="ci" varStatus="itr">
-                                    <tr>
-                                        <td>${itr.index+1 }</td>
-                                        <td>${ci.item.style.style.style.name }</td>
+                                </c:when>
+                                <c:when test="${level==2 }">
+                                <c:forEach items="${item.child }" var="threeLevel">
+                                <c:forEach items="${threeLevel.child }" var="fourLevel">
+                                <c:set var="itemsize" value="0" />
+                                <c:forEach items="${checkitemsList}"  var="ci" varStatus="itr">
+                                <c:if test="${ci.item.id == fourLevel.id }">
+                                <c:set var="itemsize" value="${itr.index+1 }" />
+                                    <tr><td>${ci.item.style.style.style.name }</td>
                                         <td>${ci.item.style.style.name }</td>
-										<td><c:if test="${ci.base }">*&nbsp;</c:if>${ci.item.style.name }</td>
+										<td>${ci.item.style.name }</td>
 										<td>${ci.item.name }</td>
 										<td>${ci.name }</td>
 										<td>${ci.demand}</td>
@@ -341,9 +284,101 @@
 										</c:otherwise>
 										</c:choose>
 										</td>
-										<td><a href="${contextPath }/checkitems/update/${ci.id}">编辑</a><br/><a href="javascript:void(0);" onclick="javascript:delItem(${ci.id}, this);">删除</a></td>
-                                    </tr>
-                                    </c:forEach>--%>
+									</tr>
+                                </c:if>
+                                </c:forEach>
+                                <c:if test="${itemsize == 0 }"><tr>
+                                        <td>${fourLevel.style.style.style.name }</td>
+                                        <td>${fourLevel.style.style.name }</td>
+										<td>${fourLevel.style.name }</td>
+										<td>${fourLevel.name }</td>
+										<td></td>
+										<td></td>
+										<td></td>
+										<td></td>
+										</tr>
+                                </c:if>
+                                </c:forEach>
+                                </c:forEach>
+                                </c:when>
+                                
+                                <c:when test="${level==3 }">
+                                <c:forEach items="${item.child }" var="fourLevel">
+                                <c:set var="itemsize" value="0" />
+                                <c:forEach items="${checkitemsList}"  var="ci" varStatus="itr">
+                                <c:if test="${ci.item.id == fourLevel.id }">
+                                <c:set var="itemsize" value="${itr.index+1 }" />
+                                    <tr><td>${ci.item.style.style.style.name }</td>
+                                        <td>${ci.item.style.style.name }</td>
+										<td>${ci.item.style.name }</td>
+										<td>${ci.item.name }</td>
+										<td>${ci.name }</td>
+										<td>${ci.demand}</td>
+										<td>${ci.technique }</td>
+										<td>
+										<c:choose><c:when test="${empty ci.docSet}">${ci.record }</c:when>
+										<c:otherwise>
+										<c:forEach items="${ci.docSet }" var="doc">
+											<c:forEach items="${doc.attachs}" var="attach"><a href="${contextPath }/attachment/download/${attach.id}">${attach.name }</a><br/></c:forEach><br/>
+										</c:forEach>
+										</c:otherwise>
+										</c:choose>
+										</td>
+									</tr>
+                                </c:if>
+                                </c:forEach>
+                                <c:if test="${itemsize == 0 }"><tr>
+                                        <td>${fourLevel.style.style.style.name }</td>
+                                        <td>${fourLevel.style.style.name }</td>
+										<td>${fourLevel.style.name }</td>
+										<td>${fourLevel.name }</td>
+										<td></td>
+										<td></td>
+										<td></td>
+										<td></td>
+										</tr>
+                                </c:if>
+                                </c:forEach>
+                                </c:when>
+                                
+                                <c:when test="${level==4 }">
+                                <c:set var="itemsize" value="0" />
+                                <c:forEach items="${checkitemsList}"  var="ci" varStatus="itr">
+                                <c:if test="${ci.item.id == item.id }">
+                                <c:set var="itemsize" value="${itr.index+1 }" />
+                                    <tr><td>${ci.item.style.style.style.name }</td>
+                                        <td>${ci.item.style.style.name }</td>
+										<td>${ci.item.style.name }</td>
+										<td>${ci.item.name }</td>
+										<td>${ci.name }</td>
+										<td>${ci.demand}</td>
+										<td>${ci.technique }</td>
+										<td>
+										<c:choose><c:when test="${empty ci.docSet}">${ci.record }</c:when>
+										<c:otherwise>
+										<c:forEach items="${ci.docSet }" var="doc">
+											<c:forEach items="${doc.attachs}" var="attach"><a href="${contextPath }/attachment/download/${attach.id}">${attach.name }</a><br/></c:forEach><br/>
+										</c:forEach>
+										</c:otherwise>
+										</c:choose>
+										</td>
+									</tr>
+                                </c:if>
+                                </c:forEach>
+                                <c:if test="${itemsize == 0 }"><tr>
+                                        <td>${item.style.style.style.name }</td>
+                                        <td>${item.style.style.name }</td>
+										<td>${item.style.name }</td>
+										<td>${item.name }</td>
+										<td></td>
+										<td></td>
+										<td></td>
+										<td></td>
+										</tr>
+                                </c:if>
+                                </c:when>
+                                </c:choose>
+                                
                                 </tbody>
                             </table>
                              <div class="toolbar bottom-toolbar clearfix">&nbsp;
@@ -358,165 +393,6 @@
             <!--workplace end-->
         </div>
     </div>
-    <%-- <div class="modal fade" id="fModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>                        
-                        <h4>BMB22-2007</h4>
-                    </div>
-                    <div class="modal-body modal-body-np">
-                    <div class="row">
-						<div class="col-md-2"></div><div class="col-md-8">
-						<sec:authorize ifAllGranted="ROLE_ADMIN"><button class="btn btn-primary disabled" id="addChild" type="button"  data-toggle="modal" data-target="#fModal2">添加子类</button>
-						&nbsp;
-						<button class="btn btn-primary disabled" id="addItem" type="button"  data-toggle="modal" data-target="#fModal3">添加检查项</button></sec:authorize>
-						</div><div class="col-md-2"></div>
-					</div>
-                    <div class="row">
-                        <div class="col-md-2"></div><div class="col-md-8" id="tree"></div><div class="col-md-2"></div>
-                    </div>
-                    </div>
-                    </div>
-                    </div>
-                    </div>--%>
-     <div class="modal fade" id="fModal2" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>                        
-                        <h4>添加子项</h4>
-                    </div>
-                    <div class="modal-body modal-body-np">
-                    <div class="row">&nbsp;</div>
-                        <div class="row">
-                        <div class="col-md-12">
-						<c:url var="addAction" value="/checkitems/saveitems" ></c:url>
-						<form:form action="${addAction}" commandName="style">
-						<form:hidden path="code" value="NON"/>
-						<form:hidden path="style.id" class="validate[required,digits]"/>
-                        <div class="block-fluid">
-                          <div class="row-form clearfix">
-                                <div class="col-md-2"><form:label path="name">名称*</form:label></div>
-                                <div class="col-md-10"><form:input path="name" class="validate[required,minSize[2],maxSize[30]] text-input" /><form:errors path="name" cssClass="error" /></div>
-                            </div>
-                            <div class="row-form clearfix">
-                                <div class="col-md-2">
-                                <label>所属项</label>
-                                </div>
-                                <div id="itemParent" class="col-md-10">
-                                </div>
-                            </div>
-                            <div class="row-form clearfix">
-                                <div class="col-md-2">
-                                	<label for="order">排序</label>
-                                </div>
-                                <div class="col-md-10">
-                                	<form:input path="order" class="validate[digits]"/>
-                                </div>
-                            </div>
-							<div class="row-form clearfix">
-                                <div class="col-md-2">
-                                <label for="link">说明</label>
-                                </div>
-                                <div class="col-md-10">
-                                <form:textarea path="desc" class="validate[maxSize[30]]"/>
-                                </div>
-                            </div>
-                            <div class="footer tar">
-                               <input type="submit" class="btn btn-primary center-block" value="提 交" />
-                            </div>
-                        </div>
-                        </form:form>
-						</div>
-                        </div>
-                    </div>
-                    </div>
-                    </div>
-                    </div>
-       <div class="modal fade" id="fModal3" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>                        
-                        <h4>添加检查项</h4>
-                    </div>
-                    <div class="modal-body modal-body-np">
-                    <div class="row">&nbsp;</div>
-                        <div class="row">
-                        <div class="col-md-12">
-						<c:url var="saveAction" value="/checkitems/save" ></c:url>
-						<form:form action="${saveAction}" commandName="checkitems">
-						<form:hidden path="item.id" class="validate[required,digits]"/>
-                        <div class="block-fluid">                        
-                            <div class="row-form clearfix">
-                                <div class="col-md-2">
-                                <label>测评项</label>
-                                </div>
-                                <div class="col-md-10" id="itemName">
-                                </div>
-                            </div>
-                            <%--<div class="row-form clearfix">
-                                <div class="col-md-2">
-                                <form:label path="base">基本测评项</form:label>
-                                </div>
-                                <div class="col-md-10">
-                                <form:radiobutton path="base" value="true" label="是"/>&nbsp;&nbsp;&nbsp;&nbsp;<form:radiobutton path="base" value="false" label="否"/>
-                                </div>
-                            </div> --%>
-                            <div class="row-form clearfix">
-                                <div class="col-md-2">
-                                <form:label path="name">名称</form:label>
-                                </div>
-                                <div class="col-md-10">
-                                <form:input path="name" class="validate[required,minSize[2],maxSize[30]] text-input"/>
-                                </div>
-                            </div>
-                            <div class="row-form clearfix">
-                                <div class="col-md-2">
-                                <label for="demand">对应条目</label>
-                                </div>
-                                <div class="col-md-10">
-                                <form:input path="demand" class="validate[maxSize[300]]"/>
-                                </div>
-                            </div>
-                            <div class="row-form clearfix">
-                                <div class="col-md-2">
-                                <label for="technique">页数</label>
-                                </div>
-                                <div class="col-md-10">
-                                <form:input path="technique" class="validate[digits]"/>
-                                </div>
-                            </div>
-                            <div class="row-form clearfix">
-                                <div class="col-md-2">
-                                <label for="record">相关记录</label>
-                                </div>
-                                <div class="col-md-10">
-                                <form:input path="record" class="validate[maxSize[50]]"/>
-                                </div>
-                            </div>
-							<div class="row-form clearfix">
-								<form:select multiple="true" path="docSet">
-									<form:options items="${docList}" itemValue="id" itemLabel="name"/>
-								</form:select>
-	                            
-	                            <div class="btn-group">
-	                                <button class="btn btn-default btn-xs" id="multiselect-selectAll" type="button">全选</button>
-	                                <button class="btn btn-default btn-xs" id="multiselect-deselectAll" type="button">全不选</button>
-	                            </div>                             
-                            </div>
-                            <div class="footer tar">
-                               <input type="submit" class="btn btn-primary center-block" value="提 交" />
-                            </div>                            
-                        </div>
-                        </form:form>
-						</div>
-                        </div>
-                    </div>
-                    </div>
-                    </div><c:set var="index" value="0"></c:set>
-                    </div>
 </body>
 
 </html>

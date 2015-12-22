@@ -127,7 +127,7 @@
 						<div class="widgetButtons"><c:forEach items="${syscodeList }" var="syscode">
                             <div class="bb" style="text-align:center;">
                             
-                                <a href="${contextPath }/document/sys-code/${syscode.id}"  class="tipb" title="${syscode.codeName }"><span class="ibw-folder"></span></a>
+                                <a href="${contextPath }/document/sys-code-list/${syscode.id}"  class="tipb" title="${syscode.codeName }"><span class="ibw-folder"></span></a>
                                 <div style="font-weight:bold;">${syscode.codeName }</div>
                             </div>
                             </c:forEach>

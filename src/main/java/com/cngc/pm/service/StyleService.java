@@ -13,4 +13,6 @@ public interface StyleService {
 	List<Style> getAllByLevelFir();
 	
 	void save(Style style);
+
+	Style getById(long itemsid);
 }

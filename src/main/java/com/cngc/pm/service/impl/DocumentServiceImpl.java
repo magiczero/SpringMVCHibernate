@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.cngc.exception.ParameterException;
 import com.cngc.pm.dao.AttachmentDAO;
 import com.cngc.pm.dao.DocumentDAO;
 import com.cngc.pm.dao.ResourcesDAO;
@@ -193,8 +194,9 @@ public class DocumentServiceImpl implements DocumentService {
 	public List<Document> getByStyle(long styleid) {
 		// TODO Auto-generated method stub
 		Filter f = new Filter("style.id", styleid, Filter.OP_EQUAL);
+		Filter f2 = new Filter("enabled", true, Filter.OP_EQUAL);
 		
-		return docDao.search(new Search().addFilter(f));
+		return docDao.search(new Search().addFilter(f).addFilter(f2));
 		//return docDao.getByStyle(styleid);
 	}
 
@@ -227,6 +229,7 @@ public class DocumentServiceImpl implements DocumentService {
 	public SearchResult<Document> getAll(Integer offset,
 			Integer maxResults) {
 		Search search = new Search();
+		search.addFilterEqual("enabled", true);
 		search.setFirstResult(offset == null?0:offset);
 		search.setMaxResults(maxResults==null?10:maxResults);
 		search.addSort("id", true);
@@ -243,6 +246,7 @@ public class DocumentServiceImpl implements DocumentService {
 		search.setFirstResult(offset == null?0:offset);
 		search.setMaxResults(maxResults==null?10:maxResults);
 		search.addFilterEqual("style", style);
+		search.addFilterEqual("enabled", true);
 		search.addSort("id", true);
 		
 		return docDao.searchAndCount(search);
@@ -278,7 +282,10 @@ public class DocumentServiceImpl implements DocumentService {
 	@Transactional(readOnly = true)
 	public List<Document> getListByCode(String code) {
 		// TODO Auto-generated method stub
-		List<Document> listAll = docDao.findAll();
+		Search search = new Search();
+		search.addFilterEqual("enable", true);
+		
+		List<Document> listAll = docDao.search(search);
 		
 		List<Document> returnList = new ArrayList<>();
 		for(Document document : listAll) {
@@ -295,6 +302,39 @@ public class DocumentServiceImpl implements DocumentService {
 		} else {
 			return style;
 		}
+	}
+
+	@Override
+	@Transactional
+	public void saveStyle(Style style) {
+		// TODO Auto-generated method stub
+		styleDao.save(style);
+	}
+
+	@Override
+	@Transactional
+	public boolean enabledByIds(String ids) {
+		// TODO Auto-generated method stub
+		String id[] = ids.split(",");
+		int j = id.length;
+		Long[] idss = new Long[j];
+		for(int i=0; i<id.length; i++) {
+			String str = id[i];
+			 if (!isNumeric(str)) {
+				 throw new ParameterException("删除文档时出错，请输入正确类型的参数");
+			 }
+			 idss[i] = Long.valueOf(str);
+		}
+		
+		for(Long k : idss) {
+			Document doc = docDao.find(k);
+			
+			doc.setEnabled(false);
+			
+			docDao.save(doc);
+			
+		}
+		return true;
 	}
 
 }

@@ -1,6 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-<%@ page import="java.util.Set,com.cngc.pm.model.Style" %>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %> 
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>    
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
@@ -18,6 +17,7 @@
     <title>工程师工作台--运维管理系统</title>
 
     <link href="${contextPath }/resources/css/stylesheets.css" rel="stylesheet" type="text/css" />
+    <link href="${contextPath }/resources/css/bootstrap-submenu.min.css" rel="stylesheet" type="text/css" />
     <!--[if lt IE 8]>
         <link href="${contextPath }/resources/css/ie7.css" rel="stylesheet" type="text/css" />
     <![endif]-->
@@ -32,7 +32,7 @@
 
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/bootstrap.min.js'></script>
 
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/treeview/bootstrap-treeview.min.js'></script>
+    <script type='text/javascript' src='${contextPath }/resources/js/plugins/submenu/bootstrap-submenu.min.js'></script>
 
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/sparklines/jquery.sparkline.min.js'></script>
 
@@ -75,6 +75,7 @@
     <script type='text/javascript' src='${contextPath }/resources/js/plugins.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/settings.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/faq.js'></script>
+    <script type='text/javascript' src='${contextPath }/resources/js/pm-common.js'></script>
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
       <script src="${contextPath }/resources/js/html5shiv.js"></script>
@@ -85,7 +86,7 @@
     	#itemTable th {text-align:center;}
     </style>
     <script type="text/javascript">
-    
+    var ctx = "${contextPath}";
             $(document).ready(function () {
 
                 $(".header").load("${contextPath }/header");
@@ -114,6 +115,8 @@
                 $("#itemTable").rowspan(0);
                 $("#itemTable").rowspan(1);
                 $("#itemTable").rowspan(2);
+                
+                $('[data-submenu]').submenupicker();
             });
             
             jQuery.fn.rowspan = function(colIdx) {
@@ -189,46 +192,37 @@
             <div class="workplace">
 
                 <div class="row">
-                   <%--<div class="col-md-3 clearfix" id="mails_navigation">
-                        <!-- <span class="btn btn-success btn-block" >文档类别</span> -->
-                         <div id="tree"></div>
-
-                    </div> --%>
-
                     <div class="col-md-12" id="mails">
-                        <div class="headInfo"><div class="toolbar clearfix">
-                        <div class="left">
-                                    <div class="btn-group">
-                                        <button class="btn btn-primary" type="button" id="popup_1"  data-toggle="modal" data-target="#fModal">管理要求分类列表</button>
-                                    </div>
-                                </div>
-                            </div>
-                            <%--<div class="input-group row-form clearfix">
-                                <!-- <input type="text" name="search" placeholder="search keyword..." id="widgetInputMessage" class="form-control"/> -->
-                                <select name="search" id="itemsid" class="form-control">
-                                	<option></option>
-                                	<c:forEach items="${itemsList }" var="oneLevel">
-                                		<option value="1-${oneLevel.id }">${oneLevel.name }</option>
-                                		<c:forEach items="${oneLevel.child }" var="twoLevel">
-                                		<option value="2-${twoLevel.id }">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;| - ${twoLevel.name }</option>
-                                		<c:forEach items="${twoLevel.child }" var="threeLevel">
-                                		<option value="3-${threeLevel.id }">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;| - ${threeLevel.name }</option>
-                                		<c:forEach items="${threeLevel.child }" var="fourLevel">
-                                		<option value="4-${fourLevel.id }">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;| - ${fourLevel.name }</option>
-                                		<c:forEach items="${fourLevel.child }" var="fiveLevel">
-                                		<option value="5-${fiveLevel.id }">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;| - ${fiveLevel.name }</option>
-                                		</c:forEach>
-                                		</c:forEach>
-                                		</c:forEach>
-                                		</c:forEach>
-                                	</c:forEach>
-                                </select>
-                                <div class="input-group-btn">
-                                    <button class="btn btn-success" id="itemSearch" type="button">Search</button>
-                                </div>
-                            </div>
-                            <div class="arrow_down"></div>--%>
-                        </div>
+                        <ul class="nav nav-pills">
+                      <li class="active"><a tabindex="0" href="${contextPath }/checkitems/bmb-list/BMB20">${item.name }</a></li>
+                      <c:forEach items="${item.child }" var="style">
+                      <li class="dropdown">
+						<a tabindex="0" data-toggle="dropdown" data-submenu>${style.name } <span class="caret"></span></a>
+						<ul class="dropdown-menu">
+						<li><a tabindex="0" href="${contextPath }/checkitems/list/items/${style.id}">${style.name }</a></li>
+						<li class="divider"></li>
+						<c:forEach items="${style.child }" var="children1">
+						<li <c:if test="${!empty children1.child }">class="dropdown-submenu"</c:if>>
+						<a href="${contextPath }/checkitems/list/items/${children1.id }">${children1.name }</a>
+							<c:if test="${!empty children1.child }">
+							<ul class="dropdown-menu" >
+							<li><a href="${contextPath }/checkitems/list/items/${children1.id }">${children1.name }</a></li>
+							<li class="divider"></li>
+							<c:forEach items="${children1.child }" var="children2">
+			                <li>
+			                <a tabindex="0" href="${contextPath }/checkitems/list/items/${children2.id}">${children2.name }</a>
+			                </li>
+			                </c:forEach>
+			                </ul>
+							</c:if>
+						</li>
+						
+						</c:forEach>	
+						</ul>			
+					</li>
+                      </c:forEach>
+                                    </ul>
+                                    <div class="dr"></div>
  						<div class="head clearfix">
                             <div class="isw-grid"></div>
                             <h1>BMB20-2007</h1>      
@@ -301,28 +295,6 @@
             <!--workplace end-->
         </div>
     </div>
-    <div class="modal fade" id="fModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>                        
-                        <h4>BMB20-2007</h4>
-                    </div>
-                    <div class="modal-body modal-body-np">
-                    <div class="row">
-						<div class="col-md-2"></div><div class="col-md-8">
-						<sec:authorize ifAllGranted="ROLE_ADMIN"><button class="btn btn-primary disabled" id="addChild" type="button"  data-toggle="modal" data-target="#fModal2">添加子类</button>
-						&nbsp;
-						<button class="btn btn-primary disabled" id="addItem" type="button"  data-toggle="modal" data-target="#fModal3">添加检查项</button></sec:authorize>
-						</div><div class="col-md-2"></div>
-					</div>
-                    <div class="row">
-                        <div class="col-md-2"></div><div class="col-md-8" id="tree"></div><div class="col-md-2"></div>
-                    </div>
-                    </div>
-                    </div>
-                    </div>
-                    </div>
      <div class="modal fade" id="fModal2" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
@@ -452,79 +424,6 @@
                     </div>
                     </div>
                     </div>
-    <script type="text/javascript"><% Style items = (Style)request.getAttribute("item"); java.util.Map<Integer, Integer> map = new java.util.HashMap<Integer, Integer>();%>
-    var tree = [
-		  {
-		      text: "<%=items.getName()%>",
-		      selectable: true,
-		      tags: ['<%=items.getId()%>'],
-		      state: {
-		                checked: false,
-		                selected: false
-		              },
-		      href: "#"
-		  }<%if(items.getChild().size()>0){out.write(","); Set<Style> list = items.getChild();int x=1, i = 0, size=list.size();for(Style style : list) {i++; x++;map.put(style.getId().intValue(), x);%>
-          {
-              text: "<%=style.getName()%>",
-              href: "${contextPath }/checkitems/list/items/1-<%=style.getId()%>",
-              tags: ['<%=style.getId()%>']<%if(style.getChild().size()>0) {out.print(",");int j = 0, sizej=style.getChild().size();%>
-              nodes: [<%for(Style style1 : style.getChild()) {j++; x++;map.put(style1.getId().intValue(), x);%>
-                  {
-                    text: "<%=style1.getName()%>",
-                    href: "${contextPath }/checkitems/list/items/2-<%=style1.getId()%>",
-                    tags: ['<%=style1.getId()%>']<%if(style1.getChild().size()>0) {out.print(",");int k=0, sizek = style1.getChild().size();%>
-                    nodes: [<%for(Style style2 : style1.getChild()) {k++; x++;map.put(style2.getId().intValue(), x);%>
-                    	{
-                    		text: "<%=style2.getName()%>",
-                    		icon: "glyphicon glyphicon-leaf",
-                    		tags: ['<%=style2.getId()%>'],
-                            href: "${contextPath }/checkitems/list/items/3-<%=style2.getId()%>"
-                    	}<%if(k<sizek) out.print(",");}%>
-                    ]<%}%>
-                  }<%if(j<sizej) out.print(",");}%>
-                ]<%}%>
-              }<%if(i<size) out.print(",");}}%>
-        ];
-    var $style= $("[id='style.id']");
-    var $item= $("[id='item.id']");
-	var $tree = $('#tree').treeview({
-	enableLinks:true,
-	<sec:authorize ifAllGranted="ROLE_ADMIN">onNodeSelected: function(event, node) {
-		
-		if(node.icon) {
-			$('#addItem').attr("disabled",false);
-			$('#addItem').removeClass("disabled")
-			$('#addChild').attr("disabled",true);
-			$('#addChild').addClass("disabled")
-			
-			$item.val('');
-			$item.val(node.tags);
-			$('#itemName').html('');
-			$('#itemName').html(node.text);
-		} else {
-			$('#addItem').attr("disabled",true);
-			$('#addItem').addClass("disabled")
-			$('#addChild').attr("disabled",false);
-			$('#addChild').removeClass("disabled")
-			
-			$style.val('');
-			$style.val(node.tags);
-			$('#itemParent').html('');
-			$('#itemParent').html(node.text);
-		}
-    },</sec:authorize>
-	data: tree
-	});
-<%if(items.getChild().size()>0) {
-Long styleid = (Long)request.getAttribute("styleid");
-if(styleid > 0) {
-%>
-$tree.treeview('selectNode', [ <%=map.get(styleid.intValue())%>, { silent: true } ]);
-$tree.treeview('expandAll', { silent: true });
-<%} else {%>
-$tree.treeview('collapseAll', { silent: true });
-<%}}%>
-    </script>
 </body>
 
 </html>

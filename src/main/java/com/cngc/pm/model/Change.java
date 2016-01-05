@@ -62,6 +62,8 @@ public class Change {
 	private String riskName;
 	@Transient
 	private String applyUserName;
+	@Transient
+	private String delegateUserName;
 	
 	private Set<ChangeItem> items = new LinkedHashSet<ChangeItem>();
 	
@@ -279,6 +281,13 @@ public class Change {
 	}
 	public void setItems(Set<ChangeItem> items) {
 		this.items = items;
+	}
+	@Formula(value="(SELECT a.NAME FROM sys_users a WHERE a.USERNAME=delegate_user)")
+	public String getDelegateUserName() {
+		return delegateUserName;
+	}
+	public void setDelegateUserName(String delegateUserName) {
+		this.delegateUserName = delegateUserName;
 	}
 	
 }

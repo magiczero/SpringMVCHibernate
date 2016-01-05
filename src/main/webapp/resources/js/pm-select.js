@@ -1,7 +1,8 @@
 var tree_json = "";
 
-$(document).ready(function(){
-    //  
+function act_dialog_category_init()
+{
+	$(".wrapper").append("<div class='dialog' id='b_popup_select' style='display: none;' title='事件分类'></div>");
 	$("#b_popup_select").html("<div class='block dialog_block messages '>"
 			+"<div>"
 			+"<div id='treeview'></div>"
@@ -13,8 +14,8 @@ $(document).ready(function(){
         height:500,
         buttons: { "确定": function () { $(this).dialog("close") } }
     });
-});  
-function act_dialog_select(type,name)
+}
+function act_dialog_category_select(type,name)
 {
 	$.getJSON(ctx + '/system/syscode/getjson/' + type + '?t=' + pm_random(), function(data){
 		tree_json = data.json;
@@ -35,7 +36,22 @@ function act_dialog_select(type,name)
 	
 	return false;
 }
-function act_dialog_ciselect(name,isNode)
+function act_dialog_ci_init()
+{
+	$(".wrapper").append("<div class='dialog' id='b_popup_select' style='display: none;' title='分类'></div>");
+	$("#b_popup_select").html("<div class='block dialog_block messages '>"
+			+"<div>"
+			+"<div id='treeview'></div>"
+			+"</div></div>");
+	
+    $("#b_popup_select").dialog({
+        autoOpen: false,
+        width: 400,
+        height:500,
+        buttons: { "确定": function () { $(this).dialog("close") } }
+    });
+}
+function act_dialog_ci_select(name,isNode)
 {
 	$.getJSON(ctx + '/cms/category/getjson?t=' + pm_random(), function(data){
 		tree_json = data.json;

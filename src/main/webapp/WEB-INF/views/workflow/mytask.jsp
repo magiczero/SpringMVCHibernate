@@ -18,7 +18,7 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <![endif]-->
     
-    <title>流程管理--运维管理系统</title>
+    <title>待办任务--运维管理系统</title>
 
     <link href="${contextPath }/resources/css/icons.css" rel="stylesheet" type="text/css" />
     <link href="${contextPath }/resources/css/bootstrap.css" rel="stylesheet" type="text/css" />
@@ -45,90 +45,52 @@
     <!--[if lt IE 8]>
         <link href="${contextPath }/resources/css/ie7.css" rel="stylesheet" type="text/css" />
     <![endif]-->    
-    <link rel='stylesheet' type='text/css' href='${contextPath }/resources/css/fullcalendar.print.css' media='print' />
-    
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/jquery/jquery-1.10.2.min.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/jquery/jquery-ui-1.10.1.custom.min.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/jquery/jquery-migrate-1.2.1.min.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/jquery/jquery.mousewheel.min.js'></script>
-    
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/cookie/jquery.cookies.2.2.0.min.js'></script>
-    
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/bootstrap.min.js'></script>
-    
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/charts/jquery.flot.js'></script>    
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/charts/jquery.flot.stack.js'></script>    
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/charts/jquery.flot.pie.js'></script>
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/charts/jquery.flot.resize.js'></script>
-    
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/sparklines/jquery.sparkline.min.js'></script>
-    
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/fullcalendar/fullcalendar.min.js'></script>
-    
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/select2/select2.min.js'></script>
-    
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/uniform/uniform.js'></script>
-    
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/maskedinput/jquery.maskedinput-1.3.min.js'></script>
-    
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/validation/languages/jquery.validationEngine-en.js' charset='utf-8'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/validation/jquery.validationEngine.js' charset='utf-8'></script>
-    
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/mcustomscrollbar/jquery.mCustomScrollbar.min.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/animatedprogressbar/animated_progressbar.js'></script>
-    
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/qtip/jquery.qtip-1.0.0-rc3.min.js'></script>
-    
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/cleditor/jquery.cleditor.js'></script>
-    
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/dataTables/jquery.dataTables.min.js'></script>    
-    
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/fancybox/jquery.fancybox.pack.js'></script>
-        
-    <!-- <script type='text/javascript' src='../../../bp.yahooapis.com/2.4.21/browserplus-min.js'></script> -->
-
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/plupload/plupload.js'></script>
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/plupload/plupload.gears.js'></script>
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/plupload/plupload.silverlight.js'></script>
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/plupload/plupload.flash.js'></script>
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/plupload/plupload.browserplus.js'></script>
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/plupload/plupload.html4.js'></script>
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/plupload/plupload.html5.js'></script>
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/plupload/jquery.plupload.queue/jquery.plupload.queue.js'></script>    
-    
     <script type="text/javascript" src="${contextPath }/resources/js/plugins/elfinder/elfinder.min.js"></script>
-    
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/highlight/jquery.highlight-4.js'></script>
-    
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/pnotify/jquery.pnotify.min.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/ibutton/jquery.ibutton.min.js'></script>
-    
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/scrollup/jquery.scrollUp.min.js'></script>
     
     <script type='text/javascript' src='${contextPath }/resources/js/cookies.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/myactions.js'></script>
-    <script type='text/javascript' src='${contextPath }/resources/js/charts.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/settings.js'></script>    
-    <script type='text/javascript' src='${contextPath }/resources/js/faq.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/pm-common.js'></script>
-    <script type='text/javascript' src='${contextPath }/resources/js/activiti-dynamic-form-handler.js'></script>
-    <script type="text/javascript">
-    	var processType = '${empty processType ? param.processType:processType}';
-    	var ctx = "${contextPath}"; 
-    </script>
+   	<script type='text/javascript' src='${contextPath }/resources/js/activiti-form.js'></script>
+    <script type='text/javascript' src='${contextPath }/resources/js/pm-workflow.js'></script>
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
       <script src="${contextPath }/resources/js/html5shiv.js"></script>
       <script src="${contextPath }/resources/js/respond.min.js"></script>
     <![endif]-->
     <script type="text/javascript">
-    var ctx = "${contextPath}";
+    	var ctx = "${contextPath}";
             $(document).ready(function () {
-                $("#eventTable").dataTable({"aaSorting":[[4,'desc']]});
-                $(".header").load("../../header");
-                $(".menu").load("../../menu?t="+pm_random(), function () { $(".navigation > li:eq(0)").addClass("active"); });
-                $(".breadLine .buttons").load("../../contentbuttons");
+
+                $("#eventTable").dataTable({"aaSorting":[[3,'desc']]});
+                $(".header").load("${contextPath}/header?t="+pm_random());
+                $(".menu").load("${contextPath}/menu?t="+pm_random(), function () { $(".navigation > li:eq(0)").addClass("active"); });
+                $(".breadLine .buttons").load("${contextPath}/contentbuttons?t="+pm_random());
+
                 $(".confirm").bind("click",function(){
                 	if(!confirm("确定要执行该操作?"))
                 		return false;
@@ -208,9 +170,8 @@
 										<th width="100px">任务ID</th>
 										<th>流程名称</th>
 										<th width="150px">任务名称</th>
-										<th width="70px">优先级</th>
-										<th width="150px">任务创建日期</th>
-										<th width="100px">操作</th>
+										<th width="150px">创建时间</th>
+										<th width="140px">操作</th>
 									</tr>
                                 </thead>
                                 <tbody>
@@ -220,15 +181,38 @@
 									<td>${task.id }</td>
 									<td><%=ProcessDefinitionCache.getProcessName(pageContext.getAttribute("pdid").toString()) %></td>
 									<td><a class="lnk_trace" href='#' pid="${task.processInstanceId }" pdid="${task.processDefinitionId}" title="点击查看流程图">${task.name }</a></td>
-									<td>${task.priority }</td>
 									<td><fmt:formatDate value="${task.createTime }" pattern="yyyy/MM/dd HH:mm:ss" /></td>
 									<td>
 										<c:if test="${empty task.assignee }">
 											<a class="claim confirm" href="${contextPath }/workflow/task/claim/${task.id}">签收</a>
 										</c:if>
 										<c:if test="${not empty task.assignee }">
-											<%-- 此处用tkey记录当前节点的名称 --%>
-											<a class="handle" tkey='${task.taskDefinitionKey }' tname='${task.name }' tid='${task.id }' href="#">办理</a>
+											<c:set var="processName" value="${task.processDefinitionId.substring(0,task.processDefinitionId.indexOf(':')) }" />
+											<c:if test="${processName=='INCIDENT' }">
+												<a href="${contextPath }/incident/list" >控制台</a>
+											</c:if>
+											<c:if test="${processName=='CHANGE' }">
+												<a href="${contextPath }/change/list" >控制台</a>
+											</c:if>
+											<c:if test="${processName=='INSPECTION' }">
+												<a href="${contextPath }/record/inspection" >控制台</a>
+											</c:if>
+											<c:if test="${processName=='LEADERTASK' }">
+												<a href="${contextPath }/leadertask/list" >控制台</a>
+											</c:if>
+											<c:if test="${processName=='UPDATE' }">
+												<a href="${contextPath }/record/update" >控制台</a>
+											</c:if>
+											<c:if test="${processName=='SECJOB' }">
+												<a href="${contextPath }/record/secjob" >控制台</a>
+											</c:if>
+											<c:if test="${processName=='KNOWLEDGE' }">
+												<a href="${contextPath }/knowledge/list" >控制台</a>
+											</c:if>
+											<c:if test="${processName=='UPDATE' || processName=='LEADERTASK' || processName=='SECJOB' || processName=='KNOWLEDGE' }">
+												<a onclick="act_form_openTaskDialog('${task.name }','${task.id}','/workflow/task/mytask')"  href="#">快速办理</a>
+											</c:if>
+											
 										</c:if>
 									</td>
 								</tr>

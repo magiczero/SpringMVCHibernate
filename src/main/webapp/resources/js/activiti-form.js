@@ -18,6 +18,7 @@ function act_form_openStartDialog(processName,processDefinitionKey,redirectAddre
 			+"</div>"
 			+"</div>"
 	);
+	$('#dynamicForm').unbind('shown.bs.modal');
 	$('#dynamicForm').on('shown.bs.modal', function() {
 		// 获取json格式的表单数据，就是流程定义中的所有field
 		act_form_getStartDialog(processDefinitionKey,redirectAddress);
@@ -47,6 +48,7 @@ function act_form_openTaskDialog(taskName,taskId,redirectAddress) {
 			+"</div>"
 			+"</div>"
 	);
+	$('#dynamicForm').unbind('shown.bs.modal');
 	$('#dynamicForm').on('shown.bs.modal', function() {
 		// 获取json格式的表单数据，就是流程定义中的所有field
 		act_form_getTaskDialog(taskId,redirectAddress);
@@ -94,11 +96,31 @@ function act_form_getTaskFields(taskId,redirectAddress) {
 		});
 		divs += "<div class='footer'>"
 				+ "<input type=hidden name='redirectAddress' value='" + redirectAddress + "' />"
-                +"<button class='btn btn-primary'> 提 交 </button>"
+                +"<button class='btn btn-primary center-block'> 提 交 </button>"
                 +"</div>";
 
 		// 添加表单内容
 		$('#dynamic_form_table').html(divs);
+		// 初始化工程师选择下拉框
+		if($form.find('.user').length>0)
+		{
+			$.getJSON(ctx + '/user/getengineer?t=' + pm_random(),function(result){
+				$.each(result.users,function(key,value){
+					$form.find('.user').append("<option value='"+key+"'>"+value+"</option>");
+				});
+				$form.find('.user').select2();
+			});
+		}
+		// 初始化领导选择下拉框
+		if($form.find('.leader').length>0)
+		{
+			$.getJSON(ctx + '/user/getleader?t=' + pm_random(),function(result){
+				$.each(result.users,function(key,value){
+					$form.find('.leader').append("<option value='"+key+"'>"+value+"</option>");
+				});
+				$form.find('.leader').select2();
+			});
+		}
 		// 初始化日期组件
 		$form.find('.dateISO').datepicker();
 		// 表单验证
@@ -125,7 +147,6 @@ function act_form_getTaskFields(taskId,redirectAddress) {
  * @param redirectAddress
  */
 function act_form_getStartDialog(processDefinitionKey,redirectAddress) {
-
 	// 清空对话框内容
 	$('.dynamic-form-dialog').html("<form class='dynamic-form' method='post'><div id='dynamic-form-table' class='modal-body modal-body-np'></div></form>");
 	var $form = $('.dynamic-form');
@@ -174,6 +195,26 @@ function act_form_getDialogFields(data,redirectAddress) {
 			+ "</div>";
 	// 添加表单内容
 	$('#dynamic-form-table').html(divs);
+	// 初始化工程师选择下拉框
+	if($form.find('.user').length>0)
+	{
+		$.getJSON(ctx + '/user/getengineer?t=' + pm_random(),function(result){
+			$.each(result.users,function(key,value){
+				$form.find('.user').append("<option value='"+key+"'>"+value+"</option>");
+			});
+			$form.find('.user').select2();
+		});
+	}
+	// 初始化领导选择下拉框
+	if($form.find('.leader').length>0)
+	{
+		$.getJSON(ctx + '/user/getleader?t=' + pm_random(),function(result){
+			$.each(result.users,function(key,value){
+				$form.find('.leader').append("<option value='"+key+"'>"+value+"</option>");
+			});
+			$form.find('.leader').select2();
+		});
+	}
 	// 初始化日期组件
 	$form.find('.dateISO').datepicker();
 	// 表单验证
@@ -241,10 +282,19 @@ var act_form_fieldcreator = {
 		}
 		return result;
 	},
-	'users': function(prop, datas, className) {
+	'user': function(prop, datas, className) {
 		var result = "<div class='col-md-3'>" + prop.name + "：</div>";
 		if (prop.writable === true) {
-			result += "<div class='col-md-8'><input type='text' id='" + prop.id + "' name='fp_" + prop.id + "' class='" + className + "' value='" + prop.value + "' /></div>";
+			result += "<div class='col-md-8'><select id='" + prop.id + "' name='fp_" + prop.id + "' class='user' style='width:100%'></select></div>";
+		} else {
+			result += "<div class='col-md-8'>" + prop.value + "</div>";
+		}
+		return result;
+	},
+	'leader': function(prop, datas, className) {
+		var result = "<div class='col-md-3'>" + prop.name + "：</div>";
+		if (prop.writable === true) {
+			result += "<div class='col-md-8'><select id='" + prop.id + "' name='fp_" + prop.id + "' class='leader' style='width:100%'></select></div>";
 		} else {
 			result += "<div class='col-md-8'>" + prop.value + "</div>";
 		}

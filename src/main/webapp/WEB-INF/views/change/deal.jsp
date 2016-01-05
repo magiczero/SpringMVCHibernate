@@ -14,82 +14,39 @@
     <title>变更管理--运维管理系统</title>
 
     <link rel="icon" type="image/ico" href="favicon.ico"/>
-    
-    <link href="${contextPath }/resources/css/stylesheets.css" rel="stylesheet" type="text/css" />
+    <link href="${contextPath }/resources/css/icons.css" rel="stylesheet" type="text/css" />
+    <link href="${contextPath }/resources/css/bootstrap.css" rel="stylesheet" type="text/css" />
+    <link href="${contextPath }/resources/css/ui.css" rel="stylesheet" type="text/css" />
+    <link href="${contextPath }/resources/css/select2.css" rel="stylesheet" type="text/css" />
+    <link href="${contextPath }/resources/css/mCustomScrollbar.css" rel="stylesheet" type="text/css" />
+    <link href="${contextPath }/resources/css/multi-select.css" rel="stylesheet" type="text/css" />
+    <link href="${contextPath }/resources/css/pnotify.css" rel="stylesheet" type="text/css" />
+    <link href="${contextPath }/resources/css/stylesheet.css" rel="stylesheet" type="text/css" />
+    <link href="${contextPath }/resources/css/styling.css" rel="stylesheet" type="text/css" />
+    <link href="${contextPath }/resources/css/mycss.css" rel="stylesheet" type="text/css" />
     <!--[if lt IE 8]>
         <link href="${contextPath }/resources/css/ie7.css" rel="stylesheet" type="text/css" />
     <![endif]-->    
-    <link rel='stylesheet' type='text/css' href='${contextPath }/resources/css/fullcalendar.print.css' media='print' />
-    
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/jquery/jquery-1.10.2.min.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/jquery/jquery-ui-1.10.1.custom.min.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/jquery/jquery-migrate-1.2.1.min.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/jquery/jquery.mousewheel.min.js'></script>
-    
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/cookie/jquery.cookies.2.2.0.min.js'></script>
-    
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/bootstrap.min.js'></script>
-    
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/charts/jquery.flot.js'></script>    
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/charts/jquery.flot.stack.js'></script>    
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/charts/jquery.flot.pie.js'></script>
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/charts/jquery.flot.resize.js'></script>
-    
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/sparklines/jquery.sparkline.min.js'></script>
-    
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/fullcalendar/fullcalendar.min.js'></script>
-    
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/select2/select2.min.js'></script>
-    
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/uniform/uniform.js'></script>
-    
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/maskedinput/jquery.maskedinput-1.3.min.js'></script>
-    
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/validation/languages/jquery.validationEngine-en.js' charset='utf-8'></script>
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/validation/jquery.validationEngine.js' charset='utf-8'></script>
-    
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/mcustomscrollbar/jquery.mCustomScrollbar.min.js'></script>
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/animatedprogressbar/animated_progressbar.js'></script>
-    
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/qtip/jquery.qtip-1.0.0-rc3.min.js'></script>
-    
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/cleditor/jquery.cleditor.js'></script>
-    
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/dataTables/jquery.dataTables.min.js'></script>    
-    
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/fancybox/jquery.fancybox.pack.js'></script>
-        
-    <!-- <script type='text/javascript' src='../../../bp.yahooapis.com/2.4.21/browserplus-min.js'></script> -->
-
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/plupload/plupload.js'></script>
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/plupload/plupload.gears.js'></script>
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/plupload/plupload.silverlight.js'></script>
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/plupload/plupload.flash.js'></script>
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/plupload/plupload.browserplus.js'></script>
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/plupload/plupload.html4.js'></script>
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/plupload/plupload.html5.js'></script>
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/plupload/jquery.plupload.queue/jquery.plupload.queue.js'></script>    
-    
-    <script type="text/javascript" src="${contextPath }/resources/js/plugins/elfinder/elfinder.min.js"></script>
-    
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/highlight/jquery.highlight-4.js'></script>
-    
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/pnotify/jquery.pnotify.min.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/ibutton/jquery.ibutton.min.js'></script>
-    
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/scrollup/jquery.scrollUp.min.js'></script>
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/treeview/bootstrap-treeview.min.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/multiselect/jquery.multi-select.js'></script>
+    <script type='text/javascript' src='${contextPath }/resources/js/plugins/treeview/bootstrap-treeview.min.js'></script>
     
-    <script type='text/javascript' src='${contextPath }/resources/js/cookies.js'></script>
-    <script type='text/javascript' src='${contextPath }/resources/js/myactions.js'></script>
-    <script type='text/javascript' src='${contextPath }/resources/js/charts.js'></script>
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins.js'></script>
-    <script type='text/javascript' src='${contextPath }/resources/js/settings.js'></script>    
-    <script type='text/javascript' src='${contextPath }/resources/js/faq.js'></script>
+    <script type='text/javascript' src='${contextPath }/resources/js/jquery.form.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/pm-common.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/activiti-form.js'></script>
-    <script type='text/javascript' src='${contextPath }/resources/js/jquery.form.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/pm-knowledge.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/activiti-comment.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/pm-cms.js'></script>
@@ -113,13 +70,13 @@
    		
             $(document).ready(function () {
                 $("#eventTable").dataTable();
-                $(".header").load("${contextPath}/header");
-                $(".menu").load("${contextPath}/menu", function () { $(".navigation > li:eq(3)").addClass("active"); });
-                $(".breadLine .buttons").load("${contextPath}/contentbuttons");
+                $(".header").load("${contextPath}/header?t="+pm_random());
+                $(".menu").load("${contextPath}/menu?t="+pm_random(), function () { $("#node_${moduleId}").addClass("active"); });
+                $(".breadLine .buttons").load("${contextPath}/contentbuttons?t="+pm_random());
 				$("#btn_set_property").bind("click",getProperty);
                 
 				act_form_task(taskid,'/change/list');   
-                pm_knowledge_initdialog();
+				pm_knowledge_initdialog("incident",changeid);
                 act_comment_getlist(processInstanceId,taskid);
                 if(status=="05")
                 {
@@ -205,42 +162,21 @@
                 <div class="row">
                	
                	  <div class="col-md-5">
-                     <div style="text-align:right;">
+                     	<div style="text-align:right;">
                             <div class="btn-group">
-                                <button class="btn btn-default" type="button" id="lnk_knowledge">知识库</button>
-                            </div>
-                            
-                            <div class="btn-group">                                        
-                                <button class="btn btn-default btn-warning dropdown-toggle" aria-expanded="false" data-toggle="dropdown">操作 <span class="caret"></span></button>
-                                    <ul class="dropdown-menu">
-                                        <li><a href="#">编辑</a></li>
-                                        <li><a href="#">删除</a></li>
-                                        <li class="divider"></li>
-                                        <li><a href="#">广播消息</a></li>
-                                        <li><a href="#">流程概述</a></li>
-                                        <li class="divider"></li>
-                                        <li><a href="#" id="lnk_asset">创建关联对象</a></li>
-                                        <li><a href="#" id="lnk_relation">创建相关请求</a></li>
-                                    </ul>
+                                <button class="btn btn-default" type="button" id="lnk_knowledge">查看知识库</button>
                             </div>
                         </div>
                          <div class="headInfo">
                             <div class="toolbar nopadding-toolbar clear clearfix">
                                 <div class="left"><h4>变更信息</h4></div>
-
-                                <div class="right btn-group">
-                                    <button title="" class="btn btn-sm btn-primary tipb" type="button" data-original-title="操作历史" id="view_deal"><span class="glyphicon glyphicon-eye-close glyphicon glyphicon-white"></span></button>
-                                    <button title="" class="btn btn-sm btn-primary tipb" type="button" data-original-title="消息" id="lnk_messages"><span class="glyphicon glyphicon-envelope glyphicon glyphicon-white"></span></button>
-                                    <button title="" class="btn btn-sm btn-primary tipb" type="button" data-original-title="关联对象" id="lnk_assets"><span class="glyphicon glyphicon-info-sign glyphicon glyphicon-white"></span></button>
-                                    <button title="" class="btn btn-sm btn-primary tipb" type="button" data-original-title="附件" id="lnk_uploads"><span class="glyphicon glyphicon-download-alt glyphicon glyphicon-white"></span></button>
-                                </div>
                             </div>                                  
                         </div>
                          <div class="info">                                                                
                             <ul class="rows">
                             <li>
-                                <div class="title">变更编号:</div>
-                                <div class="text">${change.id}</div>
+                                <div class="title">流程号:</div>
+                                <div class="text">${change.processInstanceId}</div>
                             </li>
                              <li>
                                 <div class="title">变更描述:</div>
@@ -280,21 +216,6 @@
                     </div>
 
                   <div class="col-md-7">
-						<div class="head clearfix">
-                            <div class="isw-mail"></div>                        
-                            <h1 id="commentTitle">意见列表</h1>
-                            <ul class="buttons">
-                                <li>
-                                    <a href="#newForm"  role="button" data-toggle="modal" class="isw-plus tipl" title="添加意见"></a>                            
-                                </li>
-                                <li class="toggle"><a href="#"></a></li>                                                    
-                            </ul>
-                        </div>
-                        <div class="block messages scrollBox">                        
-                            <div id="commentList" class="scroll" style="height: 200px;">
-                            </div>
-                        </div>
-                    	
                         <div class="head clearfix">
                             <div class="isw-chats"></div>
                             <h1>${task.name }</h1>
@@ -330,12 +251,28 @@
                         	</div><!-- change -->
                     		<div id="workflow_task_form"></div>
                         </div>
-                    </div>
+                  
+                  		<div class="head clearfix">
+                            <div class="isw-mail"></div>                        
+                            <h1>意见列表 <span id="commentTitle" class="label label-success"></span></h1>
+                            <ul class="buttons">
+                                <li>
+                                    <a href="#newForm"  role="button" data-toggle="modal" class="isw-plus tipl" title="添加意见"></a>                            
+                                </li>
+                                <li class="toggle"><a href="#"></a></li>                                                    
+                            </ul>
+                        </div>
+                        <div class="block messages scrollBox">                        
+                            <div id="commentList" class="scroll" style="height: 250px;">
+                            </div>
+                        </div>
+                  </div>
                	
                	</div>
             </div>
             <!--workplace end-->
-        </div>   
+        </div> 
+        <!-- comment start -->  
         <div class="modal fade" id="newForm" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
@@ -360,7 +297,7 @@
                     	</div>
                     </div>   
                     <div class="modal-footer">
-                    	<input type="hidden" name="redirectAddress" value="/change/deal/${change.id}" />
+                    	<input type="hidden" name="redirectAddress" value="/change/deal/${change.id}/${task.id}" />
                     	<input type="hidden" name="fp_taskId" value="${task.id }" />
                     	<input type="hidden" name="fp_processInstanceId" value="${change.processInstanceId }" />
                         <button class="btn btn-primary" aria-hidden="true">提交</button> 
@@ -370,7 +307,7 @@
                 </div>
             </div>
         </div>
-        <div class="dialog" id="b_popup_knowledge" style="display: none" title="知识库"></div>
+        <!-- comment end -->
         <!-- property -->
         <div class="modal fade" id="selPropertyDialog" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
             <div class="modal-dialog">

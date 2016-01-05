@@ -3,6 +3,7 @@ package com.cngc.pm.controller.activiti;
 import java.util.List;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 
 import org.activiti.engine.HistoryService;
 import org.activiti.engine.RepositoryService;
@@ -78,6 +79,15 @@ public class ProcessInstanceController {
 					+ processInstanceId + "]的流程实例。");
 		}
 
+		return "redirect:/workflow/processinstance/running";
+	}
+	@RequestMapping(value = "/delete")
+	public String delete(HttpServletRequest request)
+	{
+		String pid = request.getParameter("fm_processInstanceId");
+		String reason = request.getParameter("fm_reason");
+		runtimeService.deleteProcessInstance(pid, reason);
+		
 		return "redirect:/workflow/processinstance/running";
 	}
 }

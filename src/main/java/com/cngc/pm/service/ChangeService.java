@@ -21,4 +21,5 @@ public interface ChangeService {
 	SearchResult<Change> search(String description,String applyUser,String engineer,String risk,Date startDate,Date endDate);
 	boolean updateCi(Long changeId);
 	SearchResult<Change> getByIds(List<Long> ids);
+	SearchResult<Change> getByProcessInstance(List<String> processInstanceIds);
 }

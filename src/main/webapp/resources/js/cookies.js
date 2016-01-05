@@ -44,10 +44,7 @@ $(document).ready(function(){
            }
            
        });       
-       
        // eof Collapsible widgets
-       
-       
    }
 
 });

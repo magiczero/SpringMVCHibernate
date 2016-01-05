@@ -13,7 +13,7 @@
           <activiti:value id="03" name="漏洞扫描报告"></activiti:value>
           <activiti:value id="04" name="应急演练"></activiti:value>
         </activiti:formProperty>
-        <activiti:formProperty id="user" name="分配工程师" type="string"></activiti:formProperty>
+        <activiti:formProperty id="user" name="分配工程师" type="user"></activiti:formProperty>
       </extensionElements>
     </startEvent>
     <userTask id="taskDoSecJob" name="三员工作执行中" activiti:assignee="${secjob.userId}">

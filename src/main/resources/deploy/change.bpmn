@@ -12,37 +12,32 @@
     </startEvent>
     <userTask id="changeConstruction" name="受理、构建变更" activiti:candidateGroups="WK_ENGINEER">
       <extensionElements>
-        <activiti:formProperty id="changeType" name="风险等级" type="string" expression="${change.changeType}"></activiti:formProperty>
+        <activiti:formProperty id="changeType" name="风险等级" type="enum" expression="${change.risk}">
+          <activiti:value id="01" name="严重"></activiti:value>
+          <activiti:value id="02" name="高"></activiti:value>
+          <activiti:value id="03" name="中等"></activiti:value>
+          <activiti:value id="04" name="低"></activiti:value>
+        </activiti:formProperty>
         <activiti:formProperty id="planStartTime" name="变更开始时间" type="date" expression="${change.planStartTime}" datePattern="yyyy-MM-dd"></activiti:formProperty>
         <activiti:formProperty id="planEndTime" name="变更结束时间" type="date" expression="${change.planEndTime}" datePattern="yyyy-MM-dd"></activiti:formProperty>
         <activiti:formProperty id="solution" name="变更方案" type="bigtext" expression="${change.solution}"></activiti:formProperty>
         <activiti:formProperty id="fallback" name="回退计划" type="bigtext" expression="${change.fallback}"></activiti:formProperty>
-        <activiti:formProperty id="delegateUser" name="变更实施人" type="string" expression="${change.delegateUser}"></activiti:formProperty>
+        <activiti:formProperty id="delegateUser" name="变更实施人" type="user" expression="${change.delegateUser}"></activiti:formProperty>
         <activiti:taskListener event="create" expression="${ changeEntityManager.setChangeStatus(execution,&quot;02&quot;)}"></activiti:taskListener>
         <activiti:taskListener event="assignment" expression="${ changeEntityManager.setChangeStatus(execution,&quot;03&quot;)}"></activiti:taskListener>
       </extensionElements>
     </userTask>
     <sequenceFlow id="flow1" sourceRef="startChangeManage" targetRef="changeConstruction"></sequenceFlow>
-    <userTask id="changePlan" name="变更排程" activiti:candidateGroups="WK_ENGINEER">
+    <userTask id="changePlan" name="变更排程" activiti:candidateUsers="${change.delegateUser}">
       <extensionElements>
         <activiti:formProperty id="planStartTime" name="变更开始时间" type="date" expression="${change.planStartTime}" datePattern="yyyy-MM-dd"></activiti:formProperty>
         <activiti:formProperty id="planEndTime" name="变更结束时间" type="date" expression="${change.planEndTime}" datePattern="yyyy-MM-dd"></activiti:formProperty>
-        <activiti:formProperty id="template" name="变更模板" type="enum" expression="${change.template}">
-          <activiti:value id="NULL" name="不使用模板"></activiti:value>
-          <activiti:value id="SERVER_CHANGE" name="服务器变更"></activiti:value>
-          <activiti:value id="SWITCH_CHANGE" name="网络变更"></activiti:value>
-        </activiti:formProperty>
-        <activiti:formProperty id="delegateUser" name="变更实施人" type="string" expression="${change.delegateUser}"></activiti:formProperty>
+        <activiti:formProperty id="delegateUser" name="变更实施人" type="user" expression="${change.delegateUser}"></activiti:formProperty>
         <activiti:taskListener event="create" expression="${ changeEntityManager.setChangeStatus(execution,&quot;05&quot;)}"></activiti:taskListener>
       </extensionElements>
     </userTask>
     <userTask id="changeClose" name="变更关闭" activiti:candidateGroups="WK_MANAGER">
       <extensionElements>
-        <activiti:formProperty id="template" name="变更模板" type="enum" expression="${change.template}" writable="false">
-          <activiti:value id="NULL" name="不使用模板"></activiti:value>
-          <activiti:value id="SERVER_CHANGE" name="服务器变更"></activiti:value>
-          <activiti:value id="SWITCH_CHANGE" name="网络变更"></activiti:value>
-        </activiti:formProperty>
         <activiti:formProperty id="result" name="变更结果描述" type="bigtext" expression="${change.result}"></activiti:formProperty>
       </extensionElements>
     </userTask>
@@ -54,7 +49,7 @@
         <activiti:formProperty id="planEndTime" name="变更结束时间" type="date" expression="${change.planEndTime}" writable="false"></activiti:formProperty>
         <activiti:formProperty id="solution" name="变更方案" type="bigtext" expression="${change.solution}" writable="false"></activiti:formProperty>
         <activiti:formProperty id="fallback" name="回退计划" type="bigtext" expression="${change.fallback}" writable="false"></activiti:formProperty>
-        <activiti:formProperty id="delegateUser" name="变更实施人" type="string" expression="${change.delegateUser}" writable="false"></activiti:formProperty>
+        <activiti:formProperty id="delegateUser" name="变更实施人" type="user" expression="${change.delegateUser}" writable="false"></activiti:formProperty>
         <activiti:formProperty id="changeAudit" name="审批" type="enum">
           <activiti:value id="true" name="通过"></activiti:value>
           <activiti:value id="false" name="不通过"></activiti:value>
@@ -72,25 +67,15 @@
       <conditionExpression xsi:type="tFormalExpression"><![CDATA[${changeAudit=='false'}]]></conditionExpression>
     </sequenceFlow>
     <sequenceFlow id="flow10" sourceRef="changeConstruction" targetRef="changeAuditStep"></sequenceFlow>
-    <userTask id="changeDo" name="实施变更" activiti:assignee="${change.delegateUser}">
+    <userTask id="changeDo" name="实施变更" activiti:candidateUsers="${change.delegateUser}">
       <extensionElements>
-        <activiti:formProperty id="template" name="变更模板" type="enum" expression="${change.template}">
-          <activiti:value id="NULL" name="不使用模板"></activiti:value>
-          <activiti:value id="SERVER_CHANGE" name="服务器变更"></activiti:value>
-          <activiti:value id="SWITCH_CHANGE" name="网络变更"></activiti:value>
-        </activiti:formProperty>
         <activiti:formProperty id="result" name="变更结果描述" type="bigtext" expression="${change.result}"></activiti:formProperty>
         <activiti:taskListener event="create" expression="${ changeEntityManager.setChangeStatus(execution,&quot;06&quot;)}"></activiti:taskListener>
       </extensionElements>
     </userTask>
     <sequenceFlow id="flow11" sourceRef="changePlan" targetRef="changeDo"></sequenceFlow>
-    <userTask id="usertask1" name="变更验证" activiti:candidateGroups="WK_ENGINEER">
+    <userTask id="usertask1" name="变更验证" activiti:candidateUsers="${change.delegateUser}">
       <extensionElements>
-        <activiti:formProperty id="template" name="变更模板" type="enum" expression="${change.template}" writable="false">
-          <activiti:value id="NULL" name="不使用模板"></activiti:value>
-          <activiti:value id="SERVER_CHANGE" name="服务器变更"></activiti:value>
-          <activiti:value id="SWITCH_CHANGE" name="网络变更"></activiti:value>
-        </activiti:formProperty>
         <activiti:formProperty id="result" name="变更结果描述" type="bigtext" expression="${change.result}"></activiti:formProperty>
         <activiti:taskListener event="create" expression="${ changeEntityManager.setChangeStatus(execution,&quot;07&quot;)}"></activiti:taskListener>
       </extensionElements>

@@ -13,7 +13,7 @@
           <activiti:value id="03" name="漏洞扫描"></activiti:value>
           <activiti:value id="04" name="入侵检测"></activiti:value>
         </activiti:formProperty>
-        <activiti:formProperty id="user" name="分配工程师" type="string"></activiti:formProperty>
+        <activiti:formProperty id="user" name="分配工程师" type="user"></activiti:formProperty>
       </extensionElements>
     </startEvent>
     <userTask id="taskDoUpdate" name="升级执行中" activiti:assignee="${update.userId}">

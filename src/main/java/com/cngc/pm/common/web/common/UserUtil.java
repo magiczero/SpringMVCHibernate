@@ -26,9 +26,9 @@ public class UserUtil {
 	 * @return
 	 */
 	public String getUserId(Authentication authentication) {
-		if(authentication==null)
+		if (authentication == null)
 			return null;
-		
+
 		User user = (User) authentication.getPrincipal();
 		if (user == null)
 			return null;
@@ -68,8 +68,55 @@ public class UserUtil {
 			Set<UserRole> roles = sysuser.getUserRoles();
 			for (UserRole role : roles) {
 				if (role.getRole().getRoleName()
-						.equals(PropertyFileUtil.getStringValue("system.user.role.workflowmanager")))
-				{
+						.equals(PropertyFileUtil.getStringValue("system.user.role.workflowmanager"))) {
+					bresult = true;
+					break;
+				}
+			}
+			return bresult;
+		}
+	}
+
+	/**
+	 * 当前用户是否为服务台
+	 * 
+	 * @param authentication
+	 * @return
+	 */
+	public Boolean IsServiceDesk(Authentication authentication) {
+		Boolean bresult = false;
+		User user = (User) authentication.getPrincipal();
+		if (user == null)
+			return bresult;
+		else {
+			SysUser sysuser = userService.getByUsername(user.getUsername());
+			Set<UserRole> roles = sysuser.getUserRoles();
+			for (UserRole role : roles) {
+				if (role.getRole().getRoleName().equals(PropertyFileUtil.getStringValue("system.user.servicedesk"))) {
+					bresult = true;
+					break;
+				}
+			}
+			return bresult;
+		}
+	}
+
+	/**
+	 * 当前用户是否为普通用户
+	 * 
+	 * @param authentication
+	 * @return
+	 */
+	public Boolean IsCommonUser(Authentication authentication) {
+		Boolean bresult = false;
+		User user = (User) authentication.getPrincipal();
+		if (user == null)
+			return bresult;
+		else {
+			SysUser sysuser = userService.getByUsername(user.getUsername());
+			Set<UserRole> roles = sysuser.getUserRoles();
+			for (UserRole role : roles) {
+				if (role.getRole().getRoleName().equals(PropertyFileUtil.getStringValue("system.user.role.user"))) {
 					bresult = true;
 					break;
 				}

@@ -1,4 +1,3 @@
-<%@page import="com.cngc.utils.activiti.ProcessDefinitionCache,org.activiti.engine.RepositoryService,org.activiti.engine.RuntimeService"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>    
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
@@ -16,7 +15,14 @@
 
     <link rel="icon" type="image/ico" href="favicon.ico"/>
     
-    <link href="${contextPath }/resources/css/stylesheets.css" rel="stylesheet" type="text/css" />
+    <link href="${contextPath }/resources/css/icons.css" rel="stylesheet" type="text/css" />
+    <link href="${contextPath }/resources/css/bootstrap.css" rel="stylesheet" type="text/css" />
+    <link href="${contextPath }/resources/css/ui.css" rel="stylesheet" type="text/css" />
+    <link href="${contextPath }/resources/css/select2.css" rel="stylesheet" type="text/css" />
+    <link href="${contextPath }/resources/css/pnotify.css" rel="stylesheet" type="text/css" />
+    <link href="${contextPath }/resources/css/stylesheet.css" rel="stylesheet" type="text/css" />
+    <link href="${contextPath }/resources/css/styling.css" rel="stylesheet" type="text/css" />
+    <link href="${contextPath }/resources/css/mycss.css" rel="stylesheet" type="text/css" />
     <!--[if lt IE 8]>
         <link href="${contextPath }/resources/css/ie7.css" rel="stylesheet" type="text/css" />
     <![endif]-->    
@@ -26,29 +32,12 @@
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/jquery/jquery.mousewheel.min.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/cookie/jquery.cookies.2.2.0.min.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/bootstrap.min.js'></script>
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/sparklines/jquery.sparkline.min.js'></script>
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/fullcalendar/fullcalendar.min.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/select2/select2.min.js'></script>
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/uniform/uniform.js'></script>
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/maskedinput/jquery.maskedinput-1.3.min.js'></script>
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/validation/languages/jquery.validationEngine-en.js' charset='utf-8'></script>
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/validation/jquery.validationEngine.js' charset='utf-8'></script>
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/mcustomscrollbar/jquery.mCustomScrollbar.min.js'></script>
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/animatedprogressbar/animated_progressbar.js'></script>
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/qtip/jquery.qtip-1.0.0-rc3.min.js'></script>
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/cleditor/jquery.cleditor.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/dataTables/jquery.dataTables.min.js'></script>    
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/fancybox/jquery.fancybox.pack.js'></script>
-    <script type="text/javascript" src="${contextPath }/resources/js/plugins/elfinder/elfinder.min.js"></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/highlight/jquery.highlight-4.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/pnotify/jquery.pnotify.min.js'></script>
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/ibutton/jquery.ibutton.min.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/scrollup/jquery.scrollUp.min.js'></script>
     
-    <script type='text/javascript' src='${contextPath }/resources/js/cookies.js'></script>
-    <script type='text/javascript' src='${contextPath }/resources/js/myactions.js'></script>
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins.js'></script>
-    <script type='text/javascript' src='${contextPath }/resources/js/settings.js'></script>    
     <script type='text/javascript' src='${contextPath }/resources/js/pm-common.js'></script>
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
@@ -59,22 +48,26 @@
     	var ctx = "${contextPath}";
             $(document).ready(function () {
                 $("#myTable").dataTable({"aaSorting":[[4,'desc']]});
-                $(".header").load("${contextPath}/header");
-                $(".menu").load("${contextPath}/menu", function () { $(".navigation > li:eq(2)").addClass("active"); });
-                $(".breadLine .buttons").load("${contextPath}/contentbuttons");
-                $(".confirm").bind("click",function(){
-                	if(!confirm("确定要执行该操作?"))
-                		return false;
-                });
+                $(".header").load("${contextPath}/header?t="+pm_random());
+                $(".menu").load("${contextPath}/menu?t="+pm_random(), function () { $("#node_${moduleId}").addClass("active"); });
+                $(".breadLine .buttons").load("${contextPath}/contentbuttons?t="+pm_random());
+               
                 $(".dateISO").datepicker();
-                var starttime,endtime,satisfaction,abs;
+                
+                var starttime,endtime,satisfaction,abs,applyUser,engineer;
                 starttime = pm_getQueryString("startTime");
                 endtime = pm_getQueryString("endTime");
                 satisfaction = pm_getQueryString("satisfaction");
                 abs = pm_getQueryString("abstract");
+                applyUser = pm_getQueryString("applyUser");
+                engineer = pm_getQueryString("engineer");
                 
                 if(abs!=null)
                 	$("input[name='abstract']").attr("value",abs);
+                if(applyUser!=null)
+                	$("#applyUser option[value='"+applyUser+"']").attr("selected", "selected");
+                if(engineer!=null)
+                	$("#engineer option[value='"+engineer+"']").attr("selected", "selected");
                 
                 if(starttime!=null)
                 	$("input[name='startTime']").attr("value",starttime);
@@ -87,6 +80,9 @@
                 	$("input[name='endTime']").attr("value",new Date().format("yyyy-MM-dd"));
                 if(satisfaction!=null)
                 	$("#satisfaction option[value='"+satisfaction+"']").attr("selected", "selected");
+                
+                $("#applyUser").select2();
+                $("#engineer").select2();
             });
     </script>
 </head>
@@ -132,9 +128,23 @@
                            			<div class="col-md-1">摘要</div>
 	                                <div class="col-md-3"><input type="text" name="abstract" /></div>
 	                                <div class="col-md-1">申请人</div>
-	                                <div class="col-md-3"><input type="text" name="applyUser" /></div>
+	                                <div class="col-md-3">
+	                                	<select id="applyUser" name="applyUser" style="width:100%">
+	                                	<option value="00">全部</option>
+	                                	<c:forEach items="${users }" var="user">
+	                                		<option value="${user.username }">${user.name }</option>
+	                                	</c:forEach>
+	                                	</select>
+	                                </div>
 	                                <div class="col-md-1">受派人</div>
-	                                <div class="col-md-3"><input type="text" name="engineer" /></div>
+	                                <div class="col-md-3">
+	                                	<select id="engineer" name="engineer" style="width:100%">
+	                                	<option value="00">全部</option>
+	                                	<c:forEach items="${engineers }" var="user">
+	                                		<option value="${user.username }">${user.name }</option>
+	                                	</c:forEach>
+	                                	</select>
+	                                </div>
 	                            </div>
                            		<div class="row-form clearfix">
 	                                <div class="col-md-1">满意度</div>
@@ -151,8 +161,8 @@
 	                                <div class="col-md-1">截至时间</div>
 	                                <div class="col-md-3"><input type="text" name="endTime" class="dateISO"/></div>
 	                            </div>
-	                            <div class="footer tac">
-	                            	<button class="btn btn-primary"> 查询 </button>
+	                            <div class="footer">
+	                            	<button class="btn btn-primary center-block"> 查 询 </button>
 	                            </div>
 	                            </form>
                 		</div>                   
@@ -170,7 +180,7 @@
                                         <th width="80px">满意度</th>
                                         <th width="120px">申请时间</th>
                                         <th width="120px">关闭时间</th>
-                                        <th width="60px">操作</th>                                    
+                                        <th width="70px">操作</th>                                    
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -187,7 +197,7 @@
                                         <td><fmt:formatDate value="${incident.applyTime }" pattern="yyyy-MM-dd HH:mm" /></td>
                                         <td><fmt:formatDate value="${incident.recoverTime }" pattern="yyyy-MM-dd HH:mm" /></td>
                                         <td>
-                                        	<a href="${contextPath }/incident/view/${incident.id}" target="_blank">查看</a>
+                                        	<a href="${contextPath }/incident/view/${incident.id}" target="_blank"><span class="glyphicon glyphicon-search"></span> 查看</a>
                                         </td>
                                     </tr>
                                    </c:forEach>

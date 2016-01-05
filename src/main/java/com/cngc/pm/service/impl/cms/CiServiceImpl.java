@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.cngc.pm.dao.StatsDAO;
 import com.cngc.pm.dao.cms.CiDAO;
 import com.cngc.pm.model.cms.Ci;
 import com.cngc.pm.service.cms.CiService;
@@ -18,6 +19,8 @@ public class CiServiceImpl implements CiService{
 	
 	@Autowired
 	private CiDAO ciDao;
+	@Autowired
+	private StatsDAO statsDao;
 	
 
 	@Override
@@ -83,7 +86,7 @@ public class CiServiceImpl implements CiService{
 	@Transactional
 	public Map<String,Object> getStats(String column,String row,String status)
 	{
-		return ciDao.getStats(column, row, status);
+		return statsDao.getStats("CMS", column, row, null, null, status);
 	}
 	@Override
 	@Transactional

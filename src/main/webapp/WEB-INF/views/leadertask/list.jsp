@@ -1,4 +1,3 @@
-<%@page import="com.cngc.utils.activiti.ProcessDefinitionCache,org.activiti.engine.RepositoryService,org.activiti.engine.RuntimeService,org.activiti.engine.TaskService"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>    
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
@@ -16,72 +15,39 @@
 
     <link rel="icon" type="image/ico" href="favicon.ico"/>
     
-    <link href="${contextPath }/resources/css/stylesheets.css" rel="stylesheet" type="text/css" />
+    <link href="${contextPath }/resources/css/icons.css" rel="stylesheet" type="text/css" />
+    <link href="${contextPath }/resources/css/bootstrap.css" rel="stylesheet" type="text/css" />
+    <link href="${contextPath }/resources/css/ui.css" rel="stylesheet" type="text/css" />
+    <link href="${contextPath }/resources/css/mCustomScrollbar.css" rel="stylesheet" type="text/css" />
+    <link href="${contextPath }/resources/css/pnotify.css" rel="stylesheet" type="text/css" />
+    <link href="${contextPath }/resources/css/stylesheet.css" rel="stylesheet" type="text/css" />
+    <link href="${contextPath }/resources/css/styling.css" rel="stylesheet" type="text/css" />
+    <link href="${contextPath }/resources/css/mycss.css" rel="stylesheet" type="text/css" />
+    <link href="${contextPath }/resources/css/select2.css" rel="stylesheet" type="text/css" />
+    <link rel='stylesheet' type='text/css' href='${contextPath }/resources/css/bootstrap-treeview.css' media='print' />
     <!--[if lt IE 8]>
         <link href="${contextPath }/resources/css/ie7.css" rel="stylesheet" type="text/css" />
     <![endif]-->    
-    <link rel='stylesheet' type='text/css' href='${contextPath }/resources/css/fullcalendar.print.css' media='print' />
-    
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/jquery/jquery-1.10.2.min.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/jquery/jquery-ui-1.10.1.custom.min.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/jquery/jquery-migrate-1.2.1.min.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/jquery/jquery.mousewheel.min.js'></script>
-    
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/cookie/jquery.cookies.2.2.0.min.js'></script>
-    
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/bootstrap.min.js'></script>
-    
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/charts/jquery.flot.js'></script>    
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/charts/jquery.flot.stack.js'></script>    
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/charts/jquery.flot.pie.js'></script>
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/charts/jquery.flot.resize.js'></script>
-    
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/sparklines/jquery.sparkline.min.js'></script>
-    
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/fullcalendar/fullcalendar.min.js'></script>
-    
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/select2/select2.min.js'></script>
-    
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/uniform/uniform.js'></script>
-    
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/maskedinput/jquery.maskedinput-1.3.min.js'></script>
-    
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/validation/languages/jquery.validationEngine-en.js' charset='utf-8'></script>
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/validation/jquery.validationEngine.js' charset='utf-8'></script>
-    
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/mcustomscrollbar/jquery.mCustomScrollbar.min.js'></script>
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/animatedprogressbar/animated_progressbar.js'></script>
-    
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/qtip/jquery.qtip-1.0.0-rc3.min.js'></script>
-    
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/cleditor/jquery.cleditor.js'></script>
-    
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/dataTables/jquery.dataTables.min.js'></script>    
-    
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/fancybox/jquery.fancybox.pack.js'></script>
-        
-    <!-- <script type='text/javascript' src='../../../bp.yahooapis.com/2.4.21/browserplus-min.js'></script> -->
-    
-    <script type="text/javascript" src="${contextPath }/resources/js/plugins/elfinder/elfinder.min.js"></script>
-    
+    <script type='text/javascript' src='${contextPath }/resources/js/plugins/dataTables/jquery.dataTables.min.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/highlight/jquery.highlight-4.js'></script>
-    
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/pnotify/jquery.pnotify.min.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/ibutton/jquery.ibutton.min.js'></script>
-    
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/scrollup/jquery.scrollUp.min.js'></script>
+    <script type='text/javascript' src='${contextPath }/resources/js/plugins/treeview/bootstrap-treeview.min.js'></script>
     
-    <script type='text/javascript' src='${contextPath }/resources/js/cookies.js'></script>
-    <script type='text/javascript' src='${contextPath }/resources/js/myactions.js'></script>
-    <script type='text/javascript' src='${contextPath }/resources/js/charts.js'></script>
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins.js'></script>
-    <script type='text/javascript' src='${contextPath }/resources/js/settings.js'></script>    
-    <script type='text/javascript' src='${contextPath }/resources/js/faq.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/pm-common.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/activiti-form.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/activiti-history.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/activiti-comment.js'></script>
-    <script type='text/javascript' src='${contextPath }/resources/js/pm-message.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/pm-workflow.js'></script>
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
@@ -91,15 +57,17 @@
     <script type="text/javascript">
     	var ctx = "${contextPath}";
         $(document).ready(function () {
-            $("#eventTable").dataTable({"aaSorting":[[3,'desc']]});
-            $(".header").load("../header");
-            $(".menu").load("../menu", function () { $(".navigation > li:eq(7)").addClass("active"); });
-            $(".breadLine .buttons").load("../contentbuttons");
+            $("#eventTable").dataTable({"aaSorting":[[6,'asc']]});
+            $(".header").load("${contextPath}/header?t="+pm_random());
+            $(".menu").load("${contextPath}/menu?t="+pm_random(), function () { $("#node_${moduleId}").addClass("active");  });
+            $(".breadLine .buttons").load("${contextPath}/contentbuttons?t="+pm_random());
             $(".confirm").bind("click",function(){
                	if(!confirm("确定要执行该操作?"))
                		return false;
             });
+            
             $(".dateISO").datepicker(); 
+            
             var starttime,endtime;
             starttime = pm_getQueryString("startTime");
             endtime = pm_getQueryString("endTime");
@@ -117,6 +85,7 @@
             $("#lnk_start_leadertask").bind("click",function(){
                	act_form_openStartDialog("发起领导交办任务","LEADERTASK","/leadertask/list");
             });
+            
             pm_workflow_inittracedialog();
             act_commont_initdialog();
             act_history_initdialog();
@@ -141,7 +110,7 @@
 
                 <ul class="breadcrumb">
                     <li><a href="#">运维管理系统</a> <span class="divider">></span></li>
-                    <li><a href="${contextPath }/leadertask/list">领导交办管理</a> <span class="divider">></span></li>       
+                    <li><a href="#">运维工作管理</a> <span class="divider">></span></li>       
                     <li class="active">领导交办</li>
                 </ul>
 
@@ -152,14 +121,6 @@
 
             <!--workplace-->
             <div class="workplace">             
-			<%
-				RuntimeService runtimeService  = (RuntimeService)request.getAttribute("runtime");
-				RepositoryService repositoryService = (RepositoryService)request.getAttribute("res");
-				TaskService taskService = (TaskService)request.getAttribute("task");
-				ProcessDefinitionCache.setRuntimeService(runtimeService);
-				ProcessDefinitionCache.setRepositoryService(repositoryService);
-				ProcessDefinitionCache.setTaskService(taskService);
-			%>
 				<div class="alert alert-danger hide">                
                     <h4>错误!</h4>请至少选择一项
                 </div> 
@@ -196,8 +157,8 @@
                                 <li>
                                     <a href="#" class="isw-settings tipl" title="操作 "></a>
                                     <ul class="dd-list">
-                                        <li><a href="javascript:void(0);" id="delBtn"><span class="isw-list"></span> 删除</a></li>
-                                        <li><a href="#"><span class="isw-refresh"></span> 刷新</a></li>
+                                        <li><a href="${contextPath }/workflow/processinstance/running" id="delBtn"><span class="isw-list"></span> 结束流程</a></li>
+                                        <li><a href="#" onclick="pm_refresh()"><span class="isw-refresh"></span> 刷新</a></li>
                                     </ul>
                                 </li>
                             </ul>                             
@@ -206,45 +167,52 @@
                             <table class="table" id="eventTable">
                                 <thead>
                                 	<tr>
+                                		<th width="60px">流程号</th>
                                 		<th width="120px">交办领导</th>
 										<th >任务内容</th>
 										<th width="100px">受派人</th>
 										<th width="100px">提交时间</th>
 										<th width="100px">到期时间</th>
-										<th width="140px">状态</th>
+										<th width="130px">状态</th>
 										<th width="150px">操作</th>
 									</tr>
                                 </thead>
                                 <tbody>
                                 	<c:forEach items="${list}" var="leaderTask">
-									<c:set var="pdid" value="${leaderTask.processInstanceId }" />
+									<c:set var="task" value="${tasks[leaderTask.processInstanceId]}" />
+									<c:set var="mytask" value="${mytasks[leaderTask.processInstanceId]}" />
 									<tr>
+										<td>${leaderTask.processInstanceId }</td>
 										<td>${leaderTask.fromUserName }</td>
 										<td>${leaderTask.taskTitle }</td>
 										<td>${leaderTask.toUserName }</td>
 										<td><fmt:formatDate value="${leaderTask.applyTime }" pattern="yyyy-MM-dd"></fmt:formatDate></td>
 										<td><fmt:formatDate value="${leaderTask.dueTime }" pattern="yyyy-MM-dd"></fmt:formatDate></td>
 										<td>
-											<c:if test="${not empty leaderTask.processInstanceId }">
-												<a class="lnk_trace" href='#' pid="${leaderTask.processInstanceId }" pdid="<%=ProcessDefinitionCache.getProcessDefinitionId(pageContext.getAttribute("pdid").toString()) %>" title="点击查看流程图">
-													<%=ProcessDefinitionCache.getActivityName(pageContext.getAttribute("pdid").toString()) %>
+											<c:if test="${not empty task }">
+												<a class="lnk_trace" href='#' pid="${leaderTask.processInstanceId }" pdid="${task.processDefinitionId }" title="点击查看流程图">
+													${task.name }
 												</a>
 											</c:if>
-											<c:if test="${not empty leaderTask.executionTime }">
+											<c:if test="${empty task }">
 												已完成
 											</c:if>
 										</td>
 										<td>
-											<c:if test="${empty leaderTask.executionTime }">
-												<a href="${contextPath }/leadertask/deal/${leaderTask.id}">办理</a>
+
+											<c:if test="${empty task }">
+												<a href="#" onclick="act_comment_open('${leaderTask.processInstanceId}',true)"><span class="glyphicon glyphicon-edit"></span> 意见</a>
 											</c:if>
-											<c:if test="${not empty leaderTask.executionTime }">
-												<a href="#" onclick="act_comment_open('${leaderTask.processInstanceId}',true)">查看意见</a>
+											<c:if test="${not empty task }">
+												<a href="#" onclick="act_comment_open('${leaderTask.processInstanceId}',false)"><span class="glyphicon glyphicon-edit"></span> 意见</a>
 											</c:if>
-											<c:if test="${empty leaderTask.executionTime }">
-												<a href="#" onclick="act_comment_open('${leaderTask.processInstanceId}',false)">查看意见</a>
+											<a href="#" onclick="act_history_open('${leaderTask.processInstanceId}')"><span class="glyphicon glyphicon-list-alt"></span> 历史</a>
+											<c:if test="${not empty mytask }">
+												<a href="${contextPath }/leadertask/deal/${leaderTask.id}/${mytask.id}"><span class="glyphicon glyphicon-edit"></span> 办理</a>
 											</c:if>
-											<a href="#" onclick="act_history_open('${leaderTask.processInstanceId}')">查看历史</a>
+											<c:if test="${empty mytask }">
+												<a href="${contextPath }/leadertask/view/${leaderTask.id}" ><span class="glyphicon glyphicon-search"></span> 详情</a>
+											</c:if>
 										</td>
 									</tr>
 								</c:forEach>   

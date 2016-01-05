@@ -85,6 +85,8 @@
         <property name="customFormTypes">
         	<list>
         		<bean class="com.cngc.pm.activiti.formtype.BigtextFormType" />
+        		<bean class="com.cngc.pm.activiti.formtype.UserFormType" />
+        		<bean class="com.cngc.pm.activiti.formtype.LeaderFormType" />
         	</list>
         </property>
         <!-- 开启日志 -->

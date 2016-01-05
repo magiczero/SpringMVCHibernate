@@ -1,4 +1,3 @@
-<%@page import="com.cngc.utils.activiti.ProcessDefinitionCache,org.activiti.engine.RepositoryService,org.activiti.engine.RuntimeService,org.activiti.engine.TaskService"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>    
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
@@ -15,68 +14,27 @@
     <title>知识管理--运维管理系统</title>
 
     <link rel="icon" type="image/ico" href="favicon.ico"/>
-    
-    <link href="${contextPath }/resources/css/stylesheets.css" rel="stylesheet" type="text/css" />
+    <link href="${contextPath }/resources/css/icons.css" rel="stylesheet" type="text/css" />
+    <link href="${contextPath }/resources/css/bootstrap.css" rel="stylesheet" type="text/css" />
+    <link href="${contextPath }/resources/css/ui.css" rel="stylesheet" type="text/css" />
+    <link href="${contextPath }/resources/css/pnotify.css" rel="stylesheet" type="text/css" />
+    <link href="${contextPath }/resources/css/stylesheet.css" rel="stylesheet" type="text/css" />
+    <link href="${contextPath }/resources/css/styling.css" rel="stylesheet" type="text/css" />
+    <link href="${contextPath }/resources/css/mycss.css" rel="stylesheet" type="text/css" />
     <!--[if lt IE 8]>
         <link href="${contextPath }/resources/css/ie7.css" rel="stylesheet" type="text/css" />
     <![endif]-->    
-    <link rel='stylesheet' type='text/css' href='${contextPath }/resources/css/fullcalendar.print.css' media='print' />
-    
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/jquery/jquery-1.10.2.min.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/jquery/jquery-ui-1.10.1.custom.min.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/jquery/jquery-migrate-1.2.1.min.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/jquery/jquery.mousewheel.min.js'></script>
-    
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/cookie/jquery.cookies.2.2.0.min.js'></script>
-    
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/bootstrap.min.js'></script>
-    
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/charts/jquery.flot.js'></script>    
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/charts/jquery.flot.stack.js'></script>    
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/charts/jquery.flot.pie.js'></script>
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/charts/jquery.flot.resize.js'></script>
-    
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/sparklines/jquery.sparkline.min.js'></script>
-    
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/fullcalendar/fullcalendar.min.js'></script>
-    
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/select2/select2.min.js'></script>
-    
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/uniform/uniform.js'></script>
-    
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/maskedinput/jquery.maskedinput-1.3.min.js'></script>
-    
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/validation/languages/jquery.validationEngine-en.js' charset='utf-8'></script>
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/validation/jquery.validationEngine.js' charset='utf-8'></script>
-    
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/mcustomscrollbar/jquery.mCustomScrollbar.min.js'></script>
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/animatedprogressbar/animated_progressbar.js'></script>
-    
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/qtip/jquery.qtip-1.0.0-rc3.min.js'></script>
-    
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/cleditor/jquery.cleditor.js'></script>
-    
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/dataTables/jquery.dataTables.min.js'></script>    
-    
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/fancybox/jquery.fancybox.pack.js'></script>
-        
-    <!-- <script type='text/javascript' src='../../../bp.yahooapis.com/2.4.21/browserplus-min.js'></script> --> 
-    
-    <script type="text/javascript" src="${contextPath }/resources/js/plugins/elfinder/elfinder.min.js"></script>
-    
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/highlight/jquery.highlight-4.js'></script>
-    
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/pnotify/jquery.pnotify.min.js'></script>
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/ibutton/jquery.ibutton.min.js'></script>
-    
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/scrollup/jquery.scrollUp.min.js'></script>
     
-    <script type='text/javascript' src='${contextPath }/resources/js/cookies.js'></script>
-    <script type='text/javascript' src='${contextPath }/resources/js/myactions.js'></script>
-    <script type='text/javascript' src='${contextPath }/resources/js/charts.js'></script>
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins.js'></script>
-    <script type='text/javascript' src='${contextPath }/resources/js/settings.js'></script>    
-    <script type='text/javascript' src='${contextPath }/resources/js/faq.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/pm-common.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/activiti-form.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/pm-workflow.js'></script>
@@ -87,17 +45,17 @@
     <![endif]-->
     <script type="text/javascript">
     	var ctx = "${contextPath}";
-            $(document).ready(function () {
-                $("#eventTable").dataTable();
-                $(".header").load("${contextPath}/header");
-                $(".menu").load("${contextPath}/menu", function () { $(".navigation > li:eq(8)").addClass("active"); });
-                $(".breadLine .buttons").load("${contextPath}/contentbuttons");
-                $(".confirm").bind("click",function(){
-                	if(!confirm("确定要执行该操作?"))
-                		return false;
-                });
-                pm_workflow_inittracedialog();
+        $(document).ready(function () {
+            $("#eventTable").dataTable();
+            $(".header").load("${contextPath}/header?t="+pm_random());
+            $(".menu").load("${contextPath}/menu?t="+pm_random(), function () { $("#node_${moduleId}").addClass("active"); });
+            $(".breadLine .buttons").load("${contextPath}/contentbuttons?t="+pm_random());
+            $(".confirm").bind("click",function(){
+               	if(!confirm("确定要执行该操作?"))
+               		return false;
             });
+            pm_workflow_inittracedialog(600,380);
+        });
     </script>
 </head>
 <body>
@@ -117,8 +75,8 @@
 
                 <ul class="breadcrumb">
                     <li><a href="#">运维管理系统</a> <span class="divider">></span></li>
-                    <li><a href="${contextPath }/Asset/list">知识管理</a> <span class="divider">></span></li>       
-                    <li class="active">知识列表</li>
+                    <li><a href="${contextPath }/knowledge/search">知识管理</a> <span class="divider">></span></li>       
+                    <li class="active">知识管理控制台</li>
                 </ul>
 
                 <ul class="buttons"></ul>
@@ -128,14 +86,6 @@
 
             <!--workplace-->
             <div class="workplace">             
-			<%
-				RuntimeService runtimeService  = (RuntimeService)request.getAttribute("runtime");
-				RepositoryService repositoryService = (RepositoryService)request.getAttribute("res");
-				TaskService taskService = (TaskService)request.getAttribute("task");
-				ProcessDefinitionCache.setRuntimeService(runtimeService);
-				ProcessDefinitionCache.setRepositoryService(repositoryService);
-				ProcessDefinitionCache.setTaskService(taskService);
-			%>
 				<div class="alert alert-danger hide">                
                     <h4>错误!</h4>请至少选择一项
                 </div> 
@@ -160,8 +110,8 @@
                                     <a href="#" class="isw-settings tipl" title="操作 "></a>
                                     <ul class="dd-list">
                                     	<li><a href="${contextPath}/knowledge/add" role="button" data-toggle="modal"><span class="isw-ok"></span> 创建新知识</a></li>
-                                        <li><a href="javascript:void(0);" id="delBtn"><span class="isw-list"></span> 删除</a></li>
-                                        <li><a href="#"><span class="isw-refresh"></span> 刷新</a></li>
+                                        <li><a href="${contextPath}/knowledge/list" ><span class="isw-list"></span> 待处理知识</a></li>
+                                        <li><a href="#" onclick="pm_refresh()"><span class="isw-refresh"></span> 刷新</a></li>
                                     </ul>
                                 </li>
                             </ul>                             
@@ -176,39 +126,42 @@
 										<th width="110px">提交时间</th>
 										<th width="120px">流程步骤</th>
 										<th width="70px">状态</th>
-										<th width="150px">操作</th>
+										<th width="90px">操作</th>
 									</tr>
                                 </thead>
                                 <tbody>
                                 	<c:forEach items="${list}" var="knowledge">
-									<c:set var="pdid" value="${knowledge.processInstanceId }" />
+									<c:set var="task" value="${tasks[knowledge.processInstanceId]}" />
+									<c:set var="mytask" value="${mytasks[knowledge.processInstanceId]}" />
 									<tr>
-										<td>${knowledge.title }</td>
+										<td><a href="${contextPath }/knowledge/detail/${knowledge.id}" target=_blank>${knowledge.title }</a></td>
 										<td>${knowledge.keyword }</td>
 										<td>${knowledge.applyUserName }</td>
 										<td><fmt:formatDate value="${knowledge.applyTime }" pattern="MM/dd HH:mm:ss" /></td>
 										<td>
-										<c:if test="${not empty knowledge.processInstanceId }">
-											<a class="lnk_trace" href='#' pid="${knowledge.processInstanceId }" pdid="<%=ProcessDefinitionCache.getProcessDefinitionId(pageContext.getAttribute("pdid").toString()) %>" title="点击查看流程图">
-												<%=ProcessDefinitionCache.getActivityName(pageContext.getAttribute("pdid").toString()) %>
-											</a>
-										</c:if>
-										<c:if test="${knowledge.status }">已发布</c:if>
+											<c:if test="${not empty task }">
+												<a class="lnk_trace" href='#' pid="${knowledge.processInstanceId }" pdid="${task.processDefinitionId }" title="点击查看流程图">
+													${task.name }
+												</a>
+											</c:if>
 										</td>
 										<td>${knowledge.statusName }</td>
 										<td>
 											<c:if test="${!knowledge.locked }">
-												<a class="confirm" href='${contextPath }/knowledge/manage/${knowledge.id}/publish'>发布申请</a>
+												<a class="confirm" href='${contextPath }/knowledge/manage/${knowledge.id}/publish'><span class="glyphicon glyphicon-share"></span> 发布申请</a><br>
 											</c:if>
 											<c:if test="${knowledge.status=='04' }">
-												<a class="confirm" href='${contextPath }/knowledge/manage/${knowledge.id}/modify'>修改申请</a>
-												<a class="confirm" href='${contextPath }/knowledge/manage/${knowledge.id}/delete'>删除申请</a>
+												<a class="confirm" href='${contextPath }/knowledge/manage/${knowledge.id}/modify'><span class="glyphicon glyphicon-share"></span> 修改申请</a><br>
+												<a class="confirm" href='${contextPath }/knowledge/manage/${knowledge.id}/delete'><span class="glyphicon glyphicon-share"></span> 删除申请</a><br>
 											</c:if>
 											<c:if test="${!knowledge.locked }">
-										 		<a href='${contextPath }/knowledge/modify/${knowledge.id}'>修改</a>
+										 		<a href='${contextPath }/knowledge/update/${knowledge.id}'><span class="glyphicon glyphicon-edit"></span> 修改</a><br>
 										 	</c:if>
-										 	<c:if test="${knowledge.status=='02' }">
-												<a href="#" onclick="act_form_openTaskDialog('知识管理','<%=ProcessDefinitionCache.getTaskId(pageContext.getAttribute("pdid").toString()) %>','/knowledge/list')">办理</a>
+										 	<c:if test="${knowledge.status=='01' }">
+										 		<a href='${contextPath }/knowledge/delete/${knowledge.id}' class="confirm"><span class="glyphicon glyphicon-remove"></span> 删除</a>
+										 	</c:if>
+										 	<c:if test="${not empty mytask}">
+												<a href="#" onclick="act_form_openTaskDialog('知识管理','${mytask.id}','/knowledge/list')"><span class="glyphicon glyphicon-edit"></span> 办理</a>
 											</c:if>
 										</td>
 									</tr>

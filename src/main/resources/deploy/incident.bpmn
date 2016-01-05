@@ -13,7 +13,7 @@
     <userTask id="incidentClassify" name="事件分类与初步支持" activiti:candidateGroups="WK_SERVICE_DESK">
       <extensionElements>
         <activiti:formProperty id="currentDelegateGroup" name="受派组" type="string" expression="${incident.currentDelegateGroup}"></activiti:formProperty>
-        <activiti:formProperty id="currentDelegateUser" name="受派人" type="string" expression="${incident.currentDelegateUser}"></activiti:formProperty>
+        <activiti:formProperty id="currentDelegateUser" name="受派人" type="user" expression="${incident.currentDelegateUser}"></activiti:formProperty>
         <activiti:formProperty id="firstResult" name="解决情况" type="enum">
           <activiti:value id="false" name="未解决"></activiti:value>
           <activiti:value id="true" name="已解决"></activiti:value>
@@ -24,7 +24,7 @@
     <sequenceFlow id="flow1" sourceRef="startIncidentManage" targetRef="incidentClassify"></sequenceFlow>
     <exclusiveGateway id="exclusivegateway1" name="Exclusive Gateway"></exclusiveGateway>
     <sequenceFlow id="flow2" sourceRef="incidentClassify" targetRef="exclusivegateway1"></sequenceFlow>
-    <userTask id="incidentConfirm" name="事件确认" activiti:candidateGroups="WK_SERVICE_DESK">
+    <userTask id="incidentConfirm" name="事件确认" activiti:candidateUsers="${incident.applyUser}" activiti:candidateGroups="WK_SERVICE_DESK">
       <extensionElements>
         <activiti:formProperty id="satisfaction" name="满意度" type="enum" expression="${incident.satisfaction}">
           <activiti:value id="01" name="非常好"></activiti:value>

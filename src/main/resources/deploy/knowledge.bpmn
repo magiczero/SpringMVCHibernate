@@ -18,8 +18,7 @@
     <userTask id="taskKnowledgePublish" name="知识发布审批" activiti:candidateGroups="WK_MANAGER">
       <extensionElements>
         <activiti:formProperty id="title" name="标题" type="string" expression="${knowledge.title}" writable="false"></activiti:formProperty>
-        <activiti:formProperty id="desc" name="描述" type="string" expression="${knowledge.desc}" writable="false"></activiti:formProperty>
-        <activiti:formProperty id="solution" name="解决方案" type="bigtext" expression="${knowledge.solution}" writable="false"></activiti:formProperty>
+        <activiti:formProperty id="desc" name="故障描述" type="string" expression="${knowledge.desc}" writable="false"></activiti:formProperty>
         <activiti:formProperty id="type" name="管理事项" type="enum" writable="false">
           <activiti:value id="PUBLISH" name="发布"></activiti:value>
           <activiti:value id="MODIFY" name="修改"></activiti:value>
@@ -32,8 +31,7 @@
     <userTask id="taskKnowledgeModify" name="知识修改审批" activiti:candidateGroups="WK_MANAGER">
       <extensionElements>
         <activiti:formProperty id="title" name="标题" type="string" expression="${knowledge.title}" writable="false"></activiti:formProperty>
-        <activiti:formProperty id="desc" name="描述" type="string" expression="${knowledge.desc}" writable="false"></activiti:formProperty>
-        <activiti:formProperty id="solution" name="解决方案" type="bigtext" expression="${knowledge.solution}" writable="false"></activiti:formProperty>
+        <activiti:formProperty id="desc" name="故障描述" type="string" expression="${knowledge.desc}" writable="false"></activiti:formProperty>
         <activiti:formProperty id="type" name="管理事项" type="enum" writable="false">
           <activiti:value id="PUBLISH" name="发布"></activiti:value>
           <activiti:value id="MODIFY" name="修改"></activiti:value>
@@ -44,8 +42,7 @@
     <userTask id="taskKnowledgeDelete" name="知识删除审批" activiti:candidateGroups="WK_MANAGER">
       <extensionElements>
         <activiti:formProperty id="title" name="标题" type="string" expression="${knowledge.title}" writable="false"></activiti:formProperty>
-        <activiti:formProperty id="desc" name="描述" type="string" expression="${knowledge.desc}" writable="false"></activiti:formProperty>
-        <activiti:formProperty id="solution" name="解决方案" type="bigtext" expression="${knowledge.solution}" writable="false"></activiti:formProperty>
+        <activiti:formProperty id="desc" name="故障描述" type="string" expression="${knowledge.desc}" writable="false"></activiti:formProperty>
         <activiti:formProperty id="type" name="管理事项" type="enum" writable="false">
           <activiti:value id="PUBLISH" name="发布"></activiti:value>
           <activiti:value id="MODIFY" name="修改"></activiti:value>

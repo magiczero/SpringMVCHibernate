@@ -7,8 +7,8 @@
     </extensionElements>
     <startEvent id="startLeaderTask" name="Start">
       <extensionElements>
-        <activiti:formProperty id="fromUser" name="交办领导" type="string"></activiti:formProperty>
-        <activiti:formProperty id="toUser" name="交办对象" type="string"></activiti:formProperty>
+        <activiti:formProperty id="fromUser" name="交办领导" type="leader"></activiti:formProperty>
+        <activiti:formProperty id="toUser" name="交办对象" type="user"></activiti:formProperty>
         <activiti:formProperty id="taskTitle" name="任务内容" type="bigtext"></activiti:formProperty>
         <activiti:formProperty id="dueTime" name="到期时间" type="date" datePattern="yyyy-MM-dd"></activiti:formProperty>
       </extensionElements>

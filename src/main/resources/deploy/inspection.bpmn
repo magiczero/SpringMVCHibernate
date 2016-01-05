@@ -7,7 +7,7 @@
     </extensionElements>
     <startEvent id="startInspection" name="Start">
       <extensionElements>
-        <activiti:formProperty id="user" name="分配工程师" type="string"></activiti:formProperty>
+        <activiti:formProperty id="user" name="分配工程师" type="user"></activiti:formProperty>
       </extensionElements>
     </startEvent>
     <userTask id="taskDoInspection" name="巡检任务执行中" activiti:assignee="${inspection.executionUser}">
@@ -31,9 +31,24 @@
     <userTask id="taskCreatIncident" name="生成工单中" activiti:assignee="${inspection.executionUser}">
       <extensionElements>
         <activiti:formProperty id="abstract" name="故障描述" type="bigtext" default="巡检发现异常"></activiti:formProperty>
-        <activiti:formProperty id="influence" name="影响度" type="string" default="01"></activiti:formProperty>
-        <activiti:formProperty id="critical" name="紧急度" type="string" default="01"></activiti:formProperty>
-        <activiti:formProperty id="priority" name="优先级" type="string" default="01"></activiti:formProperty>
+        <activiti:formProperty id="influence" name="影响度" type="enum" default="04">
+          <activiti:value id="01" name="广泛/普遍"></activiti:value>
+          <activiti:value id="02" name="极大/大型"></activiti:value>
+          <activiti:value id="03" name="适度/受限"></activiti:value>
+          <activiti:value id="04" name="次要/本地化"></activiti:value>
+        </activiti:formProperty>
+        <activiti:formProperty id="critical" name="紧急度" type="enum" default="04">
+          <activiti:value id="01" name="严重"></activiti:value>
+          <activiti:value id="02" name="高"></activiti:value>
+          <activiti:value id="03" name="中等"></activiti:value>
+          <activiti:value id="04" name="低"></activiti:value>
+        </activiti:formProperty>
+        <activiti:formProperty id="priority" name="优先级" type="enum" default="04">
+          <activiti:value id="01" name="严重"></activiti:value>
+          <activiti:value id="02" name="高"></activiti:value>
+          <activiti:value id="03" name="中等"></activiti:value>
+          <activiti:value id="04" name="低"></activiti:value>
+        </activiti:formProperty>
       </extensionElements>
     </userTask>
     <sequenceFlow id="flow5" sourceRef="exclusivegateway1" targetRef="taskCreatIncident">

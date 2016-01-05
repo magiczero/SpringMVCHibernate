@@ -18,6 +18,10 @@ import org.springframework.format.annotation.DateTimeFormat;
 @Table(name = "wk_income")
 public class Income  implements Serializable{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -6714664519748845700L;
 	private Long id;
 	private int personCount;
 	private String personName;

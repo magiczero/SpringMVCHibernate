@@ -67,6 +67,8 @@ public class Ci {
 	private String securityLevelName;
 	@Transient
 	private String systemName;
+	@Transient
+	private String userInMaintenanceName;
 
 	@Id
 	@Column(name = "id")
@@ -398,6 +400,14 @@ public class Ci {
 
 	public void setSystemName(String systemName) {
 		this.systemName = systemName;
+	}
+	@Formula(value="(SELECT a.NAME FROM sys_users a WHERE a.USERNAME=user_in_maintenance)")
+	public String getUserInMaintenanceName() {
+		return userInMaintenanceName;
+	}
+
+	public void setUserInMaintenanceName(String userInMaintenanceName) {
+		this.userInMaintenanceName = userInMaintenanceName;
 	}
 	
 }

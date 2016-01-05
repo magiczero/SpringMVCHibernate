@@ -44,9 +44,9 @@ function act_comment_getlist(processInstanceId,taskId) {
 		taskId: taskId
 	}, function(datas) {
 		var divs = "";
-		$("#commentTitle").append(" （共计" + datas.events.length+"条）");
+		$("#commentTitle").html( datas.events.length );
 		if(datas.events==0)
-			divs = "未查询到意见信息。";
+			divs = "<div class='tac'>未查询到相关意见信息。</div>";
 		else
 		{
 			$.each(datas.events, function(i, v) {
@@ -67,18 +67,31 @@ function act_comment_getlist(processInstanceId,taskId) {
 				}
 				tdiv += user +"<p>"+ comment + "</p><span>"+new Date(v.time).toLocaleString()+"</span>";
 				tdiv += "<div class='controls'>"                                    
-					+ "<a href='#' class='glyphicon glyphicon-pencil tip' title='编辑'></a>"
-					+ " <a href='#' class='glyphicon glyphicon-trash tip' title='删除'></a>"
+					+ " <a href='#' msgid='"+v.id+"' class='lnk_comment_delete glyphicon glyphicon-trash tip' title='删除'></a>"
 					+ "</div>";
 				tdiv += "</div></div>";
 				divs += tdiv;
 			});
 		}
+		$("#loader_comment").hide();
 		$("#commentList").append(divs);
+		// 绑定删除按钮事件
+		$(".lnk_comment_delete").bind("click",function(){
+			act_comment_delete($(this).attr("msgid"));
+			return false;
+		});
 		$(".scroll").mCustomScrollbar();
+		
 	});
 }
-
+function act_comment_delete(id)
+{
+	if(!confirm("确定要删除该条意见?"))
+   		return false;
+	$.getJSON(ctx+"/workflow/task/comment/delete/"+id,function(){
+		act_comment_getlist(processInstanceId,taskId);
+	});
+}
 /*
 根据英文类型翻译为中文
  */
@@ -116,7 +129,7 @@ var act_comment_eventHandler = {
 		return  '添加了附件：' + msg;
 	},
 	'AddComment': function(event,  msg) {
-		return  '发表了意见：' + msg;
+		return  '发表了意见：<span class="text-danger">' + msg + '</span>';
 	},
 	'DeleteComment': function(event,  msg) {
 		return  '<span class="text-error">删除</span>了意见：' + msg;

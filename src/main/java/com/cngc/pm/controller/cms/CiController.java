@@ -31,6 +31,7 @@ import com.cngc.pm.model.cms.Category;
 import com.cngc.pm.model.cms.Ci;
 import com.cngc.pm.service.ItilRelationService;
 import com.cngc.pm.service.SysCodeService;
+import com.cngc.pm.service.UserService;
 import com.cngc.pm.service.cms.CategoryRelationService;
 import com.cngc.pm.service.cms.CategoryService;
 import com.cngc.pm.service.cms.CiService;
@@ -58,6 +59,8 @@ public class CiController {
 	private RelationService relationService;
 	@Resource
 	private UserUtil userUtil;
+	@Resource
+	private UserService userService;
 	
 	@RequestMapping(value="/add")
 	public String add(Model model){
@@ -65,6 +68,7 @@ public class CiController {
 		model.addAttribute("status", syscodeService.getAllByType(PropertyFileUtil.getStringValue("syscode.cms.ci.status")).getResult());
 		model.addAttribute("securityLevel", syscodeService.getAllByType(PropertyFileUtil.getStringValue("syscode.cms.ci.securitylevel")).getResult());
 		model.addAttribute("system", syscodeService.getAllByType(PropertyFileUtil.getStringValue("syscode.cms.ci.system")).getResult());
+		model.addAttribute("users", userService.getAll());
 		return "cms/ci-add";
 	}
 	
@@ -189,7 +193,12 @@ public class CiController {
 	@RequestMapping(value="/delete/{id}", method = RequestMethod.GET)
 	public String delete(@PathVariable("id") long id,Model model){
 		if(id!=0)
-			ciService.delById(id);
+		{
+			//	ciService.delById(id);
+			Ci ci = ciService.getById(id);
+			ci.setDeleteStatus(PropertyFileUtil.getStringValue("syscode.cms.ci.delete"));
+			ciService.save(ci);
+		}
 		
 		return "redirect:/cms/ci/list";
 	}

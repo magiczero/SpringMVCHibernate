@@ -86,6 +86,12 @@ public class ChangeServiceImpl implements ChangeService{
 	}
 	@Override
 	@Transactional
+	public SearchResult<Change> getByProcessInstance(List<String> processInstanceIds)
+	{
+		return changeDao.getByProcessInstance(processInstanceIds);
+	}
+	@Override
+	@Transactional
 	public SearchResult<Change> getNotFinished()
 	{
 		return changeDao.getNotFinished();

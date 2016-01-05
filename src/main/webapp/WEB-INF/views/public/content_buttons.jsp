@@ -2,7 +2,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <c:set var="contextPath" value="${pageContext.request.contextPath}"></c:set>
  <script type='text/javascript' src='${contextPath }/resources/js/pm-message.js'></script>
-<li><a href="${contextPath }/workflow/task/mytask" ><span class="glyphicon glyphicon-tasks"></span><span class="text">待办任务<span id="task_count"></span></span></a>
+<li><a href="${contextPath }/workflow/task/mytask" class="tipb" title=""><span class="glyphicon glyphicon-tasks"></span><span class="text">待办任务<span id="task_count"></span></span></a>
 </li>
 <li><a href="#" class="link_bcPopupMessage"><span class="glyphicon glyphicon-envelope"></span><span class="text">消息<span id="popup_messages_count"></span></span></a>
 	<div id="bcPopupMessage" class="popup">
@@ -141,7 +141,8 @@
 		$.getJSON(ctx+"/workflow/task/getmytaskcount?t"+pm_random(),function(datas){
 			if(datas.count=="0")
 				return;
-			$("#task_count").text("("+datas.count+")");
+			$("#task_count").text("("+datas.claim+"/"+datas.count+")");
+			$("#task_count").parents("a").attr("title","待办任务 "+datas.count+" 件，已签收 "+datas.claim+" 件");
 		});
 	}
 </script>

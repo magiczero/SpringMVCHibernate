@@ -40,7 +40,5 @@ public interface CiDAO extends GenericDAO<Ci, Long> {
 	
 	SearchResult<Ci> getByIds(List<Long> ids);
 	
-	Map<String,Object> getStats(String column,String row,String status);
-	
 	SearchResult<Ci> getByUser(String user);
 }

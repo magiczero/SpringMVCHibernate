@@ -1,4 +1,3 @@
-<%@page import="com.cngc.utils.activiti.ProcessDefinitionCache,org.activiti.engine.RepositoryService,org.activiti.engine.RuntimeService"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>    
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
@@ -15,67 +14,46 @@
     <title>报表与统计管理--运维管理系统</title>
 
     <link rel="icon" type="image/ico" href="favicon.ico"/>
-    
     <link href="${contextPath }/resources/css/stylesheets.css" rel="stylesheet" type="text/css" />
     <!--[if lt IE 8]>
         <link href="${contextPath }/resources/css/ie7.css" rel="stylesheet" type="text/css" />
     <![endif]-->    
-    <link rel='stylesheet' type='text/css' href='${contextPath }/resources/css/fullcalendar.print.css' media='print' />
-    
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/jquery/jquery-1.10.2.min.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/jquery/jquery-ui-1.10.1.custom.min.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/jquery/jquery-migrate-1.2.1.min.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/jquery/jquery.mousewheel.min.js'></script>
-    
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/cookie/jquery.cookies.2.2.0.min.js'></script>
-    
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/bootstrap.min.js'></script>
+    <script type='text/javascript' src='${contextPath }/resources/js/plugins/sparklines/jquery.sparkline.min.js'></script>
+    <script type='text/javascript' src='${contextPath }/resources/js/plugins/fullcalendar/fullcalendar.min.js'></script>
+    <script type='text/javascript' src='${contextPath }/resources/js/plugins/select2/select2.min.js'></script>
+    <script type='text/javascript' src='${contextPath }/resources/js/plugins/uniform/uniform.js'></script>
+    <script type='text/javascript' src='${contextPath }/resources/js/plugins/maskedinput/jquery.maskedinput-1.3.min.js'></script>
+    <script type='text/javascript' src='${contextPath }/resources/js/plugins/validation/languages/jquery.validationEngine-en.js' charset='utf-8'></script>
+    <script type='text/javascript' src='${contextPath }/resources/js/plugins/validation/jquery.validationEngine.js' charset='utf-8'></script>
+    <script type='text/javascript' src='${contextPath }/resources/js/plugins/mcustomscrollbar/jquery.mCustomScrollbar.min.js'></script>
+    <script type='text/javascript' src='${contextPath }/resources/js/plugins/animatedprogressbar/animated_progressbar.js'></script>
+    <script type='text/javascript' src='${contextPath }/resources/js/plugins/qtip/jquery.qtip-1.0.0-rc3.min.js'></script>
+    <script type='text/javascript' src='${contextPath }/resources/js/plugins/cleditor/jquery.cleditor.js'></script>
+    <script type='text/javascript' src='${contextPath }/resources/js/plugins/dataTables/jquery.dataTables.min.js'></script>    
+    <script type='text/javascript' src='${contextPath }/resources/js/plugins/fancybox/jquery.fancybox.pack.js'></script>
+    <script type="text/javascript" src="${contextPath }/resources/js/plugins/elfinder/elfinder.min.js"></script>
+    <script type='text/javascript' src='${contextPath }/resources/js/plugins/highlight/jquery.highlight-4.js'></script>
+    <script type='text/javascript' src='${contextPath }/resources/js/plugins/pnotify/jquery.pnotify.min.js'></script>
+    <script type='text/javascript' src='${contextPath }/resources/js/plugins/ibutton/jquery.ibutton.min.js'></script>
+    <script type='text/javascript' src='${contextPath }/resources/js/plugins/scrollup/jquery.scrollUp.min.js'></script>
     
+    <script type='text/javascript' src='${contextPath }/resources/js/plugins/charts/excanvas.min.js'></script>    
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/charts/jquery.flot.js'></script>    
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/charts/jquery.flot.stack.js'></script>    
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/charts/jquery.flot.pie.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/charts/jquery.flot.resize.js'></script>
-    
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/sparklines/jquery.sparkline.min.js'></script>
-    
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/fullcalendar/fullcalendar.min.js'></script>
-    
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/select2/select2.min.js'></script>
-    
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/uniform/uniform.js'></script>
-    
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/maskedinput/jquery.maskedinput-1.3.min.js'></script>
-    
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/validation/languages/jquery.validationEngine-en.js' charset='utf-8'></script>
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/validation/jquery.validationEngine.js' charset='utf-8'></script>
-    
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/mcustomscrollbar/jquery.mCustomScrollbar.min.js'></script>
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/animatedprogressbar/animated_progressbar.js'></script>
-    
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/qtip/jquery.qtip-1.0.0-rc3.min.js'></script>
-    
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/cleditor/jquery.cleditor.js'></script>
-    
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/dataTables/jquery.dataTables.min.js'></script>    
-    
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/fancybox/jquery.fancybox.pack.js'></script>
-        
-    <!-- <script type='text/javascript' src='../../../bp.yahooapis.com/2.4.21/browserplus-min.js'></script> -->   
-    
-    <script type="text/javascript" src="${contextPath }/resources/js/plugins/elfinder/elfinder.min.js"></script>
-    
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/highlight/jquery.highlight-4.js'></script>
-    
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/pnotify/jquery.pnotify.min.js'></script>
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/ibutton/jquery.ibutton.min.js'></script>
-    
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/scrollup/jquery.scrollUp.min.js'></script>
+    <script type='text/javascript' src='${contextPath }/resources/js/plugins/charts/chart.min.js'></script>
     
     <script type='text/javascript' src='${contextPath }/resources/js/cookies.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/myactions.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/settings.js'></script>    
-    <script type='text/javascript' src='${contextPath }/resources/js/faq.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/pm-common.js'></script>
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
@@ -83,14 +61,22 @@
       <script src="${contextPath }/resources/js/respond.min.js"></script>
     <![endif]-->
     <script type="text/javascript">
-    	var ctx = "${contextPath}";
-    	var data = [];
-    	var data_index=0;
-            $(document).ready(function () {
-                $(".header").load("${contextPath}/header");
-                $(".menu").load("${contextPath}/menu", function () { $(".navigation > li:eq(7)").addClass("active"); });
-                $(".breadLine .buttons").load("${contextPath}/contentbuttons");
-            });
+		var ctx = "${contextPath}";
+		var mylabels = [<c:forEach items="${stat.column }" var="code" varStatus="status"><c:if test="${status.index>0}">,</c:if>'${code.value}'</c:forEach>];
+		var mydatasets=[<c:forEach items="${stat.row }" var="rowcode" varStatus="s"><c:if test="${s.index>0}">,</c:if>{fillColor : "rgba(151,187,205,0.5)",strokeColor : "rgba(151,187,205,1)",data:[<c:forEach items="${stat.column }" var="columncode" varStatus="status"><c:if test="${status.index>0}">,</c:if>${stat[rowcode.key][columncode.key]==null?0:stat[rowcode.key][columncode.key]}</c:forEach>]}</c:forEach>];
+	    $(document).ready(function () {
+	    	$(".header").load("${contextPath}/header?t="+pm_random());
+	        $(".menu").load("${contextPath}/menu?t="+pm_random(), function () { $(".navigation > li:eq(9)").addClass("active"); });
+	        $(".breadLine .buttons").load("${contextPath}/contentbuttons?t="+pm_random());
+	        if($("#barChart").length > 0){       
+	            var bctx = $("#barChart").get(0).getContext("2d");
+	            $("#barChart").attr('width',$("#barChart").parent('div').width()).attr('height',300);
+	            barChart = new Chart(bctx).Bar({
+	            	labels : mylabels,
+	                datasets : mydatasets
+	            });
+	        }
+	    });
     </script>
 </head>
 <body>
@@ -178,7 +164,15 @@
                                 </tbody>
                             </table>
                         </div>
-                        <div class="footer">统计说明：统计本年度已关闭的事件。</div>
+                        
+                        <div class="head clearfix">
+                            <div class="isw-grid"></div>
+                            <h1>统计图</h1>                            
+                        </div>
+                        <div class="block">
+                        	<canvas id="barChart"/>
+                        </div>
+                        
                     </div>
                 </div>
             </div>

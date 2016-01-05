@@ -2,7 +2,9 @@ package com.cngc.pm.service.impl;
 
 import static com.cngc.utils.Common.isNumeric;
 
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,6 +19,7 @@ import com.cngc.pm.model.Role;
 import com.cngc.pm.model.SysUser;
 import com.cngc.pm.model.UserRole;
 import com.cngc.pm.service.UserService;
+import com.cngc.utils.PropertyFileUtil;
 import com.googlecode.genericdao.search.Search;
 
 @Service
@@ -146,5 +149,46 @@ public class UserServiceImpl implements UserService {
 				 throw new ParameterException("修改用户角色时出错，无法找到相应的角色");
 			 }
 		}
+	}
+	@Override
+	@Transactional
+	public List<SysUser> getEngineer()
+	{
+		return getByRole("system.user.engineer");
+	}
+	@Override
+	@Transactional
+	public List<SysUser> getLeader()
+	{
+		return getByRole("system.user.leader");
+	}
+	@Override
+	@Transactional
+	public List<SysUser> getCommonUser()
+	{
+		return getByRole("system.user.common");
+	}
+	private List<SysUser> getByRole(String roleMagic)
+	{
+		List<SysUser> users = new LinkedList<SysUser>();
+		List<Role> roles = roleDao.getRoleByNames(PropertyFileUtil.getStringValue(roleMagic));
+		for(Role role:roles)
+		{
+			Set<UserRole> userRoles = role.getUserRoles();
+			for(UserRole userRole:userRoles)
+			{
+				// 不唯一
+				Boolean bIn = false;
+				SysUser tmpUser = userRole.getUser();
+				for(SysUser user:users)
+				{
+					if(user.getUsername().equals(tmpUser.getUsername()))
+						bIn = true;
+				}
+				if(!bIn)
+					users.add( tmpUser );
+			}
+		}
+		return users;	
 	}
 }

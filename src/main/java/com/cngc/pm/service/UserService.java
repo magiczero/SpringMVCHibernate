@@ -27,4 +27,8 @@ public interface UserService {
 	List<Role> getRolesByUser(Long userid);
 
 	void setRole(SysUser user, String roleIds);
+	
+	List<SysUser> getEngineer();
+	List<SysUser> getLeader();
+	List<SysUser> getCommonUser();
 }

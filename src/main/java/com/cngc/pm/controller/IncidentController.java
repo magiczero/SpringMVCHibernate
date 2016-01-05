@@ -16,9 +16,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 import org.activiti.engine.FormService;
+import org.activiti.engine.HistoryService;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
+import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.task.Task;
 import org.codehaus.jackson.JsonGenerationException;
@@ -43,6 +45,7 @@ import com.cngc.pm.service.ChangeService;
 import com.cngc.pm.service.IncidentService;
 import com.cngc.pm.service.ItilRelationService;
 import com.cngc.pm.service.SysCodeService;
+import com.cngc.pm.service.UserService;
 import com.cngc.pm.service.cms.CiService;
 import com.cngc.utils.PropertyFileUtil;
 
@@ -61,6 +64,8 @@ public class IncidentController {
 	@Resource
 	private FormService formService;
 	@Resource
+	private HistoryService historyService;
+	@Resource
 	private SysCodeService syscodeService;
 	@Resource
 	private ItilRelationService itilRelationService;
@@ -72,6 +77,8 @@ public class IncidentController {
 	private ChangeService changeService;
 	@Resource
 	private UserUtil userUtil;
+	@Resource
+	private UserService userService;
 
 	/**
 	 * 创建新事件
@@ -94,6 +101,34 @@ public class IncidentController {
 				.getResult());
 		model.addAttribute("priority", syscodeService.getAllByType(PropertyFileUtil.getStringValue("syscode.priority"))
 				.getResult());
+		model.addAttribute("users", userService.getCommonUser());
+		return "incident/add";
+	}
+
+	/**
+	 * 修改事件信息
+	 * 
+	 * @param id
+	 * @param model
+	 * @return
+	 */
+	@RequestMapping(value = "/update/{id}", method = RequestMethod.GET)
+	public String update(@PathVariable("id") Long id, Model model) {
+		model.addAttribute("incident", incidentService.getById(id));
+		model.addAttribute("source",
+				syscodeService.getAllByType(PropertyFileUtil.getStringValue("syscode.incident.source")).getResult());
+		model.addAttribute("category",
+				syscodeService.getAllByType(PropertyFileUtil.getStringValue("syscode.incident.category")).getResult());
+		model.addAttribute("type", syscodeService
+				.getAllByType(PropertyFileUtil.getStringValue("syscode.incident.type")).getResult());
+		model.addAttribute("influence",
+				syscodeService.getAllByType(PropertyFileUtil.getStringValue("syscode.influence")).getResult());
+		model.addAttribute("critical", syscodeService.getAllByType(PropertyFileUtil.getStringValue("syscode.critical"))
+				.getResult());
+		model.addAttribute("priority", syscodeService.getAllByType(PropertyFileUtil.getStringValue("syscode.priority"))
+				.getResult());
+		model.addAttribute("users", userService.getCommonUser());
+
 		return "incident/add";
 	}
 
@@ -120,7 +155,7 @@ public class IncidentController {
 	@RequestMapping(value = "/savebyuser", method = RequestMethod.POST)
 	public String savebyuser(Model model, HttpServletRequest request, Authentication authentication) {
 		String abs = request.getParameter("fm_abs");
-		String detail = request.getParameter("fm_detail");
+		String detail = request.getParameter("fm_description");
 
 		Incident incident = new Incident();
 		incident.setAbs(abs);
@@ -146,7 +181,7 @@ public class IncidentController {
 			formService.submitStartFormData(processDefinition.getId(), variables);
 		}
 
-		return "incident/mylist";
+		return "redirect:/incident/mylist";
 	}
 
 	/**
@@ -158,18 +193,37 @@ public class IncidentController {
 	 */
 	@RequestMapping(value = "/save", method = RequestMethod.POST)
 	public String save(@Valid @ModelAttribute("incident") Incident incident) {
-		incident.setStatus(PropertyFileUtil.getStringValue("syscode.incident.status.new"));
-		incident.setApplyTime(new Date());
-		incidentService.save(incident);
+		if(incident.getId()==null)
+		{
+			incident.setStatus(PropertyFileUtil.getStringValue("syscode.incident.status.new"));
+			incident.setApplyTime(new Date());
+			incidentService.save(incident);
 
-		// 启动流程
-		ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery()
-				.processDefinitionKey(PropertyFileUtil.getStringValue("workflow.processkey.incident")).active()
-				.latestVersion().singleResult();
-		if (processDefinition != null) {
-			Map<String, String> variables = new HashMap<String, String>();
-			variables.put("id", String.valueOf(incident.getId()));
-			formService.submitStartFormData(processDefinition.getId(), variables);
+			// 启动流程
+			ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery()
+					.processDefinitionKey(PropertyFileUtil.getStringValue("workflow.processkey.incident")).active()
+					.latestVersion().singleResult();
+			if (processDefinition != null) {
+				Map<String, String> variables = new HashMap<String, String>();
+				variables.put("id", String.valueOf(incident.getId()));
+				formService.submitStartFormData(processDefinition.getId(), variables);
+			}
+		}
+		else
+		{
+			// 更新
+			Incident newincident = incidentService.getById(incident.getId());
+			newincident.setAbs(incident.getAbs());
+			newincident.setDetail(incident.getDetail());
+			newincident.setApplyUser(incident.getApplyUser());
+			newincident.setPhoneNumber(incident.getPhoneNumber());
+			newincident.setCategory(incident.getCategory());
+			newincident.setType(incident.getType());
+			newincident.setSource(incident.getSource());
+			newincident.setInfluence(incident.getInfluence());
+			newincident.setCritical(incident.getCritical());
+			newincident.setPriority(incident.getPriority());
+			incidentService.save(newincident);
 		}
 
 		return "redirect:/incident/list";
@@ -209,7 +263,10 @@ public class IncidentController {
 			for (Task task : tasks)
 				taskmap.put(task.getProcessInstanceId(), task);
 		}
-
+		if (userUtil.IsServiceDesk(authentication)) {
+			// 服务台用户拥有修改权限
+			model.addAttribute("ROLE_MODIFY", true);
+		}
 		model.addAttribute("tasks", taskmap);
 		model.addAttribute("mytasks", mytaskmap);
 		model.addAttribute("list", incidents);
@@ -217,6 +274,33 @@ public class IncidentController {
 		model.addAttribute("group",
 				syscodeService.getAllByType(PropertyFileUtil.getStringValue("syscode.incident.status")).getResult());
 		return "incident/list";
+	}
+
+	@RequestMapping(value = "/mydealedlist", method = RequestMethod.GET)
+	public String myDealedList(Model model, Authentication authentication) {
+
+		List<Task> tasks = null;
+		Map<String, Task> taskmap = null;
+
+		// 所有任务
+		tasks = taskService.createTaskQuery()
+				.processDefinitionKey(PropertyFileUtil.getStringValue("workflow.processkey.incident")).active().list();
+		taskmap = new HashMap<String, Task>();
+		for (Task task : tasks)
+			taskmap.put(task.getProcessInstanceId(), task);
+
+		// 我参与的任务
+		List<String> processInstanceIds = new ArrayList<String>();
+		List<HistoricTaskInstance> mytasks = historyService.createHistoricTaskInstanceQuery()
+				.processDefinitionKey(PropertyFileUtil.getStringValue("workflow.processkey.incident"))
+				.taskAssignee(userUtil.getUserId(authentication)).list();
+		for (HistoricTaskInstance task : mytasks)
+			processInstanceIds.add(task.getProcessInstanceId());
+
+		model.addAttribute("list", incidentService.getByProcessInstance(processInstanceIds).getResult());
+		model.addAttribute("task", taskmap);
+
+		return "incident/mydealedlist";
 	}
 
 	/**
@@ -246,9 +330,10 @@ public class IncidentController {
 		for (Task task : tasks)
 			taskmap.put(task.getProcessInstanceId(), task);
 
-		model.addAttribute("tasks",tasks);
+		model.addAttribute("tasks", taskmap);
 		model.addAttribute("mytasks", mytaskmap);
-		model.addAttribute("list", incidentService.getByApplyUser(userUtil.getUserId(authentication), false));
+		model.addAttribute("list", incidentService.getByApplyUser(userUtil.getUserId(authentication), false)
+				.getResult());
 
 		return "incident/mylist";
 	}
@@ -472,11 +557,62 @@ public class IncidentController {
 			if (satisfaction.equals("00")) // 查看全部
 				satisfaction = null;
 		}
+		if (applyUser != null) {
+			if (applyUser.equals("00")) // 查看全部
+				applyUser = null;
+		}
+		if (engineer != null) {
+			if (engineer.equals("00")) // 查看全部
+				engineer = null;
+		}
+		
 		model.addAttribute("satisfaction", syscodeService.getAllByType("INCIDENT_SATISFACTION").getResult());
 		model.addAttribute("list", incidentService.search(abs, applyUser, engineer, satisfaction, startDate, endDate)
 				.getResult());
+		model.addAttribute("engineers", userService.getEngineer());
+		model.addAttribute("users", userService.getCommonUser());
 
 		return "incident/search";
+	}
+
+	/**
+	 * 历史报修信息
+	 * 
+	 * @param model
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value = "/mysearch", method = RequestMethod.GET)
+	public String mysearch(Model model, HttpServletRequest request, Authentication authentication) {
+
+		String startTime = request.getParameter("startTime");
+		String endTime = request.getParameter("endTime");
+		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+		Calendar now = Calendar.getInstance();
+		if (startTime == null || startTime.isEmpty())
+			startTime = String.valueOf(now.get(Calendar.YEAR)) + "-01-01";
+		if (endTime == null || endTime.isEmpty()) {
+			endTime = formatter.format(now.getTime());
+		}
+		Date startDate = null, endDate = null;
+
+		try {
+			startDate = formatter.parse(startTime);
+
+			endDate = formatter.parse(endTime);
+			now.setTime(endDate);
+			now.add(Calendar.DATE, 1);
+			endDate = now.getTime();
+
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+
+		model.addAttribute("list",
+				incidentService.search(null, userUtil.getUserId(authentication), null, null, startDate, endDate)
+						.getResult());
+
+		return "incident/mysearch";
 	}
 
 	@RequestMapping(value = "/getjson/{ids}")

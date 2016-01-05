@@ -17,4 +17,5 @@ public interface ChangeDAO extends GenericDAO<Change,Long>{
 	Map<String,Object> getStats(String column,String row,String startTime,String endTime,String status);
 	SearchResult<Change> search(String description,String applyUser,String engineer,String risk,Date startDate,Date endDate);
 	SearchResult<Change> getByIds(List<Long> ids);
+	SearchResult<Change> getByProcessInstance(List<String> processInstanceIds);
 }

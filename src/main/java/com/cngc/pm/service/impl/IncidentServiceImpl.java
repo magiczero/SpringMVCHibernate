@@ -133,4 +133,5 @@ public class IncidentServiceImpl implements IncidentService{
 	{
 		return incidentDao.getByIds(ids);
 	}
+
 }

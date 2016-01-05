@@ -128,7 +128,8 @@ function pm_cms_inittable(relationId)
 		{
 			$("#table_"+relationId+" tbody tr").remove();
 			trs += "<tr>"
-				+ "<td>"+data.cis[i]["name"]+"</td>"
+				+ "<td><a href='"+ctx+"/cms/ci/detail/"+data.cis[i]["id"]+"' target=_blank>"+data.cis[i]["name"]+"</a></td>"
+				+ "<td>"+data.cis[i]["model"]+"</td>"
 				+ "<td>"+data.cis[i]["userInMaintenance"]+"</td>"
 				+ "<td>"+data.cis[i]["statusName"]+"</td>"
 				+ "<td><a class='confirm' href='"+ctx+"/cms/ci/deleterelation?primary_id="+ciId+"&secondary_id="+data.cis[i]["id"]+"&relation_id="+relationId+"'><span class='glyphicon glyphicon-remove'></span></a></td>"
@@ -150,7 +151,7 @@ function pm_cms_getIncident()
 			
 			var trs = "";
 			$.each(data.incidents,function(i,v){
-				trs += "<tr><td><a href='"+ctx+"/incident/deal/"+v.id+"' target=_blank>"+v.abs+"</a></td>"
+				trs += "<tr><td><a href='"+ctx+"/incident/view/"+v.id+"' target=_blank>"+v.abs+"</a></td>"
 					+"<td>"+new Date(v.applyTime).format("yyyy-MM-dd HH:mm")+"</td>"
 					+"<td>"+v.statusName+"</td></tr>";
 			});
@@ -164,7 +165,7 @@ function pm_cms_getChange()
 		$.getJSON(ctx+'/change/getbyci/'+ciId+'/?t='+pm_random(),function(data){
 			var trs = "";
 			$.each(data.changes,function(i,v){
-				trs += "<tr><td><a href='"+ctx+"/change/deal/"+v.id+"' target=_blank>"+v.description+"</a></td>"
+				trs += "<tr><td><a href='"+ctx+"/change/view/"+v.id+"' target=_blank>"+v.description+"</a></td>"
 					+"<td>"+new Date(v.applyTime).format("yyyy-MM-dd HH:mm")+"</td>"
 					+"<td>"+v.statusName+"</td></tr>";
 			});

@@ -36,6 +36,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.cngc.pm.common.web.common.UserUtil;
 import com.cngc.pm.service.MessageService;
+import com.cngc.pm.service.UserService;
 
 @Controller
 @RequestMapping("/workflow/task")
@@ -55,6 +56,8 @@ public class TaskController {
 	private MessageService messageService;
 	@Resource
 	private UserUtil userUtil;
+	@Resource
+	private UserService userService;
 
 	/**
 	 * 待办任务
@@ -69,7 +72,7 @@ public class TaskController {
 		List<Task> tasks = new ArrayList<Task>();
 
 		tasks = taskService.createTaskQuery().taskCandidateOrAssigned(userUtil.getUserId(authentication)).active()
-				.orderByTaskId().desc().list();
+				.list();
 
 		model.addAttribute("tasks", tasks);
 		model.addAttribute("res", repositoryService);
@@ -77,17 +80,27 @@ public class TaskController {
 		return "/workflow/mytask";
 	}
 
+	/**
+	 * 获取待办任务数量
+	 * 
+	 * @param model
+	 * @param session
+	 * @param authentication
+	 * @return
+	 */
 	@RequestMapping(value = "/getmytaskcount", method = RequestMethod.GET)
 	@ResponseBody
 	public Map<String, Object> getMyTaskCount(Model model, HttpSession session, Authentication authentication) {
 		Map<String, Object> map = new HashMap<String, Object>();
+		int myjob = 0, claim = 0;
 
-		List<Task> tasks = new ArrayList<Task>();
+		myjob = taskService.createTaskQuery().taskCandidateOrAssigned(userUtil.getUserId(authentication)).active()
+				.list().size();
 
-		tasks = taskService.createTaskQuery().taskCandidateOrAssigned(userUtil.getUserId(authentication)).active()
-				.orderByTaskId().desc().list();
+		claim = taskService.createTaskQuery().taskAssignee(userUtil.getUserId(authentication)).active().list().size();
 
-		map.put("count", tasks.size());
+		map.put("count", myjob);
+		map.put("claim", claim);
 
 		return map;
 	}
@@ -107,6 +120,7 @@ public class TaskController {
 		model.addAttribute("tasks", tasks);
 		model.addAttribute("res", repositoryService);
 		model.addAttribute("candidate", map);
+		model.addAttribute("users", userService.getEngineer());
 
 		return "/workflow/task-list";
 	}
@@ -122,9 +136,10 @@ public class TaskController {
 
 		if (taskid != "0") {
 			if (!assignee.isEmpty()) {
-				taskService.setAssignee(taskid, assignee);
+				if(!assignee.equals("00"))
+					taskService.setAssignee(taskid, assignee);
 			}
-			if (!candidateuser.isEmpty()) {
+			if (candidateuser!=null) {
 				taskService.addCandidateUser(taskid, candidateuser);
 			}
 			if (!candidategroup.isEmpty()) {
@@ -150,7 +165,7 @@ public class TaskController {
 		Task task = taskService.createTaskQuery().taskId(taskId).singleResult();
 
 		taskService.claim(taskId, userUtil.getUserId(authentication));
-		//redirectAttributes.addFlashAttribute("message", "任务已签收");
+		// redirectAttributes.addFlashAttribute("message", "任务已签收");
 		if (task == null)
 			return "redirect:/workflow/task/list";
 
@@ -158,7 +173,10 @@ public class TaskController {
 				.processDefinitionId(task.getProcessDefinitionId()).singleResult();
 		switch (processDefinition.getKey()) {
 		case "INCIDENT":
-			re = "/incident/list";
+			if (userUtil.IsCommonUser(authentication))
+				re = "/incident/mylist";
+			else
+				re = "/incident/list";
 			break;
 		case "CHANGE":
 			re = "/change/list";
@@ -215,7 +233,7 @@ public class TaskController {
 		// 设置当前人为意见的所属人
 		identityService.setAuthenticatedUserId(userUtil.getUserId(authentication));
 		Task task;
-		if (taskId.equals("0")) {
+		if (taskId==null || taskId.equals("") || taskId.equals("0")) {
 			task = taskService.createTaskQuery().processInstanceId(processInstanceId).singleResult();
 			taskId = task.getId();
 		} else {
@@ -236,6 +254,15 @@ public class TaskController {
 			return "redirect:/workflow/task/list";
 		else
 			return "redirect:" + request.getParameter("redirectAddress");
+	}
+	
+	@RequestMapping(value = "/comment/delete/{id}")
+	@ResponseBody
+	public Map<String,Object> deleteComment(@PathVariable("id") String id){
+		Map<String,Object> result = new HashMap<String,Object>();
+		taskService.deleteComment(id);
+		result.put("result", "true");
+		return result;
 	}
 
 	@RequestMapping(value = "/comment/list")

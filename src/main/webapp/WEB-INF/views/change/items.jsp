@@ -17,6 +17,7 @@
 			</c:if>
 		</c:forEach>
 	</ul>
+	<c:if test="${items.size()>0 }">
 	<div class="tab-content">
 		<c:forEach items="${items }" var="item" varStatus="s">
 			<script>
@@ -48,6 +49,7 @@
 		</div>
 		</c:forEach>
 	</div>
+	</c:if>
 </div>	
 <div class='toolbar nopadding-toolbar clear clearfix' id="div_save_button">
 	<div class='right btn-group'>

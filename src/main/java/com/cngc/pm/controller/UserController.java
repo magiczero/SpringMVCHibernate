@@ -2,6 +2,7 @@ package com.cngc.pm.controller;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.cngc.pm.model.Role;
 import com.cngc.pm.model.SysUser;
 import com.cngc.pm.model.UserRole;
+import com.cngc.pm.model.cms.Ci;
 import com.cngc.pm.service.RoleService;
 import com.cngc.pm.service.UserService;
 import com.cngc.utils.Common;
@@ -174,4 +176,36 @@ public class UserController {
 		
 		return map;
 	}
+	
+	@RequestMapping(value="/getengineer")
+	@ResponseBody
+	public Map<String,Object> getEngineer(Model model){
+		Map<String,Object> map = new HashMap<String,Object>();
+		Map<String,String> usermap = new LinkedHashMap<String,String>();
+		
+		List<SysUser> users = userService.getEngineer();
+		for(SysUser user:users)
+		{
+			usermap.put(user.getUsername(), user.getName());
+		}
+		map.put("users",usermap);
+		
+		return map;
+	}
+	@RequestMapping(value="/getleader")
+	@ResponseBody
+	public Map<String,Object> getLeader(Model model){
+		Map<String,Object> map = new HashMap<String,Object>();
+		Map<String,String> usermap = new LinkedHashMap<String,String>();
+		
+		List<SysUser> users = userService.getLeader();
+		for(SysUser user:users)
+		{
+			usermap.put(user.getUsername(), user.getName());
+		}
+		map.put("users",usermap);
+		
+		return map;
+	}
+
 }

@@ -1,4 +1,3 @@
-<%@page import="com.cngc.utils.activiti.ProcessDefinitionCache,org.activiti.engine.RepositoryService,org.activiti.engine.RuntimeService"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>    
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
@@ -16,61 +15,33 @@
 
     <link rel="icon" type="image/ico" href="favicon.ico"/>
     
-    <link href="${contextPath }/resources/css/stylesheets.css" rel="stylesheet" type="text/css" />
+    <link href="${contextPath }/resources/css/icons.css" rel="stylesheet" type="text/css" />
+    <link href="${contextPath }/resources/css/bootstrap.css" rel="stylesheet" type="text/css" />
+    <link href="${contextPath }/resources/css/ui.css" rel="stylesheet" type="text/css" />
+    <link href="${contextPath }/resources/css/mCustomScrollbar.css" rel="stylesheet" type="text/css" />
+    <link href="${contextPath }/resources/css/pnotify.css" rel="stylesheet" type="text/css" />
+    <link href="${contextPath }/resources/css/stylesheet.css" rel="stylesheet" type="text/css" />
+    <link href="${contextPath }/resources/css/styling.css" rel="stylesheet" type="text/css" />
+    <link href="${contextPath }/resources/css/mycss.css" rel="stylesheet" type="text/css" />
+    <link href="${contextPath }/resources/css/select2.css" rel="stylesheet" type="text/css" />
     <!--[if lt IE 8]>
         <link href="${contextPath }/resources/css/ie7.css" rel="stylesheet" type="text/css" />
     <![endif]-->    
-    <link rel='stylesheet' type='text/css' href='${contextPath }/resources/css/fullcalendar.print.css' media='print' />
-    
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/jquery/jquery-1.10.2.min.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/jquery/jquery-ui-1.10.1.custom.min.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/jquery/jquery-migrate-1.2.1.min.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/jquery/jquery.mousewheel.min.js'></script>
-    
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/cookie/jquery.cookies.2.2.0.min.js'></script>
-    
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/bootstrap.min.js'></script>
-    
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/sparklines/jquery.sparkline.min.js'></script>
-    
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/fullcalendar/fullcalendar.min.js'></script>
-    
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/select2/select2.min.js'></script>
-    
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/uniform/uniform.js'></script>
-    
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/maskedinput/jquery.maskedinput-1.3.min.js'></script>
-    
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/validation/languages/jquery.validationEngine-en.js' charset='utf-8'></script>
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/validation/jquery.validationEngine.js' charset='utf-8'></script>
-    
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/mcustomscrollbar/jquery.mCustomScrollbar.min.js'></script>
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/animatedprogressbar/animated_progressbar.js'></script>
-    
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/qtip/jquery.qtip-1.0.0-rc3.min.js'></script>
-    
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/cleditor/jquery.cleditor.js'></script>
-    
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/dataTables/jquery.dataTables.min.js'></script>    
-    
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/fancybox/jquery.fancybox.pack.js'></script>
-        
-    <!-- <script type='text/javascript' src='../../../bp.yahooapis.com/2.4.21/browserplus-min.js'></script> -->
-    
-    <script type="text/javascript" src="${contextPath }/resources/js/plugins/elfinder/elfinder.min.js"></script>
-    
+    <script type='text/javascript' src='${contextPath }/resources/js/plugins/dataTables/jquery.dataTables.min.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/highlight/jquery.highlight-4.js'></script>
-    
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/pnotify/jquery.pnotify.min.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/ibutton/jquery.ibutton.min.js'></script>
-    
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/scrollup/jquery.scrollUp.min.js'></script>
     
-    <script type='text/javascript' src='${contextPath }/resources/js/cookies.js'></script>
-    <script type='text/javascript' src='${contextPath }/resources/js/myactions.js'></script>
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins.js'></script>
-    <script type='text/javascript' src='${contextPath }/resources/js/settings.js'></script>    
-    <script type='text/javascript' src='${contextPath }/resources/js/faq.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/pm-common.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/activiti-form.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/pm-workflow.js'></script>
@@ -83,15 +54,16 @@
     	var ctx = "${contextPath}";
     
         $(document).ready(function () {
-            $("#myTable").dataTable({"aaSorting":[[1,'desc']]});
-            $(".header").load("${contextPath}/header");
-            $(".menu").load("${contextPath}/menu", function () { $(".navigation > li:eq(7)").addClass("active"); });
-            $(".breadLine .buttons").load("${contextPath}/contentbuttons");
+            $("#myTable").dataTable({"aaSorting":[[2,'desc']]});
+            $(".header").load("${contextPath}/header?t="+pm_random());
+            $(".menu").load("${contextPath}/menu?t="+pm_random(), function () { $("#node_${moduleId}").addClass("active"); });
+            $(".breadLine .buttons").load("${contextPath}/contentbuttons?t="+pm_random());
             $(".confirm").bind("click",function(){
               	if(!confirm("确定要执行该操作?"))
                		return false;
             });
             $(".dateISO").datepicker(); 
+            
             var starttime,endtime;
             starttime = pm_getQueryString("startTime");
             endtime = pm_getQueryString("endTime");
@@ -155,12 +127,6 @@
 
             <!--workplace-->
             <div class="workplace">             
-			<%
-				RuntimeService runtimeService  = (RuntimeService)request.getAttribute("runtime");
-				RepositoryService repositoryService = (RepositoryService)request.getAttribute("res");
-				ProcessDefinitionCache.setRuntimeService(runtimeService);
-				ProcessDefinitionCache.setRepositoryService(repositoryService);
-			%>
 				<div class="alert alert-danger hide">                
                     <h4>错误!</h4>请至少选择一项
                 </div> 
@@ -179,8 +145,8 @@
 	                                <div class="col-md-4">截至时间</div>
 	                                <div class="col-md-8"><input type="text" name="endTime" class="dateISO"/></div>
 	                            </div> 
-	                            <div class="footer tac">
-	                            	<button class="btn btn-primary"> 查 询 </button>
+	                            <div class="footer">
+	                            	<button class="btn btn-primary center-block"> 查 询 </button>
 	                            </div>
                             </form>
                 		</div>                     
@@ -197,8 +163,8 @@
                                 <li>
                                     <a href="#" class="isw-settings tipl" title="操作 "></a>
                                     <ul class="dd-list">
-                                        <li><a href="javascript:void(0);" id="delBtn"><span class="isw-list"></span> 删除</a></li>
-                                        <li><a href="#"><span class="isw-refresh"></span> 刷新</a></li>
+                                        <li><a href="${contextPath }/workflow/processinstance/running" id="delBtn"><span class="isw-list"></span> 结束流程</a></li>
+                                        <li><a href="#" onclick="pm_refresh()"><span class="isw-refresh"></span> 刷新</a></li>
                                     </ul>
                                 </li>
                             </ul>                             
@@ -207,29 +173,32 @@
                             <table class="table" id="myTable">
                                 <thead>
                                 	<tr>
+                                		<th width="60px">流水号</th>
 										<th>执行人</th>
 										<th width="120px">发起时间</th>
 										<th width="120px">完成时间</th>
 										<th width="120px">流程步骤</th>
 										<th width="60px">结果</th>
 										<th width="80px">事件编号</th>
-										<th width="80px">操作</th>
+										<th width="70px">操作</th>
 									</tr>
                                 </thead>
                                 <tbody>
                                 	<c:forEach items="${list}" var="inspection">
-									<c:set var="pdid" value="${inspection.processInstanceId }" />
+									<c:set var="task" value="${tasks[inspection.processInstanceId]}" />
+									<c:set var="mytask" value="${mytasks[inspection.processInstanceId]}" />
 									<tr>
+										<td>${inspection.processInstanceId }</td>
 										<td>${inspection.executionUserName }</td>
 										<td><fmt:formatDate value="${inspection.createdTime }" pattern="yyyy-MM-dd HH:mm"></fmt:formatDate></td>
 										<td><fmt:formatDate value="${inspection.executionTime }" pattern="yyyy-MM-dd HH:mm"></fmt:formatDate></td>
 										<td>
-											<c:if test="${not empty inspection.processInstanceId }">
-												<a class="lnk_trace" href='#' pid="${inspection.processInstanceId }" pdid="<%=ProcessDefinitionCache.getProcessDefinitionId(pageContext.getAttribute("pdid").toString()) %>" title="点击查看流程图">
-													<%=ProcessDefinitionCache.getActivityName(pageContext.getAttribute("pdid").toString()) %>
+											<c:if test="${not empty task }">
+												<a class="lnk_trace" href='#' pid="${inspection.processInstanceId }" pdid="${task.processDefinitionId }" title="点击查看流程图">
+													${task.name }
 												</a>
 											</c:if>
-											<c:if test="${not empty inspection.executionTime }">
+											<c:if test="${empty task }">
 												已完成
 											</c:if>
 										</td>
@@ -241,13 +210,13 @@
 												<span class="label label-danger">${inspection.statusName }</span>
 											</c:if>
 										</td>
-										<td><a href="${contextPath }/incident/list">${inspection.incidentId }</a></td>
+										<td><a href="${contextPath }/incident/view/${inspection.incidentId}">${inspection.incidentId }</a></td>
 										<td>
-											<c:if test="${empty inspection.executionTime }">
-												<a href="${contextPath }/record/inspection/deal/${inspection.id}">办理</a>
+											<c:if test="${not empty mytask }">
+												<a href="${contextPath }/record/inspection/deal/${inspection.id}/${mytask.id}"><span class="glyphicon glyphicon-edit"></span> 办理</a>
 											</c:if>
-											<c:if test="${not empty inspection.executionTime }">
-												<a href="#" onclick="javascript:viewInspection(${inspection.id});">查看详细</a>
+											<c:if test="${empty task }">
+												<a href="#" onclick="javascript:viewInspection(${inspection.id});"><span class="glyphicon glyphicon-search"></span> 查看</a>
 											</c:if>
 										</td>
 									</tr>

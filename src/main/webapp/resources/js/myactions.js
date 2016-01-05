@@ -4,7 +4,6 @@
     $("div[class^='span']").find(".row-form:last").css('border-bottom', '0px');
 
     // collapsing widgets
-
     $(".toggle a").click(function () {
 
         var box = $(this).parents('[class^=head]').parent('div[class^=span]').find('div[class^=block]');
@@ -37,8 +36,7 @@
 
     // setting for list with button <<more>>
 
-    var cList = 5; // count list items
-
+    //var cList = 5; // count list items
 
     $(".withList").each(function () {
 
@@ -77,7 +75,6 @@
     // eof setting for list with button <<more>>
 
 
-
     $(".header_menu .list_icon").click(function () {
 
         var menu = $("body .wrapper .menu");
@@ -93,7 +90,6 @@
         return false;
     });
 
-
     $(".jbtn").button();
 
     $(".alert").click(function () {
@@ -101,7 +97,7 @@
             $(this).remove();
         });
     });
-
+    
     $(".buttons li > a").click(function () {
 
         var parent = $(this).parent();
@@ -124,10 +120,9 @@
 
     });
 
-
+    /*
     $("#menuDatepicker").datepicker();
-
-
+	*/
     $(".link_navPopMessages").click(function () {
         if ($("#navPopMessages").is(":visible")) {
             $("#navPopMessages").fadeOut(200);
@@ -138,7 +133,6 @@
     });
 
    
-
     $("input[name=checkall]").click(function () {
 
         if (!$(this).is(':checked'))

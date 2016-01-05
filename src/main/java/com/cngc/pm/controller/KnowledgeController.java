@@ -17,6 +17,7 @@ import org.activiti.engine.RepositoryService;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
 import org.activiti.engine.repository.ProcessDefinition;
+import org.activiti.engine.task.Task;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -35,7 +36,7 @@ import com.cngc.utils.PropertyFileUtil;
 import com.googlecode.genericdao.search.SearchResult;
 
 @Controller
-@RequestMapping(value="/knowledge")
+@RequestMapping(value = "/knowledge")
 public class KnowledgeController {
 
 	@Resource
@@ -52,55 +53,99 @@ public class KnowledgeController {
 	private SysCodeService syscodeService;
 	@Resource
 	private UserUtil userUtil;
-	
-	@RequestMapping(value="/add",method = RequestMethod.GET)
-	public String add(Model model){
+
+	@RequestMapping(value = "/add", method = RequestMethod.GET)
+	public String add(Model model) {
 		model.addAttribute("knowledge", new Knowledge());
 		return "knowledge/add";
 	}
+
+	@RequestMapping(value = "/save", method = RequestMethod.POST)
+	public String save(@Valid @ModelAttribute("knowledge") Knowledge knowledge, BindingResult result,
+			HttpServletRequest request, Authentication authentication) {
+
+		if(knowledge.getId()==null)
+		{
+			knowledge.setApplyUser(userUtil.getUserId(authentication));
+			knowledge.setApplyTime(new Date());
+			knowledge.setStatus(PropertyFileUtil.getStringValue("syscode.knowledge.status.new"));
 	
-	@RequestMapping(value="/save",method = RequestMethod.POST)
-	public String save(@Valid @ModelAttribute("knowledge") Knowledge knowledge, BindingResult result, HttpServletRequest request,Authentication authentication){
-		
-		knowledge.setApplyUser(userUtil.getUserId(authentication));
-		knowledge.setApplyTime(new Date());
-		knowledge.setStatus( PropertyFileUtil.getStringValue("syscode.knowledge.status.new") );
-		
-		knowledgeService.save(knowledge);
+			knowledgeService.save(knowledge);
+		}
+		else
+		{
+			//更新
+			Knowledge newknowledge = knowledgeService.getById(knowledge.getId());
+			newknowledge.setTitle(knowledge.getTitle());
+			newknowledge.setKeyword(knowledge.getKeyword());
+			newknowledge.setCategory(knowledge.getCategory());
+			newknowledge.setDesc(knowledge.getDesc());
+			newknowledge.setSolution(knowledge.getSolution());
+			
+			knowledgeService.save(newknowledge);
+		}
 		return "redirect:list";
 	}
-	
-	@RequestMapping(value="/list",method = RequestMethod.GET)
-	public String list(Model model){
+
+	/**
+	 * 知识控制台
+	 * 
+	 * @param model
+	 * @return
+	 */
+	@RequestMapping(value = "/list", method = RequestMethod.GET)
+	public String list(Model model, Authentication authentication) {
+		List<Task> tasks = null;
+		List<Task> mytasks = null;
+		Map<String, Task> taskmap = null;
+		Map<String, Task> mytaskmap = new HashMap<String, Task>();
+
+		// 我的任务
+		mytasks = taskService.createTaskQuery()
+				.processDefinitionKey(PropertyFileUtil.getStringValue("workflow.processkey.knowledge"))
+				.taskCandidateOrAssigned(userUtil.getUserId(authentication)).active().list();
+		for (Task task : mytasks)
+			mytaskmap.put(task.getProcessInstanceId(), task);
+
+		// 所有任务
+		tasks = taskService.createTaskQuery()
+				.processDefinitionKey(PropertyFileUtil.getStringValue("workflow.processkey.knowledge")).active().list();
+		taskmap = new HashMap<String, Task>();
+		for (Task task : tasks)
+			taskmap.put(task.getProcessInstanceId(), task);
+
+		model.addAttribute("tasks", taskmap);
+		model.addAttribute("mytasks", mytaskmap);
 		model.addAttribute("list", knowledgeService.getNotFinished().getResult());
-		model.addAttribute("runtime",runtimeService);
-		model.addAttribute("res", repositoryService);
-		model.addAttribute("task", taskService);
 		model.addAttribute("count", knowledgeService.getCountByStatus());
-		model.addAttribute("group",syscodeService.getAllByType(PropertyFileUtil.getStringValue("syscode.knowledge.status")).getResult());
+		model.addAttribute("group",
+				syscodeService.getAllByType(PropertyFileUtil.getStringValue("syscode.knowledge.status")).getResult());
+
 		return "knowledge/list";
 	}
-	@RequestMapping(value="/stats",method = RequestMethod.GET)
-	public String stats(Model model,HttpServletRequest request){
+
+	@RequestMapping(value = "/stats", method = RequestMethod.GET)
+	public String stats(Model model, HttpServletRequest request) {
 		String startTime = request.getParameter("startTime");
 		String endTime = request.getParameter("endTime");
-		SimpleDateFormat formatter = new SimpleDateFormat ("yyyy-MM-dd"); 
+		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
 		Calendar now = Calendar.getInstance();
-		if(startTime==null || startTime.isEmpty())
-			startTime = String.valueOf( now.get(Calendar.YEAR) ) + "-01-01";
-		if(endTime==null || endTime.isEmpty())
-		{
-			endTime = formatter.format( now.getTime());
+		if (startTime == null || startTime.isEmpty())
+			startTime = String.valueOf(now.get(Calendar.YEAR)) + "-01-01";
+		if (endTime == null || endTime.isEmpty()) {
+			endTime = formatter.format(now.getTime());
 		}
-		model.addAttribute("count", knowledgeService.getCountByCategory(startTime,endTime));
-		model.addAttribute("group", syscodeService.getParentCodeByType(PropertyFileUtil.getStringValue("syscode.incident.category")).getResult());
+		model.addAttribute("count", knowledgeService.getCountByCategory(startTime, endTime));
+		model.addAttribute("group",
+				syscodeService.getParentCodeByType(PropertyFileUtil.getStringValue("syscode.incident.category"))
+						.getResult());
 		return "knowledge/stats";
 	}
-	@RequestMapping(value="/search")
-	public String search(Model model,String keyword,Integer offset, Integer maxResults, HttpServletRequest request)
-	{
+
+	@RequestMapping(value = "/search")
+	public String search(Model model, String keyword, Integer offset, Integer maxResults, HttpServletRequest request) {
 		SearchResult<Knowledge> result = knowledgeService.getSearchResult(keyword, offset, maxResults);
-		
+
 		model.addAttribute("list", result.getResult());
 		model.addAttribute("url", request.getRequestURI());
 		model.addAttribute("count", result.getTotalCount());
@@ -108,9 +153,10 @@ public class KnowledgeController {
 		model.addAttribute("lastread", knowledgeService.getLastRead());
 		return "knowledge/search";
 	}
-	@RequestMapping(value="/searchdialog")
-	public String searchDialog(Model model,String keyword,Integer offset, Integer maxResults, HttpServletRequest request)
-	{
+
+	@RequestMapping(value = "/searchdialog")
+	public String searchDialog(Model model, String keyword, Integer offset, Integer maxResults,
+			HttpServletRequest request) {
 		SearchResult<Knowledge> result = knowledgeService.getSearchResult(keyword, offset, maxResults);
 		model.addAttribute("list", result.getResult());
 		model.addAttribute("url", request.getRequestURI());
@@ -118,80 +164,116 @@ public class KnowledgeController {
 		model.addAttribute("offset", offset);
 		return "knowledge/search-dialog";
 	}
-	@RequestMapping(value="/list/{status}",method = RequestMethod.GET)
-	public String list(@PathVariable("status") String status,Model model){
+
+	/**
+	 * 按状态获取知识信息
+	 * 
+	 * @param status
+	 * @param model
+	 * @param authentication
+	 * @return
+	 */
+	@RequestMapping(value = "/list/{status}", method = RequestMethod.GET)
+	public String list(@PathVariable("status") String status, Model model, Authentication authentication) {
+		List<Task> tasks = null;
+		List<Task> mytasks = null;
+		Map<String, Task> taskmap = null;
+		Map<String, Task> mytaskmap = new HashMap<String, Task>();
+
+		// 我的任务
+		mytasks = taskService.createTaskQuery()
+				.processDefinitionKey(PropertyFileUtil.getStringValue("workflow.processkey.knowledge"))
+				.taskCandidateOrAssigned(userUtil.getUserId(authentication)).active().list();
+		for (Task task : mytasks)
+			mytaskmap.put(task.getProcessInstanceId(), task);
+
+		// 所有任务
+		tasks = taskService.createTaskQuery()
+				.processDefinitionKey(PropertyFileUtil.getStringValue("workflow.processkey.knowledge")).active().list();
+		taskmap = new HashMap<String, Task>();
+		for (Task task : tasks)
+			taskmap.put(task.getProcessInstanceId(), task);
+
+		model.addAttribute("tasks", taskmap);
+		model.addAttribute("mytasks", mytaskmap);
 		model.addAttribute("list", knowledgeService.getByStatus(status).getResult());
-		model.addAttribute("runtime",runtimeService);
-		model.addAttribute("res", repositoryService);
 		model.addAttribute("count", knowledgeService.getCountByStatus());
-		model.addAttribute("status", syscodeService.getCode(status, PropertyFileUtil.getStringValue("syscode.knowledge.status")));
-		model.addAttribute("group",syscodeService.getAllByType(PropertyFileUtil.getStringValue("syscode.knowledge.status")).getResult());
+		model.addAttribute("status",
+				syscodeService.getCode(status, PropertyFileUtil.getStringValue("syscode.knowledge.status")));
+		model.addAttribute("group",
+				syscodeService.getAllByType(PropertyFileUtil.getStringValue("syscode.knowledge.status")).getResult());
 		return "knowledge/list";
 	}
-	@RequestMapping(value="/delete/{id}", method = RequestMethod.GET)
-	public String delete(@PathVariable("id") long id,Model model){
-		if(id!=0)
+
+	@RequestMapping(value = "/delete/{id}", method = RequestMethod.GET)
+	public String delete(@PathVariable("id") long id, Model model) {
+		if (id != 0)
 			knowledgeService.delById(id);
-		
+
 		return "redirect:/knowledge/list";
 	}
-	@RequestMapping(value="/detail/{id}", method = RequestMethod.GET)
-	public String detail(@PathVariable("id") long id,Model model){
+
+	@RequestMapping(value = "/detail/{id}", method = RequestMethod.GET)
+	public String detail(@PathVariable("id") long id, Model model) {
+
+		Knowledge knowledge = knowledgeService.getById(id);
+		//阅读已发布的阅读数加1
+		if(knowledge.getStatus().equals(PropertyFileUtil.getStringValue("syscode.knowledge.status.published")))
+			knowledgeService.addHits(knowledge);
+
+		model.addAttribute("knowledge", knowledge);
+
+		return "/knowledge/detail";
+	}
+
+	@RequestMapping(value = "/detail/getjson/{id}", method = RequestMethod.GET)
+	@ResponseBody
+	public Map<String, Object> detailJson(@PathVariable("id") long id, Model model) {
+		Map<String, Object> map = new HashMap<String, Object>();
 
 		Knowledge knowledge = knowledgeService.getById(id);
 		knowledgeService.addHits(knowledge);
-		
-		model.addAttribute("knowledge", knowledge);
-		
-		return "/knowledge/detail";
-	}
-	@RequestMapping(value="/detail/getjson/{id}", method = RequestMethod.GET)
-	@ResponseBody
-	public Map<String,Object> detailJson(@PathVariable("id") long id,Model model){
-		Map<String,Object> map = new HashMap<String,Object>();
-		
-		Knowledge knowledge = knowledgeService.getById(id);
-		knowledgeService.addHits(knowledge);
-		
+
 		map.put("knowledge", knowledge);
-		
+
 		return map;
 	}
-	
-	@RequestMapping(value="/manage/{id}/{type}", method = RequestMethod.GET)
-	public String publish(@PathVariable("id") long id,@PathVariable("type") String type,Model model){
-		
+
+	@RequestMapping(value = "/manage/{id}/{type}", method = RequestMethod.GET)
+	public String publish(@PathVariable("id") long id, @PathVariable("type") String type, Model model) {
+
 		ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery()
-				.processDefinitionKey(PropertyFileUtil.getStringValue("workflow.processkey.knowledge")).latestVersion().singleResult();
-		Map<String,String> variables = new HashMap<String,String>();
+				.processDefinitionKey(PropertyFileUtil.getStringValue("workflow.processkey.knowledge")).latestVersion()
+				.singleResult();
+		Map<String, String> variables = new HashMap<String, String>();
 		variables.put("id", String.valueOf(id));
 		variables.put("type", type.toUpperCase());
 		formService.submitStartFormData(processDefinition.getId(), variables);
-		
+
 		return "redirect:/knowledge/list";
 	}
-	
-	@RequestMapping(value="/modify/{id}", method = RequestMethod.GET)
-	public String modify(@PathVariable("id") long id,Model model){
-		Knowledge knowledge = knowledgeService.getById(id); 
-		model.addAttribute("knowledge", knowledge);	
-		
+
+	@RequestMapping(value = "/update/{id}", method = RequestMethod.GET)
+	public String update(@PathVariable("id") long id, Model model) {
+		Knowledge knowledge = knowledgeService.getById(id);
+		model.addAttribute("knowledge", knowledge);
+
 		return "knowledge/add";
 	}
-	@RequestMapping(value="/getjson/{ids}")
+
+	@RequestMapping(value = "/getjson/{ids}")
 	@ResponseBody
-	public Map<String,Object> getCi(@PathVariable("ids") String ids,HttpServletRequest request,Model model)
-	{
-		Map<String,Object> map = new HashMap<String,Object>();
+	public Map<String, Object> getCi(@PathVariable("ids") String ids, HttpServletRequest request, Model model) {
+		Map<String, Object> map = new HashMap<String, Object>();
 		List<Long> list = new ArrayList<Long>();
-		
+
 		String sids[] = ids.split(",");
-		for(String s:sids)
+		for (String s : sids)
 			list.add(Long.valueOf(s));
-		
+
 		List<Knowledge> klist = knowledgeService.getByIds(list).getResult();
 		map.put("knowledges", klist);
-		
+
 		return map;
 	}
 }

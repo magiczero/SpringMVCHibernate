@@ -11,49 +11,36 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <![endif]-->
     
-    <title>事件管理--运维管理系统</title>
+    <title>自助报修--运维管理系统</title>
 
     <link rel="icon" type="image/ico" href="favicon.ico"/>
     
-    <link href="${contextPath }/resources/css/stylesheets.css" rel="stylesheet" type="text/css" />
-	
+	<link rel="icon" type="image/ico" href="favicon.ico"/>
+    <link href="${contextPath }/resources/css/icons.css" rel="stylesheet" type="text/css" />
+    <link href="${contextPath }/resources/css/bootstrap.css" rel="stylesheet" type="text/css" />
+    <link href="${contextPath }/resources/css/ui.css" rel="stylesheet" type="text/css" />
+    <link href="${contextPath }/resources/css/pnotify.css" rel="stylesheet" type="text/css" />
+    <link href="${contextPath }/resources/css/stylesheet.css" rel="stylesheet" type="text/css" />
+    <link href="${contextPath }/resources/css/styling.css" rel="stylesheet" type="text/css" />
+    <link href="${contextPath }/resources/css/mycss.css" rel="stylesheet" type="text/css" />
     <!--[if lt IE 8]>
         <link href="${contextPath }/resources/css/ie7.css" rel="stylesheet" type="text/css" />
     <![endif]-->    
-    <link rel='stylesheet' type='text/css' href='${contextPath }/resources/css/bootstrap-treeview.css' media='print' />
-   <script type='text/javascript' src='${contextPath }/resources/js/plugins/jquery/jquery-1.10.2.min.js'></script>
+    <script type='text/javascript' src='${contextPath }/resources/js/plugins/jquery/jquery-1.10.2.min.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/jquery/jquery-ui-1.10.1.custom.min.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/jquery/jquery-migrate-1.2.1.min.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/jquery/jquery.mousewheel.min.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/cookie/jquery.cookies.2.2.0.min.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/bootstrap.min.js'></script>
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/sparklines/jquery.sparkline.min.js'></script>
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/fullcalendar/fullcalendar.min.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/select2/select2.min.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/uniform/uniform.js'></script>
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/maskedinput/jquery.maskedinput-1.3.min.js'></script>
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/validation/languages/jquery.validationEngine-zh-CN.js' charset='utf-8'></script>
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/validation/jquery.validationEngine.js' charset='utf-8'></script>
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/mcustomscrollbar/jquery.mCustomScrollbar.min.js'></script>
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/animatedprogressbar/animated_progressbar.js'></script>
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/qtip/jquery.qtip-1.0.0-rc3.min.js'></script>
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/cleditor/jquery.cleditor.js'></script>
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/dataTables/jquery.dataTables.min.js'></script>    
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/fancybox/jquery.fancybox.pack.js'></script>
-    <script type='text/javascript' src='${contextPath }/resources/plupload/js/i18n/zh_CN.js'></script>   
-    <script type="text/javascript" src="${contextPath }/resources/js/plugins/elfinder/elfinder.min.js"></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/highlight/jquery.highlight-4.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/pnotify/jquery.pnotify.min.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/ibutton/jquery.ibutton.min.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/scrollup/jquery.scrollUp.min.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/treeview/bootstrap-treeview.min.js'></script>
-    
-    <script type='text/javascript' src='${contextPath }/resources/js/cookies.js'></script>
-    <script type='text/javascript' src='${contextPath }/resources/js/myactions.js'></script>
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins.js'></script>
-    <script type='text/javascript' src='${contextPath }/resources/js/settings.js'></script>    
+
     <script type='text/javascript' src='${contextPath }/resources/js/pm-common.js'></script>
-    <script type='text/javascript' src='${contextPath }/resources/js/pm-select.js'></script>
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
       <script src="${contextPath }/resources/js/html5shiv.js"></script>
@@ -62,9 +49,15 @@
     <script type="text/javascript">
     	var ctx = "${contextPath}";
         $(document).ready(function () {
-          	$(".header").load("${contextPath }/header");
-            $(".menu").load("${contextPath }/menu", function () { $(".navigation > li:eq(1)").addClass("active"); });
-            $(".breadLine .buttons").load("${contextPath }/contentbuttons");
+          	$(".header").load("${contextPath }/header?t=" + pm_random());
+            $(".menu").load("${contextPath }/menu?t=" + pm_random(), function () { $("#node_${moduleId}").addClass("active"); });
+            $(".breadLine .buttons").load("${contextPath }/contentbuttons?t=" + pm_random());
+         	
+            //输入摘要是自动补全描述字段
+            $("#fm_abs").bind("blur",function(){
+            	if( $("#fm_description").val()=="" )
+            		$("#fm_description").text($("#fm_abs").val());
+            });
         });
     </script>
 </head>
@@ -108,11 +101,11 @@
 	                        <div class="block-fluid">                        
 	                            <div class="row-form clearfix">
 	                                <div class="col-md-1">故障摘要:</div>
-	                                <div class="col-md-11"><input type="text" name="fm_abs"></div>
+	                                <div class="col-md-11"><input type="text" name="fm_abs" id="fm_abs"></div>
 	                             </div>
 	                            <div class="row-form clearfix">
 	                                <div class="col-md-1">故障描述:</div>
-	                                <div class="col-md-11"><textarea name="fm_description"></textarea></div>
+	                                <div class="col-md-11"><textarea name="fm_description" id="fm_description"></textarea></div>
 	                            </div>
 	                            <div class="footer tar">
 	                                <button class="btn btn-primary center-block"> 提 交 </button>

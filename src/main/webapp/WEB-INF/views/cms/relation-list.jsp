@@ -1,4 +1,3 @@
-<%@page import="com.cngc.utils.activiti.ProcessDefinitionCache,org.activiti.engine.RepositoryService,org.activiti.engine.RuntimeService"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>    
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
@@ -17,79 +16,28 @@
 
     <link rel="icon" type="image/ico" href="favicon.ico"/>
     
-    <link href="${contextPath }/resources/css/stylesheets.css" rel="stylesheet" type="text/css" />
+    <link href="${contextPath }/resources/css/icons.css" rel="stylesheet" type="text/css" />
+    <link href="${contextPath }/resources/css/bootstrap.css" rel="stylesheet" type="text/css" />
+    <link href="${contextPath }/resources/css/ui.css" rel="stylesheet" type="text/css" />
+    <link href="${contextPath }/resources/css/pnotify.css" rel="stylesheet" type="text/css" />
+    <link href="${contextPath }/resources/css/stylesheet.css" rel="stylesheet" type="text/css" />
+    <link href="${contextPath }/resources/css/styling.css" rel="stylesheet" type="text/css" />
+    <link href="${contextPath }/resources/css/mycss.css" rel="stylesheet" type="text/css" />
     <!--[if lt IE 8]>
         <link href="${contextPath }/resources/css/ie7.css" rel="stylesheet" type="text/css" />
     <![endif]-->    
-    <link rel='stylesheet' type='text/css' href='${contextPath }/resources/css/fullcalendar.print.css' media='print' />
-    
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/jquery/jquery-1.10.2.min.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/jquery/jquery-ui-1.10.1.custom.min.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/jquery/jquery-migrate-1.2.1.min.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/jquery/jquery.mousewheel.min.js'></script>
-    
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/cookie/jquery.cookies.2.2.0.min.js'></script>
-    
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/bootstrap.min.js'></script>
-    
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/charts/jquery.flot.js'></script>    
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/charts/jquery.flot.stack.js'></script>    
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/charts/jquery.flot.pie.js'></script>
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/charts/jquery.flot.resize.js'></script>
-    
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/sparklines/jquery.sparkline.min.js'></script>
-    
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/fullcalendar/fullcalendar.min.js'></script>
-    
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/select2/select2.min.js'></script>
-    
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/uniform/uniform.js'></script>
-    
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/maskedinput/jquery.maskedinput-1.3.min.js'></script>
-    
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/validation/languages/jquery.validationEngine-en.js' charset='utf-8'></script>
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/validation/jquery.validationEngine.js' charset='utf-8'></script>
-    
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/mcustomscrollbar/jquery.mCustomScrollbar.min.js'></script>
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/animatedprogressbar/animated_progressbar.js'></script>
-    
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/qtip/jquery.qtip-1.0.0-rc3.min.js'></script>
-    
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/cleditor/jquery.cleditor.js'></script>
-    
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/dataTables/jquery.dataTables.min.js'></script>    
-    
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/fancybox/jquery.fancybox.pack.js'></script>
-        
-    <!-- <script type='text/javascript' src='../../../bp.yahooapis.com/2.4.21/browserplus-min.js'></script> -->
-
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/plupload/plupload.js'></script>
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/plupload/plupload.gears.js'></script>
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/plupload/plupload.silverlight.js'></script>
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/plupload/plupload.flash.js'></script>
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/plupload/plupload.browserplus.js'></script>
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/plupload/plupload.html4.js'></script>
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/plupload/plupload.html5.js'></script>
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/plupload/jquery.plupload.queue/jquery.plupload.queue.js'></script>    
-    
-    <script type="text/javascript" src="${contextPath }/resources/js/plugins/elfinder/elfinder.min.js"></script>
-    
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/highlight/jquery.highlight-4.js'></script>
-    
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/pnotify/jquery.pnotify.min.js'></script>
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/ibutton/jquery.ibutton.min.js'></script>
-    
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/scrollup/jquery.scrollUp.min.js'></script>
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/multiselect/jquery.multi-select.js'></script>
     
-    <script type='text/javascript' src='${contextPath }/resources/js/cookies.js'></script>
-    <script type='text/javascript' src='${contextPath }/resources/js/myactions.js'></script>
-    <script type='text/javascript' src='${contextPath }/resources/js/charts.js'></script>
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins.js'></script>
-    <script type='text/javascript' src='${contextPath }/resources/js/settings.js'></script>    
-    <script type='text/javascript' src='${contextPath }/resources/js/faq.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/pm-common.js'></script>
-    
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
       <script src="${contextPath }/resources/js/html5shiv.js"></script>
@@ -97,16 +45,16 @@
     <![endif]-->
     <script type="text/javascript">
     	var ctx = "${contextPath}";
-            $(document).ready(function () {
-                $("#eventTable").dataTable();
-                $(".header").load("${contextPath}/header");
-                $(".menu").load("${contextPath}/menu", function () { $(".navigation > li:eq(4)").addClass("active"); });
-                $(".breadLine .buttons").load("${contextPath}/contentbuttons");
-                $(".confirm").bind("click",function(){
-                	if(!confirm("确定要执行该操作?"))
-                		return false;
-                });
-            });
+        $(document).ready(function () {
+            $("#eventTable").dataTable();
+            $(".header").load("${contextPath}/header?t="+pm_random());
+            $(".menu").load("${contextPath}/menu?t="+pm_random(), function () { $("#node_${moduleId}").addClass("active"); });
+            $(".breadLine .buttons").load("${contextPath}/contentbuttons?t="+pm_random());
+            $(".confirm").bind("click",function(){
+            	if(!confirm("确定要执行该操作?"))
+                	return false;
+        	});
+        });
     </script>
 </head>
 <body>
@@ -126,8 +74,8 @@
 
                 <ul class="breadcrumb">
                     <li><a href="#">运维管理系统</a> <span class="divider">></span></li>
-                    <li><a href="${contextPath }/Asset/list">配置管理</a> <span class="divider">></span></li>       
-                    <li class="active">关系管理</li>
+                    <li><a href="${contextPath }/cms/ci/list">配置管理</a> <span class="divider">></span></li>       
+                    <li class="active">配置项关系管理</li>
                 </ul>
 
                 <ul class="buttons"></ul>
@@ -144,7 +92,7 @@
                     <div class="col-md-12">                    
                         <div class="head clearfix">
                             <div class="isw-grid"></div>
-                            <h1>关系管理</h1>  
+                            <h1>配置项关系管理</h1>  
 
                             <ul class="buttons">
                             	<li>
@@ -153,8 +101,7 @@
                                 <li>
                                     <a href="#" class="isw-settings tipl" title="操作 "></a>
                                     <ul class="dd-list">
-                                        <li><a href="javascript:void(0);" id="delBtn"><span class="isw-list"></span> 删除</a></li>
-                                        <li><a href="#"><span class="isw-refresh"></span> 刷新</a></li>
+                                        <li><a href="#" onclick="pm_refresh()"><span class="isw-refresh"></span> 刷新</a></li>
                                     </ul>
                                 </li>
                             </ul>                             
@@ -176,7 +123,7 @@
 										<td>${relation.relationName }</td>
 										<td>${relation.relationDescription }</td>
 										<td>
-											<a href="${contextPath}/cms/relation/delete/${relation.relationId}">删除</a>
+											<a href="${contextPath}/cms/relation/delete/${relation.relationId}" class="confirm"><span class="glyphicon glyphicon-remove"></span>删除</a>
 										</td>
 									</tr>
 								</c:forEach>   
@@ -204,7 +151,7 @@
                             <div class="block-fluid">
                                 <div class="row-form clearfix">
                                     <div class="col-md-3"><form:label path="relationId">关系标识：</form:label></div>
-                                    <div class="col-md-9"><form:input path="relationId"></form:input></div>
+                                    <div class="col-md-9"><form:input path="relationId" value="CMS_RELATION_"></form:input></div>
                                 </div>                                                           
                             </div>                
                         </div>

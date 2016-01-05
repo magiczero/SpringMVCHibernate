@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.cngc.pm.dao.PersonDAO;
 import com.cngc.pm.model.Person;
 import com.cngc.pm.service.PersonService;
+import com.googlecode.genericdao.search.Search;
 
 @Service
 public class PersonServiceImpl implements PersonService {
@@ -47,6 +48,17 @@ public class PersonServiceImpl implements PersonService {
 	@Transactional
 	public void removePerson(int id) {
 		this.personDAO.removeById(id);
+	}
+
+	@Override
+	@Transactional(readOnly=true)
+	public List<Person> testPersons() {
+		// TODO Auto-generated method stub
+		Search search = new Search();
+		search.addFilterCustom("country='中国'");
+//		search.addFilterEqual("country", "中国");
+//		search.addField("country");
+		return personDAO.search(search);
 	}
 
 }

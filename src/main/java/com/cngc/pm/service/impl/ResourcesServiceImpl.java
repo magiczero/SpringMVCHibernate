@@ -8,9 +8,12 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.cngc.pm.dao.MoudleDAO;
 import com.cngc.pm.dao.ResourcesDAO;
+import com.cngc.pm.dao.RoleDAO;
 import com.cngc.pm.model.Moudle;
 import com.cngc.pm.model.Resources;
+import com.cngc.pm.model.Role;
 import com.cngc.pm.service.ResourcesService;
+import com.googlecode.genericdao.search.Search;
 
 @Service
 public class ResourcesServiceImpl implements ResourcesService {
@@ -19,6 +22,8 @@ public class ResourcesServiceImpl implements ResourcesService {
 	private ResourcesDAO resourcesDao;
 	@Autowired
 	private MoudleDAO moduleDao;
+	@Autowired
+	private RoleDAO roleDao;
 
 	@Override
 	@Transactional(readOnly=true)
@@ -83,18 +88,15 @@ public class ResourcesServiceImpl implements ResourcesService {
 		return resourcesDao.getByURL(servletPath);
 	}
 
-//	@Override
-//	public List<Role> getRolesByURL(String url) {
-//		// TODO Auto-generated method stub
-//		Resources r = resourcesDao.getByURL(url);
-//		List<Role> list = new ArrayList<>();
-//		for(Authority auth : r.getAuthSet()) {
-//			for(Role role : auth.getRoleSet()) {
-//				list.add(role);
-//			}
-//		}
-//		
-//		return list;
-//	}
+	@Override
+	public List<Role> getRoles(Resources resources) {
+		// TODO Auto-generated method stub
+		Search search = new Search(Role.class);
+		
+		search.addFilterEqual("roleAuths.auth.authResos.resources", resources);
+		
+		return roleDao.search(search);
+	}
+
 	
 }

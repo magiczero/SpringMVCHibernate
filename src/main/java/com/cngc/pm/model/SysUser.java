@@ -77,6 +77,16 @@ public class SysUser implements Serializable {
 	public void setUserRoles(Set<UserRole> userRoles) {
 		this.userRoles = userRoles;
 	}
+	
+//	@Id  
+//    @GeneratedValue(generator="system-uuid")  
+//    @GenericGenerator(name="system-uuid",strategy="uuid")  
+//    public String getId() {  
+//        return id;  
+//    }  
+//    public void setId(String id) {  
+//        this.id = id;  
+//    }  
 
 	@Id 
     @Column(name="user_id")

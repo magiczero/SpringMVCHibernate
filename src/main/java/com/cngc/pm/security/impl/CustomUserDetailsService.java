@@ -7,7 +7,9 @@ import javax.annotation.Resource;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.support.MessageSourceAccessor;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.SpringSecurityMessageSource;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -22,6 +24,8 @@ public class CustomUserDetailsService implements UserDetailsService {
 
 	private static final Logger logger = LoggerFactory.getLogger(CustomUserDetailsService.class);
 	
+	protected MessageSourceAccessor messages = SpringSecurityMessageSource
+            .getAccessor();
 //	private SessionFactory sessionFactory;
 	
 	@Resource
@@ -42,10 +46,17 @@ public class CustomUserDetailsService implements UserDetailsService {
 		// TODO Auto-generated method stub
 		if(username == null){
 			logger.error("username is null");
-			return null;
+			throw new UsernameNotFoundException(messages.getMessage(
+                    "User.notFound", new Object[] { username },
+                    "请输入用户名"));
 		}
 		SysUser user = userService.getByUsername(username);
 		
+		if(user == null) {
+			throw new UsernameNotFoundException(messages.getMessage(
+                    "User.notFound", new Object[] { username },
+                    "用户名 {0} 不存在"));
+		}
 //		Session session = sessionFactory.getCurrentSession();
 //		String hql="select r from SysUser r where  r.username=?";
 //		Query query = session.createQuery(hql);

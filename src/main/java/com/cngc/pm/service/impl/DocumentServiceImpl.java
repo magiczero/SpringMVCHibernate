@@ -283,7 +283,8 @@ public class DocumentServiceImpl implements DocumentService {
 	public List<Document> getListByCode(String code) {
 		// TODO Auto-generated method stub
 		Search search = new Search();
-		search.addFilterEqual("enable", true);
+		search.addFilterEqual("enabled", true);
+		search.addSortDesc("createDate");
 		
 		List<Document> listAll = docDao.search(search);
 		

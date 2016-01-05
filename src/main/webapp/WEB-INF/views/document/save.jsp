@@ -1,7 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>    <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
 <c:set var="contextPath" value="${pageContext.request.contextPath}"></c:set>
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!DOCTYPE HTML>
 <html>
 <head>        
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
@@ -12,9 +12,28 @@
     
     <title>附件上传</title>
 
-    <link rel="icon" type="image/ico" href="favicon.ico"/>
-    
-    <link href="${contextPath }/resources/css/stylesheets.css" rel="stylesheet" type="text/css" />
+    <link href="${contextPath }/resources/css/icons.css" rel="stylesheet" type="text/css" />
+    <link href="${contextPath }/resources/css/bootstrap.css" rel="stylesheet" type="text/css" />
+    <link href="${contextPath }/resources/css/fullcalendar.css" rel="stylesheet" type="text/css" />
+    <link href="${contextPath }/resources/css/ui.css" rel="stylesheet" type="text/css" />
+    <link href="${contextPath }/resources/css/select2.css" rel="stylesheet" type="text/css" />
+    <link href="${contextPath }/resources/css/uniform.default.css" rel="stylesheet" type="text/css" />
+    <link href="${contextPath }/resources/css/validation.css" rel="stylesheet" type="text/css" />
+    <link href="${contextPath }/resources/css/mCustomScrollbar.css" rel="stylesheet" type="text/css" />
+    <link href="${contextPath }/resources/css/cleditor.css" rel="stylesheet" type="text/css" />
+    <link href="${contextPath }/resources/css/fancybox/jquery.fancybox.css" rel="stylesheet" type="text/css" />
+    <link href="${contextPath }/resources/css/elfinder.min.css" rel="stylesheet" type="text/css" />
+    <link href="${contextPath }/resources/css/elfinder.css" rel="stylesheet" type="text/css" />
+    <link href="${contextPath }/resources/css/multi-select.css" rel="stylesheet" type="text/css" />
+    <link href="${contextPath }/resources/css/pnotify.css" rel="stylesheet" type="text/css" />
+    <link href="${contextPath }/resources/css/ibutton.css" rel="stylesheet" type="text/css" />
+    <link href="${contextPath }/resources/css/stepy.css" rel="stylesheet" type="text/css" />
+    <link href="${contextPath }/resources/css/tagsinput.css" rel="stylesheet" type="text/css" />
+    <link href="${contextPath }/resources/css/dataTables.css" rel="stylesheet" type="text/css" />
+    <link href="${contextPath }/resources/css/stylesheet.css" rel="stylesheet" type="text/css" />
+    <link href="${contextPath }/resources/css/styling.css" rel="stylesheet" type="text/css" />
+    <link href="${contextPath }/resources/css/mycss.css" rel="stylesheet" type="text/css" />
+	<link href="${contextPath }/resources/css/stylesheets2.css" rel="stylesheet" type="text/css" />
 	<link type="text/css" rel="stylesheet" href="${contextPath }/resources/plupload/js/jquery.plupload.queue/css/jquery.plupload.queue.css" />
 	
     <!--[if lt IE 8]>
@@ -55,8 +74,7 @@
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/qtip/jquery.qtip-1.0.0-rc3.min.js'></script>
     
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/cleditor/jquery.cleditor.js'></script>
-    
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/dataTables/jquery.dataTables.min.js'></script>    
+      
     
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/fancybox/jquery.fancybox.pack.js'></script>
     
@@ -92,7 +110,7 @@
             $(document).ready(function () {
             	$(".header").load("${contextPath }/header");
             	// $(".menu").load("${contextPath }/menu", function () { $(".navigation > li:eq(2)").addClass("active"); });
-                $(".menu").load("${contextPath }/menu", function() {$("#node_${moduleId}").addClass("active");});
+                $(".menu").load("${contextPath }/menu?t="+pm_random(), function() {$("#node_${moduleId}").addClass("active");});
                 $(".breadLine .buttons").load("${contextPath }/contentbuttons");
                 
                 $("#document").validationEngine({promptPosition : "topLeft", scroll: true});
@@ -105,10 +123,14 @@
             			max_file_size : '10mb',
             			unique_names : true,
             			chunk_size: '2mb',
-            			// Specify what files to browse for
-            			filters : [
-            				{title : "文档", extensions : "xls,xlsx,doc,docx"}
-            			],
+            			filters: {
+            				  mime_types : [ //只允许上传图片和zip文件
+            				    { title : "Image files", extensions : "jpg,jpeg,gif,png" },
+            				    { title : "Doc files", extensions : "xls,xlsx,doc,docx,ppt,pdf" },
+            				    { title : "Zip files", extensions : "zip" }
+            				  ],
+            				  prevent_duplicates : true //不允许选取重复文件
+            				},
             	
             			// Flash settings
             			flash_swf_url : '${contextPath }/resources/js/plugins/plupload/plupload.flash.swf',
@@ -123,6 +145,7 @@
             	            uploader.bind('StateChanged', function() {
             	                if (uploader.files.length === (uploader.total.uploaded + uploader.total.failed)) {
             	                    $('form')[1].submit();
+            	                    return false;
             	                }
             	            });
             	            uploader.start();
@@ -132,7 +155,8 @@
             	        return false;
                 	});
             	});
-            	
+                //$(".plupload_start")[0].hide();
+                //document.querySelector('.plupload_start').style.display = 'none';
             });
     </script>
 </head>

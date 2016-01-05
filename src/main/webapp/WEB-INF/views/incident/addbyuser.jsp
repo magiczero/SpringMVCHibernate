@@ -13,10 +13,28 @@
     
     <title>事件管理--运维管理系统</title>
 
-    <link rel="icon" type="image/ico" href="favicon.ico"/>
-    
-    <link href="${contextPath }/resources/css/stylesheets.css" rel="stylesheet" type="text/css" />
-	
+	<link href="${contextPath }/resources/css/icons.css" rel="stylesheet" type="text/css" />
+    <link href="${contextPath }/resources/css/bootstrap.css" rel="stylesheet" type="text/css" />
+    <link href="${contextPath }/resources/css/fullcalendar.css" rel="stylesheet" type="text/css" />
+    <link href="${contextPath }/resources/css/ui.css" rel="stylesheet" type="text/css" />
+    <link href="${contextPath }/resources/css/select2.css" rel="stylesheet" type="text/css" />
+    <link href="${contextPath }/resources/css/uniform.default.css" rel="stylesheet" type="text/css" />
+    <link href="${contextPath }/resources/css/validation.css" rel="stylesheet" type="text/css" />
+    <link href="${contextPath }/resources/css/mCustomScrollbar.css" rel="stylesheet" type="text/css" />
+    <link href="${contextPath }/resources/css/cleditor.css" rel="stylesheet" type="text/css" />
+    <link href="${contextPath }/resources/css/fancybox/jquery.fancybox.css" rel="stylesheet" type="text/css" />
+    <link href="${contextPath }/resources/css/elfinder.min.css" rel="stylesheet" type="text/css" />
+    <link href="${contextPath }/resources/css/elfinder.css" rel="stylesheet" type="text/css" />
+    <link href="${contextPath }/resources/css/multi-select.css" rel="stylesheet" type="text/css" />
+    <link href="${contextPath }/resources/css/pnotify.css" rel="stylesheet" type="text/css" />
+    <link href="${contextPath }/resources/css/ibutton.css" rel="stylesheet" type="text/css" />
+    <link href="${contextPath }/resources/css/stepy.css" rel="stylesheet" type="text/css" />
+    <link href="${contextPath }/resources/css/tagsinput.css" rel="stylesheet" type="text/css" />
+    <link href="${contextPath }/resources/css/dataTables.css" rel="stylesheet" type="text/css" />
+    <link href="${contextPath }/resources/css/stylesheet.css" rel="stylesheet" type="text/css" />
+    <link href="${contextPath }/resources/css/styling.css" rel="stylesheet" type="text/css" />
+    <link href="${contextPath }/resources/css/mycss.css" rel="stylesheet" type="text/css" />
+	<link href="${contextPath }/resources/css/stylesheets2.css" rel="stylesheet" type="text/css" />
     <!--[if lt IE 8]>
         <link href="${contextPath }/resources/css/ie7.css" rel="stylesheet" type="text/css" />
     <![endif]-->    
@@ -107,12 +125,12 @@
 	                        <form action="${contextPath}/incident/savebyuser"  method="post">
 	                        <div class="block-fluid">                        
 	                            <div class="row-form clearfix">
-	                                <div class="col-md-1">故障摘要:</div>
-	                                <div class="col-md-11"><input type="text" name="fm_abs"></div>
+	                                <div class="col-md-2">故障摘要:</div>
+	                                <div class="col-md-10"><input type="text" name="fm_abs"></div>
 	                             </div>
 	                            <div class="row-form clearfix">
-	                                <div class="col-md-1">故障描述:</div>
-	                                <div class="col-md-11"><textarea name="fm_description"></textarea></div>
+	                                <div class="col-md-2">故障描述:</div>
+	                                <div class="col-md-10"><textarea name="fm_description"></textarea></div>
 	                            </div>
 	                            <div class="footer tar">
 	                                <button class="btn btn-primary center-block"> 提 交 </button>

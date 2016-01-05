@@ -2,6 +2,7 @@ package com.cngc.pm.controller;
 
 import java.beans.PropertyEditorSupport;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -96,14 +97,14 @@ public class CheckItemsController {
 				throw new Exception("请输入指定的参数");
 		}
 		
-		SearchResult<CheckItems> result = itemsService.getAll(bmb, offset, maxResults);
-		
-		model.addAttribute("checkitemsList", result.getResult());
+		//SearchResult<CheckItems> result = itemsService.getAll(bmb, offset, maxResults);
+		List<Style> styleList = itemsService.getAllItemsByCode(bmb);
+		model.addAttribute("checkitemsList", styleList);
 		model.addAttribute("item", itemsService.getStyleByCode(bmb));
-		model.addAttribute("count", result.getTotalCount());
+//		model.addAttribute("count", result.getTotalCount());
 		model.addAttribute("offset", offset);
-		model.addAttribute("styleid", new Long(0));
-		model.addAttribute("style", new Style());
+//		model.addAttribute("styleid", new Long(0));
+//		model.addAttribute("style", new Style());
 		
 		model.addAttribute("checkitems", new CheckItems());
 		model.addAttribute("docList", itemsService.getAllDoc());

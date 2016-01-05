@@ -1,5 +1,6 @@
 package com.cngc.pm.service.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,8 +53,8 @@ public class CheckItemsServiceImpl implements CheckItemsService {
 	public SearchResult<CheckItems> getAll(String code, Integer offset, Integer maxResults) {
 		// TODO Auto-generated method stub
 		Search search = new Search(CheckItems.class);
-		search.setFirstResult(offset == null?0:offset);
-		search.setMaxResults(maxResults==null?10:maxResults);
+		//search.setFirstResult(offset == null?0:offset);
+		//search.setMaxResults(maxResults==null?10:maxResults);
 		//search.addFilterSome("checkItems", Filter.equal("id", itemid));
 		if("BMB22".equals(code)) {
 			search.addFilterEqual("item.style.style.style.style.code", code);
@@ -212,6 +213,21 @@ public class CheckItemsServiceImpl implements CheckItemsService {
 		search.addSortAsc("order");
 		
 		return styleDao.searchUnique(search);
+	}
+
+	@Override
+	@Transactional(readOnly=true)
+	public List<Style> getAllItemsByCode(String code) {
+		// TODO Auto-generated method stub
+		List<Object[]> list = itemsDao.getItems(code);
+		List<Style> styles = new ArrayList<>();
+		
+		for(Object[] objs : list) {
+			Style style = (Style)objs[0];
+			styles.add(style);
+		}
+		
+		return styles;
 	}
 	
 }

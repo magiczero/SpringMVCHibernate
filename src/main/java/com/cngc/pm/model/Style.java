@@ -55,7 +55,17 @@ public class Style implements Serializable {
 
 	private Style style;
 	private Set<Style> child = new HashSet<Style>();
+	private Set<CheckItems> items = new HashSet<>();
 	
+	@OneToMany(targetEntity=CheckItems.class, mappedBy="item")
+	public Set<CheckItems> getItems() {
+		return items;
+	}
+
+	public void setItems(Set<CheckItems> items) {
+		this.items = items;
+	}
+
 	@Column(name="desc_")
 	public String getDesc() {
 		return desc;

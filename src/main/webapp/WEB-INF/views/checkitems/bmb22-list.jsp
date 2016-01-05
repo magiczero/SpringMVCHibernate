@@ -14,9 +14,29 @@
 
     <title>工程师工作台--运维管理系统</title>
 
-    <link href="${contextPath }/resources/css/stylesheets.css" rel="stylesheet" type="text/css" />
+    
+	<link href="${contextPath }/resources/css/bootstrap.css" rel="stylesheet" type="text/css" />
+    <link href="${contextPath }/resources/css/ui.css" rel="stylesheet" type="text/css" />
+    <link href="${contextPath }/resources/css/dataTables.css" rel="stylesheet" type="text/css" />
+    <link href="${contextPath }/resources/css/stylesheet.css" rel="stylesheet" type="text/css" />
+    <link href="${contextPath }/resources/css/icons.css" rel="stylesheet" type="text/css" />
+    <link href="${contextPath }/resources/css/fullcalendar.css" rel="stylesheet" type="text/css" />
+    <link href="${contextPath }/resources/css/mCustomScrollbar.css" rel="stylesheet" type="text/css" />
+    <link href="${contextPath }/resources/css/cleditor.css" rel="stylesheet" type="text/css" />
+    <link href="${contextPath }/resources/css/select2.css" rel="stylesheet" type="text/css" />
+    <link href="${contextPath }/resources/css/uniform.default.css" rel="stylesheet" type="text/css" />
+    <link href="${contextPath }/resources/css/validation.css" rel="stylesheet" type="text/css" />
+    <link href="${contextPath }/resources/css/fancybox/jquery.fancybox.css" rel="stylesheet" type="text/css" />
+    <link href="${contextPath }/resources/css/elfinder.css" rel="stylesheet" type="text/css" />
+    <link href="${contextPath }/resources/css/pnotify.css" rel="stylesheet" type="text/css" />
+    <link href="${contextPath }/resources/css/ibutton.css" rel="stylesheet" type="text/css" />
+    <link href="${contextPath }/resources/css/stepy.css" rel="stylesheet" type="text/css" />
+    <link href="${contextPath }/resources/css/tagsinput.css" rel="stylesheet" type="text/css" />
+    <link href="${contextPath }/resources/css/styling.css" rel="stylesheet" type="text/css" />
+    <link href="${contextPath }/resources/css/mycss.css" rel="stylesheet" type="text/css" />
     <link href="${contextPath }/resources/css/jquery-confirm.css" rel="stylesheet" type="text/css" />
     <link href="${contextPath }/resources/css/bootstrap-submenu.min.css" rel="stylesheet" type="text/css" />
+    <link href="${contextPath }/resources/css/stylesheets2.css" rel="stylesheet" type="text/css" />
     <!--[if lt IE 8]>
         <link href="${contextPath }/resources/css/ie7.css" rel="stylesheet" type="text/css" />
     <![endif]-->
@@ -79,7 +99,7 @@
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
       <script src="${contextPath }/resources/js/html5shiv.js"></script>
-      <script src="${contextPath }/resources/js/respond.min.js"></script>
+      <script src="${contextPath }/resources/js/respond.js"></script>
     <![endif]-->
     <style type="text/css">
     	#itemTable td {vertical-align:middle;}
@@ -112,13 +132,49 @@
             
             $("#checkitems").validationEngine({promptPosition : "topLeft", scroll: true});
             
-            $("#itemTable").rowspan(0);
-            $("#itemTable").rowspan(1);
-            $("#itemTable").rowspan(2);
-            $("#itemTable").rowspan(3);
-            
+            //$("#itemTable").rowspan(0);
+            //$("#itemTable").rowspan(1);
+            //$("#itemTable").rowspan(2);
+            //$("#itemTable").rowspan(3);
+            var tab = document.getElementById("itemTable");
+            megercell(tab,0);
+            megercell(tab,1);
+            megercell(tab,2);
+            megercell(tab,3);
             $('[data-submenu]').submenupicker();
         });
+    	
+    	function megercell(tab, col){
+    		count = 1;
+    		val = "";
+    		rowlength = tab.rows.length;
+    		for(var i=0; i<rowlength; i++){
+    			if(val == tab.rows[i].cells[col].innerHTML){
+    				if(rowlength-i==1) {
+    					from = i - count;
+
+    					tab.rows[from].cells[col].rowSpan = count+1;
+    					for(var j=from+1; j<rowlength; j++){
+    						tab.rows[j].cells[col].style.display = "none";
+    					}
+    					break;
+    				} 
+    				count++;
+    				
+    			}else{
+    				if(count > 1  ){
+    					from = i - count;
+
+    					tab.rows[from].cells[col].rowSpan = count;
+    					for(var j=from+1; j<i; j++){
+    						tab.rows[j].cells[col].style.display = "none";
+    					}
+    					count = 1;
+    				}
+    				val = tab.rows[i].cells[col].innerHTML;
+    			}
+    		}
+    	}
     	
     	jQuery.fn.rowspan = function(colIdx) {
         	return this.each(function(){
@@ -212,15 +268,6 @@
                 <div class="row">
 
                     <div class="col-md-12" id="mails">
-                        <%--<div class="headInfo">
-                            <div class="toolbar clearfix">
-                        		<div class="left">
-                                    <div class="btn-group">
-                                        <button class="btn btn-primary" type="button" id="popup_1"  data-toggle="modal" data-target="#fModal">测评项分类列表</button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div> --%>
                       <ul class="nav nav-pills">
                       <li class="active"><a tabindex="0" href="${contextPath }/checkitems/bmb-list/BMB22">${item.name }</a></li>
                       <c:forEach items="${item.child }" var="style">
@@ -279,71 +326,48 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                <c:forEach items="${item.child }" var="oneLevel">
-                                <c:forEach items="${oneLevel.child }" var="twoLevel">
-                                <c:forEach items="${twoLevel.child }" var="threeLevel">
-                                <c:forEach items="${threeLevel.child }" var="fourLevel">
-                                <c:set var="itemsize" value="0" />
+                                
                                 <c:forEach items="${checkitemsList}"  var="ci" varStatus="itr">
-                                <c:if test="${ci.item.id == fourLevel.id }">
-                                <c:set var="itemsize" value="${itr.index+1 }" />
-                                    <tr><td>${ci.item.style.style.style.name }</td>
-                                        <td>${ci.item.style.style.name }</td>
-										<td>${ci.item.style.name }</td>
-										<td>${ci.item.name }</td>
+                                <c:choose>
+                                	<c:when test="${empty ci.items }">
+                                		<tr><td>${ci.style.style.style.name }</td>
+                                        <td>${ci.style.style.name }</td>
+										<td>${ci.style.name }</td>
 										<td>${ci.name }</td>
-										<td>${ci.demand}</td>
-										<td>${ci.technique }</td>
-										<td>
-										<c:choose><c:when test="${empty ci.docSet}">${ci.record }</c:when>
-										<c:otherwise>
-										<c:forEach items="${ci.docSet }" var="doc">
-											<c:forEach items="${doc.attachs}" var="attach"><a href="${contextPath }/attachment/download/${attach.id}">${attach.name }</a><br/></c:forEach><br/>
-										</c:forEach>
-										</c:otherwise>
-										</c:choose>
-										</td>
-										<td><a href="${contextPath }/checkitems/update/${ci.id}">编辑</a><br/><a href="javascript:void(0);" onclick="javascript:delItem(${ci.id}, this);">删除</a></td>
+										<td></td>
+										<td></td>
+										<td></td>
+										<td></td>
+										<td><a href="javascript:void(0);" onclick="javascript:addItem(${ci.id},'${ci.name }');">添加</a></td>
 									</tr>
-                                </c:if>
-                                </c:forEach>
-                                <c:if test="${itemsize == 0 }"><tr>
-                                        <td>${fourLevel.style.style.style.name }</td>
-                                        <td>${fourLevel.style.style.name }</td>
-										<td>${fourLevel.style.name }</td>
-										<td>${fourLevel.name }</td>
-										<td></td>
-										<td></td>
-										<td></td>
-										<td></td>
-										<td><a href="javascript:void(0);" onclick="javascript:addItem(${fourLevel.id},'${fourLevel.name }');">添加</a></td></tr>
-                                </c:if>
-                                </c:forEach>
-                                </c:forEach>
-                                </c:forEach>
-                                </c:forEach>
-                                <%-- <c:forEach items="${checkitemsList}" var="ci" varStatus="itr">
-                                    <tr>
-                                        <td>${itr.index+1 }</td>
-                                        <td>${ci.item.style.style.style.name }</td>
-                                        <td>${ci.item.style.style.name }</td>
-										<td><c:if test="${ci.base }">*&nbsp;</c:if>${ci.item.style.name }</td>
-										<td>${ci.item.name }</td>
+                                	</c:when>
+                                	<c:otherwise>
+                                	<c:forEach items="${ci.items}" var="child">
+                                	<tr><td>${ci.style.style.style.name }</td>
+                                        <td>${ci.style.style.name }</td>
+										<td>${ci.style.name }</td>
 										<td>${ci.name }</td>
-										<td>${ci.demand}</td>
-										<td>${ci.technique }</td>
+										<td>${child.name }</td>
+										<td>${child.demand}</td>
+										<td>${child.technique }</td>
 										<td>
-										<c:choose><c:when test="${empty ci.docSet}">${ci.record }</c:when>
+										<c:choose><c:when test="${empty child.docSet}">${child.record }</c:when>
 										<c:otherwise>
-										<c:forEach items="${ci.docSet }" var="doc">
+										<c:forEach items="${child.docSet }" var="doc">
 											<c:forEach items="${doc.attachs}" var="attach"><a href="${contextPath }/attachment/download/${attach.id}">${attach.name }</a><br/></c:forEach><br/>
 										</c:forEach>
 										</c:otherwise>
 										</c:choose>
 										</td>
-										<td><a href="${contextPath }/checkitems/update/${ci.id}">编辑</a><br/><a href="javascript:void(0);" onclick="javascript:delItem(${ci.id}, this);">删除</a></td>
-                                    </tr>
-                                    </c:forEach>--%>
+										<td><a href="${contextPath }/checkitems/update/${child.id}">编辑</a><br/><a href="javascript:void(0);" onclick="javascript:delItem(${child.id}, this);">删除</a></td>
+									</tr>
+                                	</c:forEach>
+                                	</c:otherwise>
+                                </c:choose>
+                                
+                                </c:forEach>
+                                
+                                
                                 </tbody>
                             </table>
                              <div class="toolbar bottom-toolbar clearfix">&nbsp;
@@ -379,7 +403,7 @@
                     </div>
                     </div>
                     </div>
-                    </div>--%>
+                    </div>
      <div class="modal fade" id="fModal2" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
@@ -433,7 +457,7 @@
                     </div>
                     </div>
                     </div>
-                    </div>
+                    </div>--%>
        <div class="modal fade" id="fModal3" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
@@ -518,5 +542,4 @@
                     </div><c:set var="index" value="0"></c:set>
                     </div>
 </body>
-
 </html>

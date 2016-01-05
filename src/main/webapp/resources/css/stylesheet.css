@@ -75,7 +75,7 @@ li{line-height: 20px;}
             .navigation li > ul > li{display: block; float: left; width: 219px; background: #F2F2F2; border-top: 1px solid #FCFCFC !important; border-bottom: 1px solid #E4E8ED !important; border-right-color: #E4E8ED !important;}
             .navigation li > ul > li:hover, 
             .navigation li > ul > li.active{background: #EDEDED !important;}
-            .navigation li > ul > li > a{display: block; float: left; padding-left: 10px; width: 190px;}
+            .navigation li > ul > li > a{display: block; float: left; padding-left: 10px; width: 185px;}
             .navigation li > ul > li > a span.text{ color: #333; font-size: 11px; padding: 6px 0px; width: 140px; -moz-text-shadow: 0 1px 0 #FFFFFF; -webkit-text-shadow: 0 1px 0 #FFFFFF; text-shadow: 0 1px 0 #FFFFFF;}
             .navigation li > ul > li > a .glyphicon{margin: 8px 0px 7px 10px; display: block; float: left; color: #333; text-shadow: none;} 
         
@@ -202,6 +202,7 @@ li{line-height: 20px;}
     
 .breadLine{height: 23px; background: url("../img/backgrounds/nav.jpg") left top repeat-x; border: 1px solid #CCC; border-top: 0px; border-left: 0px;}
     .breadLine .breadcrumb{float: left;}
+    .breadcrumb li{float:left;}
         .breadLine .breadcrumb, .breadLine .breadcrumb li, .breadLine .breadcrumb a{font-size: 11px;}    
 
     .breadLine .buttons{display: block; float: right; padding: 0px; margin: 0px 20px 0px 0px; list-style: none; border-right: 1px solid #D5D5D5;}

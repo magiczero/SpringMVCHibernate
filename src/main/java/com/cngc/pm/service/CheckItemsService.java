@@ -39,4 +39,11 @@ public interface CheckItemsService {
 	CheckItems find(Long id);
 	
 	boolean delete(Long id);
+	
+	/**
+	 * 返回最下一级项的集合
+	 * @param code
+	 * @return
+	 */
+	List<Style> getAllItemsByCode(String code);
 }

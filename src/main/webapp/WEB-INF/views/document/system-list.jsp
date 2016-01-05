@@ -15,9 +15,28 @@
     
     <title>工程师工作台--运维管理系统</title>
 
-    <link rel="icon" type="image/ico" href="favicon.ico"/>
-    
-    <link href="${contextPath }/resources/css/stylesheets.css" rel="stylesheet" type="text/css" />
+    <link href="${contextPath }/resources/css/icons.css" rel="stylesheet" type="text/css" />
+    <link href="${contextPath }/resources/css/bootstrap.css" rel="stylesheet" type="text/css" />
+    <link href="${contextPath }/resources/css/fullcalendar.css" rel="stylesheet" type="text/css" />
+    <link href="${contextPath }/resources/css/ui.css" rel="stylesheet" type="text/css" />
+    <link href="${contextPath }/resources/css/select2.css" rel="stylesheet" type="text/css" />
+    <link href="${contextPath }/resources/css/uniform.default.css" rel="stylesheet" type="text/css" />
+    <link href="${contextPath }/resources/css/validation.css" rel="stylesheet" type="text/css" />
+    <link href="${contextPath }/resources/css/mCustomScrollbar.css" rel="stylesheet" type="text/css" />
+    <link href="${contextPath }/resources/css/cleditor.css" rel="stylesheet" type="text/css" />
+    <link href="${contextPath }/resources/css/fancybox/jquery.fancybox.css" rel="stylesheet" type="text/css" />
+    <link href="${contextPath }/resources/css/elfinder.min.css" rel="stylesheet" type="text/css" />
+    <link href="${contextPath }/resources/css/elfinder.css" rel="stylesheet" type="text/css" />
+    <link href="${contextPath }/resources/css/multi-select.css" rel="stylesheet" type="text/css" />
+    <link href="${contextPath }/resources/css/pnotify.css" rel="stylesheet" type="text/css" />
+    <link href="${contextPath }/resources/css/ibutton.css" rel="stylesheet" type="text/css" />
+    <link href="${contextPath }/resources/css/stepy.css" rel="stylesheet" type="text/css" />
+    <link href="${contextPath }/resources/css/tagsinput.css" rel="stylesheet" type="text/css" />
+    <link href="${contextPath }/resources/css/dataTables.css" rel="stylesheet" type="text/css" />
+    <link href="${contextPath }/resources/css/stylesheet.css" rel="stylesheet" type="text/css" />
+    <link href="${contextPath }/resources/css/styling.css" rel="stylesheet" type="text/css" />
+    <link href="${contextPath }/resources/css/mycss.css" rel="stylesheet" type="text/css" />
+	<link href="${contextPath }/resources/css/stylesheets2.css" rel="stylesheet" type="text/css" />
     <!--[if lt IE 8]>
         <link href="${contextPath }/resources/css/ie7.css" rel="stylesheet" type="text/css" />
     <![endif]-->    
@@ -90,6 +109,18 @@
                 
             });
     </script>
+    <style type="text/css">
+    	.disklist{padding-left:20px; padding-right:20px;}
+.disklist li{width:270px;_width:270px;float:left;list-style:none; margin-right:10px;px;height:70px; cursor:pointer; margin-bottom:5px;}
+.disklist li a{color:#000;}
+.disklist li:hover{background:#fcfcfc; border:solid 1px #e5ecf0;}
+.dleft{background:url(${contextPath }/resources/images/c02.png) no-repeat; height:50px; margin-left:12px; float:left; width:50px; margin-top:15px;}
+.dleft1{background:url(${contextPath }/resources/images/c01.png) no-repeat; height:50px; margin-left:12px; float:left; width:50px; margin-top:15px;}
+.dleft2{background:url(${contextPath }/resources/img/ic_edit.png) no-repeat; height:50px; margin-left:12px; float:left; width:50px; margin-top:15px; font-family:'微软雅黑';}
+.dright{float:left; height:50px; margin-left:10px; margin-top:5px;}
+.dright h3{font-weight:bold; padding-top:15px; margin-top:10px; font-size:9pt;}
+.dright p{color:#949494; margin:0px; font-size:9pt;}
+    </style>
 </head>
 <body>
     <div class="wrapper"> 
@@ -123,15 +154,17 @@
                 <div class="row">
 
                          <div class="col-md-12" >
+                         <ul class="disklist">
+                         <c:forEach items="${syscodeList }" var="syscode">
+								<li onclick="javascript:window.location='${contextPath }/document/sys-code-list/${syscode.id}';">
+									<div class="dleft2"></div>    
+									<div class="dright">
+										<h3>${syscode.codeName }</h3>
+									</div>
+								</li> 
+								</c:forEach> 
+						</ul>
                          
-						<div class="widgetButtons"><c:forEach items="${syscodeList }" var="syscode">
-                            <div class="bb" style="text-align:center;">
-                            
-                                <a href="${contextPath }/document/sys-code-list/${syscode.id}"  class="tipb" title="${syscode.codeName }"><span class="ibw-folder"></span></a>
-                                <div style="font-weight:bold;">${syscode.codeName }</div>
-                            </div>
-                            </c:forEach>
-                        </div>
                     </div> 
                   
                 </div>

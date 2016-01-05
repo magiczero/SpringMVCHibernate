@@ -2,6 +2,7 @@ package com.cngc.pm.controller;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.util.Iterator;
 import java.util.UUID;
 
@@ -177,13 +178,36 @@ public class AttachmentController {
 		}
 		return "attachment/success";
 	}
-
+	
 	@RequestMapping("download/{id}")
+	public void downloadFile(@PathVariable("id") long id, HttpServletResponse response) throws IOException {
+		Attachment attach = attachService.get(id);
+		String path = fileUploadDirectory + attach.getNewFilename();
+		File file = new File(path);
+		
+//		String fileName = new String(attach.getName().getBytes("UTF-8"),
+//				"iso-8859-1");// 为了解决中文名称乱码问题
+		
+		String fileName = attach.getName();
+		OutputStream os = response.getOutputStream();  
+	    try {  
+	    	response.reset();  
+	    	response.setHeader("Content-Disposition", "attachment; filename="+java.net.URLEncoder.encode(fileName, "UTF-8"));  
+	    	response.setContentType("application/octet-stream; charset=utf-8");  
+	        os.write(FileUtils.readFileToByteArray(file));  
+	        os.flush();  
+	    } finally {  
+	        if (os != null) {  
+	            os.close();  
+	        }  
+	    }  
+	}
+
+	@RequestMapping("downloadFile/{id}")
 	public ResponseEntity<byte[]> download(@PathVariable("id") long id)
 			throws IOException {
 		Attachment attach = attachService.get(id);
-		String path = fileUploadDirectory + File.separator
-				+ attach.getNewFilename();
+		String path = fileUploadDirectory + attach.getNewFilename();
 		File file = new File(path);
 		HttpHeaders headers = new HttpHeaders();
 		if(file.exists()) {

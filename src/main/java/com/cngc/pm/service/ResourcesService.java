@@ -22,6 +22,6 @@ public interface ResourcesService {
 
 	Resources getByURL(String servletPath);
 	
-	//List<Role> getRolesByURL(String url);
+	List<Role> getRoles(Resources resources);
 
 }

@@ -98,7 +98,7 @@
             $(document).ready(function () {
                 $("#codeTable").dataTable({"bSort":false});
                 $(".header").load("${contextPath}/header");
-                $(".menu").load("${contextPath}/menu", function () { $(".navigation > li:eq(5)").addClass("active"); });
+                $(".menu").load("${contextPath}/menu?t="+pm_random(), function () { $(".navigation > li:eq(5)").addClass("active"); });
                 $(".breadLine .buttons").load("${contextPath}/contentbuttons");
                 $(".confirm").bind("click",function(){
                 	if(!confirm("确定要执行该操作?"))

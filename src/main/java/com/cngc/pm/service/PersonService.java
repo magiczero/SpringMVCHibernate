@@ -11,5 +11,9 @@ public interface PersonService {
 	public List<Person> listPersons();
 	public Person getPersonById(int id);
 	public void removePerson(int id);
-	
+	/**
+	 * 测试Search查询
+	 * @return
+	 */
+	public List<Person> testPersons();
 }

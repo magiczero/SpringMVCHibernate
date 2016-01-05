@@ -14,7 +14,7 @@
 	<!-- <annotation-driven /> -->
 	<annotation-driven conversion-service="conversionService" />
 	
-	<beans:bean id="exceptionHandler" class="com.cngc.exception.MyExceptionHandler" />
+	<!-- <beans:bean id="exceptionHandler" class="com.cngc.exception.MyExceptionHandler" /> -->
 	<!-- 以后有好的方法，这个应该就用不到了 -->
 	<interceptors>
 		<!-- <beans:bean class="com.cngc.pm.interceptor.AuthInterceptor"></beans:bean> -->
@@ -127,6 +127,7 @@
 		class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter">
 		<beans:property name="messageConverters">
 			<beans:list>
+				<beans:bean class="org.springframework.http.converter.ByteArrayHttpMessageConverter"/> 
 				<beans:ref bean="mappingJacksonHttpMessageConverter" />
 			</beans:list>
 		</beans:property>

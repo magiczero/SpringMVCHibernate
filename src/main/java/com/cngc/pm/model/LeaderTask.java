@@ -17,6 +17,10 @@ import org.hibernate.annotations.Formula;
 @Table(name = "wk_task")
 public class LeaderTask implements Serializable{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 4353521849434958600L;
 	private Long id;
 	private String fromUser;
 	private String toUser;

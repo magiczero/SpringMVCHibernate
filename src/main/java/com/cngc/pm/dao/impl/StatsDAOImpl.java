@@ -123,7 +123,7 @@ public class StatsDAOImpl extends BaseDAOImpl<Object, Long> implements StatsDAO 
 				getStatsForChange1(columnName, startTime, endTime, status, result);
 				break;
 			case "CMS":
-				getStatsForCi1(columnName, startTime, endTime, status, result);
+				getStatsForCi1(columnName, status, result);
 				break;
 			case "KNOWLEDGE":
 				getStatsForKnowledge1(columnName, startTime, endTime, status, result);
@@ -325,21 +325,18 @@ public class StatsDAOImpl extends BaseDAOImpl<Object, Long> implements StatsDAO 
 	 * 获取配置项一维统计
 	 * 
 	 * @param columnName
-	 * @param startTime
-	 * @param endTime
 	 * @param status
 	 * @param result
 	 */
 	@SuppressWarnings("rawtypes")
-	private void getStatsForCi1(String columnName, String startTime, String endTime, String status,
-			Map<String, Object> result) {
+	private void getStatsForCi1(String columnName, String status, Map<String, Object> result) {
 		// 一维统计
 		String sql = "";
 
 		sql = "SELECT COUNT(*) AS COUNT," + columnName + " AS COLUMNID FROM cms_ci ";
 		if (status != null) {
 			if (!status.equals("00"))
-				sql += " AND status_='" + status + "' ";
+				sql += " WHERE status_='" + status + "' ";
 		}
 		sql += "  GROUP BY " + columnName;
 

@@ -17,6 +17,10 @@ import org.hibernate.annotations.Formula;
 @Table(name = "wk_inspection")
 public class Inspection implements Serializable{
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 3503925493741953585L;
 	private Long id;
 	private String template;
 	private String templateData;

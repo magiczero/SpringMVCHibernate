@@ -178,7 +178,7 @@
 										<th width="100px">使用部门</th>
 										<th width="70px">维护人</th>
 										<th width="80px">状态</th>
-										<th width=65px">审核</th>
+										<th width="65px">审核</th>
 										<th width="60px">删除</th>
 										<th width="80px">操作</th>
 									</tr>

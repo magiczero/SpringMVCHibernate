@@ -17,6 +17,10 @@ import org.hibernate.annotations.Formula;
 @Table(name = "wk_sec_job")
 public class SecJob implements Serializable{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 7487913912125910417L;
 	private Long id;
 	private String type;
 	private String userId;

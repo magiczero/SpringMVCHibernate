@@ -5,8 +5,8 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -93,6 +93,11 @@ public class TaskController {
 	public Map<String, Object> getMyTaskCount(Model model, HttpSession session, Authentication authentication) {
 		Map<String, Object> map = new HashMap<String, Object>();
 		int myjob = 0, claim = 0;
+		
+/*		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		String userid = null;
+		if(auth!=null)
+			userid = ((UserDetails) auth.getPrincipal()).getUsername();*/
 
 		myjob = taskService.createTaskQuery().taskCandidateOrAssigned(userUtil.getUserId(authentication)).active()
 				.list().size();
@@ -161,13 +166,13 @@ public class TaskController {
 	@RequestMapping(value = "/claim/{id}")
 	public String claim(@PathVariable("id") String taskId, Authentication authentication) {
 
-		String re = "/workflow/task/list";
+		String re = "/workflow/task/mytask";
 		Task task = taskService.createTaskQuery().taskId(taskId).singleResult();
 
 		taskService.claim(taskId, userUtil.getUserId(authentication));
 		// redirectAttributes.addFlashAttribute("message", "任务已签收");
 		if (task == null)
-			return "redirect:/workflow/task/list";
+			return "redirect:/workflow/task/mytask";
 
 		ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery()
 				.processDefinitionId(task.getProcessDefinitionId()).singleResult();

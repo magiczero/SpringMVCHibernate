@@ -102,22 +102,12 @@
 	                        <form action="${contextPath}/incident/savebyuser"  method="post">
 	                        <div class="block-fluid">                        
 	                            <div class="row-form clearfix">
-<<<<<<< HEAD
-	                                <div class="col-md-2">故障摘要:</div>
-	                                <div class="col-md-10"><input type="text" name="fm_abs"></div>
-=======
 	                                <div class="col-md-1">故障摘要:</div>
 	                                <div class="col-md-11"><input type="text" name="fm_abs" id="fm_abs"></div>
->>>>>>> refs/heads/andy-1216
 	                             </div>
 	                            <div class="row-form clearfix">
-<<<<<<< HEAD
-	                                <div class="col-md-2">故障描述:</div>
-	                                <div class="col-md-10"><textarea name="fm_description"></textarea></div>
-=======
 	                                <div class="col-md-1">故障描述:</div>
 	                                <div class="col-md-11"><textarea name="fm_description" id="fm_description"></textarea></div>
->>>>>>> refs/heads/andy-1216
 	                            </div>
 	                            <div class="footer tar">
 	                                <button class="btn btn-primary center-block"> 提 交 </button>

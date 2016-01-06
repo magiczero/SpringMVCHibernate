@@ -1,14 +1,11 @@
 package com.cngc.pm.dao.impl.cms;
 
 import java.util.List;
-import java.util.Map;
 
 import org.hibernate.Query;
 import org.hibernate.type.LongType;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import com.cngc.pm.dao.StatsDAO;
 import com.cngc.pm.dao.cms.CiDAO;
 import com.cngc.pm.dao.impl.BaseDAOImpl;
 import com.cngc.pm.model.cms.Ci;

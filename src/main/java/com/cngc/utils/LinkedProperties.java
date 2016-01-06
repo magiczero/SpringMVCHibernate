@@ -27,10 +27,12 @@ public class LinkedProperties extends Properties {
 		return linkMap.containsValue(value);
 	}
 
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public Enumeration elements() {
 		throw new RuntimeException("Method elements is not supported in LinkedProperties class");
 	}
 
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public Set entrySet() {
 		return linkMap.entrySet();
 	}
@@ -56,11 +58,13 @@ public class LinkedProperties extends Properties {
 		return linkMap.isEmpty();
 	}
 
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public Enumeration keys() {
 		Set keys = linkMap.keySet();
 		return Collections.enumeration(keys);
 	}
 
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public Set keySet() {
 		return linkMap.keySet();
 	}
@@ -69,6 +73,7 @@ public class LinkedProperties extends Properties {
 		this.list(new PrintWriter(out, true));
 	}
 
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public void list(PrintWriter out) {
 		out.println("-- listing properties --");
 		for (Map.Entry e : (Set<Map.Entry>) this.entrySet()) {
@@ -89,6 +94,7 @@ public class LinkedProperties extends Properties {
 		return linkMap.size();
 	}
 
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public Collection values() {
 		return linkMap.values();
 	}

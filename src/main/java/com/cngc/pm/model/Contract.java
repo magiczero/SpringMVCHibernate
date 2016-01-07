@@ -1,5 +1,6 @@
 package com.cngc.pm.model;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -13,7 +14,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 @Entity
 @Table(name="contract")
-public class Contract {
+public class Contract implements Serializable{
 	
 	private static final long serialVersionUID = 5466613587523562481L;
 	

@@ -29,6 +29,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.cngc.exception.ParameterException;
+import com.cngc.pm.annotation.ControllerLog;
 import com.cngc.pm.model.Attachment;
 import com.cngc.pm.model.DocAuth;
 import com.cngc.pm.model.Document;
@@ -129,6 +130,7 @@ public class DocumentController {
 	}
 	
 	@RequestMapping(value="/save-style", method = RequestMethod.POST)
+	@ControllerLog(description="添加文档类别")
 	public String saveStyle(@ModelAttribute("style") Style style,Model model,HttpServletRequest request) {
 		String parent = request.getParameter("parent");
 		if(parent.indexOf("-")==-1) {

@@ -17,6 +17,10 @@ import org.hibernate.annotations.Formula;
 @Table(name = "wk_update")
 public class Update implements Serializable{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -7160800896710808258L;
 	private Long id;
 	private String type;
 	private String version;

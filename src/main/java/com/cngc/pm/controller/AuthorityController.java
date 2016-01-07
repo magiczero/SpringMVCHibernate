@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import com.cngc.pm.annotation.ControllerLog;
 import com.cngc.pm.common.web.BaseController;
 import com.cngc.pm.model.Authority;
 import com.cngc.pm.service.AuthorityService;
@@ -65,6 +66,7 @@ public class AuthorityController extends BaseController {
 //	}
 //	
 	@RequestMapping(value = "/list", method = RequestMethod.GET)
+	@ControllerLog(description="查看所有的权限")
 	public String list(Model model) {
 		model.addAttribute("listAuths", authService.getAll());
 		model.addAttribute("listResources", authService.getListResources());
@@ -81,6 +83,7 @@ public class AuthorityController extends BaseController {
 	}
 	
 	@RequestMapping(value = "/save", method = RequestMethod.POST)
+	@ControllerLog(description="添加权限")
 	public String save(@Valid @ModelAttribute("authority") Authority authority, BindingResult result, HttpServletRequest request) {
 		if(result.hasErrors()) {
 			return "500";

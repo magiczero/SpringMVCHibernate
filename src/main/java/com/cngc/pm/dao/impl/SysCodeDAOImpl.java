@@ -6,7 +6,6 @@ import org.springframework.stereotype.Repository;
 
 import com.cngc.pm.dao.SysCodeDAO;
 import com.cngc.pm.model.SysCode;
-import com.googlecode.genericdao.search.Filter;
 import com.googlecode.genericdao.search.Search;
 import com.googlecode.genericdao.search.SearchResult;
 

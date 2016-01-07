@@ -22,7 +22,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.cngc.pm.model.Role;
 import com.cngc.pm.model.SysUser;
 import com.cngc.pm.model.UserRole;
-import com.cngc.pm.model.cms.Ci;
 import com.cngc.pm.service.RoleService;
 import com.cngc.pm.service.UserService;
 import com.cngc.utils.Common;

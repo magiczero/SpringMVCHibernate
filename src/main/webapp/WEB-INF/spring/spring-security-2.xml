@@ -10,9 +10,9 @@
 
 	<http pattern="/resources/**" security="none" />
 	<http pattern="/initLogin" security="none" />
-	<http pattern="/workflow/task/getmytaskcount*" security="none" />
+	<!-- <http pattern="/workflow/task/getmytaskcount*" security="none" /> -->
 	
-	<http auto-config="true" use-expressions="true">
+	<http  use-expressions="true">
 		<!-- <intercept-url pattern="/login" access="permitAll"/>
 		<intercept-url pattern="/logout" access="permitAll"/>
 		<intercept-url pattern="/denied" access="hasRole('ROLE_USER')"/>
@@ -29,17 +29,19 @@
 	  			 authentication-failure-url="/initLogin"
 	  			 authentication-success-handler-ref="authenticationSuccessHandler"
 	  			 />
+	  	
 		<!-- <security:custom-filter ref="loginFilter" position="FORM_LOGIN_FILTER"  /> -->
         <custom-filter ref="myFilter" before="FILTER_SECURITY_INTERCEPTOR"/>
+        <custom-filter ref="logoutFilter" position="LOGOUT_FILTER" />
 		<access-denied-handler error-page="/403"/>
 		<!-- 实现免登陆验证 -->
         <remember-me remember-me-parameter="remember-me" user-service-ref="customUserDetailsService" token-validity-seconds="123456789"/>
         <session-management invalid-session-url="/initLogin">
         	<concurrency-control max-sessions="1" error-if-maximum-exceeded="false" expired-url="/initLogin" />
         </session-management>
-		<logout invalidate-session="true" 
+		<!-- <logout invalidate-session="true" 
 			logout-success-url="/logout/success" 
-			logout-url="/logout"/>
+			logout-url="/logout"/> -->
 	</http>
 	
 	<!-- 认证成功后的处理类 -->
@@ -78,4 +80,22 @@
 
 	<!-- 资源源数据定义，即定义某一资源可以被哪些角色访问 -->
 	<beans:bean id="securityMetadataSource" class="com.cngc.pm.security.MyInvocationSecurityMetadataSource" />	
+	
+	<!-- 退出系统 -->
+	<beans:bean id="logoutFilter" class="com.cngc.pm.security.CustomLogoutFilter">
+		<!-- 处理退出的虚拟url -->
+        <beans:property name="filterProcessesUrl" value="/logout" />
+        <!-- 退出处理成功后的默认显示url -->
+        <beans:constructor-arg index="0" value="/login?logout" />
+        <beans:constructor-arg index="1">
+            <!-- 退出成功后的handler列表 -->
+            <beans:array>
+                <beans:bean id="securityContextLogoutHandler"
+                    class="org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler" />
+                <!-- 加入了开发人员自定义的退出成功处理 -->
+                <beans:bean id="customLogoutSuccessHandler" class="com.cngc.pm.security.LogoutHandlerImpl" />
+            </beans:array>
+        </beans:constructor-arg>
+        
+	</beans:bean>
 </beans:beans>

@@ -187,31 +187,7 @@
 											<a class="claim confirm" href="${contextPath }/workflow/task/claim/${task.id}">签收</a>
 										</c:if>
 										<c:if test="${not empty task.assignee }">
-											<c:set var="processName" value="${task.processDefinitionId.substring(0,task.processDefinitionId.indexOf(':')) }" />
-											<c:if test="${processName=='INCIDENT' }">
-												<a href="${contextPath }/incident/list" >控制台</a>
-											</c:if>
-											<c:if test="${processName=='CHANGE' }">
-												<a href="${contextPath }/change/list" >控制台</a>
-											</c:if>
-											<c:if test="${processName=='INSPECTION' }">
-												<a href="${contextPath }/record/inspection" >控制台</a>
-											</c:if>
-											<c:if test="${processName=='LEADERTASK' }">
-												<a href="${contextPath }/leadertask/list" >控制台</a>
-											</c:if>
-											<c:if test="${processName=='UPDATE' }">
-												<a href="${contextPath }/record/update" >控制台</a>
-											</c:if>
-											<c:if test="${processName=='SECJOB' }">
-												<a href="${contextPath }/record/secjob" >控制台</a>
-											</c:if>
-											<c:if test="${processName=='KNOWLEDGE' }">
-												<a href="${contextPath }/knowledge/list" >控制台</a>
-											</c:if>
-											<c:if test="${processName=='UPDATE' || processName=='LEADERTASK' || processName=='SECJOB' || processName=='KNOWLEDGE' }">
-												<a onclick="act_form_openTaskDialog('${task.name }','${task.id}','/workflow/task/mytask')"  href="#">快速办理</a>
-											</c:if>
+										<c:out value="${task.processDefinitionId}"></c:out>
 											
 										</c:if>
 									</td>

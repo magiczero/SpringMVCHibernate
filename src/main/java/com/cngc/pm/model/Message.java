@@ -14,6 +14,10 @@ import javax.persistence.Table;
 @Table(name = "message")
 public class Message implements Serializable{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -5487144920225970294L;
 	private Long id;
 	private String fromUser;
 	private String toUser;

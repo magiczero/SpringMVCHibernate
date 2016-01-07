@@ -1,7 +1,6 @@
 package com.cngc.pm.job;
 
 import java.text.ParseException;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 

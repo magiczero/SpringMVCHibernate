@@ -39,7 +39,6 @@
     <link href="${contextPath }/resources/css/stylesheet.css" rel="stylesheet" type="text/css" />
     <link href="${contextPath }/resources/css/styling.css" rel="stylesheet" type="text/css" />
     <link href="${contextPath }/resources/css/mycss.css" rel="stylesheet" type="text/css" />
-	<link href="${contextPath }/resources/css/stylesheets2.css" rel="stylesheet" type="text/css" />
     <!--[if lt IE 8]>
         <link href="${contextPath }/resources/css/ie7.css" rel="stylesheet" type="text/css" />
     <![endif]-->    
@@ -53,13 +52,6 @@
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/cookie/jquery.cookies.2.2.0.min.js'></script>
     
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/bootstrap.min.js'></script>
-    
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/treeview/bootstrap-treeview.js'></script>
-    
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/charts/jquery.flot.js'></script>    
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/charts/jquery.flot.stack.js'></script>    
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/charts/jquery.flot.pie.js'></script>
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/charts/jquery.flot.resize.js'></script>
     
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/sparklines/jquery.sparkline.min.js'></script>
     
@@ -201,7 +193,7 @@
                             <div class="isw-grid"></div>
                             <h1>权限列表</h1>  
 
-                            <ul class="buttons">                          
+                            <ul class="buttons">    
                                 <li>
                                     <a href="#" class="isw-settings tipl" title="操作 "></a>
                                     <ul class="dd-list">

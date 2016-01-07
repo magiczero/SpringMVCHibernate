@@ -1,7 +1,6 @@
 package com.cngc.pm.dao.cms;
 
 import java.util.List;
-import java.util.Map;
 
 import com.cngc.pm.model.cms.Ci;
 import com.googlecode.genericdao.dao.hibernate.GenericDAO;

@@ -66,7 +66,7 @@ public class AuthenticationSuccessHandlerImpl implements
 		//更新登录时间
 		user.setLastWhile(new java.sql.Timestamp(date.getTime()));
 		user.setLoginIP(ip);
-		userService.update(user);
+		userService.update(user, "系统");
 
         //记录到日志表
 		Records record = new Records();

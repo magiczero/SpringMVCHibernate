@@ -8,6 +8,7 @@ import javax.annotation.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.support.MessageSourceAccessor;
+import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.SpringSecurityMessageSource;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -57,6 +58,9 @@ public class CustomUserDetailsService implements UserDetailsService {
                     "User.notFound", new Object[] { username },
                     "用户名 {0} 不存在"));
 		}
+		
+		if(!user.isEnabled())
+			throw new DisabledException("此用户未启用，请联系安全保密管理人员");
 //		Session session = sessionFactory.getCurrentSession();
 //		String hql="select r from SysUser r where  r.username=?";
 //		Query query = session.createQuery(hql);

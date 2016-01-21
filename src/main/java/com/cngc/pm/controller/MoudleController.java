@@ -7,8 +7,10 @@ import java.util.Map;
 import javax.annotation.Resource;
 import javax.validation.Valid;
 
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -62,10 +64,10 @@ public class MoudleController extends BaseController {
 	}
 	
 	@RequestMapping(value = "/save", method = RequestMethod.POST)
-	public String save(@Valid @ModelAttribute("moudle") Moudle moudle, BindingResult result) {
+	public String save(@Valid @ModelAttribute("moudle") Moudle moudle, BindingResult result) throws BindException {
 		//System.out.println("保存成功");
 		if(result.hasErrors()) {
-			return "500";
+			throw new BindException(result);
 		}
 		if(moudle.getParent().getId() == null) {
 			moudle.setLevel(1);
@@ -76,7 +78,8 @@ public class MoudleController extends BaseController {
 		moudle.setPriority(1);
 		moudle.setEnable(true);
 		//保存
-		moudleService.save(moudle);
+		String username = SecurityContextHolder.getContext().getAuthentication().getName();
+		moudleService.save(moudle, username);
 		
 		return "redirect:/moudle/list";
 	}
@@ -86,7 +89,9 @@ public class MoudleController extends BaseController {
 	public Map<String,Object> enableStatus(@PathVariable("id") long id) {
 		Map<String,Object> map = new HashMap<String,Object>();
 		
-		if(moudleService.enableStatus(id)) {
+		String username = SecurityContextHolder.getContext().getAuthentication().getName();
+		
+		if(moudleService.enableStatus(id, username)) {
 			map.put("flag", "true");
 		} else {
 			map.put("flag", "false");

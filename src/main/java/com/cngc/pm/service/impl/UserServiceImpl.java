@@ -11,9 +11,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.cngc.exception.ParameterException;
+import com.cngc.pm.dao.RecordsDAO;
 import com.cngc.pm.dao.RoleDAO;
 import com.cngc.pm.dao.UserDAO;
 import com.cngc.pm.dao.UserRoleDAO;
+import com.cngc.pm.model.Records;
+import com.cngc.pm.model.RecordsType;
 import com.cngc.pm.model.Resources;
 import com.cngc.pm.model.Role;
 import com.cngc.pm.model.SysUser;
@@ -34,13 +37,22 @@ public class UserServiceImpl implements UserService {
 	@Autowired
 	private UserRoleDAO urDao;
 	
+	@Autowired
+	private RecordsDAO recordsDao;
+	
 	@Override
 	@Transactional
-	public void save(SysUser user){
+	public void save(SysUser user, String username){
+		user.setEnabled(false);		//因为三员管理的关系，所以保存时设置为未启用
 		userDao.save(user);
+		Records record = new Records();
+		record.setUsername(username);
+		record.setType(RecordsType.user);
+		record.setDesc("新建了用户，用户id：[" + user.getId() +"]，用户名：["+ user.getUsername()+"]");
+		recordsDao.save(record);
 	}
 	@Override
-	@Transactional
+	@Transactional(readOnly=true)
 	public SysUser getById(Long id){
 		return userDao.find(id);
 	}
@@ -53,14 +65,22 @@ public class UserServiceImpl implements UserService {
 	}
 	@Override
 	@Transactional
-	public boolean delById(Long id){
-		userDao.removeById(id);
+	public boolean delById(Long id, String username){
+		SysUser user = userDao.find(id);
+		//userDao.removeByIds(k);
+		userDao.remove(user);
+		
+		Records record = new Records();
+		record.setUsername(username);
+		record.setType(RecordsType.user);
+		record.setDesc("删除了用户，用户id：[" + user.getId() +"]，用户名：["+ user.getUsername()+"]");
+		recordsDao.save(record);
 		return true;
 	}
 	
 	@Override
 	@Transactional
-	public boolean delByIds(String ids)
+	public boolean delByIds(String username, String ids)
 	{
 		String id[] = ids.split(",");
 		int j = id.length;
@@ -72,21 +92,35 @@ public class UserServiceImpl implements UserService {
 			 }
 			 idss[i] = Long.valueOf(str);
 		}
+		String desc = "";
 		try {
 			for(Long k : idss) {
-				userDao.removeByIds(k);
+				SysUser user = userDao.find(k);
+				//userDao.removeByIds(k);
+				userDao.remove(user);
+				desc +="用户id：[" + user.getId() +"]，用户名：[" + user.getUsername()+"]";
 			}
 		} catch (Exception e) {
 			return false;
 		}
+		Records record = new Records();
+		record.setUsername(username);
+		record.setType(RecordsType.user);
+		record.setDesc("批量删除了用户，详情：" + desc);
+		recordsDao.save(record);
 		return true;
 	}
 
 	@Override
 	@Transactional
-	public void update(SysUser user) {
+	public void update(SysUser user, String username) {
 		// TODO Auto-generated method stub
 		userDao.update(user);
+		Records record = new Records();
+		record.setUsername(username);
+		record.setType(RecordsType.user);
+		record.setDesc("修改了用户信息，用户id：[" + user.getId() +"]，用户名：["+ user.getUsername()+"]");
+		recordsDao.save(record);
 	}
 	
 	@Override
@@ -128,27 +162,39 @@ public class UserServiceImpl implements UserService {
 	
 	@Override
 	@Transactional
-	public void setRole(SysUser user, String roleIds) {
+	public void setRole(String username, SysUser user, String roleIds) {
 		// TODO Auto-generated method stub
 		String ids[] = roleIds.split(",");
 		//首先清空权限
 		urDao.deleteByUser(user);
-		//添加权限
-		for(int i=0; i<ids.length; i++) {
-			
-			String str = ids[i];
-			 if (isNumeric(str)) {
-				 Role role = roleDao.find(Long.valueOf(str));
-				 if(role != null) {
-					 UserRole ur = new UserRole();
-					 ur.setUser(user);
-					 ur.setRole(role);
-					 urDao.save(ur);
+		Records record = new Records();
+		record.setUsername(username);
+		record.setType(RecordsType.user);
+		if(roleIds.isEmpty()) {
+			record.setDesc("用户id：["+user.getId() +"]，用户名：["+user.getName()+"]，被清空了角色");
+		} else {
+			String desc = "";
+			//添加权限
+			for(int i=0; i<ids.length; i++) {
+				
+				String str = ids[i];
+				 if (isNumeric(str)) {
+					 Role role = roleDao.find(Long.valueOf(str));
+					 if(role != null) {
+						 UserRole ur = new UserRole();
+						 ur.setUser(user);
+						 ur.setRole(role);
+						 urDao.save(ur);
+						 desc += "角色id：["+role.getId() + "]，角色名：["+role.getRoleName()+"],";
+					 }
+				 } else {
+					 throw new ParameterException("修改用户角色时出错，无法找到相应的角色");
 				 }
-			 } else {
-				 throw new ParameterException("修改用户角色时出错，无法找到相应的角色");
-			 }
+			}
+			record.setDesc("用户id：["+user.getId() +"]，用户名：["+user.getName()+"]，设置了角色，详情：" + desc);
 		}
+		
+		recordsDao.save(record);
 	}
 	@Override
 	@Transactional
@@ -190,5 +236,23 @@ public class UserServiceImpl implements UserService {
 			}
 		}
 		return users;	
+	}
+	
+	@Override
+	@Transactional
+	public boolean enableUser(String loginname, SysUser user) {
+		// TODO Auto-generated method stub
+		user.setEnabled(true);
+		if(userDao.save(user)) {			//源码中如果是修改，返回false
+			return false;
+		} else {
+			Records record = new Records();
+			record.setUsername(loginname);
+			record.setType(RecordsType.user);
+			record.setDesc("启用了用户，用户id：[" + user.getId() +"]，用户名：["+ user.getUsername()+"]");
+			recordsDao.save(record);
+			return true;
+		}
+		
 	}
 }

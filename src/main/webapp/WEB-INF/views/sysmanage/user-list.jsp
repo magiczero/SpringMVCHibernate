@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>    
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %> 
 <c:set var="contextPath" value="${pageContext.request.contextPath}"></c:set>
 <!DOCTYPE html>
 <html lang="en">
@@ -54,11 +55,6 @@
     
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/bootstrap.min.js'></script>
     
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/charts/jquery.flot.js'></script>    
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/charts/jquery.flot.stack.js'></script>    
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/charts/jquery.flot.pie.js'></script>
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/charts/jquery.flot.resize.js'></script>
-    
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/sparklines/jquery.sparkline.min.js'></script>
     
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/fullcalendar/fullcalendar.min.js'></script>
@@ -69,7 +65,7 @@
     
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/maskedinput/jquery.maskedinput-1.3.min.js'></script>
     
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/validation/languages/jquery.validationEngine-en.js' charset='utf-8'></script>
+    <script type='text/javascript' src='${contextPath }/resources/js/plugins/validation/languages/jquery.validationEngine-zh-CN.js' charset='utf-8'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/validation/jquery.validationEngine.js' charset='utf-8'></script>
     
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/mcustomscrollbar/jquery.mCustomScrollbar.min.js'></script>
@@ -82,18 +78,7 @@
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/dataTables/jquery.dataTables.min.js'></script>    
     
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/fancybox/jquery.fancybox.pack.js'></script>
-        
-    <!-- <script type='text/javascript' src='../../../bp.yahooapis.com/2.4.21/browserplus-min.js'></script> -->
-
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/plupload/plupload.js'></script>
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/plupload/plupload.gears.js'></script>
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/plupload/plupload.silverlight.js'></script>
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/plupload/plupload.flash.js'></script>
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/plupload/plupload.browserplus.js'></script>
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/plupload/plupload.html4.js'></script>
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/plupload/plupload.html5.js'></script>
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/plupload/jquery.plupload.queue/jquery.plupload.queue.js'></script>    
-    
+            
     <script type="text/javascript" src="${contextPath }/resources/js/plugins/elfinder/elfinder.min.js"></script>
     
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/highlight/jquery.highlight-4.js'></script>
@@ -105,11 +90,8 @@
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/multiselect/jquery.multi-select.js'></script>
     
     <script type='text/javascript' src='${contextPath }/resources/js/cookies.js'></script>
-    <script type='text/javascript' src='${contextPath }/resources/js/myactions.js'></script>
-    <script type='text/javascript' src='${contextPath }/resources/js/charts.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/settings.js'></script>    
-    <script type='text/javascript' src='${contextPath }/resources/js/faq.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/pm-common.js'></script>
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
@@ -119,10 +101,10 @@
     <script type="text/javascript">
     var ctx = "${contextPath}";
             $(document).ready(function () {
-                $("#eventTable").dataTable();
-                $(".header").load("${contextPath }/header");
-                $(".menu").load("${contextPath }/menu", function() {$("#node_${moduleId}").addClass("active");});
-                $(".breadLine .buttons").load("${contextPath }/contentbuttons");
+                
+            	$(".header").load("${contextPath}/header?t="+pm_random());
+                $(".menu").load("${contextPath}/menu?t="+pm_random(), function () { $("#node_${moduleId}").addClass("active"); });
+                $(".breadLine .buttons").load("${contextPath}/contentbuttons?t="+pm_random());
                 $(".confirm").bind("click",function(){
                 	if(!confirm("确定要执行该操作?"))
                 		return false;
@@ -134,7 +116,12 @@
             	 if ($("#selRole").length > 0) {
                      $("#selRole").multiSelect();
                  }
+            	 $("#eventTable").dataTable();
+            	 
+            	 $("#userForm").validationEngine();
             });
+            
+            
     function newUser(){
 		$("#dialogTitle").html("新建用户");
 		$("#userform_id").attr('value','0');
@@ -171,6 +158,30 @@
     	//var values = $("#selRole").find('option:selected').map(function(){ return $(this).val() }).get();
     	$("#rolefrom_userrole").attr('value',$("#selRole").val());
     	return true;
+    }
+    function enableUser(id) {
+    	if(confirm('确定删除？')) {
+        	$.ajax({
+				type : "put",
+				dataType : "json",
+				url : "${contextPath }/user/enable/"+id,
+				success : function(data) {
+					//console.log(data.flag);
+					if (data.flag) {
+		            	//notify_e('Success','启用成功');
+		            	window.location.reload();
+					} else {
+						notify_e('Error','启用失败，请联系系统管理员');
+					}
+				}
+			});
+        	return true;
+    	} else {
+    		return false;
+    	}
+    }
+    function notify_e(title,text){
+        $.pnotify({title: title, text: text, opacity: .8, type: 'error'});            
     }
     </script>
 </head>
@@ -227,13 +238,13 @@
                             <table class="table" id="eventTable">
                                 <thead>
 								<tr>
-									<th width="60px">ID</th>
-									<th >用户名</th>
-									<th width="150px">真实姓名</th>
-									<th width="120px">用户角色</th>
-									<th width="150px">创建时间</th>
-									<th width="150px">最后访问时间</th>
-									<th width="150px">操作</th>
+									<th width="50px">ID</th>
+									<th width="10%">用户名</th>
+									<th width="10%">真实姓名</th>
+									<th >用户角色</th>
+									<th width="10%">创建时间</th>
+									<th width="20%">最后访问时间</th>
+									<th width="180px">操作</th>
 								</tr>
                                 </thead>
                                 <tbody>
@@ -250,9 +261,10 @@
 										<td>${user.createWhile }</td>
 										<td>${user.lastWhile }</td>
 										<td>
-											<a class="lnk_setrole" href="#" >设置角色</a>
-											<a class="lnk_modify" href="#">编辑</a>
-					                        <a class="confirm" href="${contextPath}/user/delete/${user.id}">删除</a>
+											<sec:authorize access="hasAnyRole('security_secrecy_admin','ROLE_ADMIN')"><a class="lnk_setrole" href="#" >设置角色</a></sec:authorize>
+											<sec:authorize access="hasAnyRole('sys_admin','ROLE_ADMIN')"><a class="lnk_modify" href="#">编辑</a></sec:authorize>
+					                        <sec:authorize access="hasAnyRole('sys_admin','ROLE_ADMIN')"><a class="confirm" href="${contextPath}/user/delete/${user.id}">删除</a></sec:authorize>
+					                        <sec:authorize access="hasAnyRole('security_secrecy_admin','ROLE_ADMIN')"><c:if test="${!user.enabled }"><a href="javascript:void(0);" onclick="enableUser(${user.id});">启用</a></c:if></sec:authorize>
 										</td>
 									</tr>
 								</c:forEach>   
@@ -280,7 +292,7 @@
                             <div class="block-fluid">
                                 <div class="row-form clearfix">
                                     <div class="col-md-3">用户名:</div>
-                                    <div class="col-md-9"><input id="username" name="username" type="text" /></div>
+                                    <div class="col-md-9"><input id="username" class="validate[required,ajax[existUserName]]" name="username" type="text" /></div>
                                 </div>                                                           
                             </div>                
                         </div>

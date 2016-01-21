@@ -319,3 +319,11 @@ function pm_refresh()
 {
 	location.reload(true);
 }
+
+function headInfo(){
+    var block = $(".headInfo .input-append");
+    var input = block.find("input[type=text]");
+    var button = block.find("button");
+    
+    input.width(block.width()-button.width()-44);    
+}

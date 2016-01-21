@@ -155,5 +155,10 @@ public class Role implements Serializable {
 	public void setSys(boolean sys) {
 		this.sys = sys;
 	}
+	
+	@Override
+	public String toString() {
+		return "角色名：["+this.getRoleName()+"]，角色id：["+this.getId()+"]";
+	}
 
 }

@@ -264,46 +264,43 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                	<c:forEach items="${item.child }" var="oneLevel">
-	                                <c:forEach items="${oneLevel.child }" var="twoLevel">
-	                                <c:forEach items="${twoLevel.child }" var="threeLevel">
-	                                <c:set var="itemsize" value="0" />
-                                    <c:forEach items="${checkitemsList}" var="ci" varStatus="itr">
-                                    <c:if test="${ci.item.id == threeLevel.id }">
-                                	<c:set var="itemsize" value="${itr.index+1 }" />
-                                    <tr>
-                                        <td>${ci.item.style.style.name }</td>
-                                        <td>${ci.item.style.name }</td>
-										<td>${ci.item.name }</td>
+                                	<c:forEach items="${checkitemsList}"  var="ci" varStatus="itr">
+                                <c:choose>
+                                	<c:when test="${empty ci.items }">
+                                		<tr><td>${ci.style.style.name }</td>
+                                        <td>${ci.style.name }</td>
 										<td>${ci.name }</td>
-										<td>${ci.demand}</td>
-										<td>${ci.technique }</td>
+										<td></td>
+										<td></td>
+										<td></td>
+										<td></td>
+										<td><a href="javascript:void(0);" onclick="javascript:addItem(${ci.id},'${ci.name }');">添加</a></td>
+									</tr>
+                                	</c:when>
+                                	<c:otherwise>
+                                	<c:forEach items="${ci.items}" var="child">
+                                	<tr><td>${ci.style.style.name }</td>
+                                        <td>${ci.style.name }</td>
+										<td>${ci.name }</td>
+										<td>${child.name }</td>
+										<td>${child.demand}</td>
+										<td>${child.technique }</td>
 										<td>
-										<c:choose><c:when test="${empty ci.docSet}">${ci.record }</c:when>
+										<c:choose><c:when test="${empty child.docSet}">${child.record }</c:when>
 										<c:otherwise>
-										<c:forEach items="${ci.docSet }" var="doc">
-											<c:forEach items="${doc.attachs}" var="attach"><a href="${contextPath }/attachment/download/${attach.id}">${attach.name }</a><br/></c:forEach>
+										<c:forEach items="${child.docSet }" var="doc">
+											<c:forEach items="${doc.attachs}" var="attach"><a href="${contextPath }/attachment/download/${attach.id}">${attach.name }</a><br/></c:forEach><br/>
 										</c:forEach>
 										</c:otherwise>
 										</c:choose>
 										</td>
-										<td><a href="${contextPath }/checkitems/update/${ci.id}">编辑</a><br/><a href="javascript:void(0);" onclick="javascript:delItem(${ci.id});">删除</a></td>
-                                    </tr>
-                                    </c:if>
-                                    </c:forEach>
-                                    <c:if test="${itemsize == 0 }"><tr>
-                                        <td>${threeLevel.style.style.name }</td>
-										<td>${threeLevel.style.name }</td>
-										<td>${threeLevel.name }</td>
-										<td></td>
-										<td></td>
-										<td></td>
-										<td></td>
-										<td><a href="javascript:void(0);" onclick="javascript:addItem(${threeLevel.id},'${threeLevel.name }');">添加</a></td></tr>
-                                	</c:if>
-                                    </c:forEach>
-                                    </c:forEach>
-                                    </c:forEach>
+										<td><a href="${contextPath }/checkitems/update/${child.id}">编辑</a><br/><a href="javascript:void(0);" onclick="javascript:delItem(${child.id}, this);">删除</a></td>
+									</tr>
+                                	</c:forEach>
+                                	</c:otherwise>
+                                </c:choose>
+                                
+                                </c:forEach>
                                 </tbody>
                             </table>
                             <div class="toolbar bottom-toolbar clearfix">&nbsp;

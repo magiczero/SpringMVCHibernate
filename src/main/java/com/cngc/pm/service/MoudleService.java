@@ -8,8 +8,8 @@ public interface MoudleService {
 
 	List<Moudle> getAllMenu();
 
-	void save(Moudle moudle);
+	void save(Moudle moudle, String username);
 
-	boolean enableStatus(long id);
+	boolean enableStatus(long id, String username);
 
 }

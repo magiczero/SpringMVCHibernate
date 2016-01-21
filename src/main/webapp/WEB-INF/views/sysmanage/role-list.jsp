@@ -1,17 +1,12 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>    
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %> 
 <c:set var="contextPath" value="${pageContext.request.contextPath}"></c:set>
 <!DOCTYPE html>
 <html lang="en">
 <head>        
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-     <!-- HTTP 1.1 -->  
-	<meta http-equiv="pragma" content="no-cache" />  
-	<!-- HTTP 1.0 -->  
-	<meta http-equiv="cache-control" content="no-cache" />  
-	<!-- Prevent caching at the proxy server -->  
-	<meta http-equiv="expires" content="0" /> 
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
     <!--[if gt IE 8]>
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
@@ -43,7 +38,6 @@
     <!--[if lt IE 8]>
         <link href="${contextPath }/resources/css/ie7.css" rel="stylesheet" type="text/css" />
     <![endif]-->    
-    <link rel='stylesheet' type='text/css' href='${contextPath }/resources/css/fullcalendar.print.css' media='print' />
     
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/jquery/jquery-1.10.2.min.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/jquery/jquery-ui-1.10.1.custom.min.js'></script>
@@ -54,10 +48,6 @@
     
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/bootstrap.min.js'></script>
     
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/charts/jquery.flot.js'></script>    
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/charts/jquery.flot.stack.js'></script>    
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/charts/jquery.flot.pie.js'></script>
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/charts/jquery.flot.resize.js'></script>
     
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/sparklines/jquery.sparkline.min.js'></script>
     
@@ -83,17 +73,6 @@
     
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/fancybox/jquery.fancybox.pack.js'></script>
         
-    <!-- <script type='text/javascript' src='../../../bp.yahooapis.com/2.4.21/browserplus-min.js'></script> -->
-
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/plupload/plupload.js'></script>
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/plupload/plupload.gears.js'></script>
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/plupload/plupload.silverlight.js'></script>
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/plupload/plupload.flash.js'></script>
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/plupload/plupload.browserplus.js'></script>
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/plupload/plupload.html4.js'></script>
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/plupload/plupload.html5.js'></script>
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/plupload/jquery.plupload.queue/jquery.plupload.queue.js'></script>    
-    
     <script type="text/javascript" src="${contextPath }/resources/js/plugins/elfinder/elfinder.min.js"></script>
     
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/highlight/jquery.highlight-4.js'></script>
@@ -105,11 +84,8 @@
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/multiselect/jquery.multi-select.js'></script>
     
     <script type='text/javascript' src='${contextPath }/resources/js/cookies.js'></script>
-    <script type='text/javascript' src='${contextPath }/resources/js/myactions.js'></script>
-    <script type='text/javascript' src='${contextPath }/resources/js/charts.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/settings.js'></script>    
-    <script type='text/javascript' src='${contextPath }/resources/js/faq.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/pm-common.js'></script>
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
@@ -119,10 +95,10 @@
     <script type="text/javascript">
     var ctx = "${contextPath}";
             $(document).ready(function () {
-                $("#eventTable").dataTable();
-                $(".header").load("../header");
-                $(".menu").load("${contextPath }/menu", function() {$("#node_${moduleId}").addClass("active");});
-                $(".breadLine .buttons").load("../contentbuttons");
+                
+                $(".header").load("${contextPath}/header?t="+pm_random());
+                $(".menu").load("${contextPath}/menu?t="+pm_random(), function () { $("#node_${moduleId}").addClass("active"); });
+                $(".breadLine .buttons").load("${contextPath}/contentbuttons?t="+pm_random());
                 $(".confirm").bind("click",function(){
                 	if(!confirm("确定要执行该操作?"))
                 		return false;
@@ -131,7 +107,7 @@
             	$(".lnk_new").bind("click",newRole);
             	$(".set_auth").bind("click", setAuth);
             	$(".set_menu").bind("click", setMenu);
-            	
+            	$("#eventTable").dataTable();
             	if($("#selAuth").length > 0){
                     $("#selAuth").multiSelect({
                         selectableHeader: "<div class=''>Selectable item</div>",
@@ -265,10 +241,10 @@
 										</td>
 										<td>${role.roleDesc}</td>
 										<td>
-											<a class="set_auth" href="javascript:void(0);">设置权限</a>
-											<a class="set_menu" href="javascript:void(0);">设置菜单</a>
-											<a class="lnk_modify" href="#">编辑</a>
-					                        <a class="confirm" href="${contextPath}/role/delete/${role.id}">删除</a>
+											<sec:authorize access="hasAnyRole('security_secrecy_admin','ROLE_ADMIN')"><a class="set_auth" href="javascript:void(0);">设置权限</a><br/></sec:authorize>
+											<sec:authorize access="hasAnyRole('sys_admin','ROLE_ADMIN')"><a class="set_menu" href="javascript:void(0);">设置菜单</a><br/></sec:authorize>
+											<sec:authorize access="hasAnyRole('sys_admin','ROLE_ADMIN')"><a class="lnk_modify" href="#">编辑</a><br/></sec:authorize>
+					                        <sec:authorize access="hasAnyRole('sys_admin','ROLE_ADMIN')"><a class="confirm" href="${contextPath}/role/delete/${role.id}">删除</a></sec:authorize>
 										</td>
 									</tr>
 								</c:forEach>   

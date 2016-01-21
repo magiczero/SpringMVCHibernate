@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.stereotype.Repository;
 
 import com.cngc.pm.dao.RoleAuthDAO;
+import com.cngc.pm.model.Authority;
 import com.cngc.pm.model.Role;
 import com.cngc.pm.model.RoleAuth;
 import com.googlecode.genericdao.search.Search;
@@ -25,6 +26,26 @@ public class RoleAuthDAOImpl extends BaseDAOImpl<RoleAuth, Long> implements Role
 		search.addFilterEqual("role", role);
 		
 		return this.search(search);
+	}
+
+	@Override
+	public List<RoleAuth> getListByAuth(Authority auth) {
+		// TODO Auto-generated method stub
+		Search search = new Search();
+		
+		search.addFilterEqual("auth", auth);
+		
+		return this.search(search);
+	}
+
+	@Override
+	public boolean hasRelationByRole(Role role) {
+		// TODO Auto-generated method stub
+		Search search = new Search(RoleAuth.class);
+		search.addFilterEqual("role", role);
+		int count = this.count(search);
+		if(count>0) return true;
+		return false;
 	}
 
 }

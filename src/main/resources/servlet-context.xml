@@ -28,13 +28,14 @@
 			<mapping path="/checkitems/**"/>
 			<mapping path="/role/**"/>
 			<mapping path="/cms/**" />
+			<mapping path="/records/**" />
 			<beans:bean class="com.cngc.pm.interceptor.MyInterceptor"></beans:bean>
 		</interceptor>
-		<interceptor>
+		<!-- <interceptor>
 			<mapping path="/user/**"/>
 			<mapping path="/authority/**"/>
 			<beans:bean class="com.cngc.pm.interceptor.LogInterceptor"></beans:bean>
-		</interceptor>
+		</interceptor> -->
 	</interceptors>
 
 	<beans:bean id="messageSource" class="org.springframework.context.support.ReloadableResourceBundleMessageSource">

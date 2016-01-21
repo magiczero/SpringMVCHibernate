@@ -8,17 +8,17 @@ import com.cngc.pm.model.SysUser;
 
 public interface UserService {
 
-	void save(SysUser user);
+	void save(SysUser user, String username);
 	
 	SysUser getById(Long id);
 	
-	boolean delByIds(String ids);
+	boolean delByIds(String username, String ids);
 	
-	boolean delById(Long id);
+	boolean delById(Long id, String username);
 	
 	SysUser getByUsername(String username);
 
-	void update(SysUser user);
+	void update(SysUser user, String username);
 	
 	List<SysUser> getAll();
 	
@@ -26,9 +26,11 @@ public interface UserService {
 	
 	List<Role> getRolesByUser(Long userid);
 
-	void setRole(SysUser user, String roleIds);
+	void setRole(String username, SysUser user, String roleIds);
 	
 	List<SysUser> getEngineer();
 	List<SysUser> getLeader();
 	List<SysUser> getCommonUser();
+	
+	boolean enableUser(String loginname,SysUser user );
 }

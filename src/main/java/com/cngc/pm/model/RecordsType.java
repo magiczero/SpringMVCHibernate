@@ -1,5 +1,5 @@
 package com.cngc.pm.model;
 
 public enum RecordsType {
-	auth, login
+	auth, login, user, rescourcs, menu, role
 }

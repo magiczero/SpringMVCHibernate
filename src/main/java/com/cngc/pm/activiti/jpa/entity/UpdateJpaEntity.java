@@ -14,6 +14,10 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 @Entity(name = "wk_update")
 public class UpdateJpaEntity implements Serializable{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -7314634833214528079L;
 	private Long id;
 	private String updateType;
 	private String version;

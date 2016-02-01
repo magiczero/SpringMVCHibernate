@@ -15,7 +15,13 @@
 
     <link rel="icon" type="image/ico" href="favicon.ico"/>
     
-    <link href="${contextPath }/resources/css/stylesheets.css" rel="stylesheet" type="text/css" />
+    <link href="${contextPath }/resources/css/icons.css" rel="stylesheet" type="text/css" />
+    <link href="${contextPath }/resources/css/bootstrap.css" rel="stylesheet" type="text/css" />
+    <link href="${contextPath }/resources/css/ui.css" rel="stylesheet" type="text/css" />
+    <link href="${contextPath }/resources/css/pnotify.css" rel="stylesheet" type="text/css" />
+    <link href="${contextPath }/resources/css/stylesheet.css" rel="stylesheet" type="text/css" />
+    <link href="${contextPath }/resources/css/styling.css" rel="stylesheet" type="text/css" />
+    <link href="${contextPath }/resources/css/mycss.css" rel="stylesheet" type="text/css" />
     <!--[if lt IE 8]>
         <link href="${contextPath }/resources/css/ie7.css" rel="stylesheet" type="text/css" />
     <![endif]-->    
@@ -25,23 +31,9 @@
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/jquery/jquery.mousewheel.min.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/cookie/jquery.cookies.2.2.0.min.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/bootstrap.min.js'></script>
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/sparklines/jquery.sparkline.min.js'></script>
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/fullcalendar/fullcalendar.min.js'></script>
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/select2/select2.min.js'></script>
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/uniform/uniform.js'></script>
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/maskedinput/jquery.maskedinput-1.3.min.js'></script>
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/validation/languages/jquery.validationEngine-en.js' charset='utf-8'></script>
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/validation/jquery.validationEngine.js' charset='utf-8'></script>
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/mcustomscrollbar/jquery.mCustomScrollbar.min.js'></script>
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/animatedprogressbar/animated_progressbar.js'></script>
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/qtip/jquery.qtip-1.0.0-rc3.min.js'></script>
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/cleditor/jquery.cleditor.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/dataTables/jquery.dataTables.min.js'></script>    
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/fancybox/jquery.fancybox.pack.js'></script>
-    <script type="text/javascript" src="${contextPath }/resources/js/plugins/elfinder/elfinder.min.js"></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/highlight/jquery.highlight-4.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/pnotify/jquery.pnotify.min.js'></script>
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/ibutton/jquery.ibutton.min.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/scrollup/jquery.scrollUp.min.js'></script>
     
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/charts/excanvas.min.js'></script>    
@@ -51,10 +43,6 @@
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/charts/jquery.flot.resize.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/charts/chart.min.js'></script>
     
-    <script type='text/javascript' src='${contextPath }/resources/js/cookies.js'></script>
-    <script type='text/javascript' src='${contextPath }/resources/js/myactions.js'></script>
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins.js'></script>
-    <script type='text/javascript' src='${contextPath }/resources/js/settings.js'></script>    
     <script type='text/javascript' src='${contextPath }/resources/js/pm-common.js'></script>
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
@@ -67,7 +55,7 @@
 		var mydatasets=[<c:forEach items="${stat.row }" var="rowcode" varStatus="s"><c:if test="${s.index>0}">,</c:if>{fillColor : "rgba(151,187,205,0.5)",strokeColor : "rgba(151,187,205,1)",data:[<c:forEach items="${stat.column }" var="columncode" varStatus="status"><c:if test="${status.index>0}">,</c:if>${stat[rowcode.key][columncode.key]==null?0:stat[rowcode.key][columncode.key]}</c:forEach>]}</c:forEach>];
 	    $(document).ready(function () {
 	    	$(".header").load("${contextPath}/header?t="+pm_random());
-	        $(".menu").load("${contextPath}/menu?t="+pm_random(), function () { $(".navigation > li:eq(9)").addClass("active"); });
+	        $(".menu").load("${contextPath}/menu?t="+pm_random(), function () { $("#node_${moduleId}").addClass("active"); });
 	        $(".breadLine .buttons").load("${contextPath}/contentbuttons?t="+pm_random());
 	        if($("#barChart").length > 0){       
 	            var bctx = $("#barChart").get(0).getContext("2d");
@@ -98,7 +86,7 @@
                 <ul class="breadcrumb">
                     <li><a href="#">运维管理系统</a> <span class="divider">></span></li>
                     <li><a href="#">报表与统计管理</a> <span class="divider">></span></li>       
-                    <li class="active">变更统计</li>
+                    <li class="active">变更风险统计</li>
                 </ul>
 
                 <ul class="buttons"></ul>
@@ -145,7 +133,7 @@
                         </div>
                         <div class="block-fluid">
                         	<div class="toolbar clearfix">统计说明：统计本年度已关闭的变更。</div>
-                            <table cellpadding="0" cellspacing="0" width="100%" class="table">
+                            <table class="table">
                                 <thead>
                                     <tr>                                    
                                         <th></th>
@@ -180,7 +168,7 @@
                             <h1>统计图</h1>                            
                         </div>
                         <div class="block">
-                        	<canvas id="barChart"/>
+                        	<canvas id="barChart"></canvas>
                         </div>
                         
                     </div>

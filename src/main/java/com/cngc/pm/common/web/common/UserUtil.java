@@ -5,7 +5,8 @@ import java.util.Set;
 import javax.annotation.Resource;
 
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import com.cngc.pm.model.SysUser;
@@ -26,10 +27,12 @@ public class UserUtil {
 	 * @return
 	 */
 	public String getUserId(Authentication authentication) {
-		if (authentication == null)
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		
+		if (auth == null)
 			return null;
 
-		User user = (User) authentication.getPrincipal();
+		UserDetails user = (UserDetails) auth.getPrincipal();
 		if (user == null)
 			return null;
 		else
@@ -43,13 +46,20 @@ public class UserUtil {
 	 * @return
 	 */
 	public String getUserName(Authentication authentication) {
-		User user = (User) authentication.getPrincipal();
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		
+		if (auth == null)
+			return null;
+
+		UserDetails user = (UserDetails) auth.getPrincipal();
 		if (user == null)
-			return "";
-		else {
+			return null;
+		else
+		{
 			SysUser sysuser = userService.getByUsername(user.getUsername());
 			return sysuser.getUsername();
 		}
+		
 	}
 
 	/**
@@ -60,10 +70,16 @@ public class UserUtil {
 	 */
 	public Boolean IsWorkflowManager(Authentication authentication) {
 		Boolean bresult = false;
-		User user = (User) authentication.getPrincipal();
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		
+		if (auth == null)
+			return bresult;
+
+		UserDetails user = (UserDetails) auth.getPrincipal();
 		if (user == null)
 			return bresult;
-		else {
+		else
+		{
 			SysUser sysuser = userService.getByUsername(user.getUsername());
 			Set<UserRole> roles = sysuser.getUserRoles();
 			for (UserRole role : roles) {
@@ -85,7 +101,12 @@ public class UserUtil {
 	 */
 	public Boolean IsServiceDesk(Authentication authentication) {
 		Boolean bresult = false;
-		User user = (User) authentication.getPrincipal();
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		
+		if (auth == null)
+			return bresult;
+		
+		UserDetails user = (UserDetails) auth.getPrincipal();
 		if (user == null)
 			return bresult;
 		else {
@@ -109,7 +130,12 @@ public class UserUtil {
 	 */
 	public Boolean IsCommonUser(Authentication authentication) {
 		Boolean bresult = false;
-		User user = (User) authentication.getPrincipal();
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		
+		if (auth == null)
+			return bresult;
+		
+		UserDetails user = (UserDetails) auth.getPrincipal();
 		if (user == null)
 			return bresult;
 		else {

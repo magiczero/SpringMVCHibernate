@@ -28,7 +28,7 @@ public class VirusUpdateJob {
 				.processDefinitionKey( processKey ).latestVersion().singleResult();
 		
 		Map<String,String> variables = new HashMap<String,String>();
-		variables.put("user", "admin");
+		variables.put("user", "chenweijia");
 		variables.put("updateType",PropertyFileUtil.getStringValue("syscode.update.virus"));
 		
 		formService.submitStartFormData(processDefinition.getId(), variables);

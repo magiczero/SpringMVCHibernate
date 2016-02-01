@@ -128,7 +128,7 @@
                             <h1>历史报修信息</h1>                             
                         </div>
                         <div class="block-fluid table-sorting clearfix">
-                            <table cellpadding="0" cellspacing="0" width="100%" class="table" id="myTable">
+                            <table class="table" id="myTable">
                                 <thead>
                                     <tr>
                                         <th>摘要</th>

@@ -274,7 +274,7 @@
 	                        </ul> 
 	                        <div id="tabs-incident">
                             	<div style="height:300px;">
-                                <table cellpadding="0" cellspacing="0" width="100%" class="table" id="incidentTable">
+                                <table class="table" id="incidentTable">
                                 <thead>
                                     <tr>                                    
                                         <th>摘要</th>
@@ -300,7 +300,7 @@
                             </div><!-- incident end -->
                             <div id="tabs-change">
                             	<div style="height:300px;">
-                                <table cellpadding="0" cellspacing="0" width="100%" class="table" id="changeTable">
+                                <table class="table" id="changeTable">
                                 <thead>
                                     <tr>                                    
                                         <th>摘要</th>

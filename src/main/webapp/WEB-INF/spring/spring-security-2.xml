@@ -10,7 +10,7 @@
 
 	<http pattern="/resources/**" security="none" />
 	<http pattern="/initLogin" security="none" />
-	<!-- <http pattern="/workflow/task/getmytaskcount*" security="none" /> -->
+	<!-- http pattern="/workflow/task/getmytaskcount*" security="none" / -->
 	
 	<http  use-expressions="true">
 		<!-- <intercept-url pattern="/login" access="permitAll"/>

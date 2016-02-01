@@ -1,7 +1,5 @@
 package com.cngc.pm.activiti.service;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import javax.annotation.Resource;

@@ -9,7 +9,6 @@ import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.TaskEntity;
 import org.activiti.engine.repository.ProcessDefinition;
-import org.activiti.engine.runtime.ProcessInstance;
 
 import com.cngc.pm.service.MessageService;
 import com.cngc.utils.PropertyFileUtil;
@@ -64,7 +63,7 @@ public class SendMessageListener implements ActivitiEventListener {
 			if (getSendFlagByProcessKey("workflow.listener.processcompleted",
 					"message.workflow.processkey.processcompleted", processKey)) {
 				if (entity instanceof ExecutionEntity) {
-					ExecutionEntity execution = (ExecutionEntity) entity;
+					//ExecutionEntity execution = (ExecutionEntity) entity;
 
 					HistoricProcessInstance instance = event.getEngineServices().getHistoryService()
 							.createHistoricProcessInstanceQuery().processInstanceId(event.getProcessInstanceId())
@@ -74,6 +73,8 @@ public class SendMessageListener implements ActivitiEventListener {
 					messageService.sendMessage("系统", instance.getStartUserId(), msg, "#");
 				}
 			}
+			break;
+		default:
 			break;
 		}
 	}

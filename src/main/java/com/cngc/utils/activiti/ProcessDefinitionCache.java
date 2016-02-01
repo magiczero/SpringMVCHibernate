@@ -66,7 +66,8 @@ public class ProcessDefinitionCache {
         return null;
     }
 
-    public static String getProcessName(String processDefinitionId){
+    @SuppressWarnings("deprecation")
+	public static String getProcessName(String processDefinitionId){
     	 ProcessDefinition processDefinition = get(processDefinitionId);
     	 if(processDefinition!=null)
     	 { 
@@ -74,7 +75,8 @@ public class ProcessDefinitionCache {
     	 }
     	 return null;
     } 
-    public static String getActivityName(String processDefinitionId, String activityId) {
+    @SuppressWarnings("deprecation")
+	public static String getActivityName(String processDefinitionId, String activityId) {
         ActivityImpl activity = getActivity(processDefinitionId, activityId);
         if (activity != null) {
             return ObjectUtils.toString(activity.getProperty("name"));

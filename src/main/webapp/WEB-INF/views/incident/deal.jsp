@@ -234,7 +234,7 @@
                             </div>
                             <div id="tabs-incident">
                             	<div style="height:300px;">
-                                <table cellpadding="0" cellspacing="0" width="100%" class="table">
+                                <table class="table">
                                 <thead>
                                     <tr>                                    
                                         <th>摘要</th>
@@ -267,7 +267,7 @@
 
                             <div id="tabs-change">
                                 <div style="height:300px;">
-                                <table cellpadding="0" cellspacing="0" width="100%" class="table">
+                                <table class="table">
                                 <thead>
                                     <tr>                                    
                                         <th>摘要</th>
@@ -300,7 +300,7 @@
 
                             <div id="tabs-ci">
 								<div style="height:300px;">
-                                <table cellpadding="0" cellspacing="0" width="100%" class="table">
+                                <table class="table">
                                 <thead>
                                     <tr>                                    
                                         <th>名称</th>
@@ -334,7 +334,7 @@
                             </div>
                             <div id="tabs-knowledge">
                             	<div style="height:300px;">
-                                <table cellpadding="0" cellspacing="0" width="100%" class="table" id="knowledgeTable">
+                                <table class="table" id="knowledgeTable">
 	                                <thead>
 	                                    <tr>                                    
 	                                        <th>标题</th>
@@ -357,7 +357,7 @@
                             </div>
                             <div id="tabs-object">
 								<div style="height:300px;">
-                                <table cellpadding="0" cellspacing="0" width="100%" class="table" id="objectTable">
+                                <table class="table" id="objectTable">
 	                                <thead>
 	                                    <tr>                                    
 	                                        <th>名称</th>

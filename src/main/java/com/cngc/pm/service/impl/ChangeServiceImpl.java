@@ -114,6 +114,7 @@ public class ChangeServiceImpl implements ChangeService{
 	{
 		return changeDao.getStats(column, row, startTime, endTime, status);
 	}
+	@SuppressWarnings("unchecked")
 	@Override
 	@Transactional
 	public boolean updateCi(Long changeId)

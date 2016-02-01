@@ -12,6 +12,10 @@ import javax.persistence.Id;
 @Entity(name = "wk_sec_job")
 public class SecJobJpaEntity  implements Serializable{
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 8565436008055663566L;
 	private Long id;
 	private String type;
 	private String userId;

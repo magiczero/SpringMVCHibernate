@@ -189,7 +189,7 @@
                             </ul>                             
                         </div>
                         <div class="block-fluid table-sorting clearfix">
-                            <table cellpadding="0" cellspacing="0" width="100%" class="table" id="myTable">
+                            <table class="table" id="myTable">
                                 <thead>
                                     <tr>
                                     	<th width="70px">流水号</th>

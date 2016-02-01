@@ -70,10 +70,6 @@
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/ibutton/jquery.ibutton.min.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/scrollup/jquery.scrollUp.min.js'></script>
     
-    <script type='text/javascript' src='${contextPath }/resources/js/cookies.js'></script>
-    <script type='text/javascript' src='${contextPath }/resources/js/myactions.js'></script>
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins.js'></script>
-    <script type='text/javascript' src='${contextPath }/resources/js/settings.js'></script>    
     <script type='text/javascript' src='${contextPath }/resources/js/pm-common.js'></script>
    	<script type='text/javascript' src='${contextPath }/resources/js/activiti-form.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/pm-workflow.js'></script>

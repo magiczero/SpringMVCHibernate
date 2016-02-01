@@ -53,6 +53,7 @@ public class PropertyDAOImpl extends BaseDAOImpl<Property, Long> implements Prop
 	 * 
 	 * @see com.cngc.pm.dao.cms.PropertyDAO#getSetByNIds(java.util.List)
 	 */
+	@SuppressWarnings("unchecked")
 	@Override
 	public List<Property> getSetByNIds(List<Long> ids) {
 		List<Property> properties;

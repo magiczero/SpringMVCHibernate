@@ -98,4 +98,7 @@
 			<taglib-location>/WEB-INF/tld/security.tld</taglib-location>
 		</taglib>
 	</jsp-config>
+	<welcome-file-list>
+		<welcome-file>initLogin.html</welcome-file>
+	</welcome-file-list>
 </web-app>

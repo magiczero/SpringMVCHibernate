@@ -29,6 +29,12 @@
 			<mapping path="/role/**"/>
 			<mapping path="/cms/**" />
 			<mapping path="/records/**" />
+			<mapping path="/incident/**" />
+			<mapping path="/change/**" />
+			<mapping path="/record/**" />
+			<mapping path="/knowledge/**" />
+			<mapping path="/stats/**" />
+			<mapping path="/workflow/**" />
 			<beans:bean class="com.cngc.pm.interceptor.MyInterceptor"></beans:bean>
 		</interceptor>
 		<!-- <interceptor>

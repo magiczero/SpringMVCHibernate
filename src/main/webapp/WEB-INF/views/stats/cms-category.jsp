@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>    
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <c:set var="contextPath" value="${pageContext.request.contextPath}"></c:set>
 <!DOCTYPE html>
 <html lang="en">
@@ -141,10 +142,10 @@
                                 	<c:forEach items="${stat.row }" var="rowcode">
                                 	<tr>
                                     	<td>
-                                    		<c:forEach var="x" begin="4" end="${rowcode.key.length() }">
+                                    		<c:forEach var="x" begin="4" end="${fn:length(rowcode.key) }">
 												<c:if test="${x%2==0 }">&nbsp;&nbsp;</c:if>
 											</c:forEach>
-											<c:if test="${rowcode.key.length()!=2 }">-</c:if>
+											<c:if test="${x!=2 }">-</c:if>
                                     		${rowcode.value }
                                     	</td>
                                     	

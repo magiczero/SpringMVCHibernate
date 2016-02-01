@@ -23,6 +23,7 @@
     <link href="${contextPath }/resources/css/mycss.css" rel="stylesheet" type="text/css" />
     <link href="${contextPath }/resources/css/select2.css" rel="stylesheet" type="text/css" />
     <link href="${contextPath }/resources/css/tagsinput.css" rel="stylesheet" type="text/css" />
+    <link href="${contextPath }/resources/css/cleditor.css" rel="stylesheet" type="text/css" />
     <link rel='stylesheet' type='text/css' href='${contextPath }/resources/css/bootstrap-treeview.css' media='print' />
     <!--[if lt IE 8]>
         <link href="${contextPath }/resources/css/ie7.css" rel="stylesheet" type="text/css" />
@@ -47,6 +48,8 @@
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/umeditor/umeditor.min.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/umeditor/lang/zh-cn/zh-cn.js'></script>
     
+    <!-- <script type='text/javascript' src='${contextPath }/resources/js/plugins/cleditor/jquery.cleditor.js'></script> -->
+    
     <script type='text/javascript' src='${contextPath }/resources/js/pm-common.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/pm-select.js'></script>
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
@@ -66,6 +69,7 @@
             	act_dialog_category_select('INCIDENT_CATEGORY','category');
           	});
             var um = UM.getEditor('solution');
+            //$("#solution").cleditor();
         });
     </script>
 </head>
@@ -125,7 +129,7 @@
                             </div> 
                             <div class="row-form clearfix">
                                 <div class="col-md-2"><form:label path="solution">解决办法</form:label></div>
-                                <div class="col-md-10"><form:textarea path="solution" id="solution"  cssStyle="width:100%;height:240px;"></form:textarea></div>   
+                                <div class="col-md-10"><form:textarea path="solution" id="solution"  cssStyle="height:240px;"></form:textarea></div>   
                             </div>  
                                     
                             <div class="footer tar">                        	

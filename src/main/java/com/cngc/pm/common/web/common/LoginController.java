@@ -15,7 +15,7 @@ public class LoginController {
 	@Resource
 	private UserService userService;
 	
-	@RequestMapping(value = "/initLogin", method = RequestMethod.GET)
+	@RequestMapping(value = "/initLogin.html", method = RequestMethod.GET)
 	public String init() {
 		return "login";
 	}

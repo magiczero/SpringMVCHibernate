@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>    
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
 <c:set var="contextPath" value="${pageContext.request.contextPath}"></c:set>
 <!DOCTYPE html>
@@ -151,24 +152,24 @@
 									</tr>
                                 </thead>
                                 <tbody>
-                                	<c:forEach items="${list}" var="category">
+                                	<c:forEach items="${list}" var="category1">
 									<tr>
 										<td class="code">
-											<c:forEach var="x" begin="4" end="${category.categoryCode.length() }">
+											<c:forEach var="x" begin="4" end="${fn:length(category1.categoryCode) }">
 												<c:if test="${x%2==0 }">&nbsp;&nbsp;</c:if>
 											</c:forEach>
-											<c:if test="${category.categoryCode.length()!=2 }">-</c:if>
-											${category.categoryCode }
+											<c:if test="${fn:length(category1.categoryCode)!=2 }">-</c:if>
+											${category1.categoryCode }
 										</td>
-										<td>${category.categoryName }</td>
+										<td>${category1.categoryName }</td>
 										<td>
-											<c:forEach items="${category.properties }" var="property">
+											<c:forEach items="${category1.properties }" var="property">
 												${property.propertyName } | 
 											</c:forEach>
 										</td>
 										<td>
-											<a class="confirm" href="${contextPath}/cms/category/delete/${category.categoryCode}"><span class="glyphicon glyphicon-remove"></span> 删除</a>
-											<a href="#"  onclick="setProperty('${category.categoryCode}')"><span class="glyphicon glyphicon-edit"></span> 设置属性</a>
+											<a class="confirm" href="${contextPath}/cms/category/delete/${category1.categoryCode}"><span class="glyphicon glyphicon-remove"></span> 删除</a>
+											<a href="#"  onclick="setProperty('${category1.categoryCode}')"><span class="glyphicon glyphicon-edit"></span> 设置属性</a>
 										</td>
 									</tr>
 								</c:forEach>   

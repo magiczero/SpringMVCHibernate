@@ -13,29 +13,79 @@
     
     <title>变更管理--运维管理系统</title>
 
-    <link rel="icon" type="image/ico" href="favicon.ico"/>
-    
     <link href="${contextPath }/resources/css/icons.css" rel="stylesheet" type="text/css" />
     <link href="${contextPath }/resources/css/bootstrap.css" rel="stylesheet" type="text/css" />
+    <link href="${contextPath }/resources/css/fullcalendar.css" rel="stylesheet" type="text/css" />
     <link href="${contextPath }/resources/css/ui.css" rel="stylesheet" type="text/css" />
+    <link href="${contextPath }/resources/css/select2.css" rel="stylesheet" type="text/css" />
+    <link href="${contextPath }/resources/css/uniform.default.css" rel="stylesheet" type="text/css" />
+    <link href="${contextPath }/resources/css/validation.css" rel="stylesheet" type="text/css" />
+    <link href="${contextPath }/resources/css/mCustomScrollbar.css" rel="stylesheet" type="text/css" />
+    <link href="${contextPath }/resources/css/cleditor.css" rel="stylesheet" type="text/css" />
+    <link href="${contextPath }/resources/css/fancybox/jquery.fancybox.css" rel="stylesheet" type="text/css" />
+    <link href="${contextPath }/resources/css/elfinder.min.css" rel="stylesheet" type="text/css" />
+    <link href="${contextPath }/resources/css/elfinder.css" rel="stylesheet" type="text/css" />
+    <link href="${contextPath }/resources/css/multi-select.css" rel="stylesheet" type="text/css" />
     <link href="${contextPath }/resources/css/pnotify.css" rel="stylesheet" type="text/css" />
+    <link href="${contextPath }/resources/css/ibutton.css" rel="stylesheet" type="text/css" />
+    <link href="${contextPath }/resources/css/stepy.css" rel="stylesheet" type="text/css" />
+    <link href="${contextPath }/resources/css/tagsinput.css" rel="stylesheet" type="text/css" />
+    <link href="${contextPath }/resources/css/dataTables.css" rel="stylesheet" type="text/css" />
     <link href="${contextPath }/resources/css/stylesheet.css" rel="stylesheet" type="text/css" />
     <link href="${contextPath }/resources/css/styling.css" rel="stylesheet" type="text/css" />
     <link href="${contextPath }/resources/css/mycss.css" rel="stylesheet" type="text/css" />
-    <!--[if lt IE 8]>
-        <link href="${contextPath }/resources/css/ie7.css" rel="stylesheet" type="text/css" />
-    <![endif]-->    
+	<link href="${contextPath }/resources/css/stylesheets2.css" rel="stylesheet" type="text/css" />
+    <link rel='stylesheet' type='text/css' href='${contextPath }/resources/css/fullcalendar.print.css' media='print' />
+    
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/jquery/jquery-1.10.2.min.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/jquery/jquery-ui-1.10.1.custom.min.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/jquery/jquery-migrate-1.2.1.min.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/jquery/jquery.mousewheel.min.js'></script>
+    
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/cookie/jquery.cookies.2.2.0.min.js'></script>
+    
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/bootstrap.min.js'></script>
+    
+    <script type='text/javascript' src='${contextPath }/resources/js/plugins/submenu/bootstrap-submenu.min.js'></script>
+    
+    <script type='text/javascript' src='${contextPath }/resources/js/plugins/sparklines/jquery.sparkline.min.js'></script>
+    
+    <script type='text/javascript' src='${contextPath }/resources/js/plugins/fullcalendar/fullcalendar.min.js'></script>
+    
+    <script type='text/javascript' src='${contextPath }/resources/js/plugins/select2/select2.min.js'></script>
+    
+    <script type='text/javascript' src='${contextPath }/resources/js/plugins/uniform/uniform.js'></script>
+    
+    <script type='text/javascript' src='${contextPath }/resources/js/plugins/maskedinput/jquery.maskedinput-1.3.min.js'></script>
+    
+    <script type='text/javascript' src='${contextPath }/resources/js/plugins/validation/languages/jquery.validationEngine-en.js' charset='utf-8'></script>
+    <script type='text/javascript' src='${contextPath }/resources/js/plugins/validation/jquery.validationEngine.js' charset='utf-8'></script>
+    
+    <script type='text/javascript' src='${contextPath }/resources/js/plugins/mcustomscrollbar/jquery.mCustomScrollbar.min.js'></script>
+    <script type='text/javascript' src='${contextPath }/resources/js/plugins/animatedprogressbar/animated_progressbar.js'></script>
+    
+    <script type='text/javascript' src='${contextPath }/resources/js/plugins/qtip/jquery.qtip-1.0.0-rc3.min.js'></script>
+    
+    <script type='text/javascript' src='${contextPath }/resources/js/plugins/cleditor/jquery.cleditor.js'></script>
+    
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/dataTables/jquery.dataTables.min.js'></script>    
+    
+    <script type='text/javascript' src='${contextPath }/resources/js/plugins/fancybox/jquery.fancybox.pack.js'></script>
+    
+    <script type='text/javascript' src='${contextPath }/resources/js/plugins/multiselect/jquery.multi-select.js'></script>
+        
+    <script type="text/javascript" src="${contextPath }/resources/js/plugins/elfinder/elfinder.min.js"></script>
+    
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/highlight/jquery.highlight-4.js'></script>
+    
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/pnotify/jquery.pnotify.min.js'></script>
+    <script type='text/javascript' src='${contextPath }/resources/js/plugins/ibutton/jquery.ibutton.min.js'></script>
+    
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/scrollup/jquery.scrollUp.min.js'></script>
     
+    <script type='text/javascript' src='${contextPath }/resources/js/cookies.js'></script>
+    <script type='text/javascript' src='${contextPath }/resources/js/plugins.js'></script>
+    <script type='text/javascript' src='${contextPath }/resources/js/settings.js'></script> 
     <script type='text/javascript' src='${contextPath }/resources/js/pm-common.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/pm-workflow.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/pm-knowledge.js'></script>
@@ -49,15 +99,37 @@
         $(document).ready(function () {
             $("#myTable").dataTable({"aaSorting":[[4,'desc']]});
             $(".header").load("${contextPath}/header?t="+pm_random());
-            $(".menu").load("${contextPath}/menu?t="+pm_random(), function () { $("#node_${moduleId}").addClass("active"); });
+            $(".menu").load("${contextPath}/menu?t="+pm_random(), function () { $("#node_0").addClass("active"); });
             $(".breadLine .buttons").load("${contextPath}/contentbuttons?t="+pm_random());
             $(".confirm").bind("click",function(){
               	if(!confirm("确定要执行该操作?"))
                		return false;
             });
-            pm_knowledge_initdialog();
-            pm_workflow_inittracedialog(850,350);
-        });
+            //pm_knowledge_initdialog();
+            //pm_workflow_inittracedialog(850,350);
+            $("#b_popup_knowledge").dialog({
+                autoOpen: false,
+                width: 1100,
+                buttons: { "关闭": function () { $(this).dialog("close") } },
+                open: function () { $("#scroll_knowledge").mCustomScrollbar(); }
+            });
+            $("#lnk_knowledge").click(function () {
+            	$("#b_popup_knowledge").dialog('open');
+            });
+            $("#b_popup_trace").dialog({
+            	autoOpen: false,
+            	width: 950,
+            	height: 350,
+            	buttons: { "关闭": function () { $(this).dialog("close") } }
+           });
+                });
+                
+                function open_trace(pid, pdid) {
+                	document.getElementById("trace_frame").src=ctx+ '/diagram-viewer/index.html?processDefinitionId=' 
+            	   	+ pdid + '&processInstanceId=' + pid;
+                	
+                	$("#b_popup_trace").dialog('open');
+                }
     </script>
 </head>
 <body>
@@ -137,7 +209,7 @@
 	                                        </td>
 	                                         <td>${change.applyUserName }</td>
 	                                        <td>
-	                                        	<a class="lnk_trace" href='#' pid="${change.processInstanceId }" pdid="${task.processDefinitionId }" title="点击查看流程图">
+	                                        	<a class="lnk_trace" href='#' onclick="open_trace(${incident.processInstanceId },${task.processDefinitionId });" title="点击查看流程图">
 													${task.name }
 												</a>
 	                                        </td>
@@ -167,7 +239,7 @@
 	                                        </td>
 	                                         <td>${change.applyUserName }</td>
 	                                        <td>
-	                                        	<a class="lnk_trace" href='#' pid="${change.processInstanceId }" pdid="${task.processDefinitionId }" title="点击查看流程图">
+	                                        	<a class="lnk_trace" href='#' onclick="open_trace(${incident.processInstanceId },${task.processDefinitionId });" title="点击查看流程图">
 													${task.name }
 												</a>
 	                                        </td>
@@ -228,6 +300,8 @@
             <!--workplace end-->
         </div>   
     </div>
+    <div class="dialog" id="b_popup_knowledge" style="display: none;" title="知识库"><iframe src="${contextPath}/knowledge/searchdialog" width="100%" height="500" frameborder="0"></iframe></div>
+    <div class="dialog" id="b_popup_trace" style="display: none;" title="流程跟踪"><div class="block dialog_block  uploads" id="trace_content"><iframe id="trace_frame" src="" width="100%" height="265"></iframe></div></div>
 </body>
 
 </html>

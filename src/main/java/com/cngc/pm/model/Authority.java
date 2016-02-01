@@ -156,4 +156,9 @@ public class Authority implements Serializable {
 		this.sys = sys;
 	}
 
+	@Override
+	public String toString() {
+		
+		return "权限id：" + this.getId() + "，权限名：" + this.getAuthorityName() +"，权限标识：" + this.getAuthorityMake() + "， 权限说明：" + this.getAuthorityDesc() ;
+	}
 }

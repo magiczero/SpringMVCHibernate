@@ -133,8 +133,8 @@
 		});
 		pm_message_gettipscount();
 		pm_task_getmytaskcount();
-		setInterval(pm_message_gettipscount, 10000);
-		setInterval(pm_task_getmytaskcount, 10000);
+		//setInterval(pm_message_gettipscount, 10000);
+		//setInterval(pm_task_getmytaskcount, 10000);
 	});
 	function pm_task_getmytaskcount()
 	{

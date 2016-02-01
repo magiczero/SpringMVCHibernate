@@ -8,13 +8,14 @@ import com.cngc.pm.model.Role;
 
 public interface RoleService {
 
-	void save(Role role);
+	void save(Role role, String username);
 	Role getById(Long id);
 	boolean delById(Long id);
 	boolean delByIds(String ids);
+	boolean del(Role role, String username);
 	List<Role> getAll();
 	Set<Role> getRoleByIds(String ids);
 	List<Authority> getAuthsByRole(long id);
-	void setAuths(Role role, String... authIds);
-	void setMenuByRole(Role role, String[] menuIds);
+	void setAuths(String username, Role role, String... authIds);
+	void setMenuByRole(String username, Role role, String[] menuIds);
 }

@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.activiti.engine.IdentityService;
 import org.activiti.engine.identity.Group;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.cngc.exception.BusinessException;
 import com.cngc.exception.ParameterException;
 import com.cngc.pm.model.Authority;
 import com.cngc.pm.model.Moudle;
@@ -67,7 +69,8 @@ public class RoleController {
 
 		role.setRoleName(request.getParameter("rolename"));
 		role.setRoleDesc(request.getParameter("roledesc"));
-		roleService.save(role);
+		String username = SecurityContextHolder.getContext().getAuthentication().getName();
+		roleService.save(role, username);
 		
 		// 同步到activiti的group
 		Group group = identityService.newGroup(role.getRoleName());
@@ -78,19 +81,27 @@ public class RoleController {
 	}
 	
 	@RequestMapping(value="/delete/{id}", method = RequestMethod.GET)
-	public String delete(@PathVariable("id") long id,Model model){
-		if(id!=0)
-		{
-			Role role = roleService.getById(id);
-			//同步到activiti的group
-			identityService.deleteGroup(role.getRoleName());
-			roleService.delById(id);
-		}
+	public String delete(@PathVariable("id") long id, Model model) {
+		Role role = roleService.getById(id);
 		
+		if (role == null)
+			throw new BusinessException("没有这个角色，无法删除");
+		if(role.getRoleName().equals("ROLE_ADMIN"))
+			throw new BusinessException("系统不允许删除ROLE_ADMIN，请联系管理员");
+		
+		String username = SecurityContextHolder.getContext()
+				.getAuthentication().getName();
+		if(	roleService.del(role, username)) {
+			// 同步到activiti的group
+			identityService.deleteGroup(role.getRoleName());
+		} else {
+			throw new BusinessException("无法删除角色，请先清空角色与用户及权限的关系");
+		}
+
 		return "redirect:/role/list";
 	}
 	
-	@RequestMapping(value="/get/{id}")
+	@RequestMapping(value="/get/{id}", method = RequestMethod.GET)
 	@ResponseBody
 	public Map<String,Object> getUser(@PathVariable("id") long id){
 		Map<String,Object> map = new HashMap<String,Object>();
@@ -151,8 +162,8 @@ public class RoleController {
 		
 		String roleId = request.getParameter("role_id");
 		Role role = roleService.getById(Long.valueOf(roleId));
-		
-		roleService.setAuths(role, authIds);
+		String username = SecurityContextHolder.getContext().getAuthentication().getName();
+		roleService.setAuths(username, role, authIds);
 		
 		return "redirect:/role/list";
 	}
@@ -165,8 +176,8 @@ public class RoleController {
 		
 		String roleId = request.getParameter("role_id");
 		Role role = roleService.getById(Long.valueOf(roleId));
-		
-		roleService.setMenuByRole(role, menuIds);
+		String username = SecurityContextHolder.getContext().getAuthentication().getName();
+		roleService.setMenuByRole(username, role, menuIds);
 		
 		return "redirect:/role/list";
 	}

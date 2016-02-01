@@ -55,9 +55,9 @@
     	var mydata=[<c:forEach items="${stat.column }" var="code" varStatus="status"><c:if test="${status.index>0}">,</c:if>${stat.counts[code.key]==null?0:stat.counts[code.key]}</c:forEach>];
         
         $(document).ready(function () {
-        	$(".header").load("${contextPath}/header?t="+pm_random());
-            $(".menu").load("${contextPath}/menu?t="+pm_random(), function () { $("#node_${moduleId}").addClass("active"); });
-            $(".breadLine .buttons").load("${contextPath}/contentbuttons?t="+pm_random());
+        	$(".header").load("${contextPath }/header?t=" + pm_random());
+            $(".menu").load("${contextPath }/menu?t=" + pm_random(), function () { $("#node_${moduleId}").addClass("active"); });
+            $(".breadLine .buttons").load("${contextPath }/contentbuttons?t=" + pm_random());
             if($("#barChart").length > 0){       
 	            var bctx = $("#barChart").get(0).getContext("2d");
 	            $("#barChart").attr('width',$("#barChart").parent('div').width()).attr('height',300);

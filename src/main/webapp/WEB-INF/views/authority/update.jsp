@@ -50,11 +50,6 @@
     
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/bootstrap.min.js'></script>
     
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/charts/jquery.flot.js'></script>    
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/charts/jquery.flot.stack.js'></script>    
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/charts/jquery.flot.pie.js'></script>
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/charts/jquery.flot.resize.js'></script>
-    
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/sparklines/jquery.sparkline.min.js'></script>
     
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/fullcalendar/fullcalendar.min.js'></script>
@@ -94,8 +89,6 @@
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/tagsinput/jquery.tagsinput.min.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/multiselect/jquery.multi-select.js'></script>
     
-    <script type='text/javascript' src='${contextPath }/resources/js/cookies.js'></script>
-    <script type='text/javascript' src='${contextPath }/resources/js/settings.js'></script>   
     <script type='text/javascript' src='${contextPath }/resources/js/pm-common.js'></script> 
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
@@ -106,8 +99,8 @@
     var ctx = "${contextPath}";
             $(document).ready(function () {
             	$(".header").load("${contextPath }/header");
-            	$(".menu").load("${contextPath }/menu", function() {$("#node_${moduleId}").addClass("active");});
-                $(".breadLine .buttons").load("${contextPath }/contentbuttons");
+            	$(".menu").load("${contextPath }/menu?t="+pm_random(), function() {$("#node_${moduleId}").addClass("active");});
+                $(".breadLine .buttons").load("${contextPath}/contentbuttons?t="+pm_random());
                 
                 $("#authority").validationEngine({promptPosition : "topLeft", scroll: true});
                 
@@ -163,8 +156,8 @@
                         <div class="head clearfix">
                             <div class="isw-documents"></div>
                             <h1>修改权限信息</h1>
-                        </div><c:url var="actionUrl" value="/authority/save" ></c:url>
-						<form:form action="${actionUrl}" commandName="authority">
+                        </div><c:url var="actionUrl" value="/authority/${authority.id }" ></c:url>
+						<form:form action="${actionUrl}" commandName="authority" method="put">
 						<form:hidden path="id"/>
 						<form:hidden path="enable"/>
 						<form:hidden path="sys" />
@@ -179,7 +172,7 @@
 									<%-- <form:select multiple="true" path="setResources" class="validate[required] multiselect">
 												<c:forEach items="${listResources }" var="res1"><option value="${res1.id }" <c:forEach items="${authority.setResources }" var="res2"><c:if test="${res2.id == res1.id }">selected="true"</c:if></c:forEach>>${res1.name }</option></c:forEach>
 											</form:select>--%>
-                            		<select multiple id="resos" name="resos" class="validate[required] multiselect">
+                            		<select multiple id="resos" name="resos" class="multiselect">
 										
 										<%
 											@SuppressWarnings("unchecked")

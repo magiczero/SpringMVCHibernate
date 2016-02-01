@@ -56,7 +56,7 @@
         $(document).ready(function () {
             $("#myTable").dataTable({"aaSorting":[[2,'desc']]});
             $(".header").load("${contextPath}/header?t="+pm_random());
-            $(".menu").load("${contextPath}/menu?t="+pm_random(), function () { $("#node_${moduleId}").addClass("active"); });
+            $(".menu").load("${contextPath}/menu?t="+pm_random(), function () { $("#node_0").addClass("active"); });
             $(".breadLine .buttons").load("${contextPath}/contentbuttons?t="+pm_random());
             $(".confirm").bind("click",function(){
               	if(!confirm("确定要执行该操作?"))

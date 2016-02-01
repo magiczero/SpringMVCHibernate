@@ -1,17 +1,26 @@
 package com.cngc.pm.controller;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
+import com.cngc.pm.annotation.ControllerLog;
 import com.cngc.pm.common.web.BaseController;
 import com.cngc.pm.model.Authority;
 import com.cngc.pm.service.AuthorityService;
@@ -65,6 +74,7 @@ public class AuthorityController extends BaseController {
 //	}
 //	
 	@RequestMapping(value = "/list", method = RequestMethod.GET)
+	@ControllerLog(description="查看所有的权限")
 	public String list(Model model) {
 		model.addAttribute("listAuths", authService.getAll());
 		model.addAttribute("listResources", authService.getListResources());
@@ -81,17 +91,19 @@ public class AuthorityController extends BaseController {
 	}
 	
 	@RequestMapping(value = "/save", method = RequestMethod.POST)
-	public String save(@Valid @ModelAttribute("authority") Authority authority, BindingResult result, HttpServletRequest request) {
+	@ControllerLog(description="添加权限")
+	public String save(@Valid @ModelAttribute("authority") Authority authority, BindingResult result, HttpServletRequest request) throws BindException {
 		if(result.hasErrors()) {
-			return "500";
+			throw new BindException(result);
 		}
 		
 		String[] resours = request.getParameterValues("resos");
+		String username = SecurityContextHolder.getContext().getAuthentication().getName();
 //		for(String s : resours) {
 //		System.out.println(s);
 //		}
 		//if(authority.getId() == null)	//添加
-			authService.save(authority, resours);
+			authService.save(true, authority, username, resours );
 //		else											//修改
 //			authService.update(authority, resours);
 		
@@ -101,5 +113,33 @@ public class AuthorityController extends BaseController {
 //			authService.update(authority);
 		
 		return "redirect:/authority/list";
+	}
+	
+	@RequestMapping(value = "/{id}", method = RequestMethod.PUT)
+	@ResponseStatus(HttpStatus.NO_CONTENT)
+	public String update(@Valid @ModelAttribute("authority") Authority authority, BindingResult result, HttpServletRequest request) throws BindException {
+		if(result.hasErrors()) {
+			throw new BindException(result);
+		}
+		
+		String[] resours = request.getParameterValues("resos");
+		String username = SecurityContextHolder.getContext().getAuthentication().getName();
+		
+		authService.save(false, authority, username, resours );
+		
+		return "redirect:/authority/list";
+	}
+	
+	@RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
+	public @ResponseBody Map<String,Object> delete(@PathVariable("id") long id) {
+		String username = SecurityContextHolder.getContext().getAuthentication().getName();
+		Map<String, Object> map = new HashMap<>();  
+		if(authService.delete(authService.getById(id), username)) {
+			map.put("msg", true);
+		} else {
+			map.put("msn", false);
+		}
+		
+		return map;
 	}
 }

@@ -7,9 +7,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.cngc.pm.dao.MoudleDAO;
+import com.cngc.pm.dao.RecordsDAO;
 import com.cngc.pm.dao.ResourcesDAO;
 import com.cngc.pm.dao.RoleDAO;
 import com.cngc.pm.model.Moudle;
+import com.cngc.pm.model.Records;
+import com.cngc.pm.model.RecordsType;
 import com.cngc.pm.model.Resources;
 import com.cngc.pm.model.Role;
 import com.cngc.pm.service.ResourcesService;
@@ -24,6 +27,8 @@ public class ResourcesServiceImpl implements ResourcesService {
 	private MoudleDAO moduleDao;
 	@Autowired
 	private RoleDAO roleDao;
+	@Autowired
+	private RecordsDAO recordsDao;
 
 	@Override
 	@Transactional(readOnly=true)
@@ -34,9 +39,15 @@ public class ResourcesServiceImpl implements ResourcesService {
 
 	@Override
 	@Transactional
-	public void save(Resources resources) {
+	public void save(Resources resources, String username) {
 		// TODO Auto-generated method stub
 		resourcesDao.save(resources);
+		//保存到操作日志中
+		Records record = new Records();
+		record.setUsername(username);
+		record.setType(RecordsType.rescourcs);
+		record.setDesc("新建了资源，详细信息：资源名称：" + resources.getName()+"，资源路径："+resources.getPath());
+		recordsDao.save(record);
 	}
 
 	@Override
@@ -69,9 +80,15 @@ public class ResourcesServiceImpl implements ResourcesService {
 
 	@Override
 	@Transactional
-	public void update(Resources resources) {
+	public void update(Resources resources, String username) {
 		// TODO Auto-generated method stub
 		resourcesDao.update(resources);
+		//保存到操作日志中
+		Records record = new Records();
+		record.setUsername(username);
+		record.setType(RecordsType.rescourcs);
+		record.setDesc("修改了资源，详细信息：资源id：["+resources.getId()+"]，资源名称：[" + resources.getName()+"]，资源路径：["+resources.getPath() + "]");
+		recordsDao.save(record);
 	}
 
 	@Override
@@ -96,6 +113,34 @@ public class ResourcesServiceImpl implements ResourcesService {
 		search.addFilterEqual("roleAuths.auth.authResos.resources", resources);
 		
 		return roleDao.search(search);
+	}
+
+	@Override
+	public boolean enableOrNot(Resources resources, String username) {
+		// TODO Auto-generated method stub
+		boolean enable = resources.isEnable();
+		String upd = "";
+		if(resources.isEnable()) {
+			resources.setEnable(false);
+			upd = "禁用";
+		} else {
+			resources.setEnable(true);
+			upd = "启用";
+		}
+		
+		Resources r = resourcesDao.update(resources);
+		
+		if(r.isEnable() == enable)
+			return false;
+		
+		//保存到操作日志中
+		Records record = new Records();
+		record.setUsername(username);
+		record.setType(RecordsType.rescourcs);
+		record.setDesc(upd + "了资源，详细信息：资源id：["+r.getId()+"]，资源名称：[" + r.getName()+"]，资源路径：["+r.getPath() + "]");
+		recordsDao.save(record);
+				
+		return true;
 	}
 
 	

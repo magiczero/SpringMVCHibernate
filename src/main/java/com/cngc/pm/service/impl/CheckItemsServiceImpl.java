@@ -81,7 +81,10 @@ public class CheckItemsServiceImpl implements CheckItemsService {
 	@Transactional(readOnly=true)
 	public List<Document> getAllDoc() {
 		// TODO Auto-generated method stub
-		return docDao.findAll();
+		Search search = new Search(Document.class);
+		search.addFilterEqual("enabled", true);
+		
+		return docDao.search(search);
 	}
 
 	@Override

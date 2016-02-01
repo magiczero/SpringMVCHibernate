@@ -18,7 +18,10 @@ import org.springframework.security.web.RedirectStrategy;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.util.StringUtils;
 
+import com.cngc.pm.model.Records;
+import com.cngc.pm.model.RecordsType;
 import com.cngc.pm.model.SysUser;
+import com.cngc.pm.service.RecordsService;
 import com.cngc.pm.service.UserService;
 
 public class AuthenticationSuccessHandlerImpl implements
@@ -34,6 +37,8 @@ public class AuthenticationSuccessHandlerImpl implements
 	
 	@Resource
 	private UserService userService;
+	@Resource
+	private RecordsService recordsService;
 
 	@Override
 	public void afterPropertiesSet() throws Exception {
@@ -51,7 +56,8 @@ public class AuthenticationSuccessHandlerImpl implements
 		// TODO Auto-generated method stub
 
 		User user1 = (User)authentication.getPrincipal();
-		SysUser user = userService.getByUsername(user1.getUsername());
+		String username = user1.getUsername();
+		SysUser user = userService.getByUsername(username);
 		request.getSession().setAttribute("lastLogin", user.getLastWhile());
 		String ip = this.getIpAddress(request); 
 		Date date = new Date();  
@@ -60,8 +66,15 @@ public class AuthenticationSuccessHandlerImpl implements
 		//更新登录时间
 		user.setLastWhile(new java.sql.Timestamp(date.getTime()));
 		user.setLoginIP(ip);
-		userService.update(user);
-        
+		userService.update(user, "系统");
+
+        //记录到日志表
+		Records record = new Records();
+		record.setUsername(username);
+		record.setType(RecordsType.login);
+		record.setDesc(username + " 登入了系统");
+		recordsService.save(record);
+		
         if(this.forwardToDestination){  
             logger.info("Login success,Forwarding to "+this.defaultTargetUrl);  
               
@@ -71,6 +84,7 @@ public class AuthenticationSuccessHandlerImpl implements
               
             this.redirectStrategy.sendRedirect(request, response, this.defaultTargetUrl);  
         }  
+        
 	}
 
 	public String getIpAddress(HttpServletRequest request) {

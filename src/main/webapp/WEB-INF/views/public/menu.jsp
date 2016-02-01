@@ -24,7 +24,7 @@
             </div>
 
             <ul class="navigation">            
-                <li class="openable">
+                <li id="node_0" class="openable">
                     <a href="#">
                         <span class="isw-attachment"></span><span class="text">快速链接</span>
                     </a>

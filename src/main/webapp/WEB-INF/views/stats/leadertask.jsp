@@ -54,9 +54,9 @@
 		var mylabels = [<c:forEach items="${stat.column }" var="code" varStatus="status"><c:if test="${status.index>0}">,</c:if>'${code.value}'</c:forEach>];
 		var mydatasets=[<c:forEach items="${stat.row }" var="rowcode" varStatus="s"><c:if test="${s.index>0}">,</c:if>{fillColor : "rgba(151,187,205,0.5)",strokeColor : "rgba(151,187,205,1)",data:[<c:forEach items="${stat.column }" var="columncode" varStatus="status"><c:if test="${status.index>0}">,</c:if>${stat[rowcode.key][columncode.key]==null?0:stat[rowcode.key][columncode.key]}</c:forEach>]}</c:forEach>];
 	    $(document).ready(function () {
-	    	$(".header").load("${contextPath}/header?t="+pm_random());
-	        $(".menu").load("${contextPath}/menu?t="+pm_random(), function () {$("#node_${moduleId}").addClass("active"); });
-	        $(".breadLine .buttons").load("${contextPath}/contentbuttons?t="+pm_random());
+	    	$(".header").load("${contextPath }/header?t=" + pm_random());
+            $(".menu").load("${contextPath }/menu?t=" + pm_random(), function () { $("#node_${moduleId}").addClass("active"); });
+            $(".breadLine .buttons").load("${contextPath }/contentbuttons?t=" + pm_random());
 	        if($("#barChart").length > 0){       
 	            var bctx = $("#barChart").get(0).getContext("2d");
 	            $("#barChart").attr('width',$("#barChart").parent('div').width()).attr('height',300);

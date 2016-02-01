@@ -12,13 +12,16 @@ import javax.servlet.http.HttpServletRequest;
 import org.activiti.engine.IdentityService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.authentication.encoding.Md5PasswordEncoder;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.cngc.exception.BusinessException;
 import com.cngc.pm.model.Role;
 import com.cngc.pm.model.SysUser;
 import com.cngc.pm.model.UserRole;
@@ -36,6 +39,30 @@ public class UserController {
 	private RoleService roleService;
 	@Resource
 	private IdentityService identityService;
+	
+	@RequestMapping(value = "/name-check")
+	@ResponseBody  
+	public Map<String,Object> validateAssetNum(@RequestParam String fieldId,@RequestParam String fieldValue ) {
+		Map<String,Object> map = new HashMap<String,Object>();
+		
+		String msg = "";
+		boolean status = true;
+		
+		if("username".equals(fieldId) && (fieldValue!=null || !"".equals(fieldValue))) {
+			if(userService.getByUsername(fieldValue.trim()) == null) {
+				msg = "通过";
+			} else {
+				status = false;
+				msg = "用户名已经存在，请重新填写";
+				
+			}
+		}
+		// field, status, message不可更改，和前台ajax紧耦合
+		map.put("fieldId", fieldId);
+		map.put("status", status);
+		map.put("message", msg);
+		return map;
+	}
 
 	@RequestMapping(value = "/list", method = RequestMethod.GET)
 	public String list(Model model) {
@@ -52,13 +79,13 @@ public class UserController {
 	 */
 	@RequestMapping(value="/save", method = RequestMethod.POST)
 	public String save(Model model,HttpServletRequest request)	{
-		SysUser user;
+		SysUser user = new SysUser();;
 		Long id = Long.parseLong(request.getParameter("userform_id"));
 		
 		if(id!=0)
 			user = userService.getById(id);
-		else
-			user = new SysUser();
+//		else
+//			user = new SysUser();
 		if(id==0)
 		{
 			user.setUsername(request.getParameter("username"));
@@ -72,7 +99,8 @@ public class UserController {
 			);
 		}
 		user.setName(request.getParameter("name"));
-		userService.save(user);
+		String username = SecurityContextHolder.getContext().getAuthentication().getName();
+		userService.save(user, username);
 		
 		//同步到activiti的user
 		org.activiti.engine.identity.User actuser = identityService.newUser(user.getUsername());
@@ -81,11 +109,29 @@ public class UserController {
 		
 		return "redirect:/user/list";
 	}
+	
+	@RequestMapping(value="/enable/{id}", method = RequestMethod.PUT)
+	public @ResponseBody Map<String, Object> enableUser(@PathVariable("id") long id) {
+		Map<String, Object> map = new HashMap<>();
+		String username = SecurityContextHolder.getContext().getAuthentication().getName();
+		SysUser user = userService.getById(id);
+		if(user == null) throw new BusinessException("无法启用用户，无此用户");
+		
+		if(userService.enableUser(username, user)) {
+			map.put("flag", true);
+		} else {
+			map.put("flag", false);
+		}
+		
+		return map;
+	}
+	
 	@RequestMapping(value="/updaterole", method = RequestMethod.POST)
 	public String updateRole(Model model,HttpServletRequest request){
 		String sid = request.getParameter("roleform_id");
 		String roleIds = request.getParameter("rolefrom_userrole");
 		Long id = Long.valueOf(sid);
+		String username = SecurityContextHolder.getContext().getAuthentication().getName();
 		if(id!=0)
 		{
 			SysUser user = userService.getById(id);
@@ -94,9 +140,9 @@ public class UserController {
 				//清空用户的所有角色
 				user.setUserRoles(null);
 				
-				userService.save(user);
+				userService.save(user,username);
 			} else {
-				userService.setRole(user,roleIds);
+				userService.setRole(username,user,roleIds);
 			}
 			
 //			if(!StringUtils.equals(roles, "0"))
@@ -154,7 +200,8 @@ public class UserController {
 			SysUser user = userService.getById(id);
 			//同步到activiti的user
 			identityService.deleteUser(user.getUsername());
-			userService.delById(id);
+			String username = SecurityContextHolder.getContext().getAuthentication().getName();
+			userService.delById(id, username);
 		}
 		
 		return "redirect:/user/list";

@@ -14,7 +14,6 @@
 
     <title>工程师工作台--运维管理系统</title>
 
-    
 	<link href="${contextPath }/resources/css/bootstrap.css" rel="stylesheet" type="text/css" />
     <link href="${contextPath }/resources/css/ui.css" rel="stylesheet" type="text/css" />
     <link href="${contextPath }/resources/css/dataTables.css" rel="stylesheet" type="text/css" />
@@ -27,7 +26,9 @@
     <link href="${contextPath }/resources/css/uniform.default.css" rel="stylesheet" type="text/css" />
     <link href="${contextPath }/resources/css/validation.css" rel="stylesheet" type="text/css" />
     <link href="${contextPath }/resources/css/fancybox/jquery.fancybox.css" rel="stylesheet" type="text/css" />
+    <link href="${contextPath }/resources/css/elfinder.min.css" rel="stylesheet" type="text/css" />
     <link href="${contextPath }/resources/css/elfinder.css" rel="stylesheet" type="text/css" />
+    <link href="${contextPath }/resources/css/multi-select.css" rel="stylesheet" type="text/css" />
     <link href="${contextPath }/resources/css/pnotify.css" rel="stylesheet" type="text/css" />
     <link href="${contextPath }/resources/css/ibutton.css" rel="stylesheet" type="text/css" />
     <link href="${contextPath }/resources/css/stepy.css" rel="stylesheet" type="text/css" />
@@ -50,9 +51,8 @@
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/cookie/jquery.cookies.2.2.0.min.js'></script>
 
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/bootstrap.min.js'></script>
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/submenu/bootstrap-submenu.min.js'></script>
 
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/confirm/jquery-confirm.js'></script>
+    <script type='text/javascript' src='${contextPath }/resources/js/plugins/submenu/bootstrap-submenu.min.js'></script>
 
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/sparklines/jquery.sparkline.min.js'></script>
 
@@ -109,9 +109,9 @@
     var ctx = "${contextPath}";
     	$(document).ready(function () {
 
-        	$(".header").load("${contextPath }/header");
-            $(".menu").load("${contextPath }/menu", function() {$("#node_${moduleId}").addClass("active");});
-            $(".breadLine .buttons").load("${contextPath }/contentbuttons");
+    		$(".header").load("${contextPath}/header?t="+pm_random());
+            $(".menu").load("${contextPath}/menu?t="+pm_random(), function () { $("#node_${moduleId}").addClass("active"); });
+            $(".breadLine .buttons").load("${contextPath}/contentbuttons?t="+pm_random());
 
             if($("#docSet").length > 0){
                 $("#docSet").multiSelect({
@@ -322,7 +322,7 @@
 										<th >对应条目</th>
 										<th width="5%">页数</th>
 										<th width="20%">相关记录或文档</th>
-										<th>操作</th>
+										<sec:authorize access="!hasRole('check_item_view')"><th>操作</th></sec:authorize>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -338,7 +338,7 @@
 										<td></td>
 										<td></td>
 										<td></td>
-										<td><a href="javascript:void(0);" onclick="javascript:addItem(${ci.id},'${ci.name }');">添加</a></td>
+										<sec:authorize access="!hasRole('check_item_view')"><td><a href="javascript:void(0);" onclick="javascript:addItem(${ci.id},'${ci.name }');">添加</a></td></sec:authorize>
 									</tr>
                                 	</c:when>
                                 	<c:otherwise>
@@ -346,7 +346,7 @@
                                 	<tr><td>${ci.style.style.style.name }</td>
                                         <td>${ci.style.style.name }</td>
 										<td>${ci.style.name }</td>
-										<td>${ci.name }</td>
+										<td>${ci.name }<br/><sec:authorize access="!hasRole('check_item_view')"><a href="javascript:void(0);" onclick="javascript:addItem(${ci.id},'${ci.name }');">添加</a></sec:authorize></td>
 										<td>${child.name }</td>
 										<td>${child.demand}</td>
 										<td>${child.technique }</td>
@@ -359,7 +359,7 @@
 										</c:otherwise>
 										</c:choose>
 										</td>
-										<td><a href="${contextPath }/checkitems/update/${child.id}">编辑</a><br/><a href="javascript:void(0);" onclick="javascript:delItem(${child.id}, this);">删除</a></td>
+										<sec:authorize access="!hasRole('check_item_view')"><td><a href="${contextPath }/checkitems/update/${child.id}">编辑</a><br/><a href="javascript:void(0);" onclick="javascript:delItem(${child.id}, this);">删除</a></td></sec:authorize>
 									</tr>
                                 	</c:forEach>
                                 	</c:otherwise>
@@ -521,7 +521,7 @@
                                 </div>
                             </div>
 							<div class="row-form clearfix">
-								<form:select multiple="true" path="docSet">
+								<form:select multiple="true" path="docSet" class="validate[required] multiselect">
 									<form:options items="${docList}" itemValue="id" itemLabel="name"/>
 								</form:select>
 	                            

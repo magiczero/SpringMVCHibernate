@@ -13,6 +13,32 @@
     
     <title>报表与统计管理--运维管理系统</title>
 
+<<<<<<< HEAD
+    <link href="${contextPath }/resources/css/icons.css" rel="stylesheet" type="text/css" />
+    <link href="${contextPath }/resources/css/bootstrap.css" rel="stylesheet" type="text/css" />
+    <link href="${contextPath }/resources/css/fullcalendar.css" rel="stylesheet" type="text/css" />
+    <link href="${contextPath }/resources/css/ui.css" rel="stylesheet" type="text/css" />
+    <link href="${contextPath }/resources/css/select2.css" rel="stylesheet" type="text/css" />
+    <link href="${contextPath }/resources/css/uniform.default.css" rel="stylesheet" type="text/css" />
+    <link href="${contextPath }/resources/css/validation.css" rel="stylesheet" type="text/css" />
+    <link href="${contextPath }/resources/css/mCustomScrollbar.css" rel="stylesheet" type="text/css" />
+    <link href="${contextPath }/resources/css/cleditor.css" rel="stylesheet" type="text/css" />
+    <link href="${contextPath }/resources/css/fancybox/jquery.fancybox.css" rel="stylesheet" type="text/css" />
+    <link href="${contextPath }/resources/css/elfinder.min.css" rel="stylesheet" type="text/css" />
+    <link href="${contextPath }/resources/css/elfinder.css" rel="stylesheet" type="text/css" />
+    <link href="${contextPath }/resources/css/multi-select.css" rel="stylesheet" type="text/css" />
+    <link href="${contextPath }/resources/css/pnotify.css" rel="stylesheet" type="text/css" />
+    <link href="${contextPath }/resources/css/ibutton.css" rel="stylesheet" type="text/css" />
+    <link href="${contextPath }/resources/css/stepy.css" rel="stylesheet" type="text/css" />
+    <link href="${contextPath }/resources/css/tagsinput.css" rel="stylesheet" type="text/css" />
+    <link href="${contextPath }/resources/css/dataTables.css" rel="stylesheet" type="text/css" />
+    <link href="${contextPath }/resources/css/stylesheet.css" rel="stylesheet" type="text/css" />
+    <link href="${contextPath }/resources/css/styling.css" rel="stylesheet" type="text/css" />
+    <link href="${contextPath }/resources/css/mycss.css" rel="stylesheet" type="text/css" />
+	<link href="${contextPath }/resources/css/stylesheets2.css" rel="stylesheet" type="text/css" />
+    <link rel='stylesheet' type='text/css' href='${contextPath }/resources/css/fullcalendar.print.css' media='print' />
+     
+=======
     <link rel="icon" type="image/ico" href="favicon.ico"/>
     
     <link href="${contextPath }/resources/css/icons.css" rel="stylesheet" type="text/css" />
@@ -25,6 +51,7 @@
     <!--[if lt IE 8]>
         <link href="${contextPath }/resources/css/ie7.css" rel="stylesheet" type="text/css" />
     <![endif]-->    
+>>>>>>> refs/remotes/origin/master
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/jquery/jquery-1.10.2.min.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/jquery/jquery-ui-1.10.1.custom.min.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/jquery/jquery-migrate-1.2.1.min.js'></script>

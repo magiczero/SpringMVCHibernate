@@ -39,7 +39,6 @@
     <link href="${contextPath }/resources/css/stylesheet.css" rel="stylesheet" type="text/css" />
     <link href="${contextPath }/resources/css/styling.css" rel="stylesheet" type="text/css" />
     <link href="${contextPath }/resources/css/mycss.css" rel="stylesheet" type="text/css" />
-	<link href="${contextPath }/resources/css/stylesheets2.css" rel="stylesheet" type="text/css" />
     <!--[if lt IE 8]>
         <link href="${contextPath }/resources/css/ie7.css" rel="stylesheet" type="text/css" />
     <![endif]-->    
@@ -53,13 +52,6 @@
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/cookie/jquery.cookies.2.2.0.min.js'></script>
     
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/bootstrap.min.js'></script>
-    
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/treeview/bootstrap-treeview.js'></script>
-    
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/charts/jquery.flot.js'></script>    
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/charts/jquery.flot.stack.js'></script>    
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/charts/jquery.flot.pie.js'></script>
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/charts/jquery.flot.resize.js'></script>
     
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/sparklines/jquery.sparkline.min.js'></script>
     
@@ -96,12 +88,6 @@
     
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/scrollup/jquery.scrollUp.min.js'></script>
     
-    <script type='text/javascript' src='${contextPath }/resources/js/cookies.js'></script>
-    <script type='text/javascript' src='${contextPath }/resources/js/myactions.js'></script>
-    <script type='text/javascript' src='${contextPath }/resources/js/charts.js'></script>
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins.js'></script>
-    <script type='text/javascript' src='${contextPath }/resources/js/settings.js'></script>    
-    <script type='text/javascript' src='${contextPath }/resources/js/faq.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/pm-common.js'></script>
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
@@ -114,8 +100,8 @@
                 $("#eventTable").dataTable();
 
                 $(".header").load("${contextPath }/header");
-                $(".menu").load("${contextPath }/menu", function() {$("#node_${moduleId}").addClass("active");});
-                $(".breadLine .buttons").load("${contextPath }/contentbuttons");
+                $(".menu").load("${contextPath }/menu?t="+pm_random(), function() {$("#node_${moduleId}").addClass("active");});
+                $(".breadLine .buttons").load("${contextPath}/contentbuttons?t="+pm_random());
                 
                 $("#authority").validationEngine({promptPosition : "topLeft", scroll: true});
                 
@@ -161,6 +147,30 @@
     			});
             	
             }
+            
+            function del(id){
+            	if(confirm('确定删除？')) {
+	            	$.ajax({
+	    				type : "delete",
+	    				dataType : "json",
+	    				url : "${contextPath }/authority/"+id,
+	    				success : function(data) {
+	    					if (data.flag == "true") {
+	    		            	notify_e('Success','删除成功');
+	    		            	window.location = "${contextPath }/authority/list";
+	    					} else {
+	    						notify_e('Error','删除失败，请检查此权限与资源或角色的关联关系');
+	    					}
+	    				}
+	    			});
+	            	return true;
+            	} else {
+            		return false;
+            	}
+            }
+            function notify_e(title,text){
+                $.pnotify({title: title, text: text, opacity: .8, type: 'error'});            
+            }
     </script>
 </head>
 <body>
@@ -201,7 +211,7 @@
                             <div class="isw-grid"></div>
                             <h1>权限列表</h1>  
 
-                            <ul class="buttons">                          
+                            <ul class="buttons">    
                                 <li>
                                     <a href="#" class="isw-settings tipl" title="操作 "></a>
                                     <ul class="dd-list">
@@ -232,7 +242,9 @@
 											</c:forEach>
 										</td>
 										<td>${auth.authorityDesc}</td>
-										<td><a class="btn btn-default" href="${contextPath }/authority/init-update/${auth.id}">修改</a></td>
+										<td><a class="btn btn-default" href="${contextPath }/authority/init-update/${auth.id}">修改</a>
+										<a class="btn btn-default" onclick="javascript:del(${auth.id});">删除</a>
+										</td>
                                     </tr>
                                     </c:forEach>
                                     
@@ -253,7 +265,7 @@
                         <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>                        
                         <h4>权限信息</h4>
                     </div><c:url var="addAction" value="/authority/save" ></c:url>
-                    <form:form action="${addAction}" commandName="authority">
+                    <form:form action="${addAction}" commandName="authority" method="post">
                     <div class="modal-body modal-body-np">
                         <div class="row">
                             <div class="block-fluid">

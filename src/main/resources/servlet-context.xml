@@ -45,7 +45,7 @@
 	</interceptors>
 
 	<beans:bean id="messageSource" class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
-		<beans:property name="basename" value="/WEB-INF/classes/messages_zh_CN.properties"></beans:property>		
+		<beans:property name="basename" value="classpath:messages"></beans:property>		
 	</beans:bean>
 	
 	<beans:bean id="conversionService" class="org.springframework.format.support.FormattingConversionServiceFactoryBean">

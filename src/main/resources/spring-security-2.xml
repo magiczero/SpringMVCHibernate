@@ -65,6 +65,8 @@
     
 	<beans:bean id="authenticationProvider" class="org.springframework.security.authentication.dao.DaoAuthenticationProvider">  
    		<beans:property name="userDetailsService" ref="customUserDetailsService" />  
+   		<!--显示用户错误信息-->
+        <beans:property name="hideUserNotFoundExceptions" value="false" />
     	<beans:property name="passwordEncoder" ref="passwordEncoder"/> 
     	<beans:property name="saltSource" ref="saltSource"/> 
     </beans:bean>
@@ -86,7 +88,7 @@
 		<!-- 处理退出的虚拟url -->
         <beans:property name="filterProcessesUrl" value="/logout" />
         <!-- 退出处理成功后的默认显示url -->
-        <beans:constructor-arg index="0" value="/login?logout" />
+        <beans:constructor-arg index="0" value="/initLogin.html" />
         <beans:constructor-arg index="1">
             <!-- 退出成功后的handler列表 -->
             <beans:array>

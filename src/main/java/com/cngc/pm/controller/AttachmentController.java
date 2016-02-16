@@ -97,6 +97,9 @@ public class AttachmentController {
 				 	case "3" :
 				 		attach.setType(AttachType.ci);
 				 		break;
+				 	case "4" :
+				 		attach.setType(AttachType.knowledge);
+				 		break;
 				 }
 //				 if(type.equals("2")) {
 //					 attach.setType(AttachType.event);			//如何灵活判断

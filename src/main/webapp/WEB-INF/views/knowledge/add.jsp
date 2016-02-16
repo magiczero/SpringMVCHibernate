@@ -25,6 +25,7 @@
     <link href="${contextPath }/resources/css/tagsinput.css" rel="stylesheet" type="text/css" />
     <link href="${contextPath }/resources/css/cleditor.css" rel="stylesheet" type="text/css" />
     <link href="${contextPath }/resources/css/uploadify.css" rel="stylesheet" type="text/css" />
+    <link href="${contextPath }/resources/css/validation.css" rel="stylesheet" type="text/css" />
     <link rel='stylesheet' type='text/css' href='${contextPath }/resources/css/bootstrap-treeview.css' media='print' />
     <!--[if lt IE 8]>
         <link href="${contextPath }/resources/css/ie7.css" rel="stylesheet" type="text/css" />
@@ -35,6 +36,8 @@
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/jquery/jquery.mousewheel.min.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/cookie/jquery.cookies.2.2.0.min.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/bootstrap.min.js'></script>
+    <script type='text/javascript' src='${contextPath }/resources/js/plugins/validation/languages/jquery.validationEngine-zh-CN.js' charset='utf-8'></script>
+    <script type='text/javascript' src='${contextPath }/resources/js/plugins/validation/jquery.validationEngine.js' charset='utf-8'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/select2/select2.min.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/uniform/uniform.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/highlight/jquery.highlight-4.js'></script>
@@ -65,6 +68,10 @@
           	$(".header").load("${contextPath }/header?t="+pm_random());
             $(".menu").load("${contextPath }/menu?t="+pm_random(), function () { $("#node_${moduleId}").addClass("active"); });
             $(".breadLine .buttons").load("${contextPath }/contentbuttons?t="+pm_random());
+          	
+            //表单验证
+            $("#validation").validationEngine({promptPosition : "topLeft", scroll: true});
+          
             //分类
             act_dialog_category_init();
             $("input[name='category']").bind("click",function(){
@@ -130,27 +137,27 @@
                             <h1>新建知识</h1>
                         </div>
                         <c:url var="addAction" value="/knowledge/save" ></c:url>
-						<form:form action="${addAction}" commandName="knowledge" method="post">
+						<form:form id="validation" action="${addAction}" commandName="knowledge" method="post">
 						<form:hidden path="id"/>
 						<input id="fileids" name="fileids" type="hidden" />
                         <div class="block-fluid">                        
                             <div class="row-form clearfix">
                                 <div class="col-md-2"><form:label path="title">知识标题:</form:label></div>
-                                <div class="col-md-10"><form:input path="title"></form:input></div>
+                                <div class="col-md-10"><form:input path="title" class="validate[required,maxSize[50]]"></form:input></div>
                             </div>
                             <div class="row-form clearfix">
                                 <div class="col-md-2"><form:label path="keyword">关键字:</form:label></div>
                                 <div class="col-md-4"><form:input path="keyword" type="text" class="tags"></form:input></div>
                                 <div class="col-md-2"><form:label path="category">分类：</form:label></div>
-                                <div class="col-md-4"><form:input path="category"></form:input></div>
+                                <div class="col-md-4"><form:input path="category" class="validate[required,maxSize[50]]"></form:input></div>
                             </div>  
                             <div class="row-form clearfix">
                                 <div class="col-md-2"><form:label path="desc">故障描述:</form:label></div>
-                                <div class="col-md-10"><form:textarea path="desc"></form:textarea></div>
+                                <div class="col-md-10"><form:textarea path="desc" class="validate[required,maxSize[255]]"></form:textarea></div>
                             </div> 
                             <div class="row-form clearfix">
                                 <div class="col-md-2"><form:label path="solution">解决办法</form:label></div>
-                                <div class="col-md-10"><form:textarea path="solution" id="solution"  cssStyle="height:240px;"></form:textarea></div>   
+                                <div class="col-md-10"><form:textarea path="solution" id="solution"  cssStyle="height:240px;" ></form:textarea></div>   
                             </div>  
                             <div class="row-form clearfix">
 	                            	<div class="col-md-2"><label >文件:</label></div>

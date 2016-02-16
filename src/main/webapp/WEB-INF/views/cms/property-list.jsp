@@ -23,6 +23,7 @@
     <link href="${contextPath }/resources/css/stylesheet.css" rel="stylesheet" type="text/css" />
     <link href="${contextPath }/resources/css/styling.css" rel="stylesheet" type="text/css" />
     <link href="${contextPath }/resources/css/mycss.css" rel="stylesheet" type="text/css" />
+    <link href="${contextPath }/resources/css/validation.css" rel="stylesheet" type="text/css" />
     <!--[if lt IE 8]>
         <link href="${contextPath }/resources/css/ie7.css" rel="stylesheet" type="text/css" />
     <![endif]-->    
@@ -32,6 +33,8 @@
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/jquery/jquery.mousewheel.min.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/cookie/jquery.cookies.2.2.0.min.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/bootstrap.min.js'></script>
+    <script type='text/javascript' src='${contextPath }/resources/js/plugins/validation/languages/jquery.validationEngine-zh-CN.js' charset='utf-8'></script>
+    <script type='text/javascript' src='${contextPath }/resources/js/plugins/validation/jquery.validationEngine.js' charset='utf-8'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/dataTables/jquery.dataTables.min.js'></script>    
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/highlight/jquery.highlight-4.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/pnotify/jquery.pnotify.min.js'></script>
@@ -50,6 +53,10 @@
             $(".header").load("${contextPath}/header?t="+pm_random());
             $(".menu").load("${contextPath}/menu?t="+pm_random(), function () { $("#node_${moduleId}").addClass("active"); });
             $(".breadLine .buttons").load("${contextPath}/contentbuttons?t="+pm_random());
+            
+          	//表单验证
+            $("#validation").validationEngine({promptPosition : "topLeft", scroll: true});
+          
             $(".confirm").bind("click",function(){
             	if(!confirm("确定要执行该操作?"))
                 	return false;
@@ -145,13 +152,13 @@
                         <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>                        
                         <h4>新建属性</h4>
                     </div>
-                    <form:form action="${contextPath}/cms/property/save" commandName="property" method="post">
+                    <form:form id="validation" action="${contextPath}/cms/property/save" commandName="property" method="post">
                     <div class="modal-body modal-body-np">
                         <div class="row">
                             <div class="block-fluid">
                                 <div class="row-form clearfix">
                                     <div class="col-md-3"><form:label path="propertyId">属性ID：</form:label></div>
-                                    <div class="col-md-9"><form:input path="propertyId"></form:input></div>
+                                    <div class="col-md-9"><form:input path="propertyId" class="validate[required,maxSize[50]]"></form:input></div>
                                 </div>                                                           
                             </div>                
                         </div>
@@ -159,7 +166,7 @@
                             <div class="block-fluid">
                                 <div class="row-form clearfix">
                                     <div class="col-md-3"><form:label path="propertyName">属性名：</form:label></div>
-                                    <div class="col-md-9"><form:input path="propertyName"></form:input></div>
+                                    <div class="col-md-9"><form:input path="propertyName" class="validate[required,maxSize[50]]"></form:input></div>
                                 </div>                                                           
                             </div>                
                         </div>
@@ -167,7 +174,7 @@
                             <div class="block-fluid">
                                 <div class="row-form clearfix">
                                     <div class="col-md-3"><form:label path="propertyType">属性类型：</form:label></div>
-                                    <div class="col-md-9"><form:input path="propertyType"></form:input></div>
+                                    <div class="col-md-9"><form:input path="propertyType" class="validate[required,maxSize[50]]"></form:input></div>
                                 </div>                                                           
                             </div>                
                         </div>
@@ -175,7 +182,7 @@
                             <div class="block-fluid">
                                 <div class="row-form clearfix">
                                     <div class="col-md-3"><form:label path="propertyConstraint">约束条件：</form:label></div>
-                                    <div class="col-md-9"><form:input path="propertyConstraint"></form:input></div>
+                                    <div class="col-md-9"><form:input path="propertyConstraint" class="validate[required,maxSize[50]]"></form:input></div>
                                 </div>                                                           
                             </div>                
                         </div>

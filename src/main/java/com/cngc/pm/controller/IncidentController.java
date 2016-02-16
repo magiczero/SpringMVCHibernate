@@ -51,6 +51,7 @@ import com.cngc.pm.service.SysCodeService;
 import com.cngc.pm.service.UserService;
 import com.cngc.pm.service.cms.CiService;
 import com.cngc.utils.PropertyFileUtil;
+import com.googlecode.genericdao.search.SearchResult;
 
 @Controller
 @RequestMapping(value = "/incident")
@@ -534,7 +535,7 @@ public class IncidentController {
 	 * @return
 	 */
 	@RequestMapping(value = "/search", method = RequestMethod.GET)
-	public String search(Model model, HttpServletRequest request) {
+	public String search(Model model,Integer offset,Integer maxResults, HttpServletRequest request) {
 
 		String startTime = request.getParameter("startTime");
 		String endTime = request.getParameter("endTime");
@@ -574,12 +575,14 @@ public class IncidentController {
 			if (engineer.equals("00")) // 查看全部
 				engineer = null;
 		}
-		
+		SearchResult<Incident> result = incidentService.search(abs, applyUser, engineer, satisfaction, startDate, endDate,offset,maxResults);
 		model.addAttribute("satisfaction", syscodeService.getAllByType("INCIDENT_SATISFACTION").getResult());
-		model.addAttribute("list", incidentService.search(abs, applyUser, engineer, satisfaction, startDate, endDate)
-				.getResult());
+		model.addAttribute("list", result.getResult());
 		model.addAttribute("engineers", userService.getEngineer());
 		model.addAttribute("users", userService.getCommonUser());
+		model.addAttribute("offset", offset);
+		model.addAttribute("count", result.getTotalCount());
+		model.addAttribute("url", request.getRequestURI());
 
 		return "incident/search";
 	}
@@ -592,7 +595,7 @@ public class IncidentController {
 	 * @return
 	 */
 	@RequestMapping(value = "/mysearch", method = RequestMethod.GET)
-	public String mysearch(Model model, HttpServletRequest request, Authentication authentication) {
+	public String mysearch(Model model, Integer offset,Integer maxResults, HttpServletRequest request, Authentication authentication) {
 
 		String startTime = request.getParameter("startTime");
 		String endTime = request.getParameter("endTime");
@@ -616,10 +619,11 @@ public class IncidentController {
 		} catch (ParseException e) {
 			e.printStackTrace();
 		}
-
-		model.addAttribute("list",
-				incidentService.search(null, userUtil.getUserId(authentication), null, null, startDate, endDate)
-						.getResult());
+		SearchResult<Incident> result = incidentService.search(null, userUtil.getUserId(authentication), null, null, startDate, endDate,offset,maxResults);
+		model.addAttribute("list",result.getResult());
+		model.addAttribute("offset", offset);
+		model.addAttribute("count", result.getTotalCount());
+		model.addAttribute("url", request.getRequestURI());
 
 		return "incident/mysearch";
 	}

@@ -1,6 +1,5 @@
 package com.cngc.pm.dao;
 
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -30,8 +29,8 @@ public interface IncidentDAO extends GenericDAO<Incident, Long> {
 	 */
 	Map<String, Object> getStats(String column, String row, String startTime, String endTime, String status);
 
-	SearchResult<Incident> search(String abs, String applyUser, String engineer, String satisfaction, Date startTime,
-			Date endTime);
+	//SearchResult<Incident> search(String abs, String applyUser, String engineer, String satisfaction, Date startTime,
+	//		Date endTime);
 
 	SearchResult<Incident> getByApplyUser(String user);
 

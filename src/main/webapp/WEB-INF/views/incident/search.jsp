@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>    
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<%@ taglib prefix="tag" uri="/WEB-INF/taglibs/customTaglib.tld"%>
 <c:set var="contextPath" value="${pageContext.request.contextPath}"></c:set>
 <!DOCTYPE html>
 <html lang="en">
@@ -47,7 +48,7 @@
     <script type="text/javascript">
     	var ctx = "${contextPath}";
             $(document).ready(function () {
-                $("#myTable").dataTable({"aaSorting":[[4,'desc']]});
+                //$("#myTable").dataTable({"aaSorting":[[4,'desc']]});
                 $(".header").load("${contextPath}/header?t="+pm_random());
                 $(".menu").load("${contextPath}/menu?t="+pm_random(), function () { $("#node_${moduleId}").addClass("active"); });
                 $(".breadLine .buttons").load("${contextPath}/contentbuttons?t="+pm_random());
@@ -170,7 +171,7 @@
                             <div class="isw-grid"></div>
                             <h1>已关闭事件</h1>                             
                         </div>
-                        <div class="block-fluid table-sorting clearfix">
+                        <div class="block-fluid clearfix">
                             <table class="table" id="myTable">
                                 <thead>
                                     <tr>
@@ -203,6 +204,9 @@
                                    </c:forEach>
                                 </tbody>
                             </table>
+                            <div class="toolbar bottom-toolbar clearfix">
+                                <tag:paginate max="5" offset="${offset}" count="${count}" uri="${url }" />
+                            </div>
                         </div>
                     </div>  
                 </div>

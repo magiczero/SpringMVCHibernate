@@ -1,8 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ page import="java.util.List,com.cngc.pm.model.Style" %>
-    <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>    <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
-    <%@ taglib prefix="tag" uri="/WEB-INF/taglibs/customTaglib.tld"%>
+    <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
     <c:set var="contextPath" value="${pageContext.request.contextPath}"></c:set>
 <!DOCTYPE html>
 <html lang="en">
@@ -168,14 +167,14 @@
                                        	<th width="50px">No.</th>
                                         <th width="10%">操作用户</th>
                                         <th width="10%">操作类型</th>
-										<th width="10%">操作时间</th>
+										<th width="20%">操作时间</th>
 										<th >说明</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                      <c:forEach items="${records}" var="record" varStatus="itr">
                                     <tr>
-                                        <td>${offset + itr.index +1 }</td>
+                                        <td>${itr.index +1 }</td>
                                         <td>${record.username }</td>
                                         <td>${record.type }</td>
 										<td>${record.inTime }</td>
@@ -185,7 +184,6 @@
                                 </tbody>
                             </table>                       
                             <div class="toolbar bottom-toolbar clearfix">
-                                <tag:paginate max="10" offset="${offset}" count="${count}" uri="${url }" />
                             </div>                                                                     
                         </div>
 
@@ -196,7 +194,8 @@
             </div>
             <!--workplace end-->
         </div>
-        <div class="modal fade" id="fModal3" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    </div>
+    <div class="modal fade" id="fModal3" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -218,7 +217,7 @@
                                 <select name="username">
                                 	<option value="">全部</option>
                                 	<c:forEach items="${users }" var="user">
-                                	<option value="${user.username }">${user.name }</option>
+                                	<option>${user.username }</option>
                                 	</c:forEach>
                                 </select>
                                 </div>
@@ -265,8 +264,6 @@
                     </div>
                     </div>
                     </div>
-    </div>
-    
 </body>
 
 </html>

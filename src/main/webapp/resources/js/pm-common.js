@@ -128,8 +128,8 @@ $(document).ready(function() {
     });
     //plug in
     //uniform
-    if($(".row-form,.row,.dialog,.loginBox,.block,.block-fluid").find("input:checkbox, input:radio, input:file").length>0)
-    	$(".row-form,.row,.dialog,.loginBox,.block,.block-fluid").find("input:checkbox, input:radio, input:file").not(".skip, input.ibtn").uniform();
+    if($(".row-form,.row,.dialog,.loginBox,.block,.block-fluid").find("input:checkbox, input:radio").length>0)
+    	$(".row-form,.row,.dialog,.loginBox,.block,.block-fluid").find("input:checkbox, input:radio").not(".skip, input.ibtn").uniform();
     // CUSTOM SCROLLING
     if($(".scroll").length>0)
     	$(".scroll").mCustomScrollbar();

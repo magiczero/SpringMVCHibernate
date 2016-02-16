@@ -20,6 +20,7 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+import org.hibernate.annotations.Where;
 import org.springframework.format.annotation.DateTimeFormat;
 
 @Entity
@@ -45,27 +46,22 @@ public class Document implements Serializable {
 	private String docNum;						//文档编号
 	private SecretLevel secretLevel;		//密级
 	private boolean enabled;					//删除标识位
-	
-	public boolean isEnabled() {
-		return enabled;
-	}
-	public void setEnabled(boolean enabled) {
-		this.enabled = enabled;
-	}
 	private String link;
-	
 	private SysUser user;
-	
 	private Style style;
 	
-	//private Set<Style> checkItems = new HashSet<>();								//检查项
 	private Set<Attachment> attachs = new HashSet<>();							//附件
 	
-	@OneToMany(targetEntity=Attachment.class, fetch = FetchType.EAGER)
+//	@JoinColumnsOrFormulas(value = {
+//	@JoinColumnOrFormula(column = @JoinColumn(name = "type_id", referencedColumnName = "id", nullable = true, insertable = false, updatable = false)),
+//	@JoinColumnOrFormula(formula = @JoinFormula(value = "0", referencedColumnName = "type_")) })
+	@OneToMany(targetEntity = Attachment.class, fetch = FetchType.EAGER)
 	@JoinColumn(name="type_id", referencedColumnName="id")
+	@Where(clause="type_ = 0")
 	public Set<Attachment> getAttachs() {
 		return attachs;
 	}
+
 	public void setAttachs(Set<Attachment> attachs) {
 		this.attachs = attachs;
 	}
@@ -152,6 +148,8 @@ public class Document implements Serializable {
 		this.auth = auth;
 	}
 	
+	//private Set<Style> checkItems = new HashSet<>();								//检查项
+	
 //	@ManyToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE },fetch=FetchType.EAGER)  
 //	@JoinTable(name = "doc_style", joinColumns = { @JoinColumn(name = "doc_id") }, inverseJoinColumns = { @JoinColumn(name = "style_id") })  
 //	@OrderBy("id")  
@@ -204,5 +202,13 @@ public class Document implements Serializable {
 	}
 	public void setLink(String link) {
 		this.link = link;
+	}
+	
+
+	public boolean isEnabled() {
+		return enabled;
+	}
+	public void setEnabled(boolean enabled) {
+		this.enabled = enabled;
 	}
 }

@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.UUID;
 
 import javax.annotation.Resource;
@@ -19,6 +21,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -49,15 +52,15 @@ public class AttachmentController {
 //		return "attachment/index";
 //	}
 
-	@RequestMapping(value = "/upload", method = RequestMethod.POST)
-	public String upload(MultipartHttpServletRequest request,
+	@RequestMapping(value = "/upload", produces="text/html;charset=UTF-8",method = RequestMethod.POST)
+	public String upload(Model model,MultipartHttpServletRequest request,
 			HttpServletResponse response) {
-
 		log.debug("上传附件……");
 		Iterator<String> itr = request.getFileNames();
 		MultipartFile mpf;
+		String type = request.getParameter("type");
 
-		// List<Attachment> list = new LinkedList<>();
+		List<Attachment> list = new LinkedList<>();
 
 		while (itr.hasNext()) {
 			mpf = request.getFile(itr.next());
@@ -79,34 +82,29 @@ public class AttachmentController {
 			File newFile = new File(storageDirectory + "/" + newFilename);
 			try {
 				mpf.transferTo(newFile);
-				// String thumbnailFilename = "";
-				// File thumbnailFile = null;
-				// if(originalFileExtension.toLowerCase().matches("png|jpe?g|gif"))
-				// { //如果是图片，则设置缩略图等
-				// BufferedImage thumbnail = Scalr.resize(ImageIO.read(newFile),
-				// 290);
-				// thumbnailFilename = newFilenameBase + "-thumbnail.png";
-				// thumbnailFile = new File(storageDirectory + "/" +
-				// thumbnailFilename);
-				// ImageIO.write(thumbnail, "png", thumbnailFile);
-				// }
 
-				// Attachment attach = new Attachment();
-				// attach.setName(mpf.getOriginalFilename());
-				// attach.setThumbnailFilename(thumbnailFilename);
-				// attach.setNewFilename(newFilename);
-				// attach.setContentType(contentType);
-				// attach.setSize(mpf.getSize());
-				// attach.setThumbnailSize(thumbnailFile==null?0:thumbnailFile.length());
-				// attach = attachService.create(attach);
-				//
-				// attach.setUrl("/picture/"+attach.getId());
-				// attach.setThumbnailUrl("/thumbnail/"+attach.getId());
-				// attach.setDeleteUrl("/delete/"+attach.getId());
-				// attach.setDeleteType("DELETE");
-				//
-				// list.add(attach);
-
+				 Attachment attach = new Attachment();
+				 attach.setName(mpf.getOriginalFilename());
+				 //attach.setThumbnailFilename(thumbnailFilename);
+				 attach.setNewFilename(newFilename);
+				 attach.setContentType(mpf.getContentType());
+				 attach.setSize(mpf.getSize());
+				 attach.setPath(folder.getPath());
+				 switch(type) {
+				 	case "2" :
+				 		attach.setType(AttachType.event);
+				 		break;
+				 	case "3" :
+				 		attach.setType(AttachType.ci);
+				 		break;
+				 }
+//				 if(type.equals("2")) {
+//					 attach.setType(AttachType.event);			//如何灵活判断
+//				 } 
+				 //attach.setThumbnailSize(thumbnailFile==null?0:thumbnailFile.length());
+				 attach = attachService.create(attach);
+				
+				 list.add(attach);
 			} catch (IOException e) {
 				e.printStackTrace();
 				log.error("不能上传文件 " + mpf.getOriginalFilename(), e);
@@ -114,7 +112,9 @@ public class AttachmentController {
 
 		}
 
-		return "";
+		model.addAttribute("attachList", list);
+		
+		return "attachment/success";
 	}
 
 	/**
@@ -127,6 +127,7 @@ public class AttachmentController {
 	@RequestMapping(value = "plupload", method = RequestMethod.POST)
 	public String plupload(@RequestParam MultipartFile file,
 			HttpServletRequest request, HttpSession session) {
+		
 		try {
 			String name = request.getParameter("name");
 			Integer chunk = 0, chunks = 0;

@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -37,9 +38,11 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.cngc.pm.common.web.common.UserUtil;
+import com.cngc.pm.model.Attachment;
 import com.cngc.pm.model.ChangeItem;
 import com.cngc.pm.model.Incident;
 import com.cngc.pm.model.cms.Ci;
+import com.cngc.pm.service.AttachService;
 import com.cngc.pm.service.ChangeItemService;
 import com.cngc.pm.service.ChangeService;
 import com.cngc.pm.service.IncidentService;
@@ -79,6 +82,8 @@ public class IncidentController {
 	private UserUtil userUtil;
 	@Resource
 	private UserService userService;
+	@Resource
+	private AttachService attachService;
 
 	/**
 	 * 创建新事件
@@ -156,6 +161,9 @@ public class IncidentController {
 	public String savebyuser(Model model, HttpServletRequest request, Authentication authentication) {
 		String abs = request.getParameter("fm_abs");
 		String detail = request.getParameter("fm_description");
+		String attachIds = request.getParameter("fileids");
+		
+		Set<Attachment> attachSet = attachService.getSetByIds(attachIds);
 
 		Incident incident = new Incident();
 		incident.setAbs(abs);
@@ -168,6 +176,7 @@ public class IncidentController {
 		incident.setStatus("01");
 		incident.setApplyUser(userUtil.getUserId(authentication));
 		incident.setApplyTime(new Date());
+		incident.setAttachs(attachSet);
 
 		incidentService.save(incident);
 

@@ -1,5 +1,8 @@
 package com.cngc.pm.service.impl;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,6 +29,22 @@ public class AttachServiceImpl implements AttachService {
 	public Attachment get(long id) {
 		// TODO Auto-generated method stub
 		return attachDao.find(id);
+	}
+
+	@Override
+	@Transactional(readOnly=true)
+	public Set<Attachment> getSetByIds(String attachIds) {
+		// TODO Auto-generated method stub
+		String[] ids = attachIds.split(",");
+		
+		Set<Attachment> set = new HashSet<>();
+		
+		for(String id : ids) {
+			Attachment attach = attachDao.find(Long.valueOf(id));
+			set.add(attach);
+		}
+		
+		return set;
 	}
 
 }

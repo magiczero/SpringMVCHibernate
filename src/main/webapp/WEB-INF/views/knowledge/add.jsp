@@ -24,6 +24,7 @@
     <link href="${contextPath }/resources/css/select2.css" rel="stylesheet" type="text/css" />
     <link href="${contextPath }/resources/css/tagsinput.css" rel="stylesheet" type="text/css" />
     <link href="${contextPath }/resources/css/cleditor.css" rel="stylesheet" type="text/css" />
+    <link href="${contextPath }/resources/css/uploadify.css" rel="stylesheet" type="text/css" />
     <link rel='stylesheet' type='text/css' href='${contextPath }/resources/css/bootstrap-treeview.css' media='print' />
     <!--[if lt IE 8]>
         <link href="${contextPath }/resources/css/ie7.css" rel="stylesheet" type="text/css" />
@@ -47,6 +48,7 @@
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/umeditor/umeditor.config.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/umeditor/umeditor.min.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/umeditor/lang/zh-cn/zh-cn.js'></script>
+    <script type='text/javascript' src='${contextPath }/resources/js/plugins/uploadify/jquery.uploadify.min.js'></script>
     
     <!-- <script type='text/javascript' src='${contextPath }/resources/js/plugins/cleditor/jquery.cleditor.js'></script> -->
     
@@ -70,8 +72,26 @@
           	});
             var um = UM.getEditor('solution');
             //$("#solution").cleditor();
+            $('#file_upload').uploadify({
+				'formData' : { 'type' : 4 },
+		        'swf'      : '${contextPath }/resources/flash/uploadify.swf',
+		      //按钮显示的文字
+                'buttonText': '选择文件……',
+		        'uploader' : '${contextPath}/attachment/upload',
+		        'removeCompleted' : false,
+		        // Put your options here
+		        'onUploadSuccess': function (file, data, response) {
+		        	console.log(data);
+                    $('#' + file.id).find('.data').html(' 上传完毕');
+                    var fileids = document.getElementById("fileids").value + '';
+                    document.getElementById("fileids").value = fileids + data;
+		        }
+		    });
         });
     </script>
+    <style type="text/css">
+    	.uploadify-button-text {color:#fff !important;}
+    </style>
 </head>
 <body>
     <div class="wrapper"> 
@@ -112,6 +132,7 @@
                         <c:url var="addAction" value="/knowledge/save" ></c:url>
 						<form:form action="${addAction}" commandName="knowledge" method="post">
 						<form:hidden path="id"/>
+						<input id="fileids" name="fileids" type="hidden" />
                         <div class="block-fluid">                        
                             <div class="row-form clearfix">
                                 <div class="col-md-2"><form:label path="title">知识标题:</form:label></div>
@@ -131,7 +152,12 @@
                                 <div class="col-md-2"><form:label path="solution">解决办法</form:label></div>
                                 <div class="col-md-10"><form:textarea path="solution" id="solution"  cssStyle="height:240px;"></form:textarea></div>   
                             </div>  
-                                    
+                            <div class="row-form clearfix">
+	                            	<div class="col-md-2"><label >文件:</label></div>
+	                            	<div class="col-md-10">
+										<input type="file" name="file_upload" id="file_upload" />
+									</div>
+	                            </div>         
                             <div class="footer tar">                        	
                                 <button class="btn btn-primary center-block"> 保 存 </button>
                             </div>                            

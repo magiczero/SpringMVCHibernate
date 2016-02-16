@@ -116,11 +116,11 @@ public class UserServiceImpl implements UserService {
 	public void update(SysUser user, String username) {
 		// TODO Auto-generated method stub
 		userDao.update(user);
-		Records record = new Records();
-		record.setUsername(username);
-		record.setType(RecordsType.user);
-		record.setDesc("修改了用户信息，用户id：[" + user.getId() +"]，用户名：["+ user.getUsername()+"]");
-		recordsDao.save(record);
+//		Records record = new Records();
+//		record.setUsername(username);
+//		record.setType(RecordsType.user);
+//		record.setDesc("修改了用户信息，用户id：[" + user.getId() +"]，用户名：["+ user.getUsername()+"]");
+//		recordsDao.save(record);
 	}
 	
 	@Override

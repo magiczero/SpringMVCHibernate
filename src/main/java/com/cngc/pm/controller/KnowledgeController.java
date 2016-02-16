@@ -7,6 +7,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -29,7 +30,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.cngc.pm.common.web.common.UserUtil;
+import com.cngc.pm.model.Attachment;
 import com.cngc.pm.model.Knowledge;
+import com.cngc.pm.service.AttachService;
 import com.cngc.pm.service.KnowledgeService;
 import com.cngc.pm.service.SysCodeService;
 import com.cngc.utils.PropertyFileUtil;
@@ -53,6 +56,8 @@ public class KnowledgeController {
 	private SysCodeService syscodeService;
 	@Resource
 	private UserUtil userUtil;
+	@Resource
+	private AttachService attachService;
 
 	@RequestMapping(value = "/add", method = RequestMethod.GET)
 	public String add(Model model) {
@@ -66,9 +71,14 @@ public class KnowledgeController {
 
 		if(knowledge.getId()==null)
 		{
+			String attachIds = request.getParameter("fileids");
+			
+			Set<Attachment> attachSet = attachService.getSetByIds(attachIds);
+			
 			knowledge.setApplyUser(userUtil.getUserId(authentication));
 			knowledge.setApplyTime(new Date());
 			knowledge.setStatus(PropertyFileUtil.getStringValue("syscode.knowledge.status.new"));
+			knowledge.setAttachs(attachSet);
 	
 			knowledgeService.save(knowledge);
 		}

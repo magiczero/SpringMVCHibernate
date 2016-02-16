@@ -22,6 +22,7 @@
     <link href="${contextPath }/resources/css/styling.css" rel="stylesheet" type="text/css" />
     <link href="${contextPath }/resources/css/mycss.css" rel="stylesheet" type="text/css" />
     <link href="${contextPath }/resources/css/select2.css" rel="stylesheet" type="text/css" />
+    <link href="${contextPath }/resources/css/uploadify.css" rel="stylesheet" type="text/css" />
     <link rel='stylesheet' type='text/css' href='${contextPath }/resources/css/bootstrap-treeview.css' media='print' />
     <!--[if lt IE 8]>
         <link href="${contextPath }/resources/css/ie7.css" rel="stylesheet" type="text/css" />
@@ -39,6 +40,7 @@
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/ibutton/jquery.ibutton.min.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/scrollup/jquery.scrollUp.min.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/treeview/bootstrap-treeview.min.js'></script>
+    <script type='text/javascript' src='${contextPath }/resources/js/plugins/uploadify/jquery.uploadify.min.js'></script>
       
     <script type='text/javascript' src='${contextPath }/resources/js/pm-common.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/pm-select.js'></script>
@@ -67,6 +69,23 @@
 			initForm();
             //申请人下拉框效果
 			$("#applyUser").select2();
+            
+			$('#file_upload').uploadify({
+				'formData' : { 'type' : 2 },
+		        'swf'      : '${contextPath }/resources/flash/uploadify.swf',
+		      //按钮显示的文字
+                'buttonText': '选择文件……',
+		        'uploader' : '${contextPath}/attachment/upload',
+		        'removeCompleted' : false,
+		        // Put your options here
+		        'onUploadSuccess': function (file, data, response) {
+		        	console.log(data);
+                    $('#' + file.id).find('.data').html(' 上传完毕');
+                    var fileids = document.getElementById("fileids").value + '';
+                    document.getElementById("fileids").value = fileids + data;
+		        }
+		    });
+
         });
         function initForm()
         {
@@ -75,6 +94,9 @@
         	$("select[name='priority'] option[value='04']").attr("selected","selected");
         }
     </script>
+    <style type="text/css">
+    	.uploadify-button-text {color:#fff !important;}
+    </style>
 </head>
 <body>
     <div class="wrapper"> 
@@ -117,6 +139,7 @@
 	                        <c:url var="addAction" value="/incident/save" ></c:url>
 	                        <form:form action="${addAction}" commandName="incident" method="post">
 	                        <form:hidden path="id" />
+	                        <input id="fileids" name="fileids" type="hidden" />
 	                        <div class="block-fluid">                        
 	                            <div class="row-form clearfix">
 	                                <div class="col-md-1"><form:label path="abs">摘要:</form:label></div>
@@ -149,7 +172,13 @@
 	                                <div class="col-md-3"><form:select path="critical" items="${critical }" itemLabel="codeName" itemValue="code"></form:select></div>
 	                                <div class="col-md-1"><form:label path="priority">优先级:</form:label></div>
 	                                <div class="col-md-3"><form:select path="priority" items="${priority }" itemLabel="codeName" itemValue="code"></form:select></div>
-	                            </div>                                                       
+	                            </div>    
+	                            <div class="row-form clearfix">
+	                            	<div class="col-md-1"><label >文件:</label></div>
+	                            	<div class="col-md-11">
+										<input type="file" name="file_upload" id="file_upload" />
+									</div>
+	                            </div>                                                   
 	                            <div class="footer">
 	                                <button class="btn btn-primary center-block"> 保 存 </button>
 	                            </div>                            

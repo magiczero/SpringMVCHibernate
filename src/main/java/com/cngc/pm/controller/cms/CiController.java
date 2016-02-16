@@ -27,8 +27,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.cngc.pm.common.web.common.UserUtil;
+import com.cngc.pm.model.Attachment;
 import com.cngc.pm.model.cms.Category;
 import com.cngc.pm.model.cms.Ci;
+import com.cngc.pm.service.AttachService;
 import com.cngc.pm.service.ItilRelationService;
 import com.cngc.pm.service.SysCodeService;
 import com.cngc.pm.service.UserService;
@@ -61,6 +63,8 @@ public class CiController {
 	private UserUtil userUtil;
 	@Resource
 	private UserService userService;
+	@Resource
+	private AttachService attachService;
 	
 	@RequestMapping(value="/add")
 	public String add(Model model){
@@ -135,12 +139,17 @@ public class CiController {
 
 	@RequestMapping(value="/save",method = RequestMethod.POST)
 	public String save(@Valid @ModelAttribute("ci") Ci ci, HttpServletRequest request,Authentication authentication){
+		String attachIds = request.getParameter("fileids");
+		
+		Set<Attachment> attachSet = attachService.getSetByIds(attachIds);
 		
 		ci.setReviewStatus("02");
 		ci.setDeleteStatus("01");
 		ci.setCreatedTime(new Date());
 		ci.setLastUpdateTime(new Date());
 		ci.setLastUpdateUser(userUtil.getUserId(authentication));
+		ci.setAttachs(attachSet);
+		
 		ciService.save(ci);
 		
 		return "redirect:list";

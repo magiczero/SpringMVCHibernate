@@ -27,20 +27,20 @@ public class Attachment implements Serializable {
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String name;
+    private String name;								//原始名，会重名
     private String thumbnailFilename;
-    private String newFilename;
-    private String contentType;
+    private String newFilename;					//需重新命名
+    private String contentType;					//网络文件的类型和网页的编码，如“application/octet-stream”
     @Column(name = "path_")
-    private String path;
+    private String path;								//保存到服务器中的路径
     @Column(name = "size_")
-    private Long size;
+    private Long size;									//文件大小
     @Enumerated(EnumType.ORDINAL)
 	@Column(name="type_")
-    private AttachType type;
+    private AttachType type;								//文件是哪个类的附件
     private Long thumbnailSize;
     @Temporal(TemporalType.TIMESTAMP)
-    private Date dateCreated;
+    private Date dateCreated;									//上传日期
     @Temporal(TemporalType.TIMESTAMP)
     private Date lastUpdated;
     @Transient

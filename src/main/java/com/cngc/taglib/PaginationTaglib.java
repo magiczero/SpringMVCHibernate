@@ -8,9 +8,9 @@ import javax.servlet.jsp.tagext.SimpleTagSupport;
 
 public class PaginationTaglib extends SimpleTagSupport {
 	private String uri;
-	private int offset;
-	private int count;
-	private int max = 10;
+	private int offset;										//起始数
+	private int count;										//总量
+	private int max = 10;									//最大显示页码数量
 	private int steps = 10;
 	private String previous = "Prev";
 	private String next = "Next";
@@ -32,12 +32,44 @@ public class PaginationTaglib extends SimpleTagSupport {
 				out.write(constructLink(1, previous, "disabled", true));
 			else
 				out.write(constructLink(offset-steps, previous, null, false));
-			
-			for(int itr=0;itr<count;itr+=steps) {
-				if(offset==itr)
-					out.write(constructLink((itr/10+1)-1 *steps, String.valueOf(itr/10+1), "active", true));
-				else
-					out.write(constructLink(itr/10*steps, String.valueOf(itr/10+1), null , false));
+			//当前页由offset决定
+			int pageTotalCount = count%steps==0?count/steps:count/steps+1;		//计算总页数
+			if(pageTotalCount<=max) {									//如果小于设置页数
+				for(int itr=0;itr<count;itr+=steps) {
+					if(offset==itr)
+						out.write(constructLink((itr/10+1)-1 *steps, String.valueOf(itr/10+1), "active", true));
+					else
+						out.write(constructLink(itr/10*steps, String.valueOf(itr/10+1), null , false));
+				}
+			} else {																//如果大于了……
+				int start = offset - (max/2)*steps;
+				
+				int end = offset + (max/2)*steps;
+				
+				if(start<0) {
+					end = end - start;
+					start=0;
+				}
+				int currentPage = offset/steps+1;					//计算当前页
+				if(end > count) end = count;
+				
+				//System.out.println("当前页："+ currentPage + "，开始："+start + "，结束：" + end);
+				
+				if(currentPage-max/2 > 1) {
+					out.write(constructLink(0, "1",null , false));
+					out.write(constructLink(0, "...", null , true));
+				}
+				
+				for(int itr=start;itr<end;itr+=steps) {
+					if(offset==itr)
+						out.write(constructLink((itr/10+1)-1 *steps, String.valueOf(itr/10+1), "active", true));
+					else
+						out.write(constructLink(itr/10*steps, String.valueOf(itr/10+1), null , false));
+				}
+				if(currentPage+max/2 < pageTotalCount) {
+					out.write(constructLink(0, "...", null , true));
+					out.write(constructLink(count%steps==0?count:count/steps*steps, String.valueOf(pageTotalCount), null , false));
+				}
 			}
 
 			if(offset+steps>=count)

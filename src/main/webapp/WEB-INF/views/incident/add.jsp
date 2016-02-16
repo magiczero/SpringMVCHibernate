@@ -22,6 +22,7 @@
     <link href="${contextPath }/resources/css/styling.css" rel="stylesheet" type="text/css" />
     <link href="${contextPath }/resources/css/mycss.css" rel="stylesheet" type="text/css" />
     <link href="${contextPath }/resources/css/select2.css" rel="stylesheet" type="text/css" />
+    <link href="${contextPath }/resources/css/validation.css" rel="stylesheet" type="text/css" />
     <link rel='stylesheet' type='text/css' href='${contextPath }/resources/css/bootstrap-treeview.css' media='print' />
     <!--[if lt IE 8]>
         <link href="${contextPath }/resources/css/ie7.css" rel="stylesheet" type="text/css" />
@@ -32,6 +33,8 @@
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/jquery/jquery.mousewheel.min.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/cookie/jquery.cookies.2.2.0.min.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/bootstrap.min.js'></script>
+    <script type='text/javascript' src='${contextPath }/resources/js/plugins/validation/languages/jquery.validationEngine-zh-CN.js' charset='utf-8'></script>
+    <script type='text/javascript' src='${contextPath }/resources/js/plugins/validation/jquery.validationEngine.js' charset='utf-8'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/select2/select2.min.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/uniform/uniform.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/highlight/jquery.highlight-4.js'></script>
@@ -53,6 +56,10 @@
           	$(".header").load("${contextPath }/header?t=" + pm_random());
             $(".menu").load("${contextPath }/menu?t=" + pm_random(), function () { $("#node_${moduleId}").addClass("active"); });
             $(".breadLine .buttons").load("${contextPath }/contentbuttons?t=" + pm_random());
+          	
+            //表单验证
+            $("#validation").validationEngine({promptPosition : "topLeft", scroll: true});
+          
             //选择事件分类
             act_dialog_category_init();
             $("input[name='category']").bind("click",function(){
@@ -115,16 +122,16 @@
 	                            <h1>事件信息录入</h1>
 	                        </div>
 	                        <c:url var="addAction" value="/incident/save" ></c:url>
-	                        <form:form action="${addAction}" commandName="incident" method="post">
+	                        <form:form action="${addAction}" commandName="incident" method="post" id="validation">
 	                        <form:hidden path="id" />
 	                        <div class="block-fluid">                        
 	                            <div class="row-form clearfix">
 	                                <div class="col-md-1"><form:label path="abs">摘要:</form:label></div>
-	                                <div class="col-md-11"><form:input path="abs"></form:input></div>
+	                                <div class="col-md-11"><form:input path="abs" class="validate[required,maxSize[50]]"></form:input></div>
 	                             </div>
 	                            <div class="row-form clearfix">
 	                                <div class="col-md-1"><form:label path="detail">描述:</form:label></div>
-	                                <div class="col-md-11"><form:textarea path="detail"></form:textarea>
+	                                <div class="col-md-11"><form:textarea path="detail" class="validate[required,maxSize[255]]"></form:textarea>
 	                                </div>
 	                            </div>
 	                            <div class="row-form clearfix">
@@ -136,7 +143,7 @@
 
 	                            <div class="row-form clearfix">
 	                           	 	<div class="col-md-1"><form:label path="category">分类:</form:label></div>
-	                                <div class="col-md-3"><form:input path="category"></form:input></div>
+	                                <div class="col-md-3"><form:input path="category" class="validate[required,maxSize[50]]"></form:input></div>
 	                            	<div class="col-md-1"><form:label path="type">类型:</form:label></div>
 	                            	<div class="col-md-3"><form:select path="type" items="${type }" itemLabel="codeName" itemValue="code"></form:select></div>
 	                            	<div class="col-md-1"><form:label path="source">来源:</form:label></div>

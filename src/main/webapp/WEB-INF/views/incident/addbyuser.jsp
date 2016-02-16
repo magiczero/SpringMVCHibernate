@@ -22,8 +22,10 @@
     <link href="${contextPath }/resources/css/ui.css" rel="stylesheet" type="text/css" />
     <link href="${contextPath }/resources/css/pnotify.css" rel="stylesheet" type="text/css" />
     <link href="${contextPath }/resources/css/stylesheet.css" rel="stylesheet" type="text/css" />
+    <link href="${contextPath }/resources/css/uniform.default.css" rel="stylesheet" type="text/css" />
     <link href="${contextPath }/resources/css/styling.css" rel="stylesheet" type="text/css" />
     <link href="${contextPath }/resources/css/mycss.css" rel="stylesheet" type="text/css" />
+    <link href="${contextPath }/resources/css/validation.css" rel="stylesheet" type="text/css" />
 
     <!--[if lt IE 8]>
         <link href="${contextPath }/resources/css/ie7.css" rel="stylesheet" type="text/css" />
@@ -34,6 +36,8 @@
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/jquery/jquery.mousewheel.min.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/cookie/jquery.cookies.2.2.0.min.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/bootstrap.min.js'></script>
+    <script type='text/javascript' src='${contextPath }/resources/js/plugins/validation/languages/jquery.validationEngine-zh-CN.js' charset='utf-8'></script>
+    <script type='text/javascript' src='${contextPath }/resources/js/plugins/validation/jquery.validationEngine.js' charset='utf-8'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/select2/select2.min.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/uniform/uniform.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/highlight/jquery.highlight-4.js'></script>
@@ -54,6 +58,9 @@
           	$(".header").load("${contextPath }/header?t=" + pm_random());
             $(".menu").load("${contextPath }/menu?t=" + pm_random(), function () { $("#node_${moduleId}").addClass("active"); });
             $(".breadLine .buttons").load("${contextPath }/contentbuttons?t=" + pm_random());
+            
+            //表单验证
+            $("#validation").validationEngine({promptPosition : "topLeft", scroll: true});
          	
             //输入摘要是自动补全描述字段
             $("#fm_abs").bind("blur",function(){
@@ -99,15 +106,15 @@
 	                            <div class="isw-documents"></div>
 	                            <h1>信息录入</h1>
 	                        </div>
-	                        <form action="${contextPath}/incident/savebyuser"  method="post">
+	                        <form id="validation" action="${contextPath}/incident/savebyuser"  method="post">
 	                        <div class="block-fluid">                        
 	                            <div class="row-form clearfix">
 	                                <div class="col-md-1">故障摘要:</div>
-	                                <div class="col-md-11"><input type="text" name="fm_abs" id="fm_abs"></div>
+	                                <div class="col-md-11"><input type="text" name="fm_abs" id="fm_abs" class="validate[required,maxSize[50]]"></div>
 	                             </div>
 	                            <div class="row-form clearfix">
 	                                <div class="col-md-1">故障描述:</div>
-	                                <div class="col-md-11"><textarea name="fm_description" id="fm_description"></textarea></div>
+	                                <div class="col-md-11"><textarea name="fm_description" id="fm_description" class="validate[required,maxSize[255]]"></textarea></div>
 	                            </div>
 	                            <div class="footer tar">
 	                                <button class="btn btn-primary center-block"> 提 交 </button>

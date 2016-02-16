@@ -23,6 +23,7 @@
     <link href="${contextPath }/resources/css/stylesheet.css" rel="stylesheet" type="text/css" />
     <link href="${contextPath }/resources/css/styling.css" rel="stylesheet" type="text/css" />
     <link href="${contextPath }/resources/css/mycss.css" rel="stylesheet" type="text/css" />
+    <link href="${contextPath }/resources/css/validation.css" rel="stylesheet" type="text/css" />
     <!--[if lt IE 8]>
         <link href="${contextPath }/resources/css/ie7.css" rel="stylesheet" type="text/css" />
     <![endif]-->    
@@ -32,6 +33,8 @@
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/jquery/jquery.mousewheel.min.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/cookie/jquery.cookies.2.2.0.min.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/bootstrap.min.js'></script>
+    <script type='text/javascript' src='${contextPath }/resources/js/plugins/validation/languages/jquery.validationEngine-zh-CN.js' charset='utf-8'></script>
+    <script type='text/javascript' src='${contextPath }/resources/js/plugins/validation/jquery.validationEngine.js' charset='utf-8'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/dataTables/jquery.dataTables.min.js'></script>    
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/highlight/jquery.highlight-4.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/pnotify/jquery.pnotify.min.js'></script>
@@ -50,6 +53,10 @@
             $(".header").load("${contextPath}/header?t="+pm_random());
             $(".menu").load("${contextPath}/menu?t="+pm_random(), function () { $("#node_${moduleId}").addClass("active"); });
             $(".breadLine .buttons").load("${contextPath}/contentbuttons?t="+pm_random());
+            
+          	//表单验证
+            $("#validation").validationEngine({promptPosition : "topLeft", scroll: true});
+          
             $(".confirm").bind("click",function(){
             	if(!confirm("确定要执行该操作?"))
                 	return false;
@@ -145,13 +152,13 @@
                         <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>                        
                         <h4>新建关系</h4>
                     </div>
-                    <form:form action="${contextPath}/cms/relation/save" commandName="relation" method="post">
+                    <form:form id="validation" action="${contextPath}/cms/relation/save" commandName="relation" method="post">
                     <div class="modal-body modal-body-np">
                     	<div class="row">
                             <div class="block-fluid">
                                 <div class="row-form clearfix">
                                     <div class="col-md-3"><form:label path="relationId">关系标识：</form:label></div>
-                                    <div class="col-md-9"><form:input path="relationId" value="CMS_RELATION_"></form:input></div>
+                                    <div class="col-md-9"><form:input path="relationId" value="CMS_RELATION_" class="validate[required,maxSize[50]]"></form:input></div>
                                 </div>                                                           
                             </div>                
                         </div>
@@ -159,7 +166,7 @@
                             <div class="block-fluid">
                                 <div class="row-form clearfix">
                                     <div class="col-md-3"><form:label path="relationName">关系名：</form:label></div>
-                                    <div class="col-md-9"><form:input path="relationName"></form:input></div>
+                                    <div class="col-md-9"><form:input path="relationName" class="validate[required,maxSize[50]]"></form:input></div>
                                 </div>                                                           
                             </div>                
                         </div>
@@ -167,7 +174,7 @@
                             <div class="block-fluid">
                                 <div class="row-form clearfix">
                                     <div class="col-md-3"><form:label path="relationDescription">关系描述：</form:label></div>
-                                    <div class="col-md-9"><form:textarea path="relationDescription"></form:textarea></div>
+                                    <div class="col-md-9"><form:textarea path="relationDescription" class="validate[required,maxSize[255]]"></form:textarea></div>
                                 </div>                                                           
                             </div>                
                         </div>

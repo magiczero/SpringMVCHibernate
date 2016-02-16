@@ -6,8 +6,8 @@ function act_commont_initdialog()
 	$("#b_popup_comment").html("<div class='block dialog_block messages '><div id='commentList' class='scroll' style='height:200px;'></div>"
 			+"<div class='dr'><span></span></div>"	
 			+"<div class='controls' id='messagebox'>"
-				+" <form action='"+ctx+"/workflow/task/comment/save' method='post'><div class=‘control'>"
-                +"<textarea name='fp_message' placeholder='填写意见...' style='height: 70px; width: 100%;'></textarea>"
+				+" <form id='validation' action='"+ctx+"/workflow/task/comment/save' method='post'><div class=‘control'>"
+                +"<textarea name='fp_message' placeholder='填写意见...' style='height: 70px; width: 100%;' class='validate[required,maxSize[50]]'></textarea>"
                 +"</div><input type='hidden' name='redirectAddress' value='/leadertask/list' />"
                 +"<input type='hidden' name='fp_taskId' value='0' />"
                 +"<input type='hidden' name='fp_processInstanceId' value='' />"
@@ -20,6 +20,8 @@ function act_commont_initdialog()
         buttons: { "关闭": function () { $(this).dialog("close") } },
         open: function () { act_comment_getlist(p_processInstanceId,'0'); $("input[name='fp_processInstanceId']").val(p_processInstanceId); }
     });
+    //表单验证
+    $("#validation").validationEngine({promptPosition : "topLeft", scroll: true});
 }
 function act_comment_open(processInstanceId,isfinished)
 {

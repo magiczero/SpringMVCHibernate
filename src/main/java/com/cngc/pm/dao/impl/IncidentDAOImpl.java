@@ -1,6 +1,5 @@
 package com.cngc.pm.dao.impl;
 
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -91,33 +90,33 @@ public class IncidentDAOImpl extends BaseDAOImpl<Incident, Long> implements Inci
 		return this.searchAndCount(search);
 	}
 
-	@Override
-	public SearchResult<Incident> search(String abs, String applyUser, String engineer, String satisfaction,
-			Date startTime, Date endTime) {
-		Search search = new Search();
-		if (applyUser != null) {
-			if (!applyUser.isEmpty())
-				search.addFilterEqual("applyUser", applyUser);
-		}
-		if (engineer != null) {
-			if (!engineer.isEmpty())
-				search.addFilterEqual("currentDelegateUser", engineer);
-		}
-		if (satisfaction != null)
-			search.addFilterEqual("satisfaction", satisfaction);
-		if (startTime != null)
-			search.addFilterGreaterOrEqual("applyTime", startTime);
-		if (endTime != null)
-			search.addFilterLessOrEqual("recoverTime", endTime);
-		if (abs != null) {
-			if (!abs.isEmpty())
-				search.addFilterLike("abs", "%" + abs + "%");
-		}
-
-		search.addFilterEqual("status", PropertyFileUtil.getStringValue("syscode.incident.status.finished"));
-
-		return this.searchAndCount(search);
-	}
+//	@Override
+//	public SearchResult<Incident> search(String abs, String applyUser, String engineer, String satisfaction,
+//			Date startTime, Date endTime) {
+//		Search search = new Search();
+//		if (applyUser != null) {
+//			if (!applyUser.isEmpty())
+//				search.addFilterEqual("applyUser", applyUser);
+//		}
+//		if (engineer != null) {
+//			if (!engineer.isEmpty())
+//				search.addFilterEqual("currentDelegateUser", engineer);
+//		}
+//		if (satisfaction != null)
+//			search.addFilterEqual("satisfaction", satisfaction);
+//		if (startTime != null)
+//			search.addFilterGreaterOrEqual("applyTime", startTime);
+//		if (endTime != null)
+//			search.addFilterLessOrEqual("recoverTime", endTime);
+//		if (abs != null) {
+//			if (!abs.isEmpty())
+//				search.addFilterLike("abs", "%" + abs + "%");
+//		}
+//
+//		search.addFilterEqual("status", PropertyFileUtil.getStringValue("syscode.incident.status.finished"));
+//
+//		return this.searchAndCount(search);
+//	}
 
 	@Override
 	public SearchResult<Incident> getNotFinished() {

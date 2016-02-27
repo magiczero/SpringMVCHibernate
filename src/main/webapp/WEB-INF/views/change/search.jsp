@@ -49,7 +49,7 @@
             $(document).ready(function () {
                 $("#myTable").dataTable({"aaSorting":[[4,'desc']]});
                 $(".header").load("${contextPath}/header?t="+pm_random());
-                $(".menu").load("${contextPath}/menu?t="+pm_random(), function () { $(".navigation > li:eq(3)").addClass("active"); });
+                $(".menu").load("${contextPath}/menu?t="+pm_random(), function () { $("#node_${moduleId}").addClass("active"); });
                 $(".breadLine .buttons").load("${contextPath}/contentbuttons?t="+pm_random());
                 $(".dateISO").datepicker();
                 

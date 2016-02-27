@@ -2,7 +2,7 @@ package com.cngc.pm.model;
 
 import java.beans.Transient;
 import java.io.Serializable;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -55,8 +55,17 @@ public class Moudle implements Serializable {				//module故意写错，怕与�
 	private boolean enable;
 	private int priority;				//优先级
 	
-	private Set<Moudle> child = new HashSet<>();
+	private Set<Moudle> child = new LinkedHashSet<>();
 	
+	private Set<Resources> resSet = new LinkedHashSet<>();
+	
+	@OneToMany(mappedBy = "module")
+	public Set<Resources> getResSet() {
+		return resSet;
+	}
+	public void setResSet(Set<Resources> resSet) {
+		this.resSet = resSet;
+	}
 	@Id 
     @Column(name="module_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY) 

@@ -24,6 +24,7 @@ import org.activiti.engine.TaskService;
 import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.task.Task;
+import org.apache.cxf.common.util.StringUtils;
 import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.map.JsonMappingException;
@@ -162,9 +163,7 @@ public class IncidentController {
 	public String savebyuser(Model model, HttpServletRequest request, Authentication authentication) {
 		String abs = request.getParameter("fm_abs");
 		String detail = request.getParameter("fm_description");
-		String attachIds = request.getParameter("fileids");
 		
-		Set<Attachment> attachSet = attachService.getSetByIds(attachIds);
 
 		Incident incident = new Incident();
 		incident.setAbs(abs);
@@ -177,7 +176,15 @@ public class IncidentController {
 		incident.setStatus("01");
 		incident.setApplyUser(userUtil.getUserId(authentication));
 		incident.setApplyTime(new Date());
-		incident.setAttachs(attachSet);
+		
+		if(!StringUtils.isEmpty(request.getParameter("fileids"))) {
+			String attachIds = request.getParameter("fileids");
+		
+			Set<Attachment> attachSet = attachService.getSetByIds(attachIds);
+			
+			incident.setAttachs(attachSet);
+		}
+		
 
 		incidentService.save(incident);
 

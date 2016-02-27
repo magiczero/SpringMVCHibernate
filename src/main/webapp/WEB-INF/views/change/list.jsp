@@ -3,7 +3,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <c:set var="contextPath" value="${pageContext.request.contextPath}"></c:set>
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>        
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
@@ -84,9 +84,10 @@
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/scrollup/jquery.scrollUp.min.js'></script>
     
     <script type='text/javascript' src='${contextPath }/resources/js/cookies.js'></script>
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins.js'></script>
-    <script type='text/javascript' src='${contextPath }/resources/js/settings.js'></script> 
+    <!-- <script type='text/javascript' src='${contextPath }/resources/js/plugins.js'></script> -->
     <script type='text/javascript' src='${contextPath }/resources/js/pm-common.js'></script>
+    <script type='text/javascript' src='${contextPath }/resources/js/settings.js'></script> 
+    
     <script type='text/javascript' src='${contextPath }/resources/js/pm-workflow.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/pm-knowledge.js'></script>
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
@@ -99,7 +100,7 @@
         $(document).ready(function () {
             $("#myTable").dataTable({"aaSorting":[[4,'desc']]});
             $(".header").load("${contextPath}/header?t="+pm_random());
-            $(".menu").load("${contextPath}/menu?t="+pm_random(), function () { $("#node_0").addClass("active"); });
+            $(".menu").load("${contextPath}/menu?t="+pm_random(), function () { $("#node_${moduleId}").addClass("active"); });
             $(".breadLine .buttons").load("${contextPath}/contentbuttons?t="+pm_random());
             $(".confirm").bind("click",function(){
               	if(!confirm("确定要执行该操作?"))
@@ -107,7 +108,7 @@
             });
             //pm_knowledge_initdialog();
             //pm_workflow_inittracedialog(850,350);
-            $("#b_popup_knowledge").dialog({
+           <%-- $("#b_popup_knowledge").dialog({
                 autoOpen: false,
                 width: 1100,
                 buttons: { "关闭": function () { $(this).dialog("close") } },
@@ -121,15 +122,15 @@
             	width: 950,
             	height: 350,
             	buttons: { "关闭": function () { $(this).dialog("close") } }
-           });
+           }); --%>
                 });
                 
-                function open_trace(pid, pdid) {
+                <%--function open_trace(pid, pdid) {
                 	document.getElementById("trace_frame").src=ctx+ '/diagram-viewer/index.html?processDefinitionId=' 
             	   	+ pdid + '&processInstanceId=' + pid;
                 	
                 	$("#b_popup_trace").dialog('open');
-                }
+                } --%>
     </script>
 </head>
 <body>
@@ -185,7 +186,7 @@
                             </ul>                             
                         </div>
                         <div class="block-fluid table-sorting clearfix">
-                            <table cellpadding="0" cellspacing="0" width="100%" class="table" id="myTable">
+                            <table class="table" id="myTable">
                                 <thead>
                                     <tr>
                                     	<th width="60px">流水号</th>
@@ -300,8 +301,8 @@
             <!--workplace end-->
         </div>   
     </div>
-    <div class="dialog" id="b_popup_knowledge" style="display: none;" title="知识库"><iframe src="${contextPath}/knowledge/searchdialog" width="100%" height="500" frameborder="0"></iframe></div>
-    <div class="dialog" id="b_popup_trace" style="display: none;" title="流程跟踪"><div class="block dialog_block  uploads" id="trace_content"><iframe id="trace_frame" src="" width="100%" height="265"></iframe></div></div>
+    <%--<div class="dialog" id="b_popup_knowledge" style="display: none;" title="知识库"><iframe src="${contextPath}/knowledge/searchdialog" width="100%" height="500" frameborder="0"></iframe></div>
+    <div class="dialog" id="b_popup_trace" style="display: none;" title="流程跟踪"><div class="block dialog_block  uploads" id="trace_content"><iframe id="trace_frame" src="" width="100%" height="265"></iframe></div></div> --%>
 </body>
 
 </html>

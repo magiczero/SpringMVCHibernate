@@ -3,7 +3,7 @@
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
 <c:set var="contextPath" value="${pageContext.request.contextPath}"></c:set>
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>        
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
@@ -13,10 +13,6 @@
     
     <title>自助报修--运维管理系统</title>
 
-
-    <link rel="icon" type="image/ico" href="favicon.ico"/>
-    
-	<link rel="icon" type="image/ico" href="favicon.ico"/>
     <link href="${contextPath }/resources/css/icons.css" rel="stylesheet" type="text/css" />
     <link href="${contextPath }/resources/css/bootstrap.css" rel="stylesheet" type="text/css" />
     <link href="${contextPath }/resources/css/ui.css" rel="stylesheet" type="text/css" />
@@ -109,12 +105,12 @@
 	                        <form id="validation" action="${contextPath}/incident/savebyuser"  method="post">
 	                        <div class="block-fluid">                        
 	                            <div class="row-form clearfix">
-	                                <div class="col-md-1">故障摘要:</div>
-	                                <div class="col-md-11"><input type="text" name="fm_abs" id="fm_abs" class="validate[required,maxSize[50]]"></div>
+	                                <div class="col-md-2">故障摘要:</div>
+	                                <div class="col-md-10"><input type="text" name="fm_abs" id="fm_abs" class="validate[required,maxSize[50]]"></div>
 	                             </div>
 	                            <div class="row-form clearfix">
-	                                <div class="col-md-1">故障描述:</div>
-	                                <div class="col-md-11"><textarea name="fm_description" id="fm_description" class="validate[required,maxSize[255]]"></textarea></div>
+	                                <div class="col-md-2">故障描述:</div>
+	                                <div class="col-md-10"><textarea name="fm_description" id="fm_description" class="validate[required,maxSize[255]]"></textarea></div>
 	                            </div>
 	                            <div class="footer tar">
 	                                <button class="btn btn-primary center-block"> 提 交 </button>

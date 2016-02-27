@@ -1,7 +1,7 @@
 package com.cngc.pm.controller;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 import javax.annotation.Resource;
 
@@ -31,12 +31,14 @@ public class SystemController {
 	
 	@RequestMapping(value = "/menu", method = RequestMethod.GET)
 	public String menu(Model model) {
-
+		
 		UserDetails user1 = (UserDetails)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		SysUser user = userService.getByUsername(user1.getUsername());
 
-		List<Moudle> menu1 = new ArrayList<>();
-		List<Moudle> menu2 = new ArrayList<>();
+		//List<Moudle> menu1 = new ArrayList<>();
+		Set<Moudle> menu1 = new LinkedHashSet<>();
+		//List<Moudle> menu2 = new ArrayList<>();
+		Set<Moudle> menu2 =  new LinkedHashSet<>();
 		//for(Role role : user.getRoles()) {
 		for(Role role : userService.getRolesByUser(user.getId())) {
 			for(Moudle mod : role.getModules()) {

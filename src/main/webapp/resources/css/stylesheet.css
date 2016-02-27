@@ -507,7 +507,7 @@ li{line-height: 20px;}
             .row-form input[type="checkbox"],
             .row-form input[type="radio"]{margin-left: 0px;}
                     
-            .formErrorContent{line-height: 19px !important;}
+            .formErrorContent{line-height: 19px !important; color:#fff;}
             
             .scrollBox{padding-right: 0px;}
             .scroll{overflow: hidden;}

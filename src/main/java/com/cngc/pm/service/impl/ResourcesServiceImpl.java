@@ -16,6 +16,7 @@ import com.cngc.pm.model.RecordsType;
 import com.cngc.pm.model.Resources;
 import com.cngc.pm.model.Role;
 import com.cngc.pm.service.ResourcesService;
+import com.googlecode.genericdao.search.Filter;
 import com.googlecode.genericdao.search.Search;
 
 @Service
@@ -106,16 +107,26 @@ public class ResourcesServiceImpl implements ResourcesService {
 	}
 
 	@Override
+	@Transactional(readOnly=true)
 	public List<Role> getRoles(Resources resources) {
 		// TODO Auto-generated method stub
-		Search search = new Search(Role.class);
+//		List<Role> list = new ArrayList<>();
 		
-		search.addFilterEqual("roleAuths.auth.authResos.resources", resources);
+		Search search = new Search(Role.class);
+		//new Filter();
+		search.addFilterOr(new Filter("roleAuths.auth.authResos.resources", resources),  Filter.some("modules.resSet", Filter.equal("id", resources.getId())));
+//		search.addFilterEqual("roleAuths.auth.authResos.resources", resources);
+//		list.addAll(roleDao.search(search));
+//		
+//		Search search1 = new Search(Role.class);
+//		search1.addFilterEqual("modules.resSet", resources);
+//		list.addAll(roleDao.search(search1));
 		
 		return roleDao.search(search);
 	}
 
 	@Override
+	@Transactional(readOnly=true)
 	public boolean enableOrNot(Resources resources, String username) {
 		// TODO Auto-generated method stub
 		boolean enable = resources.isEnable();

@@ -21,7 +21,7 @@
     <link href="${contextPath }/resources/css/stylesheet.css" rel="stylesheet" type="text/css" />
     <link href="${contextPath }/resources/css/styling.css" rel="stylesheet" type="text/css" />
     <link href="${contextPath }/resources/css/mycss.css" rel="stylesheet" type="text/css" />
-    <link href="${contextPath }/resources/css/select2.css" rel="stylesheet" type="text/css" />
+    <link href="${contextPath }/resources/js/plugins/select2/select2.css" rel="stylesheet" type="text/css" />
     <link href="${contextPath }/resources/css/uploadify.css" rel="stylesheet" type="text/css" />
     <link href="${contextPath }/resources/css/validation.css" rel="stylesheet" type="text/css" />
     <link rel='stylesheet' type='text/css' href='${contextPath }/resources/css/bootstrap-treeview.css' media='print' />
@@ -42,11 +42,12 @@
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/pnotify/jquery.pnotify.min.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/ibutton/jquery.ibutton.min.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/scrollup/jquery.scrollUp.min.js'></script>
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/treeview/bootstrap-treeview.min.js'></script>
+    <%-- <script type='text/javascript' src='${contextPath }/resources/js/plugins/treeview/bootstrap-treeview.min.js'></script> //IE8+ --%>
+    <script type='text/javascript' src='${contextPath }/resources/js/plugins/jtree/jtree.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/uploadify/jquery.uploadify.min.js'></script>
       
     <script type='text/javascript' src='${contextPath }/resources/js/pm-common.js'></script>
-    <script type='text/javascript' src='${contextPath }/resources/js/pm-select.js'></script>
+    <%--<script type='text/javascript' src='${contextPath }/resources/js/pm-select.js'></script> //IE8+    --%>
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
       <script src="${contextPath }/resources/js/html5shiv.js"></script>
@@ -61,12 +62,63 @@
           	
             //表单验证
             $("#validation").validationEngine({promptPosition : "topLeft", scroll: true});
-          
+          	<%-- IE8+
             //选择事件分类
             act_dialog_category_init();
             $("input[name='category']").bind("click",function(){
             	act_dialog_category_select('INCIDENT_CATEGORY','category');
             });
+            --%>
+            //------------------IE8---------------------------
+            $(".wrapper").append("<div class='dialog' id='b_popup_select' style='display: none;' title='事件分类'></div>");
+			$("#b_popup_select").html("<div class='block dialog_block messages '>"
+					+"<div>"
+					+"<ul id='treeview'></ul>"
+					+"</div></div>");
+			
+		    $("#b_popup_select").dialog({
+		        autoOpen: false,
+		        width: 400,
+		        height:500,
+		        buttons: { "确定": function () { $(this).dialog("close") } }
+		    });
+            
+		    $("input[name='category']").bind("click",function(){
+		    	$("#treeview").html('');
+		    	$.getJSON(ctx + '/system/syscode/getjson/INCIDENT_CATEGORY?t=' + pm_random(), function(data){
+		    		obj= $.parseJSON(data.json);
+		    		$.each(obj, function (index, element) {
+		    			var liStr = "";
+                    	if(element.nodes) {
+                    		liStr = "<li><a href=\"#\">"+element.text+"</a><ul>";
+                    		$.each(element.nodes, function (j, element1) {
+                    			if(element1.nodes) {
+                    				liStr += "<li><a href=\"#\">"+element1.text+"</a><ul>";
+                    				$.each(element1.nodes, function (k, element2) {
+                    					var code2 = element2.text.substring(0,element2.text.indexOf(" "));
+                        				liStr += "<li><a href=\"#\" onclick=\"inputAttr('category','"+code2+"');\">"+element2.text+"</a></li>";
+                    				});
+                    				liStr += "</ul>";
+                    			} else {
+                    				var code1 = element1.text.substring(0,element1.text.indexOf(" "));
+                    				liStr += "<li><a href=\"#\" onclick=\"inputAttr('category','"+code1+"');\">"+element1.text+"</a></li>";
+                    			}
+                    		})
+                    		liStr += "</ul>";
+                    	} else {
+                    		var code = element.text.substring(0,element.text.indexOf(" "));
+                    		liStr = "<li><a href=\"#\" onclick=\"inputAttr('category','"+code+"');\">"+element.text+"</a>";
+                    	}
+                    	
+                    	liStr += "</li>";
+                    	$("#treeview").append(liStr);
+		    		});
+		    		$("#treeview").treed();
+		    		$("#b_popup_select").dialog('open');
+		    	});
+            });
+		    //----------------------IE8 end--------------------
+            
             //输入摘要是自动补全描述字段
             $("#abs").bind("blur",function(){
             	if( $("#detail").val()=="" )
@@ -100,9 +152,77 @@
         	$("select[name='critical'] option[value='04']").attr("selected","selected");
         	$("select[name='priority'] option[value='04']").attr("selected","selected");
         }
+        function inputAttr(name,value) {
+        	$("input[name='"+name+"']").attr("value",value);
+        }
     </script>
     <style type="text/css">
     	.uploadify-button-text {color:#fff !important;}
+    	
+    	.tree, .tree ul {
+    margin:0;
+    padding:0;
+    list-style:none
+}
+.tree ul {
+    margin-left:1em;
+    position:relative
+}
+.tree ul ul {
+    margin-left:.5em
+}
+.tree ul:before {
+    content:"";
+    display:block;
+    width:0;
+    position:absolute;
+    top:0;
+    bottom:0;
+    left:0;
+    border-left:1px solid
+}
+.tree li {
+    margin:0;
+    padding:0 1em;
+    line-height:2em;
+    color:#369;
+    font-weight:700;
+    position:relative;
+    cursor:pointer;
+}
+.tree ul li:before {
+    content:"";
+    display:block;
+    width:10px;
+    height:0;
+    border-top:1px solid;
+    margin-top:-1px;
+    position:absolute;
+    top:1em;
+    left:0
+}
+.tree ul li:last-child:before {
+    background:#fff;
+    height:auto;
+    top:1em;
+    bottom:0
+}
+.indicator {
+    margin-right:5px;
+}
+.tree li a {
+    text-decoration: none;
+    color:#369;
+}
+.tree li button, .tree li button:active, .tree li button:focus {
+    text-decoration: none;
+    color:#369;
+    border:none;
+    background:transparent;
+    margin:0px 0px 0px 0px;
+    padding:0px 0px 0px 0px;
+    outline: 0;
+}
     </style>
 </head>
 <body>

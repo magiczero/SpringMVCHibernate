@@ -4,16 +4,9 @@
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %> 
 <c:set var="contextPath" value="${pageContext.request.contextPath}"></c:set>
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>        
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <!-- HTTP 1.1 -->  
-	<meta http-equiv="pragma" content="no-cache" />  
-	<!-- HTTP 1.0 -->  
-	<meta http-equiv="cache-control" content="no-cache" />  
-	<!-- Prevent caching at the proxy server -->  
-	<meta http-equiv="expires" content="0" />  
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
     <!--[if gt IE 8]>
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <![endif]-->
@@ -116,7 +109,9 @@
             	 if ($("#selRole").length > 0) {
                      $("#selRole").multiSelect();
                  }
-            	 $("#eventTable").dataTable();
+            	 $("#eventTable").dataTable({"oLanguage": {
+             			"sUrl": "${contextPath}/resources/json/Chinese.json"
+         			}});
             	 
             	 $("#userForm").validationEngine();
             });
@@ -160,7 +155,7 @@
     	return true;
     }
     function enableUser(id) {
-    	if(confirm('确定删除？')) {
+    	if(confirm('确定启用？')) {
         	$.ajax({
 				type : "put",
 				dataType : "json",
@@ -238,19 +233,21 @@
                             <table class="table" id="eventTable">
                                 <thead>
 								<tr>
-									<th width="50px">ID</th>
+									<th width="50px">序号</th>
 									<th width="10%">用户名</th>
 									<th width="10%">真实姓名</th>
 									<th >用户角色</th>
 									<th width="10%">创建时间</th>
+									<th width="7%">是否启用</th>
 									<th width="20%">最后访问时间</th>
+									<th width="50px">ID</th>
 									<th width="180px">操作</th>
 								</tr>
                                 </thead>
                                 <tbody>
-                                <c:forEach items="${list }" var="user">
+                                <c:forEach items="${list }" var="user" varStatus="st">
 									<tr>
-										<td class="userid">${user.id }</td>
+										<td>${st.index+1 }</td>
 										<td>${user.username}</td>
 										<td>${user.name}</td>
 										<td>
@@ -259,12 +256,15 @@
 										</c:forEach>
 										</td>
 										<td>${user.createWhile }</td>
+										<td><c:if test="${!user.enabled }">否</c:if></td>
 										<td>${user.lastWhile }</td>
+										<td class="userid">${user.id }</td>
 										<td>
 											<sec:authorize access="hasAnyRole('security_secrecy_admin','ROLE_ADMIN')"><a class="lnk_setrole" href="#" >设置角色</a></sec:authorize>
 											<sec:authorize access="hasAnyRole('sys_admin','ROLE_ADMIN')"><a class="lnk_modify" href="#">编辑</a></sec:authorize>
-					                        <sec:authorize access="hasAnyRole('sys_admin','ROLE_ADMIN')"><a class="confirm" href="${contextPath}/user/delete/${user.id}">删除</a></sec:authorize>
-					                        <sec:authorize access="hasAnyRole('security_secrecy_admin','ROLE_ADMIN')"><c:if test="${!user.enabled }"><a href="javascript:void(0);" onclick="enableUser(${user.id});">启用</a></c:if></sec:authorize>
+					                        <%--<sec:authorize access="hasAnyRole('sys_admin','ROLE_ADMIN')"><a class="confirm" href="${contextPath}/user/delete/${user.id}">删除</a></sec:authorize> --%>
+					                        <sec:authorize url="/user/enable/*"><c:if test="${!user.enabled }"><a href="javascript:void(0);" onclick="enableUser(${user.id});">启用</a></c:if></sec:authorize>
+					                        <%--<sec:authorize access="hasRole('security_secrecy_admin')"><c:if test="${!user.enabled }"><a href="javascript:void(0);" onclick="enableUser(${user.id});">启用</a></c:if></sec:authorize> --%>
 										</td>
 									</tr>
 								</c:forEach>   

@@ -24,7 +24,7 @@
     <link href="${contextPath }/resources/css/stylesheet.css" rel="stylesheet" type="text/css" />
     <link href="${contextPath }/resources/css/styling.css" rel="stylesheet" type="text/css" />
     <link href="${contextPath }/resources/css/mycss.css" rel="stylesheet" type="text/css" />
-    <link rel='stylesheet' type='text/css' href='${contextPath }/resources/css/bootstrap-treeview.css' media='print' />
+    <%--<link rel='stylesheet' type='text/css' href='${contextPath }/resources/css/bootstrap-treeview.css' media='print' /> --%>
     <!--[if lt IE 8]>
         <link href="${contextPath }/resources/css/ie7.css" rel="stylesheet" type="text/css" />
     <![endif]-->    
@@ -38,7 +38,8 @@
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/highlight/jquery.highlight-4.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/pnotify/jquery.pnotify.min.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/scrollup/jquery.scrollUp.min.js'></script>
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/treeview/bootstrap-treeview.min.js'></script>
+    <%--<script type='text/javascript' src='${contextPath }/resources/js/plugins/treeview/bootstrap-treeview.min.js'></script> --%>
+    <script type='text/javascript' src='${contextPath }/resources/js/plugins/jtree/jtree.js'></script>
     
     <script type='text/javascript' src='${contextPath }/resources/js/pm-common.js'></script>
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
@@ -49,8 +50,9 @@
     <script type="text/javascript">
     	var ctx = "${contextPath}";
     	var jsonData = ${category};
+    	//console.log(jsonData);
             $(document).ready(function () {
-                $("#ciTable").dataTable({"bSort":false});
+                
                 $(".header").load("${contextPath}/header?t="+pm_random());
                 $(".menu").load("${contextPath }/menu?t="+pm_random(), function() {$("#node_${moduleId}").addClass("active");});
                 $(".breadLine .buttons").load("${contextPath}/contentbuttons?t="+pm_random());
@@ -58,7 +60,7 @@
                 	if(!confirm("确定要执行该操作?"))
                 		return false;
                 });
-                $('#treeview').treeview({
+                <%--$('#treeview').treeview({
                     levels: 1, 
                     data: jsonData,
                     color: "#666666",
@@ -66,8 +68,63 @@
                     onNodeSelected: function(event, node) {
                       initTable(node.text.substring(0,node.text.indexOf(" ")));
                     }
-                  });
+                  });--%>
+                
+                $.each(jsonData, function (i, field) {
+                	var code = field.text.substring(0,field.text.indexOf(" "));
+                	var liStr = "<li><a href=\"#\" onclick=\"initTable("+code+");\">"+field.text+"</a>";
+                	if(field.nodes) {
+                		liStr += "<ul>";
+                		$.each(field.nodes, function(j, node){
+                			var code1 = node.text.substring(0,node.text.indexOf(" "));
+                			liStr+="<li><a href=\"#\" onclick=\"initTable("+code1+");\">"+node.text+"</a>";
+                			if(node.nodes) {
+                				liStr += "<ul>";
+                				$.each(node.nodes, function(k, last){
+                					var code2 = last.text.substring(0,last.text.indexOf(" "));
+                					liStr+="<li><a href=\"#\" onclick=\"initTable("+code2+");\">"+last.text+"</a></li>";
+                				});
+                				liStr += "</ul>";
+                			}
+                			liStr+="</li>"
+                		});
+                		liStr += "</ul>";
+                	}
+                	liStr += "</li>";
+                    //$("#treeview1").append("<li><a href=\"#\" class=\"\" onclick=\"aa(" + field.text + ");\">" + field.text + "</a></li>");
+                    $("#treeview1").append(liStr);
+                }); 
+                
+                $("#treeview1").treed();
+                
                 initTable("0");
+                
+                $("#ciTable").dataTable({
+               	 "oLanguage": {
+               	        "sProcessing": "处理中...",
+               	        "sLengthMenu": "显示 _MENU_ 项结果",
+               	        "sZeroRecords": "没有匹配结果",
+               	        "sInfo": "显示第 _START_ 至 _END_ 项结果，共 _TOTAL_ 项",
+               	        "sInfoEmpty": "显示第 0 至 0 项结果，共 0 项",
+               	        "sInfoFiltered": "(由 _MAX_ 项结果过滤)",
+               	        "sInfoPostFix": "",
+               	        "sSearch": "搜索:",
+               	        "sUrl": "",
+               	        "sEmptyTable": "表中数据为空",
+               	        "sLoadingRecords": "载入中...",
+               	        "sInfoThousands": ",",
+               	        "oPaginate": {
+               	            "sFirst": "首页",
+               	            "sPrevious": "上页",
+               	            "sNext": "下页",
+               	            "sLast": "末页"
+               	        },
+               	        "oAria": {
+               	            "sSortAscending": ": 以升序排列此列",
+               	            "sSortDescending": ": 以降序排列此列"
+               	        }
+               	    },
+               	"bSort":false});
             });
             function initTable(code)
             {
@@ -76,7 +133,7 @@
             		$("#ciTable tbody tr").remove();
             		if(data.list==null)
             			return;
-            		var trs;
+            		var trs = "";
             		for(i=0;i<data.list.length;i++)
             		{
             			trs += "<tr>"
@@ -112,6 +169,72 @@
             	});
             }
     </script>
+    <style type="text/css">
+    	.tree, .tree ul {
+    margin:0;
+    padding:0;
+    list-style:none
+}
+.tree ul {
+    margin-left:1em;
+    position:relative
+}
+.tree ul ul {
+    margin-left:.5em
+}
+.tree ul:before {
+    content:"";
+    display:block;
+    width:0;
+    position:absolute;
+    top:0;
+    bottom:0;
+    left:0;
+    border-left:1px solid
+}
+.tree li {
+    margin:0;
+    padding:0 1em;
+    line-height:2em;
+    color:#369;
+    font-weight:700;
+    position:relative;
+    cursor:pointer;
+}
+.tree ul li:before {
+    content:"";
+    display:block;
+    width:10px;
+    height:0;
+    border-top:1px solid;
+    margin-top:-1px;
+    position:absolute;
+    top:1em;
+    left:0
+}
+.tree ul li:last-child:before {
+    background:#fff;
+    height:auto;
+    top:1em;
+    bottom:0
+}
+.indicator {
+    margin-right:5px;
+}
+.tree li a {
+    text-decoration: none;
+    color:#369;
+}
+.tree li button, .tree li button:active, .tree li button:focus {
+    text-decoration: none;
+    color:#369;
+    border:none;
+    background:transparent;
+    margin:0px 0px 0px 0px;
+    padding:0px 0px 0px 0px;
+    outline: 0;
+}
+    </style>
 </head>
 <body>
     <div class="wrapper"> 
@@ -147,7 +270,47 @@
                 <div class="row">
                 	<div class="col-md-3">
                 		<a href="${contextPath }/cms/ci/list" role="button" class="btn btn-primary btn-block" data-toggle="modal">查看全部</a>
-                		<div id="treeview" ></div>
+                		<%--<div id="treeview" ></div> --%>
+                		
+                		<ul id="treeview1" class="tree"></ul>
+                		<%-- <ul class="tree">
+    <li><a href="#">TECH</a>
+        <ul>
+            <li>Company Maintenance</li>
+            <li>Employees
+                <ul>
+                    <li>Reports
+                        <ul>
+                            <li>Report1</li>
+                            <li>Report2</li>
+                            <li>Report3</li>
+                        </ul>
+                    </li>
+                    <li>Employee Maint.</li>
+                </ul>
+            </li>
+            <li>Human Resources</li>
+        </ul>
+    </li>
+    <li><a href="#">XRP</a>
+        <ul>
+            <li>Company Maintenance</li>
+            <li>Employees
+                <ul>
+                    <li>Reports
+                        <ul>
+                            <li>Report1</li>
+                            <li>Report2</li>
+                            <li>Report3</li>
+                        </ul>
+                    </li>
+                    <li>Employee Maint.</li>
+                </ul>
+            </li>
+            <li>Human Resources</li>
+        </ul>
+    </li>
+</ul> --%>
                 	</div>
                     <div class="col-md-9">                    
                         <div class="head clearfix">
@@ -196,6 +359,12 @@
             <!--workplace end-->
         </div>   
     </div>
+    <!-- <script type="text/javascript">
+   
+
+
+    	$('.tree').treed(); -->
+    </script>
 </body>
 
 </html>

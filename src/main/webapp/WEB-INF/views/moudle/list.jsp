@@ -70,23 +70,26 @@
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/scrollup/jquery.scrollUp.min.js'></script>
     
     <script type='text/javascript' src='${contextPath }/resources/js/cookies.js'></script>
-    <script type='text/javascript' src='${contextPath }/resources/js/myactions.js'></script>
-    <script type='text/javascript' src='${contextPath }/resources/js/charts.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/settings.js'></script>    
-    <script type='text/javascript' src='${contextPath }/resources/js/faq.js'></script>
+    <script type='text/javascript' src='${contextPath }/resources/js/pm-common.js'></script>
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
       <script src="${contextPath }/resources/js/html5shiv.js"></script>
       <script src="${contextPath }/resources/js/respond.min.js"></script>
     <![endif]-->
     <script type="text/javascript">
+    var ctx = "${contextPath}";
             $(document).ready(function () {
-                $("#eventTable").dataTable();
+                $("#eventTable").dataTable({
+                	"oLanguage": {
+             			"sUrl": "${contextPath}/resources/json/Chinese.json"
+         			}
+                });
 
-                $(".header").load("${contextPath }/header");
-                $(".menu").load("${contextPath }/menu", function() {$("#node_${moduleId}").addClass("active");});
-                $(".breadLine .buttons").load("${contextPath }/contentbuttons");
+                $(".header").load("${contextPath }/header?t="+pm_random());
+                $(".menu").load("${contextPath }/menu?t="+pm_random(), function() {$("#node_${moduleId}").addClass("active");});
+                $(".breadLine .buttons").load("${contextPath }/contentbuttons?t="+pm_random());
                 
                 $("#moudle").validationEngine({promptPosition : "topLeft", scroll: true});
             });
@@ -170,12 +173,11 @@
                                 <thead>
                                     <tr>
                                         <th width="40px"><input type="checkbox" name="checkall"/></th>
-                                        <th width="15%">菜单名称</th>
+                                        <th width="25%">菜单名称</th>
 										<th>路径</th>
-										<th width="10%">上级菜单</th>
-										<th width="5%">层级</th>
+										<th width="10%">层级</th>
 										<th width="25%">图标</th>
-										<th width="8%">是否启用</th>
+										<th width="10%">是否启用</th>
 										<th width="8%">优先级</th>
                                     </tr>
                                 </thead>
@@ -183,9 +185,8 @@
                                     <c:forEach items="${listmoudle}" var="moudle">
                                     <tr>
                                         <td><input type="checkbox" name="checkbox"/></td>
-                                        <td>${moudle.name }</td>
+                                        <td><c:if test="${moudle.parent!=null }">${moudle.parent.name }&nbsp;----&nbsp;</c:if>${moudle.name }</td>
 										<td>${moudle.url }</td>
-										<td><c:if test="${moudle.parent!=null }">${moudle.parent.name }</c:if></td>
 										<td>${moudle.level}</td>
 										<td>${moudle.styleClass }</td>
 										<td><c:choose><c:when test="${moudle.enable }"><button class="btn btn-success" onclick="changeStatus(this,${moudle.id });" type="button"> 启用 </button></c:when><c:otherwise><button class="btn btn-danger" onclick="changeStatus(this,${moudle.id });" type="button"> 停用 </button></c:otherwise></c:choose></td>

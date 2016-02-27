@@ -19,6 +19,7 @@ import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.task.Task;
+import org.apache.cxf.common.util.StringUtils;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -71,14 +72,18 @@ public class KnowledgeController {
 
 		if(knowledge.getId()==null)
 		{
-			String attachIds = request.getParameter("fileids");
-			
-			Set<Attachment> attachSet = attachService.getSetByIds(attachIds);
+			if(!StringUtils.isEmpty(request.getParameter("fileids"))) {
+				String attachIds = request.getParameter("fileids");
+				
+				Set<Attachment> attachSet = attachService.getSetByIds(attachIds);
+				
+				knowledge.setAttachs(attachSet);
+			}
 			
 			knowledge.setApplyUser(userUtil.getUserId(authentication));
 			knowledge.setApplyTime(new Date());
 			knowledge.setStatus(PropertyFileUtil.getStringValue("syscode.knowledge.status.new"));
-			knowledge.setAttachs(attachSet);
+			
 	
 			knowledgeService.save(knowledge);
 		}

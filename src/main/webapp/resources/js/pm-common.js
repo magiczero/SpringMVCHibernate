@@ -1,5 +1,6 @@
 $(document).ready(function() {
 	//主题设置 
+	/*
 	$(".link_themeSettings").click(function(){
 	        
 	        if($("#themeSettings").is(':visible')){
@@ -78,6 +79,7 @@ $(document).ready(function() {
 	    
 	        return false;
 	    });
+	    */
 	// 打开/隐藏
 	$(".toggle a").click(function() {
 		var box = $(this).parents('[class^=head]').next();
@@ -128,17 +130,17 @@ $(document).ready(function() {
     });
     //plug in
     //uniform
-    if($(".row-form,.row,.dialog,.loginBox,.block,.block-fluid").find("input:checkbox, input:radio").length>0)
+    if($(".row-form,.row,.dialog,.loginBox,.block,.block-fluid").find("input:checkbox, input:radio").length>0) 
     	$(".row-form,.row,.dialog,.loginBox,.block,.block-fluid").find("input:checkbox, input:radio").not(".skip, input.ibtn").uniform();
     // CUSTOM SCROLLING
-    if($(".scroll").length>0)
-    	$(".scroll").mCustomScrollbar();
+    //if($(".scroll").length>0)
+    	//$(".scroll").mCustomScrollbar();
     // ACCORDION 
-    if($(".accordion").length>0)
-    	$(".accordion").accordion();
+    //if($(".accordion").length>0)
+    //	$(".accordion").accordion();
     // TABS
-    if($(".tabs").length>0)
-    	$( ".tabs" ).tabs();
+    //if($(".tabs").length>0)
+    //	$( ".tabs" ).tabs();
     //date
     $.datepicker.regional['zh-CN'] = {  
 	        closeText: '关闭',  
@@ -160,8 +162,8 @@ $(document).ready(function() {
 	        yearSuffix: '年'};  
 	    $.datepicker.setDefaults($.datepicker.regional['zh-CN']);  
 	//tagsinput
-	if($(".tags").length > 0)
-		$(".tags").tagsInput({'width':'100%','height':'auto'});
+	//if($(".tags").length > 0)
+	//	$(".tags").tagsInput({'width':'100%','height':'auto'});
 });
 $(document).ready(function() {
 	if ($.cookies.test()) {

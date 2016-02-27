@@ -25,7 +25,7 @@
     <link href="${contextPath }/resources/css/select2.css" rel="stylesheet" type="text/css" />
     <link href="${contextPath }/resources/css/uploadify.css" rel="stylesheet" type="text/css" />
     <link href="${contextPath }/resources/css/validation.css" rel="stylesheet" type="text/css" />
-    <link rel='stylesheet' type='text/css' href='${contextPath }/resources/css/bootstrap-treeview.css' media='print' />
+    <%--<link rel='stylesheet' type='text/css' href='${contextPath }/resources/css/bootstrap-treeview.css' media='print' /> --%>
     <!--[if lt IE 8]>
         <link href="${contextPath }/resources/css/ie7.css" rel="stylesheet" type="text/css" />
     <![endif]-->    
@@ -42,7 +42,8 @@
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/pnotify/jquery.pnotify.min.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/scrollup/jquery.scrollUp.min.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/select2/select2.min.js'></script>
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/treeview/bootstrap-treeview.min.js'></script>
+    <%--<script type='text/javascript' src='${contextPath }/resources/js/plugins/treeview/bootstrap-treeview.min.js'></script> --%>
+    <script type='text/javascript' src='${contextPath }/resources/js/plugins/jtree/jtree.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/uploadify/jquery.uploadify.min.js'></script>
     
     <script type='text/javascript' src='${contextPath }/resources/js/pm-common.js'></script>
@@ -57,7 +58,7 @@
     	var ctx = "${contextPath}";
             $(document).ready(function () {
             	$(".header").load("${contextPath }/header?t="+pm_random());
-                $(".menu").load("${contextPath }/menu?t="+pm_random(), function () { $(".navigation > li:eq(4)").addClass("active"); });
+                $(".menu").load("${contextPath }/menu?t="+pm_random(), function () { $("#node_${moduleId}").addClass("active"); });
                 $(".breadLine .buttons").load("${contextPath }/contentbuttons?t="+pm_random());
                 
               	//表单验证
@@ -65,9 +66,66 @@
               
                 $(".dateISO").datepicker();
                 
-                act_dialog_ci_init();
+                //act_dialog_ci_init();			//IE8+
+                $(".wrapper").append("<div class='dialog' id='b_popup_select' style='display: none;' title='分类'></div>");
+				$("#b_popup_select").html("<div class='block dialog_block messages '>"
+						//+"<div>"
+						//+"<div id='treeview'></div>"		//IE8+
+						+"<ul id='treeview'></ul>"
+						+"</div>");
+				
+			    $("#b_popup_select").dialog({
+			        autoOpen: false,
+			        width: 400,
+			        height:500,
+			        buttons: { "确定": function () { $(this).dialog("close") } }
+			    });
+			    
                 $("input[name='categoryCode']").bind("click",function(){
-                	act_dialog_ci_select("categoryCode",true);
+                	
+                	//act_dialog_ci_select("categoryCode",true);//IE8+
+                	$("#treeview").html('');
+                	$.getJSON(ctx + '/cms/category/getjson?t=' + pm_random(), function(data){
+                		//tree_json = data.json;
+                		obj= $.parseJSON(data.json);
+                		//console.log(obj);
+                		$.each(obj, function (i, field) {
+                			//console.log(field.text);
+                        	var liStr = "<li><a href=\"#\">"+field.text+"</a>";
+                        	if(!field.nodes) {
+                        		var code = field.text.substring(0,field.text.indexOf(" "));
+                        		liStr = "<li><a href=\"#\" onclick=\"inputAttr('categoryCode','"+code+"');\">"+field.text+"</a>";
+                        	} 
+                        	if(field.nodes) {
+                        		liStr += "<ul>";
+                        		$.each(field.nodes, function(j, node){
+                        			if(node.nodes) {
+                        				liStr+="<li><a href=\"#\">"+node.text+"</a>";                        				
+                        			} else {
+                        				var code1 = node.text.substring(0,node.text.indexOf(" "));
+                        				liStr+="<li><a href=\"#\" onclick=\"inputAttr('categoryCode','"+code1+"');\">"+node.text+"</a>";
+                        			}
+                        			if(node.nodes) {
+                        				liStr += "<ul>";
+                        				$.each(node.nodes, function(k, last){
+                        					var code2 = last.text.substring(0,last.text.indexOf(" "));
+                        					liStr+="<li><a href=\"#\" onclick=\"inputAttr('categoryCode','"+code2+"');\">"+last.text+"</a></li>";
+                        				});
+                        				liStr += "</ul>";
+                        			}
+                        			liStr+="</li>"
+                        		});
+                        		liStr += "</ul>";
+                        	}
+                        	liStr += "</li>";
+                            $("#treeview").append(liStr);
+                		});
+                		
+                		$("#treeview").treed();
+                		
+                		$("#b_popup_select").dialog('open');
+                	});
+                	
                 });
                 $("#userInMaintenance").select2();
                 init();
@@ -81,7 +139,7 @@
     		        'removeCompleted' : false,
     		        // Put your options here
     		        'onUploadSuccess': function (file, data, response) {
-    		        	console.log(data);
+    		        	//console.log(data);
                         $('#' + file.id).find('.data').html(' 上传完毕');
                         var fileids = document.getElementById("fileids").value + '';
                         document.getElementById("fileids").value = fileids + data;
@@ -91,9 +149,79 @@
             function init(){
             	$("select[name='status'] option[value='03']").attr("selected","selected");
             }
+            
+            function inputAttr(name,value) {
+            	//console.log(value);
+            	$("input[name='"+name+"']").attr("value",value);
+            }	
     </script>
     <style type="text/css">
     	.uploadify-button-text {color:#fff !important;}
+
+.tree, .tree ul {
+    margin:0;
+    padding:0;
+    list-style:none
+}
+.tree ul {
+    margin-left:1em;
+    position:relative
+}
+.tree ul ul {
+    margin-left:.5em
+}
+.tree ul:before {
+    content:"";
+    display:block;
+    width:0;
+    position:absolute;
+    top:0;
+    bottom:0;
+    left:0;
+    border-left:1px solid
+}
+.tree li {
+    margin:0;
+    padding:0 1em;
+    line-height:2em;
+    color:#369;
+    font-weight:700;
+    position:relative;
+    cursor:pointer;
+}
+.tree ul li:before {
+    content:"";
+    display:block;
+    width:10px;
+    height:0;
+    border-top:1px solid;
+    margin-top:-1px;
+    position:absolute;
+    top:1em;
+    left:0
+}
+.tree ul li:last-child:before {
+    background:#fff;
+    height:auto;
+    top:1em;
+    bottom:0
+}
+.indicator {
+    margin-right:5px;
+}
+.tree li a {
+    text-decoration: none;
+    color:#369;
+}
+.tree li button, .tree li button:active, .tree li button:focus {
+    text-decoration: none;
+    color:#369;
+    border:none;
+    background:transparent;
+    margin:0px 0px 0px 0px;
+    padding:0px 0px 0px 0px;
+    outline: 0;
+}
     </style>
 </head>
 <body>

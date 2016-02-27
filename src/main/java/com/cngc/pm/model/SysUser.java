@@ -47,7 +47,8 @@ public class SysUser implements Serializable {
 	private boolean enabled;
 	private boolean accountNonExpired;				//是否过期
 	private boolean accountNonLocked;				//是否锁定
-	private boolean creadentialsNonExpired;		//整数是否有效
+	private boolean creadentialsNonExpired;		//证书是否有效
+//	private boolean sys;
 	
 //	private Set<Role> roles = new LinkedHashSet<Role>();						//角色列表
 //

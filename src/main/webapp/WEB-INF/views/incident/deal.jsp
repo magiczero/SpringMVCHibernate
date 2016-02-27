@@ -15,7 +15,7 @@
 	<link href="${contextPath }/resources/css/icons.css" rel="stylesheet" type="text/css" />
     <link href="${contextPath }/resources/css/bootstrap.css" rel="stylesheet" type="text/css" />
     <link href="${contextPath }/resources/css/ui.css" rel="stylesheet" type="text/css" />
-    <link href="${contextPath }/resources/css/select2.css" rel="stylesheet" type="text/css" />
+    <link href="${contextPath }/resources/js/plugins/select2/select2.css" rel="stylesheet" type="text/css" />
     <link href="${contextPath }/resources/css/mCustomScrollbar.css" rel="stylesheet" type="text/css" />
     <link href="${contextPath }/resources/css/pnotify.css" rel="stylesheet" type="text/css" />
     <link href="${contextPath }/resources/css/stylesheet.css" rel="stylesheet" type="text/css" />
@@ -245,7 +245,7 @@
                                 <tbody>
                                 	<c:forEach items="${relIncidents }" var="incident">
                                 	<tr>                                    
-                                        <td><a href="${contextPath }/incident/deal/${incident.id}" target=_blank>${incident.abs }</a></td>
+                                        <td><a href="${contextPath }/incident/view/${incident.id}" target=_blank>${incident.abs }</a></td>
                                         <td><fmt:formatDate value="${incident.applyTime }" pattern="yyyy-MM-dd HH:mm"></fmt:formatDate> </td>
                                         <td>${incident.statusName }</td>
                                     </tr>

@@ -43,7 +43,7 @@ public class UserServiceImpl implements UserService {
 	@Override
 	@Transactional
 	public void save(SysUser user, String username){
-		user.setEnabled(false);		//因为三员管理的关系，所以保存时设置为未启用
+		
 		userDao.save(user);
 		Records record = new Records();
 		record.setUsername(username);

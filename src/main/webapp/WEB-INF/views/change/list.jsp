@@ -58,7 +58,7 @@
     
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/maskedinput/jquery.maskedinput-1.3.min.js'></script>
     
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/validation/languages/jquery.validationEngine-en.js' charset='utf-8'></script>
+    <script type='text/javascript' src='${contextPath }/resources/js/plugins/validation/languages/jquery.validationEngine-zh-CN.js' charset='utf-8'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/validation/jquery.validationEngine.js' charset='utf-8'></script>
     
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/mcustomscrollbar/jquery.mCustomScrollbar.min.js'></script>
@@ -98,7 +98,10 @@
     <script type="text/javascript">
     	var ctx = "${contextPath}";
         $(document).ready(function () {
-            $("#myTable").dataTable({"aaSorting":[[4,'desc']]});
+            $("#myTable").dataTable({"oLanguage": {
+     			"sUrl": "${contextPath}/resources/json/Chinese.json"
+ 			},
+ 			"aaSorting":[[4,'desc']]});
             $(".header").load("${contextPath}/header?t="+pm_random());
             $(".menu").load("${contextPath}/menu?t="+pm_random(), function () { $("#node_${moduleId}").addClass("active"); });
             $(".breadLine .buttons").load("${contextPath}/contentbuttons?t="+pm_random());

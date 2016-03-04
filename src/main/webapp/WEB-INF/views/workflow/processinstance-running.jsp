@@ -16,8 +16,6 @@
     
     <title>流程管理--运维管理系统</title>
 
-    <link rel="icon" type="image/ico" href="favicon.ico"/>
-    <link rel="icon" type="image/ico" href="favicon.ico"/>
     <link href="${contextPath }/resources/css/icons.css" rel="stylesheet" type="text/css" />
     <link href="${contextPath }/resources/css/bootstrap.css" rel="stylesheet" type="text/css" />
     <link href="${contextPath }/resources/css/ui.css" rel="stylesheet" type="text/css" />
@@ -53,13 +51,17 @@
     <script type="text/javascript">
     	var ctx = "${contextPath}";
             $(document).ready(function () {
-                $("#eventTable").dataTable();
+                $("#eventTable").dataTable({
+                	"oLanguage": {
+             			"sUrl": "${contextPath}/resources/json/Chinese.json"
+         			}
+                });
                 $(".header").load("${contextPath }/header?t=" + pm_random());
                 $(".menu").load("${contextPath }/menu?t=" + pm_random(), function () { $("#node_${moduleId}").addClass("active"); });
                 $(".breadLine .buttons").load("${contextPath }/contentbuttons?t=" + pm_random());
                 
               	//表单验证
-                $("#userForm").validationEngine({promptPosition : "topLeft", scroll: true});
+                $("#userForm").validationEngine({promptPosition : "topRight", scroll: true});
               
                 $(".confirm").bind("click",function(){
                 	if(!confirm("确定要执行该操作?"))

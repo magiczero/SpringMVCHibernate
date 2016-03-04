@@ -95,7 +95,6 @@
     <script type='text/javascript' src='${contextPath }/resources/js/charts.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/settings.js'></script>
-    <script type='text/javascript' src='${contextPath }/resources/js/faq.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/pm-common.js'></script>
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
@@ -109,9 +108,9 @@
     <script type="text/javascript">
     var ctx = "${contextPath}";
     	$(document).ready(function () {
-			$(".header").load("${contextPath }/header");
-            $(".menu").load("${contextPath }/menu", function() {$("#node_${moduleId}").addClass("active");});
-            $(".breadLine .buttons").load("${contextPath }/contentbuttons");
+    		$(".header").load("${contextPath }/header?t="+pm_random());
+    		$(".menu").load("${contextPath }/menu?t="+pm_random(), function() {$("#node_${moduleId}").addClass("active");});
+    		$(".breadLine .buttons").load("${contextPath}/contentbuttons?t="+pm_random());
 
             if($("#docSet").length > 0){
                 $("#docSet").multiSelect({
@@ -128,9 +127,9 @@
                 });
            	}
             
-            $("#style").validationEngine({promptPosition : "topLeft", scroll: true});
+            $("#style").validationEngine({promptPosition : "topRight", scroll: true});
             
-            $("#checkitems").validationEngine({promptPosition : "topLeft", scroll: true});
+            $("#checkitems").validationEngine({promptPosition : "topRight", scroll: true});
             
             //$("#itemTable").rowspan(0);
             //$("#itemTable").rowspan(1);

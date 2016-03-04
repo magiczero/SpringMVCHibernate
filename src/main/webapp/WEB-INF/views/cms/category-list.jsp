@@ -52,14 +52,16 @@
     <script type="text/javascript">
     		var ctx = "${contextPath}";
             $(document).ready(function () {
-                $("#eventTable").dataTable({"bSort":false});
+                $("#eventTable").dataTable({"oLanguage": {
+         			"sUrl": "${contextPath}/resources/json/Chinese.json"
+     			},"bSort":false});
                 
                 $(".header").load("${contextPath}/header?t="+pm_random());
                 $(".menu").load("${contextPath}/menu?t="+pm_random(), function () { $("#node_${moduleId}").addClass("active"); });
                 $(".breadLine .buttons").load("${contextPath}/contentbuttons?t="+pm_random());
                 
               	//表单验证
-              	$("#newCategoryForm").validationEngine({promptPosition : "topLeft", scroll: true});
+              	$("#newCategoryForm").validationEngine({promptPosition : "topRight", scroll: true});
               
                 $(".confirm").bind("click",function(){
                 	if(!confirm("确定要执行该操作?"))

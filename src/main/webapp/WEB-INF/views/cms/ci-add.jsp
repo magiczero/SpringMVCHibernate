@@ -62,7 +62,7 @@
                 $(".breadLine .buttons").load("${contextPath }/contentbuttons?t="+pm_random());
                 
               	//表单验证
-                $("#validation").validationEngine({promptPosition : "topLeft", scroll: true});
+                $("#validation").validationEngine({promptPosition : "topRight", scroll: true});
               
                 $(".dateISO").datepicker();
                 

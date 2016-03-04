@@ -4,16 +4,10 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <c:set var="contextPath" value="${pageContext.request.contextPath}"></c:set>
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>        
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
-    <!-- HTTP 1.1 -->  
-	<meta http-equiv="pragma" content="no-cache" />  
-	<!-- HTTP 1.0 -->  
-	<meta http-equiv="cache-control" content="no-cache" />  
-	<!-- Prevent caching at the proxy server -->  
-	<meta http-equiv="expires" content="0" />  
     <!--[if gt IE 8]>
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <![endif]-->
@@ -24,7 +18,7 @@
     <link href="${contextPath }/resources/css/bootstrap.css" rel="stylesheet" type="text/css" />
     <link href="${contextPath }/resources/css/fullcalendar.css" rel="stylesheet" type="text/css" />
     <link href="${contextPath }/resources/css/ui.css" rel="stylesheet" type="text/css" />
-    <link href="${contextPath }/resources/css/select2.css" rel="stylesheet" type="text/css" />
+    <link href="${contextPath }/resources/js/plugins/select2/select2.css" rel="stylesheet" type="text/css" />
     <link href="${contextPath }/resources/css/uniform.default.css" rel="stylesheet" type="text/css" />
     <link href="${contextPath }/resources/css/validation.css" rel="stylesheet" type="text/css" />
     <link href="${contextPath }/resources/css/mCustomScrollbar.css" rel="stylesheet" type="text/css" />
@@ -56,7 +50,7 @@
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/select2/select2.min.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/uniform/uniform.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/maskedinput/jquery.maskedinput-1.3.min.js'></script>
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/validation/languages/jquery.validationEngine-en.js' charset='utf-8'></script>
+    <script type='text/javascript' src='${contextPath }/resources/js/plugins/validation/languages/jquery.validationEngine-zh-CN.js' charset='utf-8'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/validation/jquery.validationEngine.js' charset='utf-8'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/mcustomscrollbar/jquery.mCustomScrollbar.min.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/animatedprogressbar/animated_progressbar.js'></script>
@@ -82,7 +76,12 @@
     	var ctx = "${contextPath}";
             $(document).ready(function () {
 
-                $("#eventTable").dataTable({"aaSorting":[[3,'desc']]});
+                $("#eventTable").dataTable({
+                	"oLanguage": {
+             			"sUrl": "${contextPath}/resources/json/Chinese.json"
+         			},
+                	"aaSorting":[[3,'desc']]
+                });
                 $(".header").load("${contextPath}/header?t="+pm_random());
                 $(".menu").load("${contextPath}/menu?t="+pm_random(), function () { $(".navigation > li:eq(0)").addClass("active"); });
                 $(".breadLine .buttons").load("${contextPath}/contentbuttons?t="+pm_random());

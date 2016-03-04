@@ -107,7 +107,7 @@
                 $(".menu").load("${contextPath }/menu?t="+pm_random(), function() {$("#node_${moduleId}").addClass("active");});
                 $(".breadLine .buttons").load("${contextPath }/contentbuttons");
 
-                $("#style").validationEngine({promptPosition : "topLeft", scroll: true});
+                $("#style").validationEngine({promptPosition : "topRight", scroll: true});
 
             });
     </script>

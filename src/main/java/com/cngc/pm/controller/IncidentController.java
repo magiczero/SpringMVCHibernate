@@ -24,7 +24,7 @@ import org.activiti.engine.TaskService;
 import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.task.Task;
-import org.apache.commons.lang3.StringUtils;
+import org.apache.cxf.common.util.StringUtils;
 import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.map.JsonMappingException;
@@ -177,12 +177,14 @@ public class IncidentController {
 		incident.setApplyUser(userUtil.getUserId(authentication));
 		incident.setApplyTime(new Date());
 		
-		if(!StringUtils.isEmpty(request.getParameter("fileids")))
-		{
+		if(!StringUtils.isEmpty(request.getParameter("fileids"))) {
 			String attachIds = request.getParameter("fileids");
+		
 			Set<Attachment> attachSet = attachService.getSetByIds(attachIds);
+			
 			incident.setAttachs(attachSet);
 		}
+		
 
 		incidentService.save(incident);
 

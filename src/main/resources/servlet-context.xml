@@ -35,6 +35,9 @@
 			<mapping path="/knowledge/**" />
 			<mapping path="/stats/**" />
 			<mapping path="/workflow/**" />
+			<mapping path="/leadertask/**" />
+			<mapping path="/group/**" />
+			<mapping path="/system/**" /><!-- /system/syscode/list -->
 			<beans:bean class="com.cngc.pm.interceptor.MyInterceptor"></beans:bean>
 		</interceptor>
 		<!-- <interceptor>

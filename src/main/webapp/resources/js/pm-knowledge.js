@@ -38,8 +38,6 @@ function pm_knowledge_highlight(keyword)
 }
 function pm_knowledge_initdialog()
 {
-	console.log('aa');
-	/*
     // 知识库
 	$(".wrapper").append("<div class='dialog' id='b_popup_knowledge' style='display: none' title='知识库'></div>");
 	$("#b_popup_knowledge").html("<iframe src='"+ctx+"/knowledge/searchdialog' width='100%' height='500' frameborder='0'/>");
@@ -51,7 +49,7 @@ function pm_knowledge_initdialog()
     });
     $("#lnk_knowledge").click(function () {
     	$("#b_popup_knowledge").dialog('open');
-    });*/
+    });
 }
 function pm_knowledge_initdialog(type,id)
 {

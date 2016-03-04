@@ -13,7 +13,7 @@
     
     <title>事件管理--运维管理系统</title>
 
-    <link rel="icon" type="image/ico" href="favicon.ico"/>
+    <!-- <link rel="icon" type="image/ico" href="favicon.ico"/> -->
     <link href="${contextPath }/resources/css/icons.css" rel="stylesheet" type="text/css" />
     <link href="${contextPath }/resources/css/bootstrap.css" rel="stylesheet" type="text/css" />
     <link href="${contextPath }/resources/css/ui.css" rel="stylesheet" type="text/css" />
@@ -42,11 +42,13 @@
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/pnotify/jquery.pnotify.min.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/ibutton/jquery.ibutton.min.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/scrollup/jquery.scrollUp.min.js'></script>
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/treeview/bootstrap-treeview.min.js'></script>
+    <%-- <script type='text/javascript' src='${contextPath }/resources/js/plugins/treeview/bootstrap-treeview.min.js'></script> //IE8+ --%>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/uploadify/jquery.uploadify.min.js'></script>
+    <script type='text/javascript' src='${contextPath }/resources/js/plugins/jtree/jtree.js'></script>
+    
       
     <script type='text/javascript' src='${contextPath }/resources/js/pm-common.js'></script>
-    <script type='text/javascript' src='${contextPath }/resources/js/pm-select.js'></script>
+    <%--<script type='text/javascript' src='${contextPath }/resources/js/pm-select.js'></script> //IE8+    --%>
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
       <script src="${contextPath }/resources/js/html5shiv.js"></script>
@@ -60,13 +62,124 @@
             $(".breadLine .buttons").load("${contextPath }/contentbuttons?t=" + pm_random());
           	
             //表单验证
-            $("#validation").validationEngine({promptPosition : "topLeft", scroll: true});
-          
+            $("#validation").validationEngine({promptPosition : "topRight", scroll: true});
+          	<%-- IE8+
             //选择事件分类
             act_dialog_category_init();
             $("input[name='category']").bind("click",function(){
             	act_dialog_category_select('INCIDENT_CATEGORY','category');
             });
+            --%>
+            //------------------IE8---------------------------
+            $(".wrapper").append("<div class='dialog' id='b_popup_select' style='display: none;' title='事件分类'></div>");
+			$("#b_popup_select").html("<div class='block dialog_block messages '>"
+					+"<div>"
+					+"<ul id='treeview'></ul>"
+					+"</div></div>");
+			
+		    $("#b_popup_select").dialog({
+		        autoOpen: false,
+		        width: 400,
+		        height:500,
+		        buttons: { "确定": function () { $(this).dialog("close") } }
+		    });
+            
+		    $("input[name='category']").bind("click",function(){
+		    	$("#treeview").html('');
+		    	$.getJSON(ctx + '/system/syscode/getjson/INCIDENT_CATEGORY?t=' + pm_random(), function(data){
+		    		obj= $.parseJSON(data.json);
+		    		$.each(obj, function (index, element) {
+		    			var liStr = "";
+                    	if(element.nodes) {
+                    		liStr = "<li><a href=\"javascript:void(0);\">"+element.text+"</a><ul>";
+                    		$.each(element.nodes, function (j, element1) {
+                    			if(element1.nodes) {
+                    				liStr += "<li><a href=\"javascript:void(0);\">"+element1.text+"</a><ul>";
+                    				$.each(element1.nodes, function (k, element2) {
+                    					var code2 = element2.text.substring(0,element2.text.indexOf(" "));
+                        				liStr += "<li><a href=\"javascript:void(0);\" onclick=\"inputAttr('category','"+code2+"');\">"+element2.text+"</a></li>";
+                    				});
+                    				liStr += "</ul>";
+                    			} else {
+                    				var code1 = element1.text.substring(0,element1.text.indexOf(" "));
+                    				liStr += "<li><a href=\"javascript:void(0);\" onclick=\"inputAttr('category','"+code1+"');\">"+element1.text+"</a></li>";
+                    			}
+                    		})
+                    		liStr += "</ul>";
+                    	} else {
+                    		var code = element.text.substring(0,element.text.indexOf(" "));
+                    		liStr = "<li><a href=\"javascript:void(0);\" onclick=\"inputAttr('category','"+code+"');\">"+element.text+"</a>";
+                    	}
+                    	
+                    	liStr += "</li>";
+                    	$("#treeview").append(liStr);
+		    		});
+		    		$("#treeview").treed();
+		    		$("#b_popup_select").dialog('open');
+		    	});
+            });
+		    //----------------------IE8 end--------------------
+		    
+		    $("#b_popup_group").dialog({
+		        autoOpen: false,
+		        width: 400,
+		        height:500,
+		        buttons: { "确定": function () { $(this).dialog("close") } }
+		    });
+		    
+		    $("input[name='applyUser']").bind("click",function(){
+		    	$("#grouptree").html('');
+		    	$.getJSON(ctx + '/group/all-json?t=' + pm_random(), function(data1){
+		    		obj= $.parseJSON(data1.json);
+		    		
+		    		$.each(obj, function (index, element) {
+		    			var liStr = "<li><a href=\"javascript:void(0);\">"+element.groupName+"</a>";
+		    			if(element.users || element.child) {
+		    				liStr += "<ul>";
+	                    	if(element.users) {
+	                    		$.each(element.users, function (j, user) {
+	                    			liStr += "<li><a href=\"javascript:void(0);\" onclick=\"inputAttr('applyUser','"+user.userName+"');\">"+user.userName+"</a></li>";
+	                    		});
+	                    	} 
+	                    	if(element.child) {
+	                    		$.each(element.child, function (j, child) {
+	                    			liStr += "<li><a href=\"javascript:void(0);\">"+child.groupName+"</a>";
+	                    			if(child.users || child.child) {
+	                    				liStr += "<ul>";
+	                    				if(child.users) {
+		                    				$.each(child.users, function (j, user1) {
+		    	                    			liStr += "<li><a href=\"javascript:void(0);\" onclick=\"inputAttr('applyUser','"+user1.userName+"');\">"+user1.userName+"</a></li>";
+		    	                    		});
+	                    				}
+	                    				if(child.child) {
+		                    				$.each(child.child, function (j, child1) {
+				                    			liStr += "<li><a href=\"javascript:void(0);\">"+child1.groupName+"</a>";
+				                    			if(child1.users) {
+				                    				liStr += "<ul>";
+				                    				$.each(child1.users, function (j, user2) {
+				    	                    			liStr += "<li><a href=\"javascript:void(0);\" onclick=\"inputAttr('applyUser','"+user2.userName+"');\">"+user2.userName+"</a></li>";
+				    	                    		});
+				                    				liStr += "</ul>";
+				                    			}
+				                    			liStr += "</li>";
+				                    		});
+	                    				}
+	                    				liStr += "</ul>";
+	                    			}
+	                    			liStr += "</li>";
+	                    		});
+	                    	}
+	                    	liStr += "<ul>";
+		    			}
+                    	liStr += "</ul></li>";
+                    	$("#grouptree").append(liStr);
+		    		});
+		    		$("#grouptree").treed();
+		    		$("#b_popup_group").dialog('open');
+		    		
+		    	});
+            });
+            
             //输入摘要是自动补全描述字段
             $("#abs").bind("blur",function(){
             	if( $("#detail").val()=="" )
@@ -75,7 +188,7 @@
             //初始化表单信息
 			initForm();
             //申请人下拉框效果
-			$("#applyUser").select2();
+			//$("#applyUser").select2();
             
 			$('#file_upload').uploadify({
 				'formData' : { 'type' : 2 },
@@ -86,7 +199,7 @@
 		        'removeCompleted' : false,
 		        // Put your options here
 		        'onUploadSuccess': function (file, data, response) {
-		        	console.log(data);
+		        	//console.log(data);
                     $('#' + file.id).find('.data').html(' 上传完毕');
                     var fileids = document.getElementById("fileids").value + '';
                     document.getElementById("fileids").value = fileids + data;
@@ -100,9 +213,77 @@
         	$("select[name='critical'] option[value='04']").attr("selected","selected");
         	$("select[name='priority'] option[value='04']").attr("selected","selected");
         }
+        function inputAttr(name,value) {
+        	$("input[name='"+name+"']").attr("value",value);
+        }
     </script>
     <style type="text/css">
     	.uploadify-button-text {color:#fff !important;}
+    	
+    	.tree, .tree ul {
+    margin:0;
+    padding:0;
+    list-style:none
+}
+.tree ul {
+    margin-left:1em;
+    position:relative
+}
+.tree ul ul {
+    margin-left:.5em
+}
+.tree ul:before {
+    content:"";
+    display:block;
+    width:0;
+    position:absolute;
+    top:0;
+    bottom:0;
+    left:0;
+    border-left:1px solid
+}
+.tree li {
+    margin:0;
+    padding:0 1em;
+    line-height:2em;
+    color:#369;
+    font-weight:700;
+    position:relative;
+    cursor:pointer;
+}
+.tree ul li:before {
+    content:"";
+    display:block;
+    width:10px;
+    height:0;
+    border-top:1px solid;
+    margin-top:-1px;
+    position:absolute;
+    top:1em;
+    left:0
+}
+.tree ul li:last-child:before {
+    background:#fff;
+    height:auto;
+    top:1em;
+    bottom:0
+}
+.indicator {
+    margin-right:5px;
+}
+.tree li a {
+    text-decoration: none;
+    color:#369;
+}
+.tree li button, .tree li button:active, .tree li button:focus {
+    text-decoration: none;
+    color:#369;
+    border:none;
+    background:transparent;
+    margin:0px 0px 0px 0px;
+    padding:0px 0px 0px 0px;
+    outline: 0;
+}
     </style>
 </head>
 <body>
@@ -158,8 +339,10 @@
 	                                </div>
 	                            </div>
 	                            <div class="row-form clearfix">
-	                                <div class="col-md-1"><form:label path="applyUser">申请人:</form:label></div>
-	                                <div class="col-md-3"><form:select path="applyUser" items="${users }" itemLabel="name" itemValue="username" cssStyle="width:100%"></form:select></div>
+	                                <div class="col-md-1"><label for="user">申请人:</label></div>
+	                                <div class="col-md-3">
+	                                <form:input path="applyUser" class="validate[required]"/>
+	                                <!--<form:select path="applyUser" items="${users }" itemLabel="name" itemValue="username" cssStyle="width:100%"></form:select>--></div>
 	                                <div class="col-md-1"><form:label path="phoneNumber">电话:</form:label></div>
 	                                <div class="col-md-3"><form:input path="phoneNumber"></form:input></div>
 	                            </div> 
@@ -198,6 +381,10 @@
             </div>
             <!--workplace end-->
         </div>  
+    </div>
+    
+    <div class='dialog' id='b_popup_group' style='display: none;' title='部门列表'>
+    	<div class='block dialog_block messages '><div><ul id='grouptree'></ul></div></div>
     </div>
 </body>
 </html>

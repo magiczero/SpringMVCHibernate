@@ -70,7 +70,7 @@ $(document).ready(function(){
     });
         
     // CHECKBOXES AND RADIO
-        $(".row-form,.row,.dialog,.loginBox,.block,.block-fluid").find("input:checkbox, input:radio, input:file").not(".skip, input.ibtn").uniform();
+        //$(".row-form,.row,.dialog,.loginBox,.block,.block-fluid").find("input:checkbox, input:radio, input:file").not(".skip, input.ibtn").uniform();
         
     //FORM VALIDATION
 
@@ -78,7 +78,7 @@ $(document).ready(function(){
         
     // CUSTOM SCROLLING
     
-        $(".scroll").mCustomScrollbar();
+        //$(".scroll").mCustomScrollbar();
     
     // ACCORDION 
     

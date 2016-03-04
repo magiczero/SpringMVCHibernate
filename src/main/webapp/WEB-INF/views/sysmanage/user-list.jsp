@@ -4,16 +4,9 @@
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %> 
 <c:set var="contextPath" value="${pageContext.request.contextPath}"></c:set>
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>        
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <!-- HTTP 1.1 -->  
-	<meta http-equiv="pragma" content="no-cache" />  
-	<!-- HTTP 1.0 -->  
-	<meta http-equiv="cache-control" content="no-cache" />  
-	<!-- Prevent caching at the proxy server -->  
-	<meta http-equiv="expires" content="0" />  
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
     <!--[if gt IE 8]>
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <![endif]-->
@@ -116,9 +109,11 @@
             	 if ($("#selRole").length > 0) {
                      $("#selRole").multiSelect();
                  }
-            	 $("#eventTable").dataTable();
+            	 $("#eventTable").dataTable({"oLanguage": {
+             			"sUrl": "${contextPath}/resources/json/Chinese.json"
+         			}});
             	 
-            	 $("#userForm").validationEngine();
+            	 $("#userForm").validationEngine({promptPosition : "topRight", scroll: true});
             });
             
             
@@ -160,7 +155,7 @@
     	return true;
     }
     function enableUser(id) {
-    	if(confirm('确定删除？')) {
+    	if(confirm('确定启用？')) {
         	$.ajax({
 				type : "put",
 				dataType : "json",
@@ -238,33 +233,40 @@
                             <table class="table" id="eventTable">
                                 <thead>
 								<tr>
-									<th width="50px">ID</th>
+									<th width="50px">序号</th>
 									<th width="10%">用户名</th>
 									<th width="10%">真实姓名</th>
+									<th width="10%">所属部门</th>
 									<th >用户角色</th>
 									<th width="10%">创建时间</th>
-									<th width="20%">最后访问时间</th>
+									<th width="5%">是否启用</th>
+									<th width="10%">最后访问时间</th>
+									<th width="50px">ID</th>
 									<th width="180px">操作</th>
 								</tr>
                                 </thead>
                                 <tbody>
-                                <c:forEach items="${list }" var="user">
+                                <c:forEach items="${list }" var="user" varStatus="st">
 									<tr>
-										<td class="userid">${user.id }</td>
+										<td>${st.index+1 }</td>
 										<td>${user.username}</td>
 										<td>${user.name}</td>
+										<td>${user.group.groupName }</td>
 										<td>
 										<c:forEach items="${user.userRoles }" var="role">
 										 ${role.role.roleDesc }<br> 										
 										</c:forEach>
 										</td>
 										<td>${user.createWhile }</td>
+										<td><c:if test="${!user.enabled }">否</c:if></td>
 										<td>${user.lastWhile }</td>
+										<td class="userid">${user.id }</td>
 										<td>
 											<sec:authorize access="hasAnyRole('security_secrecy_admin','ROLE_ADMIN')"><a class="lnk_setrole" href="#" >设置角色</a></sec:authorize>
 											<sec:authorize access="hasAnyRole('sys_admin','ROLE_ADMIN')"><a class="lnk_modify" href="#">编辑</a></sec:authorize>
-					                        <sec:authorize access="hasAnyRole('sys_admin','ROLE_ADMIN')"><a class="confirm" href="${contextPath}/user/delete/${user.id}">删除</a></sec:authorize>
-					                        <sec:authorize access="hasAnyRole('security_secrecy_admin','ROLE_ADMIN')"><c:if test="${!user.enabled }"><a href="javascript:void(0);" onclick="enableUser(${user.id});">启用</a></c:if></sec:authorize>
+					                        <%--<sec:authorize access="hasAnyRole('sys_admin','ROLE_ADMIN')"><a class="confirm" href="${contextPath}/user/delete/${user.id}">删除</a></sec:authorize> --%>
+					                        <sec:authorize url="/user/enable/*"><c:if test="${!user.enabled }"><a href="javascript:void(0);" onclick="enableUser(${user.id});">启用</a></c:if></sec:authorize>
+					                        <%--<sec:authorize access="hasRole('security_secrecy_admin')"><c:if test="${!user.enabled }"><a href="javascript:void(0);" onclick="enableUser(${user.id});">启用</a></c:if></sec:authorize> --%>
 										</td>
 									</tr>
 								</c:forEach>   
@@ -308,10 +310,34 @@
                             <div class="block-fluid">
                                 <div class="row-form clearfix">
                                     <div class="col-md-3">真实姓名:</div>
-                                    <div class="col-md-9"><input id="name" name="name" type="text"></input></div>
+                                    <div class="col-md-9"><input id="name" name="name" type="text" class="validate[required,minSize[2],maxSize[6]]"></input></div>
                                 </div>                                                           
                             </div>                
                         </div>
+                        <div class="row">
+                            <div class="block-fluid">
+                                <div class="row-form clearfix">
+                                    <div class="col-md-3">所属部门:</div>
+                                    <div class="col-md-9">
+                                    <select name="group">
+                                    <c:forEach items="${groupList }" var="group">
+                                    <option value="${group.id }">&nbsp;${group.groupName }</option>
+                                    <c:forEach items="${group.child }" var="child">
+                                    <option value="${child.id }">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;| - ${child.groupName }</option>
+                                    <c:forEach items="${child.child }" var="child1">
+                                    <option value="${child1.id }">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;| - ${child1.groupName }</option>
+                                    </c:forEach>
+                                    </c:forEach>
+                                    </c:forEach>
+                                    </select>
+                                    </div>
+                                </div>                                                           
+                            </div>                
+                        </div>
+                        <div class="dr"><span></span></div>
+                            <div class="block">
+                                <p>如果密码不填写，默认“123456”</p>
+                            </div>
                     </div>   
                     <div class="modal-footer">
                         <button class="btn btn-primary" aria-hidden="true">保存</button> 

@@ -11,6 +11,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
@@ -47,7 +49,9 @@ public class SysUser implements Serializable {
 	private boolean enabled;
 	private boolean accountNonExpired;				//是否过期
 	private boolean accountNonLocked;				//是否锁定
-	private boolean creadentialsNonExpired;		//整数是否有效
+	private boolean creadentialsNonExpired;		//证书是否有效
+	
+	private Group group;			//所属机构，公司，部门等
 	
 //	private Set<Role> roles = new LinkedHashSet<Role>();						//角色列表
 //
@@ -64,6 +68,16 @@ public class SysUser implements Serializable {
 //		this.roles = roles;
 //	}
 	
+	@ManyToOne(targetEntity=Group.class)
+	@JoinColumn(name="group_id", referencedColumnName="id")
+	public Group getGroup() {
+		return group;
+	}
+
+	public void setGroup(Group group) {
+		this.group = group;
+	}
+
 	private Set<UserRole> userRoles = new LinkedHashSet<>();
 
 	@OneToMany(targetEntity=UserRole.class,mappedBy="user")

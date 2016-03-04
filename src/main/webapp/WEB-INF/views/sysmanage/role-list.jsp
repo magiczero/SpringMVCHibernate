@@ -59,7 +59,7 @@
     
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/maskedinput/jquery.maskedinput-1.3.min.js'></script>
     
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/validation/languages/jquery.validationEngine-en.js' charset='utf-8'></script>
+    <script type='text/javascript' src='${contextPath }/resources/js/plugins/validation/languages/jquery.validationEngine-zh-CN.js' charset='utf-8'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/validation/jquery.validationEngine.js' charset='utf-8'></script>
     
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/mcustomscrollbar/jquery.mCustomScrollbar.min.js'></script>
@@ -82,6 +82,8 @@
     
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/scrollup/jquery.scrollUp.min.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/multiselect/jquery.multi-select.js'></script>
+    
+    <script type='text/javascript' src='${contextPath }/resources/js/plugins/jtree/jtree.js'></script>
     
     <script type='text/javascript' src='${contextPath }/resources/js/cookies.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins.js'></script>
@@ -116,6 +118,8 @@
             	}
             	
             	if($("#selMenu").length > 0){$("#selMenu").multiSelect();}
+            	
+            	$(".tree").treed();
             });
     function newRole(){
 		$("#dialogTitle").html("新建角色");
@@ -162,6 +166,75 @@
     	});	
     }
     </script>
+    <style type="text/css">
+    	.tree, .tree ul {
+    margin:0;
+    padding:0;
+    list-style:none
+}
+.tree ul {
+    margin-left:1em;
+    position:relative
+}
+.tree ul ul {
+    margin-left:.5em
+}
+.tree ul:before {
+    content:"";
+    display:block;
+    width:0;
+    position:absolute;
+    top:0;
+    bottom:0;
+    left:0;
+    border-left:1px solid
+}
+.tree li {
+    margin:0;
+    padding:0 1em;
+    line-height:2em;
+    color:#369;
+    font-weight:700;
+    position:relative;
+    cursor:pointer;
+}
+.tree ul li:before {
+    content:"";
+    display:block;
+    width:10px;
+    height:0;
+    border-top:1px solid;
+    margin-top:-1px;
+    position:absolute;
+    top:1em;
+    left:0
+}
+.tree ul li:last-child:before {
+    background:#fff;
+    height:auto;
+    top:1em;
+    bottom:0
+}
+.indicator {
+    margin-right:5px;
+}
+.tree li a {
+    text-decoration: none;
+    color:#369;
+}
+.tree li button, .tree li button:active, .tree li button:focus {
+    text-decoration: none;
+    color:#369;
+    border:none;
+    background:transparent;
+    margin:0px 0px 0px 0px;
+    padding:0px 0px 0px 0px;
+    outline: 0;
+}
+.sys {
+	color:red;
+}
+    </style>
 </head>
 <body>
     <div class="wrapper"> 
@@ -216,35 +289,49 @@
                             <table class="table" id="eventTable">
                                 <thead>
 								<tr>
-									<th width="80px">ID</th>
+								<th width="60px">序号</th>
 									<th >角色名</th>
 									<th width="15%">角色的权限</th>
-									<th width="15%">角色的菜单</th>
+									<th width="25%">角色的菜单</th>
 									<th width="15%">角色描述</th>
+									<th width="50px">ID</th>
 									<th width="150px">操作</th>
 								</tr>
                                 </thead>
                                 <tbody>
-                                <c:forEach items="${list }" var="role">
+                                <c:forEach items="${list }" var="role" varStatus="st">
 									<tr>
-										<td class="roleid">${role.id }</td>
-										<td>${role.roleName}</td>
+										<td>${st.index+1 }</td>
+										<td><span <c:if test="${role.sys }">class="sys"</c:if>>${role.roleName}</span></td>
 										<td>
 											<c:forEach items="${role.roleAuths }" var="ra">
 											${ra.auth.authorityName }<br/>
 											</c:forEach>
 										</td>
 										<td>
+										<ul class="tree">
 										<c:forEach items="${role.modules }" var="menu">
-											${menu.name }<br/>
+											<c:if test="${menu.level == 1 }">
+											<li>${menu.name }
+												<ul>
+												<c:forEach items="${role.modules }" var="menuson">
+												<c:if test="${menuson.parent.id == menu.id }">
+												<li>${menuson.name }</li>
+												</c:if>
+												</c:forEach>
+												</ul>
+											</li>	
+											</c:if>
 										</c:forEach>
+										</ul>
 										</td>
 										<td>${role.roleDesc}</td>
+										<td class="roleid">${role.id }</td>
 										<td>
 											<sec:authorize access="hasAnyRole('security_secrecy_admin','ROLE_ADMIN')"><a class="set_auth" href="javascript:void(0);">设置权限</a><br/></sec:authorize>
 											<sec:authorize access="hasAnyRole('sys_admin','ROLE_ADMIN')"><a class="set_menu" href="javascript:void(0);">设置菜单</a><br/></sec:authorize>
 											<sec:authorize access="hasAnyRole('sys_admin','ROLE_ADMIN')"><a class="lnk_modify" href="#">编辑</a><br/></sec:authorize>
-					                        <sec:authorize access="hasAnyRole('sys_admin','ROLE_ADMIN')"><a class="confirm" href="${contextPath}/role/delete/${role.id}">删除</a></sec:authorize>
+					                        <c:if test="${!role.sys }"><sec:authorize access="hasAnyRole('sys_admin','ROLE_ADMIN')"><a class="confirm" href="${contextPath}/role/delete/${role.id}">删除</a></sec:authorize></c:if>
 										</td>
 									</tr>
 								</c:forEach>   

@@ -17,7 +17,7 @@
     <link href="${contextPath }/resources/css/bootstrap.css" rel="stylesheet" type="text/css" />
     <link href="${contextPath }/resources/css/fullcalendar.css" rel="stylesheet" type="text/css" />
     <link href="${contextPath }/resources/css/ui.css" rel="stylesheet" type="text/css" />
-    <link href="${contextPath }/resources/css/select2.css" rel="stylesheet" type="text/css" />
+    <%--<link href="${contextPath }/resources/css/select2.css" rel="stylesheet" type="text/css" /> --%>
     <link href="${contextPath }/resources/css/uniform.default.css" rel="stylesheet" type="text/css" />
     <link href="${contextPath }/resources/css/validation.css" rel="stylesheet" type="text/css" />
     <link href="${contextPath }/resources/css/mCustomScrollbar.css" rel="stylesheet" type="text/css" />
@@ -52,13 +52,13 @@
     
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/fullcalendar/fullcalendar.min.js'></script>
     
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/select2/select2.min.js'></script>
+    <%--<script type='text/javascript' src='${contextPath }/resources/js/plugins/select2/select2.min.js'></script> --%>
     
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/uniform/uniform.js'></script>
     
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/maskedinput/jquery.maskedinput-1.3.min.js'></script>
     
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/validation/languages/jquery.validationEngine-en.js' charset='utf-8'></script>
+    <script type='text/javascript' src='${contextPath }/resources/js/plugins/validation/languages/jquery.validationEngine-zh-CN.js' charset='utf-8'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/validation/jquery.validationEngine.js' charset='utf-8'></script>
     
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/mcustomscrollbar/jquery.mCustomScrollbar.min.js'></script>
@@ -83,10 +83,11 @@
     
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/scrollup/jquery.scrollUp.min.js'></script>
     
-    <script type='text/javascript' src='${contextPath }/resources/js/cookies.js'></script>
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins.js'></script>
-    <script type='text/javascript' src='${contextPath }/resources/js/settings.js'></script>  
     <script type='text/javascript' src='${contextPath }/resources/js/pm-common.js'></script>
+    <script type='text/javascript' src='${contextPath }/resources/js/cookies.js'></script>
+    <!-- <script type='text/javascript' src='${contextPath }/resources/js/plugins.js'></script> -->
+    <script type='text/javascript' src='${contextPath }/resources/js/settings.js'></script>  
+    
     <!-- <script type='text/javascript' src='${contextPath }/resources/js/pm-workflow.js'></script> -->
     <script type='text/javascript' src='${contextPath }/resources/js/pm-knowledge.js'></script>
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
@@ -97,9 +98,13 @@
     <script type="text/javascript">
     	var ctx = "${contextPath}";
         $(document).ready(function () {
-            $("#myTable").dataTable({"aaSorting":[[5,'desc']]});
+            $("#myTable").dataTable({
+            	"oLanguage": {
+         			"sUrl": "${contextPath}/resources/json/Chinese.json"
+     			},
+            	"aaSorting":[[5,'desc']]});
             $(".header").load("${contextPath}/header?t="+pm_random());
-            $(".menu").load("${contextPath}/menu?t="+pm_random(), function () { $("#node_0").addClass("active"); });
+            $(".menu").load("${contextPath}/menu?t="+pm_random(), function () { $("#node_${moduleId}").addClass("active"); });
             $(".breadLine .buttons").load("${contextPath}/contentbuttons?t="+pm_random());
             $(".confirm").bind("click",function(){
                	if(!confirm("确定要执行该操作?"))
@@ -110,7 +115,7 @@
 	//$("#b_popup_knowledge").html("");
 	//document.getElementById("b_popup_knowledge").innerHTML="adfd";
 	//$("#b_popup_knowledge").html("<iframe src='${contextPath}/knowledge/searchdialog' width='100%' height='500' frameborder='0'/>");
-	$("#b_popup_knowledge").dialog({
+	<%-- $("#b_popup_knowledge").dialog({
         autoOpen: false,
         width: 1100,
         buttons: { "关闭": function () { $(this).dialog("close") } },
@@ -125,14 +130,22 @@
     	height: 350,
     	buttons: { "关闭": function () { $(this).dialog("close") } }
    });
+    
+    $(".lnk_trace").click(function () {
+    	var src= ctx+ '/diagram-viewer/index.html?processDefinitionId=' 
+		+ $(this).attr('pdid') + '&processInstanceId=' + $(this).attr('pid');
+    	$("#trace_content").html("<iframe src='"+ src +"' width='100%' height='265'/>");
+    	$("#b_popup_trace").dialog('open');
+    }); --%>
+    
         });
         
-        function open_trace(pid, pdid) {
+        <%--function open_trace(pid, pdid) {
         	document.getElementById("trace_frame").src=ctx+ '/diagram-viewer/index.html?processDefinitionId=' 
     	   	+ pdid + '&processInstanceId=' + pid;
         	
         	$("#b_popup_trace").dialog('open');
-        }
+        }--%>
     </script>
 </head>
 <body>
@@ -215,7 +228,7 @@
 	                                        <td>${incident.applyUserName }</td>
 	                                        <td>${incident.currentDelegateUserName }</td>
 	                                        <td>
-												<a class="lnk_trace" href="#" onclick="open_trace(${incident.processInstanceId },${task.processDefinitionId });" title="点击查看流程图">
+												<a class="lnk_trace" href="#" pid="${incident.processInstanceId }" pdid="${task.processDefinitionId }" title="点击查看流程图">
 													${task.name }
 												</a>
 											</td>
@@ -246,7 +259,7 @@
 		                                        <td>${incident.applyUserName }</td>
 		                                        <td>${incident.currentDelegateUserName }</td>
 		                                        <td>
-													<a class="lnk_trace" href='#' onclick="open_trace(${incident.processInstanceId },${task.processDefinitionId });" title="点击查看流程图">
+													<a class="lnk_trace" href='#' pid="${incident.processInstanceId }" pdid="${task.processDefinitionId }" title="点击查看流程图">
 														${task.name }
 													</a>
 												</td>
@@ -305,8 +318,13 @@
             <!--workplace end-->
         </div> 
     </div>
-    <div class="dialog" id="b_popup_knowledge" style="display: none;" title="知识库"><iframe src="${contextPath}/knowledge/searchdialog" width="100%" height="500" frameborder="0"></iframe></div>
-    <div class="dialog" id="b_popup_trace" style="display: none;" title="流程跟踪"><div class="block dialog_block  uploads" id="trace_content"><iframe id="trace_frame" src="" width="100%" height="265"></iframe></div></div>
+   <%-- <div class="dialog" id="b_popup_knowledge" style="display: none;" title="知识库"><iframe src="${contextPath}/knowledge/searchdialog" width="100%" height="500" frameborder="0"></iframe></div>
+    <div class="dialog" id="b_popup_trace" style="display: none;" title="流程跟踪"><div class="block dialog_block  uploads" id="trace_content"><iframe id="trace_frame" src="" width="100%" height="265"></iframe></div></div> 
+    <div class="dialog" id="b_popup_trace" style="display: none;" title="流程跟踪">
+	    	<div class="block dialog_block  uploads" id="trace_content">
+			                                
+			</div>
+    	</div>--%>
 </body>
 
 </html>

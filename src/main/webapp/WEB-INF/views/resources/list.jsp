@@ -3,7 +3,7 @@
     <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %> <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
     <c:set var="contextPath" value="${pageContext.request.contextPath}"></c:set>
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>        
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
@@ -92,13 +92,17 @@
     <script type="text/javascript">
     var ctx="${contextPath}";
             $(document).ready(function () {
-                $("#eventTable").dataTable();
+                $("#eventTable").dataTable({
+                	"oLanguage": {
+             			"sUrl": "${contextPath}/resources/json/Chinese.json"
+         			}
+                });
 
                 $(".header").load("${contextPath }/header");
                 $(".menu").load("${contextPath }/menu?t="+pm_random(), function() {$("#node_${moduleId}").addClass("active");});
                 $(".breadLine .buttons").load("${contextPath}/contentbuttons?t="+pm_random());
                 
-                $("#resources").validationEngine({promptPosition : "topLeft", scroll: true});
+                $("#resources").validationEngine({promptPosition : "topRight", scroll: true});
             });
             
             function changeStatus(obj,id) {
@@ -171,9 +175,6 @@
                                     <a href="#" class="isw-settings tipl" title="操作 "></a>
                                     <ul class="dd-list">
                                         <li><a href="#fModal" data-toggle="modal"><span class="isw-list"></span> 添加</a></li>
-                                        <li><a href="#"><span class="isw-ok"></span> 查看未指派</a></li>
-                                        <li><a href="#"><span class="isw-minus"></span> 查看已超期事件</a></li>
-                                        <li><a href="#"><span class="isw-refresh"></span> 刷新</a></li>
                                     </ul>
                                 </li>
                             </ul>                             
@@ -185,10 +186,10 @@
                                         <th width="40px"><input type="checkbox" name="checkall"/></th>
                                         <th width="20%">资源名称</th>
 										<th>路径</th>
-										<th>所属模块</th>
-										<th width="20%">描述</th>
+										<th width="20%">菜单</th>
+										<th width="10%">描述</th>
 										<th width="8%">类型</th>
-										<th> 操 作 </th>
+										<th width="15%"> 操 作 </th>
 										<th width="8%">优先级</th>
                                     </tr>
                                 </thead>
@@ -198,7 +199,7 @@
                                         <td><input type="checkbox" name="checkbox"/></td>
                                         <td>${resource.name }</td>
 										<td>${resource.path }</td>
-										<td>${resource.module.name }</td>
+										<td><c:if test="${not empty resource.module.parent }">${resource.module.parent.name }----</c:if>${resource.module.name }</td>
 										<td>${resource.desc}</td>
 										<td>${resource.type }</td>
 										<td><a class="btn btn-default" href="${contextPath }/resource/init-update/${resource.id}">修改</a>&nbsp;&nbsp;<c:choose><c:when test="${resource.enable }"><button class="btn btn-success" onclick="changeStatus(this,${resource.id });" type="button"> 启用 </button></c:when><c:otherwise><button class="btn btn-danger" onclick="changeStatus(this,${resource.id });" type="button"> 停用 </button></c:otherwise></c:choose></td>
@@ -235,10 +236,10 @@
                                     <div class="col-md-9"><form:input path="path" value="#" class="validate[required,maxSize[50]]"/></div>
                                 </div> 
                                 <div class="row-form clearfix">
-                                    <div class="col-md-3"><form:label path="module.id">所属模块*：</form:label></div>
+                                    <div class="col-md-3"><form:label path="module.id">所属菜单*：</form:label></div>
                                     <div class="col-md-9"><form:select path="module.id">
                                     	<c:forEach items="${modules }" var="m">
-										<form:option value="${m.id }">${m.name }</form:option> 
+										<form:option value="${m.id }"><c:if test="${not empty m.parent }">${m.parent.name }&nbsp;----&nbsp;</c:if>${m.name }</form:option> 
 										</c:forEach>
                                     </form:select></div>
                                 </div>  

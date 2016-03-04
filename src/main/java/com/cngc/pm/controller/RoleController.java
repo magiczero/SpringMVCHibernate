@@ -86,8 +86,8 @@ public class RoleController {
 		
 		if (role == null)
 			throw new BusinessException("没有这个角色，无法删除");
-		if(role.getRoleName().equals("ROLE_ADMIN"))
-			throw new BusinessException("系统不允许删除ROLE_ADMIN，请联系管理员");
+		if(role.isSys())
+			throw new BusinessException("不允许删除系统级别角色，请联系管理员");
 		
 		String username = SecurityContextHolder.getContext()
 				.getAuthentication().getName();

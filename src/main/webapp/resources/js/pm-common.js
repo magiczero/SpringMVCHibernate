@@ -80,6 +80,7 @@ $(document).ready(function() {
 	        return false;
 	    });
 	    */
+	
 	// 打开/隐藏
 	$(".toggle a").click(function() {
 		var box = $(this).parents('[class^=head]').next();

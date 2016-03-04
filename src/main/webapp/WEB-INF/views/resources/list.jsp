@@ -102,7 +102,7 @@
                 $(".menu").load("${contextPath }/menu?t="+pm_random(), function() {$("#node_${moduleId}").addClass("active");});
                 $(".breadLine .buttons").load("${contextPath}/contentbuttons?t="+pm_random());
                 
-                $("#resources").validationEngine({promptPosition : "topLeft", scroll: true});
+                $("#resources").validationEngine({promptPosition : "topRight", scroll: true});
             });
             
             function changeStatus(obj,id) {

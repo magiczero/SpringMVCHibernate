@@ -49,13 +49,17 @@
     <script type="text/javascript">
     	var ctx = "${contextPath}";
         $(document).ready(function () {
-            $("#eventTable").dataTable();
+            $("#eventTable").dataTable({
+            	"oLanguage": {
+         			"sUrl": "${contextPath}/resources/json/Chinese.json"
+     			}
+            });
             $(".header").load("${contextPath}/header?t="+pm_random());
             $(".menu").load("${contextPath}/menu?t="+pm_random(), function () { $("#node_${moduleId}").addClass("active"); });
             $(".breadLine .buttons").load("${contextPath}/contentbuttons?t="+pm_random());
             
           	//表单验证
-            $("#validation").validationEngine({promptPosition : "topLeft", scroll: true});
+            $("#validation").validationEngine({promptPosition : "topRight", scroll: true});
           
             $(".confirm").bind("click",function(){
             	if(!confirm("确定要执行该操作?"))

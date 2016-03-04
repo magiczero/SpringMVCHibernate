@@ -64,7 +64,7 @@
     <![endif]-->
     <script type="text/javascript">
 	    $(document).ready(function(){
-	    	$("#validation").validationEngine({promptPosition : "topLeft", scroll: true});
+	    	$("#validation").validationEngine({promptPosition : "topRight", scroll: true});
 	    	$(".row-form,.row,.dialog,.loginBox,.block,.block-fluid").find("input:checkbox, input:radio, input:file").not(".skip, input.ibtn").uniform();
 	    });
     </script>

@@ -56,7 +56,7 @@
             $(".breadLine .buttons").load("${contextPath }/contentbuttons?t=" + pm_random());
             
             //表单验证
-            $("#validation").validationEngine({promptPosition : "topLeft", scroll: true});
+            $("#validation").validationEngine({promptPosition : "topRight", scroll: true});
          	
             //输入摘要是自动补全描述字段
             $("#fm_abs").bind("blur",function(){

@@ -15,7 +15,7 @@
                 </div>
                 <ul class="control">                
                     <li><span class="glyphicon glyphicon-comment"></span> <a href="${contextPath }/message/list">消息</a></li>
-                    <li><span class="glyphicon glyphicon-cog"></span> <a href="#">设置</a></li>
+                    <li><span class="glyphicon glyphicon-cog"></span> <a href="#fModal" role="button" data-toggle="modal">修改密码</a></li>
                     <li><span class="glyphicon glyphicon-share-alt"></span> <a href="${contextPath }/logout">退出</a></li>
                 </ul>
                 <div class="info">
@@ -91,10 +91,50 @@
                 </c:forEach>
 
             </ul>
+            <div class="modal fade" id="fModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                <form id="pwdForm" action="${contextPath }/user/update-pwd" method="post">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                        <h4>修改密码</h4>
+                    </div>
+                    <div class="modal-body modal-body-np">
+                        <div class="row">
+                            <div class="block-fluid">
+                                <div class="row-form clearfix">
+                                    <div class="col-md-3">旧密码:</div>
+                                    <div class="col-md-9"><input type="password" name="oldPwd" class="validate[required]"/></div>
+                                </div>
+                                <div class="row-form clearfix">
+                                    <div class="col-md-3">新密码:</div>
+                                    <div class="col-md-9"><input type="password" name="newPwd" class="validate[required,minSize[6],maxSize[8],equals[repeatPwd]]"/></div>
+                                </div>
+                                <div class="row-form clearfix">
+                                    <div class="col-md-3">新密码确认:</div>
+                                    <div class="col-md-9"><input type="password" id="repeatPwd" name="repeatPwd" class="validate[required,minSize[6],maxSize[8]]"/></div>
+                                </div>
+                            </div>
+                            <div class="dr"><span></span></div>
+                            <div class="block">
+                                <p>密码修改成功后，会自动转到登录页面，请使用新密码登录。</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                    <input class="btn btn-warning" type="submit" value="确认修改" />
+                        <button class="btn btn-default" data-dismiss="modal" aria-hidden="true">Close</button>
+                    </div>
+                    </form>
+                </div>
+            </div>
+        </div>
 <script type='text/javascript' src='${contextPath }/resources/js/mymenu.js'></script> 
 <script>
 $(document).ready(function(){
 	pm_getcount();
+	//表单验证
+    $("#pwdForm").validationEngine({promptPosition : "topRight", scroll: true});
 });
 function pm_getcount()
 {

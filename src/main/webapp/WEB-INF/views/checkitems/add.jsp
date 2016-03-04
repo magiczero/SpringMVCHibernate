@@ -108,7 +108,7 @@
                 $(".menu").load("${contextPath }/menu", function() {$("#node_${moduleId}").addClass("active");});
                 $(".breadLine .buttons").load("${contextPath }/contentbuttons");
                 
-                $("#document").validationEngine({promptPosition : "topLeft", scroll: true});
+                $("#document").validationEngine({promptPosition : "topRight", scroll: true});
                 
                 if($("#docSet").length > 0){
                     $("#docSet").multiSelect({

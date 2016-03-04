@@ -62,9 +62,9 @@
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/uniform/uniform.js'></script>
     
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/maskedinput/jquery.maskedinput-1.3.min.js'></script>
-    
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/validation/jquery.validationEngine.js' charset='utf-8'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/validation/languages/jquery.validationEngine-zh-CN.js' charset='utf-8'></script>
+    <script type='text/javascript' src='${contextPath }/resources/js/plugins/validation/jquery.validationEngine.js' charset='utf-8'></script>
+    
     
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/mcustomscrollbar/jquery.mCustomScrollbar.min.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/animatedprogressbar/animated_progressbar.js'></script>
@@ -104,11 +104,11 @@
     <script type="text/javascript">
     var ctx="${contextPath}";
             $(document).ready(function () {
-            	$(".header").load("${contextPath }/header");
-            	$(".menu").load("${contextPath }/menu", function() {$("#node_${moduleId}").addClass("active");});
-                $(".breadLine .buttons").load("${contextPath }/contentbuttons");
+            	$(".header").load("${contextPath }/header?t="+pm_random());
+            	$(".menu").load("${contextPath }/menu?t="+pm_random(), function() {$("#node_${moduleId}").addClass("active");});
+            	$(".breadLine .buttons").load("${contextPath}/contentbuttons?t="+pm_random());
                 
-                $("#resources").validationEngine({promptPosition : "topLeft", scroll: true});
+                $("#resources").validationEngine({promptPosition : "topRight", scroll: true});
                 
             	
             });

@@ -13,6 +13,7 @@ import org.activiti.engine.IdentityService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.authentication.encoding.Md5PasswordEncoder;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -22,9 +23,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.cngc.exception.BusinessException;
+import com.cngc.pm.model.Group;
 import com.cngc.pm.model.Role;
 import com.cngc.pm.model.SysUser;
 import com.cngc.pm.model.UserRole;
+import com.cngc.pm.service.GroupService;
 import com.cngc.pm.service.RoleService;
 import com.cngc.pm.service.UserService;
 import com.cngc.utils.Common;
@@ -39,6 +42,8 @@ public class UserController {
 	private RoleService roleService;
 	@Resource
 	private IdentityService identityService;
+	@Resource
+	private GroupService groupService;
 	
 	@RequestMapping(value = "/name-check")
 	@ResponseBody  
@@ -68,8 +73,37 @@ public class UserController {
 	public String list(Model model) {
 		model.addAttribute("list", userService.getAll());
 		model.addAttribute("rolelist",roleService.getAll());
+		model.addAttribute("groupList", groupService.getAllTop());
 		
 		return "sysmanage/user-list";
+	}
+	
+	@RequestMapping(value="/update-pwd", method = RequestMethod.POST)
+	public String updatePassword(Model model, HttpServletRequest request) {
+		UserDetails user1 = (UserDetails)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		
+		String username = user1.getUsername();
+		String oldPwd = request.getParameter("oldPwd");
+		String newPwd = request.getParameter("newPwd");
+		String repeatPwd = request.getParameter("repeatPwd");
+		
+		SysUser user = userService.getByUsername(username);
+		
+		Md5PasswordEncoder md5 = new Md5PasswordEncoder();
+		
+		if(md5.encodePassword(oldPwd, username).equals(user.getPassword())) {		//如果旧密码输入正确，则可以修改
+			if(newPwd.equals(repeatPwd)) {
+				user.setPassword(md5.encodePassword(newPwd, username));
+				//user.setEnabled(true);
+				
+				userService.save(user, username);
+			}
+		} else {
+			return "redirect:/500";
+		}
+		
+		//成功后重新登陆
+		return "redirect:/logout";
 	}
 
 	/**
@@ -90,16 +124,23 @@ public class UserController {
 		{
 			user.setUsername(request.getParameter("username"));
 		}
+		Md5PasswordEncoder md5 = new Md5PasswordEncoder();
 		if(!StringUtils.isEmpty(request.getParameter("password")) )
 		{
 			//md5 password
-			Md5PasswordEncoder md5 = new Md5PasswordEncoder();
 			user.setPassword(md5.encodePassword(
 					request.getParameter("password"),user.getUsername())
 			);
+		} else {
+			user.setPassword(md5.encodePassword(	"123456",user.getUsername()));
 		}
 		user.setName(request.getParameter("name"));
+		//部门
+		Long groupId = Long.parseLong(request.getParameter("group"));
+		Group group = groupService.getById(groupId);
+		user.setGroup(group);
 		String username = SecurityContextHolder.getContext().getAuthentication().getName();
+		user.setEnabled(false);		//因为三员管理的关系，所以保存时设置为未启用
 		userService.save(user, username);
 		
 		//同步到activiti的user

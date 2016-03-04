@@ -15,9 +15,6 @@
     
     <title>任务管理--运维管理系统</title>
 
-    <link rel="icon" type="image/ico" href="favicon.ico"/>
-    
-    <link rel="icon" type="image/ico" href="favicon.ico"/>
     <link href="${contextPath }/resources/css/icons.css" rel="stylesheet" type="text/css" />
     <link href="${contextPath }/resources/css/bootstrap.css" rel="stylesheet" type="text/css" />
     <link href="${contextPath }/resources/css/ui.css" rel="stylesheet" type="text/css" />
@@ -27,6 +24,7 @@
     <link href="${contextPath }/resources/css/styling.css" rel="stylesheet" type="text/css" />
     <link href="${contextPath }/resources/css/mycss.css" rel="stylesheet" type="text/css" />
     <link href="${contextPath }/resources/css/select2.css" rel="stylesheet" type="text/css" />
+    <link href="${contextPath }/resources/css/validation.css" rel="stylesheet" type="text/css" />
     <!--[if lt IE 8]>
         <link href="${contextPath }/resources/css/ie7.css" rel="stylesheet" type="text/css" />
     <![endif]-->    
@@ -37,7 +35,9 @@
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/cookie/jquery.cookies.2.2.0.min.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/bootstrap.min.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/select2/select2.min.js'></script>
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/dataTables/jquery.dataTables.min.js'></script>    
+    <script type='text/javascript' src='${contextPath }/resources/js/plugins/dataTables/jquery.dataTables.min.js'></script>   
+    <script type='text/javascript' src='${contextPath }/resources/js/plugins/validation/languages/jquery.validationEngine-zh-CN.js' charset='utf-8'></script>
+<script type='text/javascript' src='${contextPath }/resources/js/plugins/validation/jquery.validationEngine.js' charset='utf-8'></script> 
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/highlight/jquery.highlight-4.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/pnotify/jquery.pnotify.min.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/scrollup/jquery.scrollUp.min.js'></script>
@@ -52,7 +52,9 @@
     <script type="text/javascript">
     	var ctx = "${contextPath}";
             $(document).ready(function () {
-                $("#eventTable").dataTable({"aaSorting":[[6,'desc']]});
+                $("#eventTable").dataTable({"oLanguage": {
+         			"sUrl": "${contextPath}/resources/json/Chinese.json"
+     			},"aaSorting":[[6,'desc']]});
                 $(".header").load("${contextPath}/header?t="+pm_random());
                 $(".menu").load("${contextPath}/menu?t="+pm_random(), function () {$("#node_${moduleId}").addClass("active"); });
                 $(".breadLine .buttons").load("${contextPath}/contentbuttons?t="+pm_random());

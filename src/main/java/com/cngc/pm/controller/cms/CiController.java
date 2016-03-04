@@ -14,6 +14,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
+import org.apache.cxf.common.util.StringUtils;
 import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -139,16 +140,18 @@ public class CiController {
 
 	@RequestMapping(value="/save",method = RequestMethod.POST)
 	public String save(@Valid @ModelAttribute("ci") Ci ci, HttpServletRequest request,Authentication authentication){
-		String attachIds = request.getParameter("fileids");
-		
-		Set<Attachment> attachSet = attachService.getSetByIds(attachIds);
+		if(!StringUtils.isEmpty(request.getParameter("fileids"))) {
+			String attachIds = request.getParameter("fileids");
+			Set<Attachment> attachSet = attachService.getSetByIds(attachIds);
+			ci.setAttachs(attachSet);
+		}
 		
 		ci.setReviewStatus("02");
 		ci.setDeleteStatus("01");
 		ci.setCreatedTime(new Date());
 		ci.setLastUpdateTime(new Date());
 		ci.setLastUpdateUser(userUtil.getUserId(authentication));
-		ci.setAttachs(attachSet);
+		
 		
 		ciService.save(ci);
 		

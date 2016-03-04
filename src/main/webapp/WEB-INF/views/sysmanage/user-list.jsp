@@ -113,7 +113,7 @@
              			"sUrl": "${contextPath}/resources/json/Chinese.json"
          			}});
             	 
-            	 $("#userForm").validationEngine();
+            	 $("#userForm").validationEngine({promptPosition : "topRight", scroll: true});
             });
             
             
@@ -236,10 +236,11 @@
 									<th width="50px">序号</th>
 									<th width="10%">用户名</th>
 									<th width="10%">真实姓名</th>
+									<th width="10%">所属部门</th>
 									<th >用户角色</th>
 									<th width="10%">创建时间</th>
-									<th width="7%">是否启用</th>
-									<th width="20%">最后访问时间</th>
+									<th width="5%">是否启用</th>
+									<th width="10%">最后访问时间</th>
 									<th width="50px">ID</th>
 									<th width="180px">操作</th>
 								</tr>
@@ -250,6 +251,7 @@
 										<td>${st.index+1 }</td>
 										<td>${user.username}</td>
 										<td>${user.name}</td>
+										<td>${user.group.groupName }</td>
 										<td>
 										<c:forEach items="${user.userRoles }" var="role">
 										 ${role.role.roleDesc }<br> 										
@@ -308,10 +310,34 @@
                             <div class="block-fluid">
                                 <div class="row-form clearfix">
                                     <div class="col-md-3">真实姓名:</div>
-                                    <div class="col-md-9"><input id="name" name="name" type="text"></input></div>
+                                    <div class="col-md-9"><input id="name" name="name" type="text" class="validate[required,minSize[2],maxSize[6]]"></input></div>
                                 </div>                                                           
                             </div>                
                         </div>
+                        <div class="row">
+                            <div class="block-fluid">
+                                <div class="row-form clearfix">
+                                    <div class="col-md-3">所属部门:</div>
+                                    <div class="col-md-9">
+                                    <select name="group">
+                                    <c:forEach items="${groupList }" var="group">
+                                    <option value="${group.id }">&nbsp;${group.groupName }</option>
+                                    <c:forEach items="${group.child }" var="child">
+                                    <option value="${child.id }">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;| - ${child.groupName }</option>
+                                    <c:forEach items="${child.child }" var="child1">
+                                    <option value="${child1.id }">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;| - ${child1.groupName }</option>
+                                    </c:forEach>
+                                    </c:forEach>
+                                    </c:forEach>
+                                    </select>
+                                    </div>
+                                </div>                                                           
+                            </div>                
+                        </div>
+                        <div class="dr"><span></span></div>
+                            <div class="block">
+                                <p>如果密码不填写，默认“123456”</p>
+                            </div>
                     </div>   
                     <div class="modal-footer">
                         <button class="btn btn-primary" aria-hidden="true">保存</button> 

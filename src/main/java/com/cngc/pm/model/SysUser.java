@@ -22,6 +22,7 @@ import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 import org.springframework.format.annotation.DateTimeFormat;
 
+
 @Entity
 @DynamicUpdate(true)  
 @DynamicInsert(true)
@@ -42,10 +43,10 @@ public class SysUser implements Serializable {
 	private Timestamp lastWhile;							//最后访问时间
 	private Date deadline;							//截止日期
 	private String loginIP;							//最后登录截止IP
-	private String mechId;							//所属机构id
+	private Integer mechId;							//所属机构id -- 优先级
 	private String mechName;					//所属机构名称
-	private String depId;								//地区id
-	private String depName;						//地区名称
+	private Integer depId;								//地区id--排序
+	private String depName;						//地区名称--电话
 	private boolean enabled;
 	private boolean accountNonExpired;				//是否过期
 	private boolean accountNonLocked;				//是否锁定
@@ -174,11 +175,11 @@ public class SysUser implements Serializable {
 	}
 
 	@Column(name="mech_id")
-	public String getMechId() {
+	public Integer getMechId() {
 		return mechId;
 	}
 
-	public void setMechId(String mechId) {
+	public void setMechId(Integer mechId) {
 		this.mechId = mechId;
 	}
 
@@ -192,11 +193,11 @@ public class SysUser implements Serializable {
 	}
 
 	@Column(name="dep_id")
-	public String getDepId() {
+	public Integer getDepId() {
 		return depId;
 	}
 
-	public void setDepId(String depId) {
+	public void setDepId(Integer depId) {
 		this.depId = depId;
 	}
 

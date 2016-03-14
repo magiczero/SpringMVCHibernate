@@ -1,6 +1,5 @@
 $(document).ready(function() {
 	//主题设置 
-	/*
 	$(".link_themeSettings").click(function(){
 	        
 	        if($("#themeSettings").is(':visible')){
@@ -79,7 +78,7 @@ $(document).ready(function() {
 	    
 	        return false;
 	    });
-	    */
+	    
 	
 	// 打开/隐藏
 	$(".toggle a").click(function() {
@@ -137,8 +136,8 @@ $(document).ready(function() {
     //if($(".scroll").length>0)
     	//$(".scroll").mCustomScrollbar();
     // ACCORDION 
-    //if($(".accordion").length>0)
-    //	$(".accordion").accordion();
+    if($(".accordion"))
+    	$(".accordion").accordion();
     // TABS
     //if($(".tabs").length>0)
     //	$( ".tabs" ).tabs();

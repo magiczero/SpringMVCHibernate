@@ -1,14 +1,20 @@
 package com.cngc.pm.controller;
 
+import java.util.ArrayList;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.annotation.Resource;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.session.SessionRegistry;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
@@ -22,6 +28,21 @@ public class SystemController {
 
 	@Resource
 	private UserService userService;
+	@Autowired
+	SessionRegistry sessionRegistry;
+	
+	@ModelAttribute("currentUsers")  
+	public List<String> getCurrentUsers() {
+		List<String> list = new ArrayList<>();
+		List<Object> slist =sessionRegistry.getAllPrincipals();
+		for(int i=0; i<slist.size(); i++) {
+			 //List<SessionInformation> sessionList = sessionRegistry.getAllSessions(slist.get(i),true);  
+			User user=(User)slist.get(i); 
+			
+			list.add(user.getUsername());
+		}
+	   return list;  
+	} 
 	
 	@RequestMapping(value = "/header", method = RequestMethod.GET)
 	public String header() {

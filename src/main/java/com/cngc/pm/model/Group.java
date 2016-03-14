@@ -17,6 +17,7 @@ import javax.persistence.Table;
 
 import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
+import org.hibernate.annotations.Where;
 import org.hibernate.validator.constraints.NotBlank;
 
 @Entity
@@ -47,6 +48,8 @@ public class Group implements Serializable {
 	
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "group")  
     @NotFound(action = NotFoundAction.IGNORE)
+	@Where(clause="enabled=1")
+	@OrderBy(value="depId asc")
 	public Set<SysUser> getUsers() {
 		return users;
 	}

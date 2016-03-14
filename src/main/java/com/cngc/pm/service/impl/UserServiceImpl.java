@@ -42,8 +42,9 @@ public class UserServiceImpl implements UserService {
 	
 	@Override
 	@Transactional
-	public void save(SysUser user, String username){
-		
+	public void save(SysUser user, String username , boolean enable){
+		user.setEnabled(enable);
+	
 		userDao.save(user);
 		Records record = new Records();
 		record.setUsername(username);
@@ -249,10 +250,26 @@ public class UserServiceImpl implements UserService {
 			Records record = new Records();
 			record.setUsername(loginname);
 			record.setType(RecordsType.user);
-			record.setDesc("启用了用户，用户id：[" + user.getId() +"]，用户名：["+ user.getUsername()+"]");
+			record.setDesc("【启用】了用户，用户id：[" + user.getId() +"]，用户名：["+ user.getUsername()+"]");
 			recordsDao.save(record);
 			return true;
 		}
 		
+	}
+	@Override
+	@Transactional
+	public boolean disableUser(String loginname, SysUser user) {
+		// TODO Auto-generated method stub
+		user.setEnabled(false);
+		if(userDao.save(user)) {			//源码中如果是修改，返回false
+			return false;
+		} else {
+			Records record = new Records();
+			record.setUsername(loginname);
+			record.setType(RecordsType.user);
+			record.setDesc("【禁用】删除了用户，用户id：[" + user.getId() +"]，用户名：["+ user.getUsername()+"]");
+			recordsDao.save(record);
+			return true;
+		}
 	}
 }

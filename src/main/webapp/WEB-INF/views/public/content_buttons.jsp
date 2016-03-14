@@ -25,16 +25,17 @@
 			<span class="isw-users"></span> <span class="name">用户列表</span>
 		</div>
 		<div class="body-fluid users">
-
+		<c:forEach items="${currentUsers }" var="user">
 			<div class="item clearfix">
 				<div class="image">
 					<a href="#"><img src="${contextPath }/resources/img/users/aqvatarius_s.jpg" width="32" /></a>
 				</div>
 				<div class="info">
-					<a href="#" class="name">杨海鹏</a> <span>在线</span>
+					<a href="#" class="name">${user }</a> <span>在线</span>
 				</div>
 			</div>
-
+		</c:forEach>
+		<%--
 			<div class="item clearfix">
 				<div class="image">
 					<a href="#"><img src="${contextPath }/resources/img/users/olga_s.jpg" width="32" /></a>
@@ -79,7 +80,7 @@
 					<a href="#" class="name">李伟</a>
 				</div>
 			</div>
-
+			--%>
 		</div>
 		<div class="footer">
 			<button class="btn btn-default" type="button">添加新用户</button>

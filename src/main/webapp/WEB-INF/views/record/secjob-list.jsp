@@ -129,12 +129,12 @@
                             </div>
                             <form action="${contextPath }/record/secjob">
 	                            <div class="row-form clearfix">
-	                                <div class="col-md-4">开始时间</div>
-	                                <div class="col-md-8"><input type="text" name="startTime" class="dateISO"/></div>
+	                                <div class="col-md-5">开始时间</div>
+	                                <div class="col-md-7"><input type="text" name="startTime" class="dateISO"/></div>
 	                            </div> 
 	                             <div class="row-form clearfix">
-	                                <div class="col-md-4">截至时间</div>
-	                                <div class="col-md-8"><input type="text" name="endTime" class="dateISO"/></div>
+	                                <div class="col-md-5">截至时间</div>
+	                                <div class="col-md-7"><input type="text" name="endTime" class="dateISO"/></div>
 	                            </div> 
 	                            <div class="footer tac">
 	                            	<button class="btn btn-primary"> 查 询 </button>
@@ -170,7 +170,7 @@
                                 		<th width="130px">发起时间</th>
 										<th width="130px">完成时间</th>
 										<th width="120px">流程步骤</th>
-										<th width="80px">操作</th>
+										<th width="100px">操作</th>
 									</tr>
                                 </thead>
                                 <tbody>

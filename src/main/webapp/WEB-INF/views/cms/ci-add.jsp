@@ -22,7 +22,7 @@
     <link href="${contextPath }/resources/css/stylesheet.css" rel="stylesheet" type="text/css" />
     <link href="${contextPath }/resources/css/styling.css" rel="stylesheet" type="text/css" />
     <link href="${contextPath }/resources/css/mycss.css" rel="stylesheet" type="text/css" />
-    <link href="${contextPath }/resources/css/select2.css" rel="stylesheet" type="text/css" />
+    <link href="${contextPath }/resources/js/plugins/select2/select2.css" rel="stylesheet" type="text/css" />
     <link href="${contextPath }/resources/css/uploadify.css" rel="stylesheet" type="text/css" />
     <link href="${contextPath }/resources/css/validation.css" rel="stylesheet" type="text/css" />
     <%--<link rel='stylesheet' type='text/css' href='${contextPath }/resources/css/bootstrap-treeview.css' media='print' /> --%>

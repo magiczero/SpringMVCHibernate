@@ -17,7 +17,6 @@
     <link href="${contextPath }/resources/css/bootstrap.css" rel="stylesheet" type="text/css" />
     <link href="${contextPath }/resources/css/fullcalendar.css" rel="stylesheet" type="text/css" />
     <link href="${contextPath }/resources/css/ui.css" rel="stylesheet" type="text/css" />
-    <link href="${contextPath }/resources/css/select2.css" rel="stylesheet" type="text/css" />
     <link href="${contextPath }/resources/css/uniform.default.css" rel="stylesheet" type="text/css" />
     <link href="${contextPath }/resources/css/validation.css" rel="stylesheet" type="text/css" />
     <link href="${contextPath }/resources/css/mCustomScrollbar.css" rel="stylesheet" type="text/css" />
@@ -52,7 +51,6 @@
     
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/fullcalendar/fullcalendar.min.js'></script>
     
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/select2/select2.min.js'></script>
     
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/uniform/uniform.js'></script>
     

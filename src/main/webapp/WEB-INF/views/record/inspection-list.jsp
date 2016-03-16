@@ -24,7 +24,7 @@
     <link href="${contextPath }/resources/css/stylesheet.css" rel="stylesheet" type="text/css" />
     <link href="${contextPath }/resources/css/styling.css" rel="stylesheet" type="text/css" />
     <link href="${contextPath }/resources/css/mycss.css" rel="stylesheet" type="text/css" />
-    <link href="${contextPath }/resources/css/select2.css" rel="stylesheet" type="text/css" />
+    <link href="${contextPath }/resources/js/plugins/select2/select2.css" rel="stylesheet" type="text/css" />
     <!--[if lt IE 8]>
         <link href="${contextPath }/resources/css/ie7.css" rel="stylesheet" type="text/css" />
     <![endif]-->    

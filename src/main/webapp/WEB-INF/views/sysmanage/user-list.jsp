@@ -317,6 +317,22 @@
                         <div class="row">
                             <div class="block-fluid">
                                 <div class="row-form clearfix">
+                                    <div class="col-md-3">联系电话:</div>
+                                    <div class="col-md-9"><input id="tel" name="tel" type="text" class="validate[required,custom[phone]]"></input></div>
+                                </div>                                                           
+                            </div>                
+                        </div>
+                        <div class="row">
+                            <div class="block-fluid">
+                                <div class="row-form clearfix">
+                                    <div class="col-md-3">排序:</div>
+                                    <div class="col-md-9"><input id="sort" name="sort" type="text" class="validate[required,custom[integer]]"></input></div>
+                                </div>                                                           
+                            </div>                
+                        </div>
+                        <div class="row">
+                            <div class="block-fluid">
+                                <div class="row-form clearfix">
                                     <div class="col-md-3">所属部门:</div>
                                     <div class="col-md-9">
                                     <select name="group">

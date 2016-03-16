@@ -24,6 +24,7 @@
     <link href="${contextPath }/resources/js/plugins/select2/select2.css" rel="stylesheet" type="text/css" />
     <link href="${contextPath }/resources/css/uploadify.css" rel="stylesheet" type="text/css" />
     <link href="${contextPath }/resources/css/validation.css" rel="stylesheet" type="text/css" />
+    <link href="${contextPath }/resources/css/tree-ie8.css" rel="stylesheet" type="text/css" />
     <link rel='stylesheet' type='text/css' href='${contextPath }/resources/css/bootstrap-treeview.css' media='print' />
     <!--[if lt IE 8]>
         <link href="${contextPath }/resources/css/ie7.css" rel="stylesheet" type="text/css" />
@@ -127,7 +128,7 @@
 		        buttons: { "确定": function () { $(this).dialog("close") } }
 		    });
 		    
-		    $("input[name='applyUser']").bind("click",function(){
+		    $("input[name='user_name']").bind("click",function(){
 		    	$("#grouptree").html('');
 		    	$.getJSON(ctx + '/group/all-json?t=' + pm_random(), function(data1){
 		    		obj= $.parseJSON(data1.json);
@@ -138,7 +139,7 @@
 		    				liStr += "<ul>";
 	                    	if(element.users) {
 	                    		$.each(element.users, function (j, user) {
-	                    			liStr += "<li><a href=\"javascript:void(0);\" onclick=\"inputAttr('applyUser','"+user.userName+"');\">"+user.userName+"</a></li>";
+	                    			liStr += "<li><a href=\"javascript:void(0);\" onclick=\"inputUserinfo('"+user.userId+"','"+user.userName+"','"+user.userTel+"');\">"+user.userName+"</a></li>";
 	                    		});
 	                    	} 
 	                    	if(element.child) {
@@ -148,7 +149,7 @@
 	                    				liStr += "<ul>";
 	                    				if(child.users) {
 		                    				$.each(child.users, function (j, user1) {
-		    	                    			liStr += "<li><a href=\"javascript:void(0);\" onclick=\"inputAttr('applyUser','"+user1.userName+"');\">"+user1.userName+"</a></li>";
+		    	                    			liStr += "<li><a href=\"javascript:void(0);\" onclick=\"inputUserinfo('"+user1.userId+"','"+user1.userName+"','"+user1.userTel+"');\">"+user1.userName+"</a></li>";
 		    	                    		});
 	                    				}
 	                    				if(child.child) {
@@ -157,7 +158,7 @@
 				                    			if(child1.users) {
 				                    				liStr += "<ul>";
 				                    				$.each(child1.users, function (j, user2) {
-				    	                    			liStr += "<li><a href=\"javascript:void(0);\" onclick=\"inputAttr('applyUser','"+user2.userName+"');\">"+user2.userName+"</a></li>";
+				    	                    			liStr += "<li><a href=\"javascript:void(0);\" onclick=\"inputUserinfo('"+user2.userId+"','"+user2.userName+"','"+user2.userTel+"');\">"+user2.userName+"</a></li>";
 				    	                    		});
 				                    				liStr += "</ul>";
 				                    			}
@@ -216,74 +217,16 @@
         function inputAttr(name,value) {
         	$("input[name='"+name+"']").attr("value",value);
         }
+        
+        function inputUserinfo(userid,username,tel) {
+        	$("#applyUser").attr("value", userid);
+        	$("input[name='user_name']").attr("value",username);
+        	$("input[name='phoneNumber']").attr("value",tel);
+        }
     </script>
     <style type="text/css">
     	.uploadify-button-text {color:#fff !important;}
     	
-    	.tree, .tree ul {
-    margin:0;
-    padding:0;
-    list-style:none
-}
-.tree ul {
-    margin-left:1em;
-    position:relative
-}
-.tree ul ul {
-    margin-left:.5em
-}
-.tree ul:before {
-    content:"";
-    display:block;
-    width:0;
-    position:absolute;
-    top:0;
-    bottom:0;
-    left:0;
-    border-left:1px solid
-}
-.tree li {
-    margin:0;
-    padding:0 1em;
-    line-height:2em;
-    color:#369;
-    font-weight:700;
-    position:relative;
-    cursor:pointer;
-}
-.tree ul li:before {
-    content:"";
-    display:block;
-    width:10px;
-    height:0;
-    border-top:1px solid;
-    margin-top:-1px;
-    position:absolute;
-    top:1em;
-    left:0
-}
-.tree ul li:last-child:before {
-    background:#fff;
-    height:auto;
-    top:1em;
-    bottom:0
-}
-.indicator {
-    margin-right:5px;
-}
-.tree li a {
-    text-decoration: none;
-    color:#369;
-}
-.tree li button, .tree li button:active, .tree li button:focus {
-    text-decoration: none;
-    color:#369;
-    border:none;
-    background:transparent;
-    margin:0px 0px 0px 0px;
-    padding:0px 0px 0px 0px;
-    outline: 0;
-}
     </style>
 </head>
 <body>
@@ -327,6 +270,7 @@
 	                        <c:url var="addAction" value="/incident/save" ></c:url>
 	                        <form:form action="${addAction}" commandName="incident" method="post" id="validation">
 	                        <form:hidden path="id" />
+	                        <form:hidden path="applyUser"/>
 	                        <input id="fileids" name="fileids" type="hidden" />
 	                        <div class="block-fluid">                        
 	                            <div class="row-form clearfix">
@@ -341,7 +285,7 @@
 	                            <div class="row-form clearfix">
 	                                <div class="col-md-1"><label for="user">申请人:</label></div>
 	                                <div class="col-md-3">
-	                                <form:input path="applyUser" class="validate[required]"/>
+	                                <input type="text" id="user_name" name="user_name" class="validate[required]">
 	                                <!--<form:select path="applyUser" items="${users }" itemLabel="name" itemValue="username" cssStyle="width:100%"></form:select>--></div>
 	                                <div class="col-md-1"><form:label path="phoneNumber">电话:</form:label></div>
 	                                <div class="col-md-3"><form:input path="phoneNumber"></form:input></div>

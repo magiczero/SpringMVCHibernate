@@ -10,7 +10,7 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <![endif]-->
     
-    <title>附件上传</title>
+    <title>录入文档信息</title>
 
     <link href="${contextPath }/resources/css/icons.css" rel="stylesheet" type="text/css" />
     <link href="${contextPath }/resources/css/bootstrap.css" rel="stylesheet" type="text/css" />
@@ -32,6 +32,7 @@
     <link href="${contextPath }/resources/css/dataTables.css" rel="stylesheet" type="text/css" />
     <link href="${contextPath }/resources/css/stylesheet.css" rel="stylesheet" type="text/css" />
     <link href="${contextPath }/resources/css/styling.css" rel="stylesheet" type="text/css" />
+    <link href="${contextPath }/resources/css/uploadify.css" rel="stylesheet" type="text/css" />
     <link href="${contextPath }/resources/css/mycss.css" rel="stylesheet" type="text/css" />
 	<link href="${contextPath }/resources/css/stylesheets2.css" rel="stylesheet" type="text/css" />
 	<link type="text/css" rel="stylesheet" href="${contextPath }/resources/plupload/js/jquery.plupload.queue/css/jquery.plupload.queue.css" />
@@ -77,10 +78,12 @@
       
     
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/fancybox/jquery.fancybox.pack.js'></script>
-    
+    <!-- 
     <script type='text/javascript' src='${contextPath }/resources/plupload/js/plupload.full.min.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/plupload/js/jquery.plupload.queue/jquery.plupload.queue.js'></script>
-    <script type='text/javascript' src='${contextPath }/resources/plupload/js/i18n/zh_CN.js'></script>   
+    <script type='text/javascript' src='${contextPath }/resources/plupload/js/i18n/zh_CN.js'></script>    -->
+    
+    <script type='text/javascript' src='${contextPath }/resources/js/plugins/uploadify/jquery.uploadify.min.js'></script>
         
     <script type="text/javascript" src="${contextPath }/resources/js/plugins/elfinder/elfinder.min.js"></script>
     
@@ -93,12 +96,12 @@
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/tagsinput/jquery.tagsinput.min.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/multiselect/jquery.multi-select.js'></script>
     
-    <script type='text/javascript' src='${contextPath }/resources/js/cookies.js'></script>
+    <!-- <script type='text/javascript' src='${contextPath }/resources/js/cookies.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/actions.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/charts.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/settings.js'></script>    
-    <script type='text/javascript' src='${contextPath }/resources/js/faq.js'></script>
+    <script type='text/javascript' src='${contextPath }/resources/js/faq.js'></script> -->
     <script type='text/javascript' src='${contextPath }/resources/js/pm-common.js'></script>
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
@@ -115,6 +118,23 @@
                 $("#document").validationEngine({promptPosition : "topRight", scroll: true});
                 
                 $(function() {
+                	$('#file_upload').uploadify({
+        				'formData' : { 'type' : 1 },
+        		        'swf'      : '${contextPath }/resources/flash/uploadify.swf',
+        		        'fileTypeExts': '*.jpg;*.doc;*.docx',//允许上传的文件类型，限制弹出文件选择框里能选择的文件
+        		      //按钮显示的文字
+                        'buttonText': '选择文件……',
+        		        'uploader' : '${contextPath}/attachment/upload',
+        		        'removeCompleted' : false,
+        		        // Put your options here
+        		        'onUploadSuccess': function (file, data, response) {
+        		        	//console.log(data);
+                            $('#' + file.id).find('.data').html(' 上传完毕');
+                            var fileids = document.getElementById("fileids").value + '';
+                            document.getElementById("fileids").value = fileids + data;
+        		        }
+        		    });
+                	<%--
             		$("#uploader").pluploadQueue({
             			// General settings
             			runtimes : 'gears,flash,silverlight,browserplus,html5,html4',
@@ -136,8 +156,10 @@
             			// Silverlight settings
             			silverlight_xap_url : '${contextPath }/resources/js/plugins/plupload/plupload.silverlight.xap'
             		});
+                	--%>
             		$('form[name=document]').submit(function(e) {
             			if($('form[name=document]').validationEngine('validate')) {
+            				<%--
             	        var uploader = $('#uploader').pluploadQueue();
             	        if (uploader.files.length > 0) {
             	            // When all files are uploaded submit form
@@ -150,14 +172,29 @@
             	            uploader.start();
             	        } else {
             				alert('请先上传数据文件.');
-            			}}
+            			}
+            			--%>
+            				if(document.getElementById("fileids").value == '') {
+            					notify_e('Error','请上传文件');
+            					return false;
+            				} else {
+            					$('form')[2].submit();
+            				}
+            			}
             	        return false;
                 	});
             	});
                 //$(".plupload_start")[0].hide();
                 //document.querySelector('.plupload_start').style.display = 'none';
             });
+            function notify_e(title,text){
+                $.pnotify({title: title, text: text, opacity: .8, type: 'error'});            
+            }
     </script>
+    <style type="text/css">
+    	.uploadify-button-text {color:#fff !important;}
+    	
+    </style>
 </head>
 <body>
     <div class="wrapper"> 
@@ -198,6 +235,7 @@
                         </div><c:url var="addAction" value="/document/save" ></c:url>
 						<form:form action="${addAction}" name="document" commandName="document">
 						<input type="hidden" name="versions" value="1" />
+						<input id="fileids" name="fileids" type="hidden" />
                         <div class="block-fluid">                        
                           <div class="row-form clearfix">
                                 <div class="col-md-2"><form:label path="name">文档名称*</form:label></div>
@@ -247,11 +285,17 @@
                                 </div>
                             </div>
                             <div class="row-form clearfix">
+                            	<div class="col-md-2">
+                                	<label for="deposit">文件：</label>
+                                </div>
+                                <div class="col-md-7">
+                                	<input type="file" name="file_upload" id="file_upload" />
+                                </div>
+                                <%--
                                 <div class="col-md-12">
                                 <div id="uploader">
 									<p>您的浏览器未安装 Flash, Silverlight, Gears, BrowserPlus 或者支持 HTML5 .</p>
-								</div>
-								</div>
+								</div> --%>
                             </div>
 							<div class="row-form clearfix">
                                 <div class="col-md-2">

@@ -91,6 +91,9 @@ public class AttachmentController {
 				 attach.setSize(mpf.getSize());
 				 attach.setPath(folder.getPath());
 				 switch(type) {
+				 	case "1":
+				 		attach.setType(AttachType.doc);
+				 		break;
 				 	case "2" :
 				 		attach.setType(AttachType.event);
 				 		break;

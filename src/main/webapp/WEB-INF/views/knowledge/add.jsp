@@ -3,7 +3,7 @@
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
 <c:set var="contextPath" value="${pageContext.request.contextPath}"></c:set>
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>        
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
@@ -13,7 +13,6 @@
     
     <title>知识库管理--运维管理系统</title>
 
-    <link rel="icon" type="image/ico" href="favicon.ico"/>
     <link href="${contextPath }/resources/css/icons.css" rel="stylesheet" type="text/css" />
     <link href="${contextPath }/resources/css/bootstrap.css" rel="stylesheet" type="text/css" />
     <link href="${contextPath }/resources/css/ui.css" rel="stylesheet" type="text/css" />
@@ -26,6 +25,7 @@
     <link href="${contextPath }/resources/css/cleditor.css" rel="stylesheet" type="text/css" />
     <link href="${contextPath }/resources/css/uploadify.css" rel="stylesheet" type="text/css" />
     <link href="${contextPath }/resources/css/validation.css" rel="stylesheet" type="text/css" />
+    <link href="${contextPath }/resources/css/tree-ie8.css" rel="stylesheet" type="text/css" />
     <link rel='stylesheet' type='text/css' href='${contextPath }/resources/css/bootstrap-treeview.css' media='print' />
     <!--[if lt IE 8]>
         <link href="${contextPath }/resources/css/ie7.css" rel="stylesheet" type="text/css" />
@@ -155,71 +155,6 @@
     </script>
     <style type="text/css">
     	.uploadify-button-text {color:#fff !important;}
-    	
-    	.tree, .tree ul {
-    margin:0;
-    padding:0;
-    list-style:none
-}
-.tree ul {
-    margin-left:1em;
-    position:relative
-}
-.tree ul ul {
-    margin-left:.5em
-}
-.tree ul:before {
-    content:"";
-    display:block;
-    width:0;
-    position:absolute;
-    top:0;
-    bottom:0;
-    left:0;
-    border-left:1px solid
-}
-.tree li {
-    margin:0;
-    padding:0 1em;
-    line-height:2em;
-    color:#369;
-    font-weight:700;
-    position:relative;
-    cursor:pointer;
-}
-.tree ul li:before {
-    content:"";
-    display:block;
-    width:10px;
-    height:0;
-    border-top:1px solid;
-    margin-top:-1px;
-    position:absolute;
-    top:1em;
-    left:0
-}
-.tree ul li:last-child:before {
-    background:#fff;
-    height:auto;
-    top:1em;
-    bottom:0
-}
-.indicator {
-    margin-right:5px;
-}
-.tree li a {
-    text-decoration: none;
-    color:#369;
-}
-.tree li button, .tree li button:active, .tree li button:focus {
-    text-decoration: none;
-    color:#369;
-    border:none;
-    background:transparent;
-    margin:0px 0px 0px 0px;
-    padding:0px 0px 0px 0px;
-    outline: 0;
-}
     </style>
 </head>
 <body>

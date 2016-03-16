@@ -8,7 +8,12 @@ import com.cngc.pm.model.SysUser;
 
 public interface UserService {
 
-	void save(SysUser user, String username);
+	/**
+	 * @param user
+	 * @param username
+	 * @param enable	是否启用
+	 */
+	void save(SysUser user, String username, boolean enable);
 	
 	SysUser getById(Long id);
 	
@@ -33,4 +38,6 @@ public interface UserService {
 	List<SysUser> getCommonUser();
 	
 	boolean enableUser(String loginname,SysUser user );
+
+	boolean disableUser(String username, SysUser user);
 }

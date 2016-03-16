@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.cngc.exception.BusinessException;
+import com.cngc.pm.common.web.BaseController;
 import com.cngc.pm.model.Group;
 import com.cngc.pm.model.Role;
 import com.cngc.pm.model.SysUser;
@@ -31,10 +32,14 @@ import com.cngc.pm.service.GroupService;
 import com.cngc.pm.service.RoleService;
 import com.cngc.pm.service.UserService;
 import com.cngc.utils.Common;
+import com.cngc.utils.UserSerializer;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.module.SimpleModule;
 
 @Controller
 @RequestMapping(value = "/user")
-public class UserController {
+public class UserController extends BaseController  {
 
 	@Resource
 	private UserService userService;
@@ -68,6 +73,58 @@ public class UserController {
 		map.put("message", msg);
 		return map;
 	}
+	
+	@RequestMapping(value="/get-user/{id}", method = RequestMethod.GET)
+	@ResponseBody
+	public Map<String, Object> getUserByGroup(@PathVariable("id") long id) throws JsonProcessingException {
+		Map<String, Object> map = new HashMap<>();
+		ObjectMapper mapper = new ObjectMapper(); 
+		SimpleModule module = new SimpleModule();  
+		module.addSerializer(SysUser.class, new UserSerializer());
+		mapper.registerModule(module);
+		map.put("user", mapper.writeValueAsString(userService.getById(id)));
+		return map;
+	}
+	
+	@RequestMapping(value="/get-users/{id}", method = RequestMethod.GET)
+	@ResponseBody
+	public Map<String, Object> getUsersByGroup(@PathVariable("id") long id) throws JsonProcessingException {
+		Map<String, Object> map = new HashMap<>();
+		Group group = groupService.getById(id);
+		ObjectMapper mapper = new ObjectMapper(); 
+		SimpleModule module = new SimpleModule();  
+		module.addSerializer(SysUser.class, new UserSerializer());
+		mapper.registerModule(module);
+		String value = "[";
+		int count=0;
+		for(SysUser user : group.getUsers()) {
+			value += mapper.writeValueAsString(user)+",";
+			count++;
+		}
+			
+		
+		for(Group group1 : group.getChild()) {
+				for(SysUser user : group1.getUsers()) {
+					value += mapper.writeValueAsString(user)+",";
+					count++;
+				}
+			
+			for(Group group2 : group1.getChild()) {
+				for(SysUser user : group2.getUsers()) {
+					value += mapper.writeValueAsString(user)+",";
+					count++;
+				}
+				
+			}
+		}
+		if(count ==0) {
+			value = "";
+		} else {
+			value = value.substring(0, value.length()-1)+"]";
+		}
+		map.put("users", value);
+		return map;
+	}
 
 	@RequestMapping(value = "/list", method = RequestMethod.GET)
 	public String list(Model model) {
@@ -96,7 +153,7 @@ public class UserController {
 				user.setPassword(md5.encodePassword(newPwd, username));
 				//user.setEnabled(true);
 				
-				userService.save(user, username);
+				userService.save(user, username, user.isEnabled());
 			}
 		} else {
 			return "redirect:/500";
@@ -104,6 +161,43 @@ public class UserController {
 		
 		//成功后重新登陆
 		return "redirect:/logout";
+	}
+	
+	@RequestMapping(value="/save-user", method = RequestMethod.POST)
+	public @ResponseBody Map<String, Object> saveUser(Model model, HttpServletRequest request) {
+		Map<String , Object> map = new HashMap<>();
+		if(StringUtils.isEmpty(request.getParameter("group"))) {
+			map.put("flag", false);
+			return map;
+		}
+		SysUser user = new SysUser();
+		
+		String username = request.getParameter("username");
+		
+		user.setUsername(username);
+		user.setName(request.getParameter("name"));
+		Md5PasswordEncoder md5 = new Md5PasswordEncoder();
+		user.setPassword(md5.encodePassword(	"123456",username));
+		
+		//部门
+		Long groupId = Long.parseLong(request.getParameter("group"));
+		Group group = groupService.getById(groupId);
+		user.setGroup(group);
+		String currentName = SecurityContextHolder.getContext().getAuthentication().getName();
+		//user.setEnabled(false);		//因为三员管理的关系，所以保存时设置为未启用
+		user.setDepId(Integer.parseInt(request.getParameter("sort")));
+		user.setDepName(request.getParameter("tel"));
+		user.setMechId(Integer.parseInt(request.getParameter("priority")));
+				
+		userService.save(user, currentName, true);
+		//同步到activiti的user
+		org.activiti.engine.identity.User actuser = identityService.newUser(user.getUsername());
+		actuser.setFirstName(user.getName());
+		identityService.saveUser(actuser);
+				
+		map.put("flag", true);
+		
+		return map;
 	}
 
 	/**
@@ -113,7 +207,7 @@ public class UserController {
 	 */
 	@RequestMapping(value="/save", method = RequestMethod.POST)
 	public String save(Model model,HttpServletRequest request)	{
-		SysUser user = new SysUser();;
+		SysUser user = new SysUser();
 		Long id = Long.parseLong(request.getParameter("userform_id"));
 		
 		if(id!=0)
@@ -140,8 +234,11 @@ public class UserController {
 		Group group = groupService.getById(groupId);
 		user.setGroup(group);
 		String username = SecurityContextHolder.getContext().getAuthentication().getName();
-		user.setEnabled(false);		//因为三员管理的关系，所以保存时设置为未启用
-		userService.save(user, username);
+		//user.setEnabled(false);		//因为三员管理的关系，所以保存时设置为未启用
+		user.setDepId(Integer.parseInt(request.getParameter("sort")));
+		user.setDepName(request.getParameter("tel"));
+		
+		userService.save(user, username, false);
 		
 		//同步到activiti的user
 		org.activiti.engine.identity.User actuser = identityService.newUser(user.getUsername());
@@ -149,6 +246,30 @@ public class UserController {
 		identityService.saveUser(actuser);
 		
 		return "redirect:/user/list";
+	}
+	
+	@RequestMapping(value="/edit-user", method = RequestMethod.POST)
+	public @ResponseBody Map<String, Object> editUser(HttpServletRequest request) {
+		Map<String, Object> map = new HashMap<>();
+		try {
+			Long userid = Long.parseLong(request.getParameter("euserid"));
+			
+			SysUser euser = userService.getById(userid);
+			
+			euser.setName(request.getParameter("ename"));
+			euser.setDepId(Integer.parseInt(request.getParameter("esort")));
+			euser.setDepName(request.getParameter("etel"));
+			euser.setMechId(Integer.parseInt(request.getParameter("epriority")));
+			String currentUsername = SecurityContextHolder.getContext().getAuthentication().getName();
+			
+			userService.save(euser, currentUsername, true);
+			
+			map.put("flag", true);
+		} catch(Exception e) {
+			map.put("flag", false);
+		}
+		
+		return map;
 	}
 	
 	@RequestMapping(value="/enable/{id}", method = RequestMethod.PUT)
@@ -159,6 +280,22 @@ public class UserController {
 		if(user == null) throw new BusinessException("无法启用用户，无此用户");
 		
 		if(userService.enableUser(username, user)) {
+			map.put("flag", true);
+		} else {
+			map.put("flag", false);
+		}
+		
+		return map;
+	}
+	
+	@RequestMapping(value="/del/{id}", method = RequestMethod.PUT)
+	public @ResponseBody Map<String, Object> delUser(@PathVariable("id") long id) {
+		Map<String, Object> map = new HashMap<>();
+		String username = SecurityContextHolder.getContext().getAuthentication().getName();
+		SysUser user = userService.getById(id);
+		if(user == null) throw new BusinessException("无法删除用户，无此用户");
+		
+		if(userService.disableUser(username, user)) {
 			map.put("flag", true);
 		} else {
 			map.put("flag", false);
@@ -181,7 +318,7 @@ public class UserController {
 				//清空用户的所有角色
 				user.setUserRoles(null);
 				
-				userService.save(user,username);
+				userService.save(user,username, user.isEnabled());
 			} else {
 				userService.setRole(username,user,roleIds);
 			}

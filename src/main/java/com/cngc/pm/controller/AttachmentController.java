@@ -103,6 +103,9 @@ public class AttachmentController {
 				 	case "4" :
 				 		attach.setType(AttachType.knowledge);
 				 		break;
+				 	case "5":
+				 		attach.setType(AttachType.secjob);
+				 		break;
 				 }
 //				 if(type.equals("2")) {
 //					 attach.setType(AttachType.event);			//如何灵活判断

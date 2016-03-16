@@ -24,7 +24,8 @@
           <activiti:value id="03" name="漏洞扫描报告"></activiti:value>
           <activiti:value id="04" name="应急演练"></activiti:value>
         </activiti:formProperty>
-        <activiti:formProperty id="attachment" name="附件" type="string" expression="${secjob.attachment}"></activiti:formProperty>
+        <activiti:formProperty id="fileids" name="附件" type="file" expression="${secjob.attachment}"></activiti:formProperty>
+        <activiti:taskListener event="complete" expression="${ secJobEntityManager.saveAttach(execution)}"></activiti:taskListener>
       </extensionElements>
     </userTask>
     <sequenceFlow id="flow1" sourceRef="startSecJob" targetRef="taskDoSecJob"></sequenceFlow>

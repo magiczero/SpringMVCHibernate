@@ -199,6 +199,7 @@
         }
 	
         function delItem(id, obj) {
+        	/*
         	$.confirm({
         		title:"删除项",
         		content: "是否确定删除项？",
@@ -215,17 +216,18 @@
         		cancel: function() {
 					     			
         		}
-        	});
-        	//if(confirm('确定删除？')) {
-            //	$.getJSON('${contextPath }/checkitems/delete/' + id,function(data){
-            //		if(data.flag) {
-            //			notify_e('Success','删除成功');
-            //			$(obj).parent().parnet().hide();
-            //		} else {
-            //			notify_e('Error','删除失败');
-            //		}
-            //	});
-        	//}
+        	});*/
+        	if(confirm('确定删除？')) {
+            	$.getJSON('${contextPath }/checkitems/delete/' + id,function(data){
+            		if(data.flag) {
+            			notify_e('Success','删除成功');
+            			//$(obj).parent().parnet().hide();
+            			location.reload();
+            		} else {
+            		notify_e('Error','删除失败');
+            		}
+            	});
+        	}
         	return false;
         }
         

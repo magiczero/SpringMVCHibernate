@@ -34,7 +34,7 @@ public class GroupServiceImpl implements GroupService {
 			if(!group.getUsers().isEmpty()) {
 				jsonStr += ",\"users\":[";
 				for(SysUser user : group.getUsers()) {
-					jsonStr += "{\"userId\":\""+user.getId()+"\",\"userName\":\""+user.getName()+"\"},";
+					jsonStr += "{\"userId\":\""+user.getUsername()+"\",\"userName\":\""+user.getName()+"\",\"userTel\":\""+user.getDepName()+"\"},";
 				}
 				jsonStr = jsonStr.substring(0, jsonStr.length()-1);
 				jsonStr += "]";
@@ -47,7 +47,7 @@ public class GroupServiceImpl implements GroupService {
 					if(!child1.getUsers().isEmpty()) {
 						jsonStr += ",\"users\":[";
 						for(SysUser user : child1.getUsers()) {
-							jsonStr += "{\"userId\":\""+user.getId()+"\",\"userName\":\""+user.getName()+"\"},";
+							jsonStr += "{\"userId\":\""+user.getUsername()+"\",\"userName\":\""+user.getName()+"\",\"userTel\":\""+user.getDepName()+"\"},";
 						}
 						jsonStr = jsonStr.substring(0, jsonStr.length()-1);
 						jsonStr += "]";
@@ -60,7 +60,7 @@ public class GroupServiceImpl implements GroupService {
 							if(!child2.getUsers().isEmpty()) {
 								jsonStr += ",\"users\":[";
 								for(SysUser user : child2.getUsers()) {
-									jsonStr += "{\"userId\":\""+user.getId()+"\",\"userName\":\""+user.getName()+"\"},";
+									jsonStr += "{\"userId\":\""+user.getUsername()+"\",\"userName\":\""+user.getName()+"\",\"userTel\":\""+user.getDepName()+"\"},";
 								}
 								jsonStr = jsonStr.substring(0, jsonStr.length()-1);
 								jsonStr += "]";

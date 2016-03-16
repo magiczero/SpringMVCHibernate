@@ -282,6 +282,14 @@
     	});
     }
     
+    function initUserSaveForm() {
+    	$("#username").attr("value",'');
+    	$("#name").attr("value",'');
+    	$("#tel").attr("value",'');
+    	$("#sort").attr("value",'');
+    	$("#userFormDialog").modal('show');
+    }
+    
     function saveUser() {
     	if($('#groupid').val() == '') {
     		notify_e('Error','请点击部门');
@@ -370,7 +378,7 @@
                             <h1>用户列表</h1>  
 
                             <ul class="buttons">   
-	                            <li><a title="新建用户" class="isw-plus" href="#userFormDialog" data-toggle="modal"></a>
+	                            <li><a title="新建用户" class="isw-plus" onclick="initUserSaveForm();"></a>
 	                        </li>                       
                             </ul>                             
                         </div>

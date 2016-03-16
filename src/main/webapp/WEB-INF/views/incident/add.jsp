@@ -128,7 +128,7 @@
 		        buttons: { "确定": function () { $(this).dialog("close") } }
 		    });
 		    
-		    $("input[name='applyUser']").bind("click",function(){
+		    $("input[name='user_name']").bind("click",function(){
 		    	$("#grouptree").html('');
 		    	$.getJSON(ctx + '/group/all-json?t=' + pm_random(), function(data1){
 		    		obj= $.parseJSON(data1.json);
@@ -139,7 +139,7 @@
 		    				liStr += "<ul>";
 	                    	if(element.users) {
 	                    		$.each(element.users, function (j, user) {
-	                    			liStr += "<li><a href=\"javascript:void(0);\" onclick=\"inputAttr('applyUser','"+user.userName+"');\">"+user.userName+"</a></li>";
+	                    			liStr += "<li><a href=\"javascript:void(0);\" onclick=\"inputUserinfo('"+user.userId+"','"+user.userName+"','"+user.userTel+"');\">"+user.userName+"</a></li>";
 	                    		});
 	                    	} 
 	                    	if(element.child) {
@@ -149,7 +149,7 @@
 	                    				liStr += "<ul>";
 	                    				if(child.users) {
 		                    				$.each(child.users, function (j, user1) {
-		    	                    			liStr += "<li><a href=\"javascript:void(0);\" onclick=\"inputAttr('applyUser','"+user1.userName+"');\">"+user1.userName+"</a></li>";
+		    	                    			liStr += "<li><a href=\"javascript:void(0);\" onclick=\"inputUserinfo('"+user1.userId+"','"+user1.userName+"','"+user1.userTel+"');\">"+user1.userName+"</a></li>";
 		    	                    		});
 	                    				}
 	                    				if(child.child) {
@@ -158,7 +158,7 @@
 				                    			if(child1.users) {
 				                    				liStr += "<ul>";
 				                    				$.each(child1.users, function (j, user2) {
-				    	                    			liStr += "<li><a href=\"javascript:void(0);\" onclick=\"inputAttr('applyUser','"+user2.userName+"');\">"+user2.userName+"</a></li>";
+				    	                    			liStr += "<li><a href=\"javascript:void(0);\" onclick=\"inputUserinfo('"+user2.userId+"','"+user2.userName+"','"+user2.userTel+"');\">"+user2.userName+"</a></li>";
 				    	                    		});
 				                    				liStr += "</ul>";
 				                    			}
@@ -217,6 +217,12 @@
         function inputAttr(name,value) {
         	$("input[name='"+name+"']").attr("value",value);
         }
+        
+        function inputUserinfo(userid,username,tel) {
+        	$("#applyUser").attr("value", userid);
+        	$("input[name='user_name']").attr("value",username);
+        	$("input[name='phoneNumber']").attr("value",tel);
+        }
     </script>
     <style type="text/css">
     	.uploadify-button-text {color:#fff !important;}
@@ -264,6 +270,7 @@
 	                        <c:url var="addAction" value="/incident/save" ></c:url>
 	                        <form:form action="${addAction}" commandName="incident" method="post" id="validation">
 	                        <form:hidden path="id" />
+	                        <form:hidden path="applyUser"/>
 	                        <input id="fileids" name="fileids" type="hidden" />
 	                        <div class="block-fluid">                        
 	                            <div class="row-form clearfix">
@@ -278,7 +285,7 @@
 	                            <div class="row-form clearfix">
 	                                <div class="col-md-1"><label for="user">申请人:</label></div>
 	                                <div class="col-md-3">
-	                                <form:input path="applyUser" class="validate[required]"/>
+	                                <input type="text" id="user_name" name="user_name" class="validate[required]">
 	                                <!--<form:select path="applyUser" items="${users }" itemLabel="name" itemValue="username" cssStyle="width:100%"></form:select>--></div>
 	                                <div class="col-md-1"><form:label path="phoneNumber">电话:</form:label></div>
 	                                <div class="col-md-3"><form:input path="phoneNumber"></form:input></div>

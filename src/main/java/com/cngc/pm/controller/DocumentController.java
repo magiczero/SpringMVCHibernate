@@ -37,6 +37,7 @@ import com.cngc.pm.model.SecretLevel;
 import com.cngc.pm.model.Style;
 import com.cngc.pm.model.SysCode;
 import com.cngc.pm.model.SysUser;
+import com.cngc.pm.service.AttachService;
 import com.cngc.pm.service.DocumentService;
 import com.cngc.pm.service.SysCodeService;
 import com.cngc.pm.service.UserService;
@@ -52,7 +53,8 @@ public class DocumentController {
 	private DocumentService docService;
 	@Resource
 	private UserService userService;
-	
+	@Resource
+	private AttachService attachService;
 	@Resource
 	private SysCodeService syscodeService;
 	
@@ -271,15 +273,18 @@ public class DocumentController {
 	
 	@RequestMapping(value = "/save", method = RequestMethod.POST)
 	public String save(@Valid @ModelAttribute("document") Document document, BindingResult result, HttpServletRequest request) {
-		int count = Integer.parseInt(request.getParameter("uploader_count"));
-		
-		String[] names = new String[count];
-		for (int i = 0; i < count; i++) {
-			//uploadFileName = request.getParameter("uploader_" + i + "_name");
-			names[i] = request.getParameter("uploader_" + i + "_tmpname");
-		}
+//		int count = Integer.parseInt(request.getParameter("uploader_count"));
+//		
+//		String[] names = new String[count];
+//		for (int i = 0; i < count; i++) {
+//			//uploadFileName = request.getParameter("uploader_" + i + "_name");
+//			names[i] = request.getParameter("uploader_" + i + "_tmpname");
+//		}
 
-		Set<Attachment> setAttach = docService.getSetAttach(names);
+//		Set<Attachment> setAttach = docService.getSetAttach(names);
+		String attachIds = request.getParameter("fileids");
+		
+		Set<Attachment> setAttach = attachService.getSetByIds(attachIds);
 		
 		//获取用户
 //		SysUser user = (SysUser)request.getSession().getAttribute("user");

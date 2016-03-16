@@ -23,6 +23,7 @@
     <link href="${contextPath }/resources/css/stylesheet.css" rel="stylesheet" type="text/css" />
     <link href="${contextPath }/resources/css/styling.css" rel="stylesheet" type="text/css" />
     <link href="${contextPath }/resources/css/mycss.css" rel="stylesheet" type="text/css" />
+	<link href="${contextPath }/resources/css/uploadify.css" rel="stylesheet" type="text/css" />
     <link href="${contextPath }/resources/css/validation.css" rel="stylesheet" type="text/css" />
     <link href="${contextPath }/resources/css/select2.css" rel="stylesheet" type="text/css" />
     <!--[if lt IE 8]>
@@ -39,11 +40,12 @@
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/mcustomscrollbar/jquery.mCustomScrollbar.min.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/dataTables/jquery.dataTables.min.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/validation/languages/jquery.validationEngine-zh-CN.js' charset='utf-8'></script>
-<script type='text/javascript' src='${contextPath }/resources/js/plugins/validation/jquery.validationEngine.js' charset='utf-8'></script>
+	<script type='text/javascript' src='${contextPath }/resources/js/plugins/validation/jquery.validationEngine.js' charset='utf-8'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/highlight/jquery.highlight-4.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/pnotify/jquery.pnotify.min.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/ibutton/jquery.ibutton.min.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/scrollup/jquery.scrollUp.min.js'></script>
+    <script type='text/javascript' src='${contextPath }/resources/js/plugins/uploadify/jquery.uploadify.min.js'></script>
     
     <script type='text/javascript' src='${contextPath }/resources/js/pm-common.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/activiti-form.js'></script>
@@ -87,6 +89,22 @@
             });
             
             pm_workflow_inittracedialog(400,250);
+            
+    		$('#file_upload').uploadify({
+    			'formData' : { 'type' : 5 },
+    	        'swf'      : '${contextPath }/resources/flash/uploadify.swf',
+    	      //按钮显示的文字
+    	        'buttonText': '选择文件……',
+    	        'uploader' : '${contextPath}/attachment/upload',
+    	        'removeCompleted' : false,
+    	        // Put your options here
+    	        'onUploadSuccess': function (file, data, response) {
+    	        	//console.log(data);
+    	            $('#' + file.id).find('.data').html(' 上传完毕');
+    	            var fileids = document.getElementById("fileids").value + '';
+    	            document.getElementById("fileids").value = fileids + data;
+    	        }
+    	    });
         });
     </script>
 </head>
@@ -170,7 +188,7 @@
                                 		<th width="130px">发起时间</th>
 										<th width="130px">完成时间</th>
 										<th width="120px">流程步骤</th>
-										<th width="80px">操作</th>
+										<th width="80px">附件</th>
 									</tr>
                                 </thead>
                                 <tbody>
@@ -198,7 +216,10 @@
 												<a href="#" onclick="act_form_openTaskDialog('三员工作任务','${mytask.id}','/record/secjob')"><span class="glyphicon glyphicon-edit"></span> 办理</a>
 											</c:if>
 											<c:if test="${not empty job.executionTime }">
-											<a href="#" title="${job.attachment }"><span class="glyphicon glyphicon-download-alt"></span> 下载</a>
+											<c:forEach items="${job.attachs}" var="attach">
+												<a href="${contextPath }/attachment/download/${attach.id}">${attach.name }</a><br/>
+											</c:forEach>
+											
 											</c:if>
 										</td>
 									</tr>

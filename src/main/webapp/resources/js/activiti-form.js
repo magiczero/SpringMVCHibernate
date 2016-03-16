@@ -108,6 +108,11 @@ function act_form_getTaskFields(taskId,redirectAddress) {
 				$.each(result.users,function(key,value){
 					$form.find('.user').append("<option value='"+key+"'>"+value+"</option>");
 				});
+				for(i=0;i<$form.find('.user').length;i++)
+				{
+					if( $($form.find('.user')[i]).attr('data')!=null )
+						$($form.find('.user')[i]).find("option[value='"+$($form.find('.user')[i]).attr('data')+"']").attr("selected",true);
+				}
 				$form.find('.user').select2();
 			});
 		}
@@ -118,6 +123,11 @@ function act_form_getTaskFields(taskId,redirectAddress) {
 				$.each(result.users,function(key,value){
 					$form.find('.leader').append("<option value='"+key+"'>"+value+"</option>");
 				});
+				for(i=0;i<$form.find('.leader').length;i++)
+				{
+					if( $($form.find('.leader')[i]).attr('data')!=null )
+						$($form.find('.leader')[i]).find("option[value='"+$($form.find('.leader')[i]).attr('data')+"']").attr("selected",true);
+				}
 				$form.find('.leader').select2();
 			});
 		}
@@ -202,6 +212,11 @@ function act_form_getDialogFields(data,redirectAddress) {
 			$.each(result.users,function(key,value){
 				$form.find('.user').append("<option value='"+key+"'>"+value+"</option>");
 			});
+			for(i=0;i<$form.find('.user').length;i++)
+			{
+				if( $($form.find('.user')[i]).attr('data')!=null )
+					$($form.find('.user')[i]).find("option[value='"+$($form.find('.user')[i]).attr('data')+"']").attr("selected",true);
+			}
 			$form.find('.user').select2();
 		});
 	}
@@ -212,11 +227,35 @@ function act_form_getDialogFields(data,redirectAddress) {
 			$.each(result.users,function(key,value){
 				$form.find('.leader').append("<option value='"+key+"'>"+value+"</option>");
 			});
+			for(i=0;i<$form.find('.leader').length;i++)
+			{
+				if( $($form.find('.leader')[i]).attr('data')!=null )
+					$($form.find('.leader')[i]).find("option[value='"+$($form.find('.leader')[i]).attr('data')+"']").attr("selected",true);
+			}
 			$form.find('.leader').select2();
 		});
 	}
 	// 初始化日期组件
 	$form.find('.dateISO').datepicker();
+	
+	if($form.find('.actFileType').length>0)
+	{
+		$('.actFileType').uploadify({
+			'formData' : { 'type' : 5 },
+	        'swf'      : ctx + '/resources/flash/uploadify.swf',
+	      //按钮显示的文字
+	        'buttonText': '选择文件……',
+	        'uploader' : ctx + '/attachment/upload',
+	        'removeCompleted' : false,
+	        // Put your options here
+	        'onUploadSuccess': function (file, data, response) {
+	        	//console.log(data);
+	            $('#' + file.id).find('.data').html(' 上传完毕');
+	            var fileids = document.getElementById("fileids").value + '';
+	            document.getElementById("fileids").value = fileids + data;
+	        }
+	    });
+	}
 	// 表单验证
 	//$form.validate($.extend({}, $.common.plugin.validator));
 }
@@ -232,6 +271,20 @@ var act_form_fieldcreator = {
 				  	+"<input type='text' id='" + prop.id + "' name='fp_" + prop.id 
 				  	+ "' class='" + className + "' value='" + (prop.value==null?"":prop.value) 
 				  	+ "' /></div>";
+		} else {
+			result += "<div class='col-md-8'>" + prop.value + "</div>";
+		}
+		return result;
+	},
+	'file': function(prop, datas, className) {
+		var result = "<div class='col-md-3'>" + prop.name + "：</div>";
+		if (prop.writable === true) {
+			result += "<div class='col-md-8'>"
+					+ "<input type='hidden' id='" + prop.id + "' name='fp_" + prop.id 
+				  	+ "' class='" + className + "' value='" + (prop.value==null?"":prop.value) 
+				  	+ "' />"
+					+ "<input type='file' class='actFileType' name='attach' id='attach' /> "
+				  	+ "</div>";
 		} else {
 			result += "<div class='col-md-8'>" + prop.value + "</div>";
 		}
@@ -285,7 +338,8 @@ var act_form_fieldcreator = {
 	'user': function(prop, datas, className) {
 		var result = "<div class='col-md-3'>" + prop.name + "：</div>";
 		if (prop.writable === true) {
-			result += "<div class='col-md-8'><select id='" + prop.id + "' name='fp_" + prop.id + "' class='user' style='width:100%'></select></div>";
+			result += "<div class='col-md-8'><select id='" + prop.id + "' name='fp_" + prop.id + "' class='user' style='width:100%' data='" 
+				+ (prop.value==null?"":prop.value) + "'></select></div>";
 		} else {
 			result += "<div class='col-md-8'>" + prop.value + "</div>";
 		}
@@ -294,7 +348,8 @@ var act_form_fieldcreator = {
 	'leader': function(prop, datas, className) {
 		var result = "<div class='col-md-3'>" + prop.name + "：</div>";
 		if (prop.writable === true) {
-			result += "<div class='col-md-8'><select id='" + prop.id + "' name='fp_" + prop.id + "' class='leader' style='width:100%'></select></div>";
+			result += "<div class='col-md-8'><select id='" + prop.id + "' name='fp_" + prop.id + "' class='leader' style='width:100%' data='"
+				+ (prop.value==null?"":prop.value) + "'></select></div>";
 		} else {
 			result += "<div class='col-md-8'>" + prop.value + "</div>";
 		}

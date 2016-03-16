@@ -1,18 +1,28 @@
 package com.cngc.pm.activiti.service;
 
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
+import javax.annotation.Resource;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
+
 import org.activiti.engine.delegate.DelegateExecution;
+import org.apache.cxf.common.util.StringUtils;
 import org.springframework.stereotype.Service;
+
+import com.cngc.pm.activiti.jpa.entity.AttachmentEntity;
 import com.cngc.pm.activiti.jpa.entity.SecJobJpaEntity;
+import com.cngc.pm.service.AttachService;
 
 @Service
 public class SecJobEntityManager {
 	   @PersistenceContext
-	    private EntityManager entityManager;
+	   private EntityManager entityManager;
+	   @Resource
+	   private AttachService attachService;
 	    
 	    @Transactional
 	    public SecJobJpaEntity newSecJob(DelegateExecution execution) {
@@ -29,6 +39,23 @@ public class SecJobEntityManager {
 	    	SecJobJpaEntity job = (SecJobJpaEntity)execution.getVariable("secjob");
 	    	job.setExecutionTime(new Date());
 	    	entityManager.persist(job);
+	    	return true;
+	    }
+	    @Transactional
+	    public boolean saveAttach(DelegateExecution execution){
+	    	SecJobJpaEntity job = (SecJobJpaEntity)execution.getVariable("secjob");
+			if(!StringUtils.isEmpty(job.getAttachment())) {
+				String[] ids = job.getAttachment().split(",");
+				
+				Set<AttachmentEntity> set = new HashSet<>();
+				
+				for(String id : ids) {
+					AttachmentEntity attach = entityManager.find(AttachmentEntity.class, Long.valueOf(id));
+					set.add(attach);
+				}
+				job.setAttachs(set);
+				entityManager.persist(job);
+			}
 	    	return true;
 	    }
 }

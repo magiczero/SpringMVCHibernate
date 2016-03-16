@@ -209,9 +209,17 @@ public class IncidentController {
 	 * @return
 	 */
 	@RequestMapping(value = "/save", method = RequestMethod.POST)
-	public String save(@Valid @ModelAttribute("incident") Incident incident) {
+	public String save(@Valid @ModelAttribute("incident") Incident incident,HttpServletRequest request) {
 		if(incident.getId()==null)
 		{
+			if(!StringUtils.isEmpty(request.getParameter("fileids"))) {
+				String attachIds = request.getParameter("fileids");
+				
+				Set<Attachment> attachSet = attachService.getSetByIds(attachIds);
+				
+				incident.setAttachs(attachSet);
+			}
+			
 			incident.setStatus(PropertyFileUtil.getStringValue("syscode.incident.status.new"));
 			incident.setApplyTime(new Date());
 			incidentService.save(incident);

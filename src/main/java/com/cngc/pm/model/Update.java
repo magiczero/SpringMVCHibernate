@@ -29,6 +29,7 @@ public class Update implements Serializable{
 	private String processInstanceId;
 	private Date executionTime;
 	private Date createdTime;
+	private String source;
 	@Transient
 	private String userName;
 	@Transient
@@ -91,6 +92,13 @@ public class Update implements Serializable{
 	}
 	public void setCreatedTime(Date createdTime) {
 		this.createdTime = createdTime;
+	}
+	@Column(name="source")
+	public String getSource() {
+		return source;
+	}
+	public void setSource(String source) {
+		this.source = source;
 	}
 	@Formula(value="(SELECT a.NAME FROM sys_users a WHERE a.USERNAME=userid)")
 	public String getUserName() {

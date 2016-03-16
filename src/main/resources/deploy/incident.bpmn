@@ -41,7 +41,7 @@
     <sequenceFlow id="flow3" sourceRef="exclusivegateway1" targetRef="incidentConfirm">
       <conditionExpression xsi:type="tFormalExpression"><![CDATA[${firstResult=='true'}]]></conditionExpression>
     </sequenceFlow>
-    <userTask id="incidentClose" name="事件关闭" activiti:candidateGroups="WK_MANAGER">
+    <userTask id="incidentClose" name="事件关闭" activiti:candidateGroups="WK_MANAGER,WK_SERVICE_DESK">
       <extensionElements>
         <activiti:formProperty id="satisfaction" name="满意度" type="enum" expression="${incident.satisfaction}" writable="false">
           <activiti:value id="01" name="非常好"></activiti:value>

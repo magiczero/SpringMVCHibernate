@@ -163,6 +163,7 @@
 										<th width="100px">执行人</th>
                                 		<th width="130px">发起时间</th>
 										<th width="100px">升级时间</th>
+										<th width="100px">来源</th>
 										<th width="100px">流程步骤</th>
 										<th width="70px">操作</th>
 									</tr>
@@ -178,6 +179,7 @@
 										<td>${update.userName }</td>
 										<td><fmt:formatDate value="${update.createdTime }" pattern="yyyy-MM-dd HH:mm"></fmt:formatDate></td>
 										<td><fmt:formatDate value="${update.updateTime }" pattern="yyyy-MM-dd"></fmt:formatDate></td>
+										<td>${update.source }</td>
 										<td>
 											<c:if test="${not empty task }">
 												<a class="lnk_trace" href='#' pid="${update.processInstanceId }" pdid="${task.processDefinitionId }" title="点击查看流程图">

@@ -26,6 +26,7 @@
         </activiti:formProperty>
         <activiti:formProperty id="version" name="版本号" type="string" expression="${update.version}"></activiti:formProperty>
         <activiti:formProperty id="updateTime" name="升级时间" type="date" expression="${update.updateTime}" datePattern="yyyy-MM-dd"></activiti:formProperty>
+        <activiti:formProperty id="source" name="来源" type="string" expression="${update.source}"></activiti:formProperty>
       </extensionElements>
     </userTask>
     <sequenceFlow id="flow1" sourceRef="startUpdate" targetRef="taskDoUpdate"></sequenceFlow>

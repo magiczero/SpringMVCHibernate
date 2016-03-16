@@ -276,7 +276,7 @@
                                 <ul>
                                 	<c:forEach items="${group }" var="code">
                                 		<c:set var="id" value="${code.code }" />
-                                		<li>${code.codeName }
+                                		<li><a href="${contextPath }/change/list/${code.code}">${code.codeName }</a>
                                 		<span style="float:right;margin-right:20px;">
                                 			<c:if test="${empty count[id] }">
                                 			0

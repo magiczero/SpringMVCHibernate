@@ -8,6 +8,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
 
@@ -26,6 +27,7 @@ public class UpdateJpaEntity implements Serializable{
 	private String processInstanceId;
 	private Date executionTime;
 	private Date createdTime;
+	private String source;
 	
     @Id
     @Column(name="ID")
@@ -63,6 +65,13 @@ public class UpdateJpaEntity implements Serializable{
 	}
 	public void setUpdateTime(Date updateTime) {
 		this.updateTime = updateTime;
+	}
+	@Column(name="source")
+	public String getSource() {
+		return source;
+	}
+	public void setSource(String source) {
+		this.source = source;
 	}
 	@Column(name = "process_instance_id")
 	public String getProcessInstanceId() {

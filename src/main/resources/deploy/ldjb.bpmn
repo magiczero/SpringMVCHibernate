@@ -5,7 +5,7 @@
       <activiti:executionListener event="start" expression="${execution.setVariable('mytask', taskEntityManager.newTask(execution))}"></activiti:executionListener>
       <activiti:executionListener event="end" expression="${taskEntityManager.setTaskStatus(execution)}"></activiti:executionListener>
     </extensionElements>
-    <startEvent id="startLeaderTask" name="Start">
+    <startEvent id="startLeaderTask" name="Start" activiti:initiator="applyUserId">
       <extensionElements>
         <activiti:formProperty id="fromUser" name="交办领导" type="leader"></activiti:formProperty>
         <activiti:formProperty id="toUser" name="交办对象" type="user"></activiti:formProperty>
@@ -19,16 +19,25 @@
         <activiti:formProperty id="taskResult" name="工作结果" type="bigtext" expression="${mytask.taskResult}"></activiti:formProperty>
       </extensionElements>
     </userTask>
-    <sequenceFlow id="flow1" sourceRef="startLeaderTask" targetRef="taskDoLeaderTask"></sequenceFlow>
     <userTask id="taskCheckLeaderTask" name="领导交办任务审核中" activiti:candidateGroups="WK_MANAGER">
       <extensionElements>
+        <activiti:formProperty id="fromUser" name="交办领导" type="leader" expression="${mytask.fromUser}" writable="false"></activiti:formProperty>
+        <activiti:formProperty id="toUser" name="交办对象" type="user" expression="${mytask.toUser}"></activiti:formProperty>
         <activiti:formProperty id="taskTitle" name="任务内容" type="string" expression="${mytask.taskTitle}" writable="false"></activiti:formProperty>
-        <activiti:formProperty id="taskResult" name="工作结果" type="bigtext" expression="${mytask.taskResult}" writable="false"></activiti:formProperty>
+        <activiti:formProperty id="dueTime" name="到期时间" type="date" expression="${mytask.dueTime}" datePattern="yyyy-MM-dd" writable="false"></activiti:formProperty>
       </extensionElements>
     </userTask>
     <endEvent id="endLeaderTask" name="End"></endEvent>
-    <sequenceFlow id="flow2" sourceRef="taskCheckLeaderTask" targetRef="endLeaderTask"></sequenceFlow>
-    <sequenceFlow id="flow3" sourceRef="taskDoLeaderTask" targetRef="taskCheckLeaderTask"></sequenceFlow>
+    <exclusiveGateway id="exclusivegateway1" name="Exclusive Gateway"></exclusiveGateway>
+    <sequenceFlow id="flow1" sourceRef="startLeaderTask" targetRef="exclusivegateway1"></sequenceFlow>
+    <sequenceFlow id="flow2" sourceRef="exclusivegateway1" targetRef="taskDoLeaderTask">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${userManager.isGroup(execution,"WK_MANAGER")=='true'}]]></conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="flow3" sourceRef="exclusivegateway1" targetRef="taskCheckLeaderTask">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${userManager.isGroup(execution,"WK_MANAGER")=='false'}]]></conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="flow4" sourceRef="taskCheckLeaderTask" targetRef="taskDoLeaderTask"></sequenceFlow>
+    <sequenceFlow id="flow5" sourceRef="taskDoLeaderTask" targetRef="endLeaderTask"></sequenceFlow>
   </process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_LEADERTASK">
     <bpmndi:BPMNPlane bpmnElement="LEADERTASK" id="BPMNPlane_LEADERTASK">
@@ -36,25 +45,38 @@
         <omgdc:Bounds height="35.0" width="35.0" x="20.0" y="25.0"></omgdc:Bounds>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape bpmnElement="taskDoLeaderTask" id="BPMNShape_taskDoLeaderTask">
-        <omgdc:Bounds height="65.0" width="121.0" x="120.0" y="10.0"></omgdc:Bounds>
+        <omgdc:Bounds height="65.0" width="121.0" x="300.0" y="10.0"></omgdc:Bounds>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape bpmnElement="taskCheckLeaderTask" id="BPMNShape_taskCheckLeaderTask">
-        <omgdc:Bounds height="65.0" width="131.0" x="310.0" y="10.0"></omgdc:Bounds>
+        <omgdc:Bounds height="65.0" width="131.0" x="170.0" y="100.0"></omgdc:Bounds>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape bpmnElement="endLeaderTask" id="BPMNShape_endLeaderTask">
         <omgdc:Bounds height="35.0" width="35.0" x="510.0" y="25.0"></omgdc:Bounds>
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="exclusivegateway1" id="BPMNShape_exclusivegateway1">
+        <omgdc:Bounds height="40.0" width="40.0" x="100.0" y="23.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge bpmnElement="flow1" id="BPMNEdge_flow1">
         <omgdi:waypoint x="55.0" y="42.0"></omgdi:waypoint>
-        <omgdi:waypoint x="120.0" y="42.0"></omgdi:waypoint>
+        <omgdi:waypoint x="100.0" y="43.0"></omgdi:waypoint>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="flow2" id="BPMNEdge_flow2">
-        <omgdi:waypoint x="441.0" y="42.0"></omgdi:waypoint>
-        <omgdi:waypoint x="510.0" y="42.0"></omgdi:waypoint>
+        <omgdi:waypoint x="140.0" y="43.0"></omgdi:waypoint>
+        <omgdi:waypoint x="300.0" y="42.0"></omgdi:waypoint>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="flow3" id="BPMNEdge_flow3">
-        <omgdi:waypoint x="241.0" y="42.0"></omgdi:waypoint>
-        <omgdi:waypoint x="310.0" y="42.0"></omgdi:waypoint>
+        <omgdi:waypoint x="120.0" y="63.0"></omgdi:waypoint>
+        <omgdi:waypoint x="120.0" y="133.0"></omgdi:waypoint>
+        <omgdi:waypoint x="170.0" y="132.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow4" id="BPMNEdge_flow4">
+        <omgdi:waypoint x="301.0" y="132.0"></omgdi:waypoint>
+        <omgdi:waypoint x="360.0" y="133.0"></omgdi:waypoint>
+        <omgdi:waypoint x="360.0" y="75.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow5" id="BPMNEdge_flow5">
+        <omgdi:waypoint x="421.0" y="42.0"></omgdi:waypoint>
+        <omgdi:waypoint x="510.0" y="42.0"></omgdi:waypoint>
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>

@@ -199,6 +199,19 @@
                             <li>
                                 <div class="title">报修时间:</div>
                                 <div class="text"><fmt:formatDate value="${incident.applyTime }" pattern="yyyy-MM-dd HH:mm:ss" /></div>
+                            </li>
+                            <li>
+                                <div class="title">附件:</div>
+                                <div class="text">
+                                	<c:if test="${empty incident.attachs}">
+                                	-
+                                	</c:if>
+                                	<c:if test="${not empty incident.attachs}">
+                                	<c:forEach items="${incident.attachs}" var="attach">
+										<a href="${contextPath }/attachment/download/${attach.id}">${attach.name }</a><br/>
+									</c:forEach>
+									</c:if>
+								</div>
                             </li>   
                             </ul>                                                      
                         </div>                     

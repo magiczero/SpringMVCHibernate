@@ -13,13 +13,13 @@
         <activiti:formProperty id="dueTime" name="到期时间" type="date" datePattern="yyyy-MM-dd"></activiti:formProperty>
       </extensionElements>
     </startEvent>
-    <userTask id="taskDoLeaderTask" name="领导交办任务执行中" activiti:assignee="${mytask.toUser}">
+    <userTask id="taskDoLeaderTask" name="任务执行中" activiti:assignee="${mytask.toUser}">
       <extensionElements>
         <activiti:formProperty id="taskTitle" name="任务内容" type="string" expression="${mytask.taskTitle}" writable="false"></activiti:formProperty>
         <activiti:formProperty id="taskResult" name="工作结果" type="bigtext" expression="${mytask.taskResult}"></activiti:formProperty>
       </extensionElements>
     </userTask>
-    <userTask id="taskCheckLeaderTask" name="领导交办任务审核中" activiti:candidateGroups="WK_MANAGER">
+    <userTask id="taskCheckLeaderTask" name="任务审核中" activiti:candidateGroups="WK_MANAGER">
       <extensionElements>
         <activiti:formProperty id="fromUser" name="交办领导" type="leader" expression="${mytask.fromUser}" writable="false"></activiti:formProperty>
         <activiti:formProperty id="toUser" name="交办对象" type="user" expression="${mytask.toUser}"></activiti:formProperty>

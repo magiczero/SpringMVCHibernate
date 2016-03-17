@@ -213,6 +213,49 @@ public class ChangeController {
 
 		return "change/list";
 	}
+	
+	@RequestMapping(value = "/list/{status}", method = RequestMethod.GET)
+	public String list(@PathVariable("status") String status, Model model, Authentication authentication) {
+		List<Task> tasks = null;
+		List<Task> mytasks = null;
+		List<Change> changes = null;
+		Map<String, Task> taskmap = null;
+		Map<String, Task> mytaskmap = new HashMap<String, Task>();
+
+		// 我的任务
+		mytasks = taskService.createTaskQuery()
+				.processDefinitionKey(PropertyFileUtil.getStringValue("workflow.processkey.change"))
+				.taskCandidateOrAssigned(userUtil.getUserId(authentication)).active().list();
+		for (Task task : mytasks)
+			mytaskmap.put(task.getProcessInstanceId(), task);
+
+		// 所有指定状态的变更信息
+		changes = changeService.getByStatus(status).getResult();
+		if (userUtil.IsWorkflowManager(authentication)) // 流程管理者可查看所有变更任务信息
+		{
+			// 所有任务
+			tasks = taskService.createTaskQuery()
+					.processDefinitionKey(PropertyFileUtil.getStringValue("workflow.processkey.change")).active()
+					.list();
+			taskmap = new HashMap<String, Task>();
+			for (Task task : tasks)
+				taskmap.put(task.getProcessInstanceId(), task);
+		}
+		if (userUtil.IsServiceDesk(authentication)) {
+			// 服务台用户拥有修改权限
+			model.addAttribute("ROLE_MODIFY", true);
+		}
+		model.addAttribute("tasks", taskmap);
+		model.addAttribute("mytasks", mytaskmap);
+		model.addAttribute("list", changes);
+		model.addAttribute("status",
+				syscodeService.getCode(status, PropertyFileUtil.getStringValue("syscode.change.status")));
+		model.addAttribute("count", changeService.getCountByStatus());
+		model.addAttribute("group",
+				syscodeService.getAllByType(PropertyFileUtil.getStringValue("syscode.change.status")).getResult());
+
+		return "change/list";
+	}
 
 	@RequestMapping(value = "/mydealedlist", method = RequestMethod.GET)
 	public String myDealedList(Model model, Authentication authentication) {
@@ -241,19 +284,6 @@ public class ChangeController {
 		return "change/mydealedlist";
 	}
 	
-	@RequestMapping(value = "/list/{status}", method = RequestMethod.GET)
-	public String list(@PathVariable("status") String status, Model model) {
-		model.addAttribute("list", changeService.getByStatus(status).getResult());
-		model.addAttribute("runtime", runtimeService);
-		model.addAttribute("res", repositoryService);
-		model.addAttribute("count", changeService.getCountByStatus());
-		model.addAttribute("status",
-				syscodeService.getCode(status, PropertyFileUtil.getStringValue("syscode.change.status")));
-		model.addAttribute("group",
-				syscodeService.getAllByType(PropertyFileUtil.getStringValue("syscode.change.status")).getResult());
-		return "change/list";
-	}
-
 	@RequestMapping(value = "/stats", method = RequestMethod.GET)
 	public String stats(Model model, HttpServletRequest request) {
 		String startTime = request.getParameter("startTime");

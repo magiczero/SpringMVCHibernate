@@ -158,7 +158,14 @@
                     <div class="col-md-10">                    
                         <div class="head clearfix">
                             <div class="isw-grid"></div>
-                            <h1>待处理事件</h1>  
+                            <h1>
+                            	<c:if test="${not empty status }">
+                            		[ ${status.codeName } ] 事件
+                            	</c:if>
+                            	<c:if test="${empty status }">
+                            	待处理事件
+                            	</c:if>
+                            </h1>  
 
                             <ul class="buttons">
                                 <li>
@@ -181,12 +188,12 @@
                                     <tr>
                                     	<th width="70px">流水号</th>
                                         <th>摘要</th>
-                                        <th width="100px">申请人</th>
-                                        <th width="100px">受派者</th>
-                                        <th width="140px">流程步骤</th>
+                                        <th width="70px">申请人</th>
+                                        <th width="70px">受派者</th>
+                                        <th width="150px">流程步骤</th>
                                         <th width="120px">申请时间</th>
                                         <th width="70px">状态</th> 
-                                        <th width="70px">操作</th>                                    
+                                        <th width="110px">操作</th>                                    
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -197,7 +204,7 @@
 	                                    	<td>${incident.processInstanceId }</td>
 	                                        <td>
 	                                        	<span class="label label-warning tipb" title="优先级">${incident.priorityName }</span>
-	                                        	${incident.abs }
+	                                        	<a href="${contextPath }/incident/view/${incident.id}" title="查看详情">${incident.abs }</a>
 	                                        </td>
 	                                        <td>${incident.applyUserName }</td>
 	                                        <td>${incident.currentDelegateUserName }</td>
@@ -216,7 +223,7 @@
 	                                        		<a href="${contextPath }/incident/deal/${incident.id}/${task.id}"><span class="glyphicon glyphicon-edit"></span> 办理</a>
 	                                        	</c:if>
 	                                        	<c:if test="${not empty ROLE_MODIFY }">
-	                                        		<a href="${contextPath }/incident/update/${incident.id}"><span class="glyphicon glyphicon-edit"></span> 修改</a>
+	                                        		<a href="${contextPath }/incident/update/${incident.id}" title="修改"><span class="glyphicon glyphicon-pencil"></span> 修改</a>
 	                                        	</c:if>
 	                                        </td>
 	                                    </tr>
@@ -228,7 +235,7 @@
                                     			<td>${incident.processInstanceId }</td>
 		                                        <td>
 		                                        	<span class="label label-warning tipb" title="优先级">${incident.priorityName }</span>
-		                                        	${incident.abs }
+		                                        	<a href="${contextPath }/incident/view/${incident.id}" title="查看详情">${incident.abs }</a>
 		                                        </td>
 		                                        <td>${incident.applyUserName }</td>
 		                                        <td>${incident.currentDelegateUserName }</td>
@@ -241,9 +248,8 @@
 		                                        <td>${incident.statusName }</td>
 		                                        <td>
 			                                        <c:if test="${not empty ROLE_MODIFY }">
-		                                        		<a href="${contextPath }/incident/update/${incident.id}"><span class="glyphicon glyphicon-edit"></span> 修改</a>
+		                                        		<a href="${contextPath }/incident/update/${incident.id}"><span class="glyphicon glyphicon-pencil"></span> 修改</a>
 		                                        	</c:if>
-		                                        	<a href="${contextPath }/incident/view/${incident.id}"><span class="glyphicon glyphicon-search"></span> 查看</a>
 		                                        </td>
 		                                    </tr>
                                     	</c:if>

@@ -10,7 +10,7 @@
         <activiti:formProperty id="user" name="分配工程师" type="user"></activiti:formProperty>
       </extensionElements>
     </startEvent>
-    <userTask id="taskDoInspection" name="巡检任务执行中" activiti:assignee="${inspection.executionUser}">
+    <userTask id="taskDoInspection" name="巡检执行中" activiti:assignee="${inspection.executionUser}">
       <extensionElements>
         <activiti:formProperty id="template" name="巡检模板" type="enum" expression="${inspection.template}">
           <activiti:value id="INSPECTION" name="日常巡检模板"></activiti:value>

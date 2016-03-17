@@ -184,7 +184,7 @@
 										<th width="120px">完成时间</th>
 										<th width="120px">流程步骤</th>
 										<th width="60px">结果</th>
-										<th width="80px">事件编号</th>
+										<th width="90px">事件编号</th>
 										<th width="70px">操作</th>
 									</tr>
                                 </thead>

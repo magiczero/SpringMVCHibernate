@@ -16,7 +16,7 @@
         <activiti:formProperty id="user" name="分配工程师" type="user"></activiti:formProperty>
       </extensionElements>
     </startEvent>
-    <userTask id="taskDoSecJob" name="三员工作执行中" activiti:assignee="${secjob.userId}">
+    <userTask id="taskDoSecJob" name="工作执行中" activiti:assignee="${secjob.userId}">
       <extensionElements>
         <activiti:formProperty id="type" name="工作名称" type="enum" expression="${secjob.type}" writable="false">
           <activiti:value id="01" name="审计报告"></activiti:value>

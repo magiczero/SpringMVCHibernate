@@ -83,12 +83,8 @@
     
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/scrollup/jquery.scrollUp.min.js'></script>
     
-    <script type='text/javascript' src='${contextPath }/resources/js/pm-common.js'></script>
-    <!-- <script type='text/javascript' src='${contextPath }/resources/js/cookies.js'></script>
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins.js'></script>
-    <script type='text/javascript' src='${contextPath }/resources/js/settings.js'></script> --> 
-    
-    <script type='text/javascript' src='${contextPath }/resources/js/pm-workflow.js'></script>
+    <script type='text/javascript' src='${contextPath }/resources/js/pm-common.js'></script>   
+    <!-- <script type='text/javascript' src='${contextPath }/resources/js/pm-workflow.js'></script> -->
     <script type='text/javascript' src='${contextPath }/resources/js/pm-knowledge.js'></script>
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
@@ -110,42 +106,20 @@
                	if(!confirm("确定要执行该操作?"))
                		return false;
             });
-            //pm_knowledge_initdialog();
-            //$(".wrapper").append("<div class='dialog' id='b_popup_knowledge' style='display: none' title='知识库'></div>");
-	//$("#b_popup_knowledge").html("");
-	//document.getElementById("b_popup_knowledge").innerHTML="adfd";
-	//$("#b_popup_knowledge").html("<iframe src='${contextPath}/knowledge/searchdialog' width='100%' height='500' frameborder='0'/>");
-	$("#b_popup_knowledge").dialog({
-        autoOpen: false,
-        width: 1100,
-        buttons: { "关闭": function () { $(this).dialog("close") } },
-        open: function () { $("#scroll_knowledge").mCustomScrollbar(); }
-    });
-    $("#lnk_knowledge").click(function () {
-    	$("#b_popup_knowledge").dialog('open');
-    });
-    $("#b_popup_trace").dialog({
-    	autoOpen: false,
-    	width: 950,
-    	height: 350,
-    	buttons: { "关闭": function () { $(this).dialog("close") } }
-   });
-    
-    $(".lnk_trace").click(function () {
-    	var src= ctx+ '/diagram-viewer/index.html?processDefinitionId=' 
-		+ $(this).attr('pdid') + '&processInstanceId=' + $(this).attr('pid');
-    	$("#trace_content").html("<iframe src='"+ src +"' width='100%' height='265'/>");
-    	$("#b_popup_trace").dialog('open');
-    });
-    
+            // 流程跟踪
+            $("#b_popup_trace").dialog({
+                autoOpen: false,
+                width: 800,
+                height: 400,
+                buttons: { "关闭": function () { $(this).dialog("close") } }
+            });
+            $(".lnk_trace").click(function () {
+            	var src= ctx+ '/diagram-viewer/index.html?processDefinitionId=' 
+    			+ $(this).attr('pdid') + '&processInstanceId=' + $(this).attr('pid');
+            	$("#trace_content").html("<iframe src='"+ src +"' width='100%' height='265'/>");
+            	$("#b_popup_trace").dialog('open');
+            });    
         });
-        
-        function open_trace(pid, pdid) {
-        	document.getElementById("trace_frame").src=ctx+ '/diagram-viewer/index.html?processDefinitionId=' 
-    	   	+ pdid + '&processInstanceId=' + pid;
-        	
-        	$("#b_popup_trace").dialog('open');
-        }
     </script>
 </head>
 <body>
@@ -306,7 +280,7 @@
                             <div>
                                 <ul>
                                     <li><a href="${contextPath }/incident/add">创建新事件</a></li>
-                                    <li><a href="#" id="lnk_knowledge">知识库</a></li>
+                                    <!-- <li><a href="#" id="lnk_knowledge">知识库</a></li>-->
                                 </ul>                                                
                             </div>                     
 
@@ -318,13 +292,11 @@
             <!--workplace end-->
         </div> 
     </div>
-   <div class="dialog" id="b_popup_knowledge" style="display: none;" title="知识库"><iframe src="${contextPath}/knowledge/searchdialog" width="100%" height="500" frameborder="0"></iframe></div>
-    <div class="dialog" id="b_popup_trace" style="display: none;" title="流程跟踪"><div class="block dialog_block  uploads" id="trace_content"><iframe id="trace_frame" src="" width="100%" height="265"></iframe></div></div> 
-    <%--<div class="dialog" id="b_popup_trace" style="display: none;" title="流程跟踪">
-	    	<div class="block dialog_block  uploads" id="trace_content">
-			                                
-			</div>
-    	</div> --%>
+    <!-- 流程跟踪 -->
+   	<div class="dialog" id="b_popup_trace" style="display: none;" title="流程跟踪">
+    	<div class="block dialog_block  uploads" id="trace_content">
+		</div>
+   	</div>
 </body>
 
 </html>

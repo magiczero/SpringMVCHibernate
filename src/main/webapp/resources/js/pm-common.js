@@ -133,14 +133,14 @@ $(document).ready(function() {
     if($(".row-form,.row,.dialog,.loginBox,.block,.block-fluid").find("input:checkbox, input:radio").length>0) 
     	$(".row-form,.row,.dialog,.loginBox,.block,.block-fluid").find("input:checkbox, input:radio").not(".skip, input.ibtn").uniform();
     // CUSTOM SCROLLING
-    //if($(".scroll").length>0)
-    	//$(".scroll").mCustomScrollbar();
+    if( $( document).find(".scroll").length>0 )
+    	$(document).find(".scroll").mCustomScrollbar();
     // ACCORDION 
-    if($(".accordion"))
-    	$(".accordion").accordion();
+    if($(document).find(".accordion").length>0 )
+    	$(document).find(".accordion").accordion();
     // TABS
-    //if($(".tabs").length>0)
-    //	$( ".tabs" ).tabs();
+    if( $(document).find(".tabs").length>0 )
+    	$(document).find(".tabs").tabs();
     //date
     $.datepicker.regional['zh-CN'] = {  
 	        closeText: '关闭',  

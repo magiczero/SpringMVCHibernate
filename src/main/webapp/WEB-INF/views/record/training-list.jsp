@@ -133,12 +133,12 @@
                             <table class="table" id="eventTable">
                                 <thead>
                                 	<tr>
-										<th>培训人</th>
-										<th width="200px">培训单位</th>
+										<th width="100px">培训人</th>
+										<th>培训单位</th>
 										<th width="100px">证书</th>
 										<th width="100px">证书编号</th>
 										<th width="100px">有效期</th>
-										<th width="70px">操作</th>
+										<th width="80px">操作</th>
 									</tr>
                                 </thead>
                                 <tbody>

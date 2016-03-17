@@ -80,7 +80,7 @@
                 	"oLanguage": {
              			"sUrl": "${contextPath}/resources/json/Chinese.json"
          			},
-                	"aaSorting":[[3,'desc']]
+                	"aaSorting":[[4,'desc']]
                 });
                 $(".header").load("${contextPath}/header?t="+pm_random());
                 $(".menu").load("${contextPath}/menu?t="+pm_random(), function () { $(".navigation > li:eq(0)").addClass("active"); });
@@ -151,8 +151,6 @@
                                 <li>
                                     <a href="#" class="isw-settings tipl" title="操作 "></a>
                                     <ul class="dd-list">
-                                    	<li><a href="#deployForm" role="button" data-toggle="modal"><span class="isw-ok"></span> 部署流程</a></li>
-                                        <li><a href="javascript:void(0);" id="delBtn"><span class="isw-list"></span> 删除</a></li>
                                         <li><a href="#"><span class="isw-refresh"></span> 刷新</a></li>
                                     </ul>
                                 </li>
@@ -162,7 +160,8 @@
                             <table class="table" id="eventTable">
                                 <thead>
 									<tr>
-										<th width="100px">任务ID</th>
+										<th width="60px">流水号</th>
+										<th width="60px">任务号</th>
 										<th>流程名称</th>
 										<th width="150px">任务名称</th>
 										<th width="150px">创建时间</th>
@@ -173,39 +172,40 @@
 								<c:forEach items="${tasks }" var="task">
 								<c:set var="pdid" value="${task.processDefinitionId }" />
 								<tr>
+									<td>${task.processInstanceId }</td>
 									<td>${task.id }</td>
 									<td><%=ProcessDefinitionCache.getProcessName(pageContext.getAttribute("pdid").toString()) %></td>
 									<td><a class="lnk_trace" href='#' pid="${task.processInstanceId }" pdid="${task.processDefinitionId}" title="点击查看流程图">${task.name }</a></td>
 									<td><fmt:formatDate value="${task.createTime }" pattern="yyyy/MM/dd HH:mm:ss" /></td>
 									<td>
 										<c:if test="${empty task.assignee }">
-											<a class="claim confirm" href="${contextPath }/workflow/task/claim/${task.id}">签收</a>
+											<a class="claim confirm" href="${contextPath }/workflow/task/claim/${task.id}"><span class="glyphicon glyphicon-edit"></span> 签收</a>
 										</c:if>
 										<c:if test="${not empty task.assignee }">
 											<c:set var="processName" value="${task.processDefinitionId.substring(0,task.processDefinitionId.indexOf(':')) }" />
 											<c:if test="${processName=='INCIDENT' }">
-												<a href="${contextPath }/incident/list" >控制台</a>
+												<a href="${contextPath }/incident/list" ><span class="glyphicon glyphicon-th-list"></span> 控制台</a>
 											</c:if>
 											<c:if test="${processName=='CHANGE' }">
-												<a href="${contextPath }/change/list" >控制台</a>
+												<a href="${contextPath }/change/list" ><span class="glyphicon glyphicon-th-list"></span> 控制台</a>
 											</c:if>
 											<c:if test="${processName=='INSPECTION' }">
-												<a href="${contextPath }/record/inspection" >控制台</a>
+												<a href="${contextPath }/record/inspection" ><span class="glyphicon glyphicon-th-list"></span> 控制台</a>
 											</c:if>
 											<c:if test="${processName=='LEADERTASK' }">
-												<a href="${contextPath }/leadertask/list" >控制台</a>
+												<a href="${contextPath }/leadertask/list" ><span class="glyphicon glyphicon-th-list"></span> 控制台</a>
 											</c:if>
 											<c:if test="${processName=='UPDATE' }">
-												<a href="${contextPath }/record/update" >控制台</a>
+												<a href="${contextPath }/record/update" ><span class="glyphicon glyphicon-th-list"></span> 控制台</a>
 											</c:if>
 											<c:if test="${processName=='SECJOB' }">
-												<a href="${contextPath }/record/secjob" >控制台</a>
+												<a href="${contextPath }/record/secjob" ><span class="glyphicon glyphicon-th-list"></span> 控制台</a>
 											</c:if>
 											<c:if test="${processName=='KNOWLEDGE' }">
-												<a href="${contextPath }/knowledge/list" >控制台</a>
+												<a href="${contextPath }/knowledge/list" ><span class="glyphicon glyphicon-th-list"></span> 控制台</a>
 											</c:if>
 											<c:if test="${processName=='UPDATE' || processName=='LEADERTASK' || processName=='SECJOB' || processName=='KNOWLEDGE' }">
-												<a onclick="act_form_openTaskDialog('${task.name }','${task.id}','/workflow/task/mytask')"  href="#">快速办理</a>
+												<a onclick="act_form_openTaskDialog('${task.name }','${task.id}','/workflow/task/mytask')"  href="#"><span class="glyphicon glyphicon-edit"></span> 快速办理</a>
 											</c:if>
 										</c:if>
 									</td>

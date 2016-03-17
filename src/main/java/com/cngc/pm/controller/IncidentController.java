@@ -300,6 +300,48 @@ public class IncidentController {
 				syscodeService.getAllByType(PropertyFileUtil.getStringValue("syscode.incident.status")).getResult());
 		return "incident/list";
 	}
+	
+	@RequestMapping(value = "/list/{status}", method = RequestMethod.GET)
+	public String list(@PathVariable("status") String status, Model model,Authentication authentication) {
+		List<Task> tasks = null;
+		List<Task> mytasks = null;
+		List<Incident> incidents = null;
+		Map<String, Task> taskmap = null;
+		Map<String, Task> mytaskmap = new HashMap<String, Task>();
+
+		// 我的任务
+		mytasks = taskService.createTaskQuery()
+				.processDefinitionKey(PropertyFileUtil.getStringValue("workflow.processkey.incident"))
+				.taskCandidateOrAssigned(userUtil.getUserId(authentication)).active().list();
+		for (Task task : mytasks)
+			mytaskmap.put(task.getProcessInstanceId(), task);
+
+		// 所有指定状态的事件信息
+		incidents = incidentService.getByStatus(status).getResult();
+		if (userUtil.IsWorkflowManager(authentication)) // 流程管理者可查看所有事件任务信息
+		{
+			// 所有任务
+			tasks = taskService.createTaskQuery()
+					.processDefinitionKey(PropertyFileUtil.getStringValue("workflow.processkey.incident")).active()
+					.list();
+			taskmap = new HashMap<String, Task>();
+			for (Task task : tasks)
+				taskmap.put(task.getProcessInstanceId(), task);
+		}
+		if (userUtil.IsServiceDesk(authentication)) {
+			// 服务台用户拥有修改权限
+			model.addAttribute("ROLE_MODIFY", true);
+		}
+		model.addAttribute("tasks", taskmap);
+		model.addAttribute("mytasks", mytaskmap);
+		model.addAttribute("list", incidents);
+		model.addAttribute("status", syscodeService.getCode(status, PropertyFileUtil.getStringValue("syscode.incident.status")));
+		model.addAttribute("count", incidentService.getCountByStatus());
+		model.addAttribute("group",
+				syscodeService.getAllByType(PropertyFileUtil.getStringValue("syscode.incident.status")).getResult());
+		
+		return "incident/list";
+	}
 
 	@RequestMapping(value = "/mydealedlist", method = RequestMethod.GET)
 	public String myDealedList(Model model, Authentication authentication) {
@@ -379,19 +421,6 @@ public class IncidentController {
 				syscodeService.getParentCodeByType(PropertyFileUtil.getStringValue("syscode.incident.category"))
 						.getResult());
 		return "incident/stats";
-	}
-
-	@RequestMapping(value = "/list/{status}", method = RequestMethod.GET)
-	public String list(@PathVariable("status") String status, Model model) {
-		model.addAttribute("list", incidentService.getByStatus(status).getResult());
-		model.addAttribute("runtime", runtimeService);
-		model.addAttribute("res", repositoryService);
-		model.addAttribute("count", incidentService.getCountByStatus());
-		model.addAttribute("status",
-				syscodeService.getCode(status, PropertyFileUtil.getStringValue("syscode.incident.status")));
-		model.addAttribute("group",
-				syscodeService.getAllByType(PropertyFileUtil.getStringValue("syscode.incident.status")).getResult());
-		return "incident/list";
 	}
 
 	/**

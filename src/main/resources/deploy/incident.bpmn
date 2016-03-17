@@ -10,7 +10,7 @@
         <activiti:formProperty id="id" name="标识符" type="long" required="true"></activiti:formProperty>
       </extensionElements>
     </startEvent>
-    <userTask id="incidentClassify" name="事件分类与初步支持" activiti:candidateGroups="WK_SERVICE_DESK">
+    <userTask id="incidentClassify" name="事件初步支持" activiti:candidateGroups="WK_SERVICE_DESK">
       <extensionElements>
         <activiti:formProperty id="currentDelegateGroup" name="受派组" type="string" expression="${incident.currentDelegateGroup}"></activiti:formProperty>
         <activiti:formProperty id="currentDelegateUser" name="受派人" type="user" expression="${incident.currentDelegateUser}"></activiti:formProperty>

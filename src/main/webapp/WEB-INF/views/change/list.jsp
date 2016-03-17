@@ -151,10 +151,17 @@
                     <h4>错误!</h4>请至少选择一项
                 </div> 
                 <div class="row">
-                    <div class="col-md-9">                    
+                    <div class="col-md-10">                    
                         <div class="head clearfix">
                             <div class="isw-grid"></div>
-                            <h1>待处理变更</h1>  
+                            <h1>
+                            	<c:if test="${not empty status }">
+                            		[ ${status.codeName } ] 变更
+                            	</c:if>
+                            	<c:if test="${empty status }">
+                            	待处理变更
+                            	</c:if>
+                            </h1>  
 
                             <ul class="buttons">
                                 <li>
@@ -181,7 +188,7 @@
                                         <th width="120px">流程步骤</th>
                                         <th width="120px">申请日期</th>
                                         <th width="120px">状态</th>  
-                                        <th width="70px">操作</th>                                  
+                                        <th width="120px">操作</th>                                  
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -192,7 +199,7 @@
 	                                	 	<td>${change.processInstanceId }</td>
 	                                        <td>
 		                                        <span class="label label-warning tipb" title="优先级">${change.priorityName }</span>
-		                                        ${change.description}
+		                                        <a href="${contextPath }/change/view/${change.id}" title="查看详情">${change.description}</a>
 	                                        </td>
 	                                         <td>${change.applyUserName }</td>
 	                                        <td>
@@ -210,7 +217,7 @@
 	                                        		<a href="${contextPath }/change/deal/${change.id}/${task.id}"><span class="glyphicon glyphicon-edit"></span> 办理</a>
 	                                        	</c:if>
 	                                        	<c:if test="${not empty ROLE_MODIFY }">
-		                                        	<a href="${contextPath }/change/update/${change.id}"><span class="glyphicon glyphicon-edit"></span> 修改</a>
+		                                        	<a href="${contextPath }/change/update/${change.id}"><span class="glyphicon glyphicon-pencil"></span> 修改</a>
 		                                        </c:if>
 	                                        </td>
 	                                    </tr>
@@ -222,7 +229,7 @@
 	                                	 	<td>${change.processInstanceId }</td>
 	                                        <td>
 		                                        <span class="label label-warning tipb" title="优先级">${change.priorityName }</span>
-		                                        ${change.description}
+		                                        <a href="${contextPath }/change/view/${change.id}" title="查看详情">${change.description}</a>
 	                                        </td>
 	                                         <td>${change.applyUserName }</td>
 	                                        <td>
@@ -234,9 +241,8 @@
 	                                        <td>${change.statusName }</td>
 	                                        <td>
 	                                        	<c:if test="${not empty ROLE_MODIFY }">
-		                                        	<a href="${contextPath }/change/update/${change.id}"><span class="glyphicon glyphicon-edit"></span> 修改</a>
+		                                        	<a href="${contextPath }/change/update/${change.id}"><span class="glyphicon glyphicon-pencil"></span> 修改</a>
 		                                        </c:if>
-	                                        	<a href="${contextPath }/change/view/${change.id}"><span class="glyphicon glyphicon-search"></span> 查看</a>
 	                                        </td>
 	                                    </tr>
 	                                    </c:if>
@@ -248,7 +254,7 @@
                         </div>
                     </div>  
 
-                    <div class="col-md-3">
+                    <div class="col-md-2">
                         <div class="head clearfix">
                             <div class="isw-list"></div>
                             <h1>操作</h1>

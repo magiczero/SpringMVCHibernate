@@ -137,12 +137,12 @@
                             </div>
                             <form action="${contextPath }/leadertask/list">
 	                            <div class="row-form clearfix">
-	                                <div class="col-md-4">开始时间</div>
-	                                <div class="col-md-8"><input type="text" name="startTime" class="dateISO"/></div>
+	                                <div class="col-md-5">开始时间</div>
+	                                <div class="col-md-7"><input type="text" name="startTime" class="dateISO"/></div>
 	                            </div> 
 	                             <div class="row-form clearfix">
-	                                <div class="col-md-4">截至时间</div>
-	                                <div class="col-md-8"><input type="text" name="endTime" class="dateISO"/></div>
+	                                <div class="col-md-5">截至时间</div>
+	                                <div class="col-md-7"><input type="text" name="endTime" class="dateISO"/></div>
 	                            </div> 
 	                            <div class="footer tac">
 	                            	<button class="btn btn-primary"> 查 询 </button>
@@ -172,12 +172,12 @@
                             <table class="table" id="eventTable">
                                 <thead>
                                 	<tr>
-                                		<th width="60px">流程号</th>
-                                		<th width="120px">交办领导</th>
+                                		<th width="70px">流程号</th>
+                                		<th width="90px">交办领导</th>
 										<th >任务内容</th>
-										<th width="100px">受派人</th>
-										<th width="100px">提交时间</th>
-										<th width="100px">到期时间</th>
+										<th width="90px">受派人</th>
+										<th width="110px">提交时间</th>
+										<th width="110px">到期时间</th>
 										<th width="130px">状态</th>
 										<th width="150px">操作</th>
 									</tr>

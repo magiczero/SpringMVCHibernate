@@ -24,8 +24,7 @@
     <link href="${contextPath }/resources/js/plugins/select2/select2.css" rel="stylesheet" type="text/css" />
     <link href="${contextPath }/resources/css/uploadify.css" rel="stylesheet" type="text/css" />
     <link href="${contextPath }/resources/css/validation.css" rel="stylesheet" type="text/css" />
-    <link href="${contextPath }/resources/css/tree-ie8.css" rel="stylesheet" type="text/css" />
-    <link rel='stylesheet' type='text/css' href='${contextPath }/resources/css/bootstrap-treeview.css' media='print' />
+    <link href='${contextPath }/resources/js/plugins/jstree/jquery.treeview.css' rel="stylesheet" type="text/css" />
     <!--[if lt IE 8]>
         <link href="${contextPath }/resources/css/ie7.css" rel="stylesheet" type="text/css" />
     <![endif]-->    
@@ -43,10 +42,8 @@
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/pnotify/jquery.pnotify.min.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/ibutton/jquery.ibutton.min.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/scrollup/jquery.scrollUp.min.js'></script>
-    <%-- <script type='text/javascript' src='${contextPath }/resources/js/plugins/treeview/bootstrap-treeview.min.js'></script> //IE8+ --%>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/uploadify/jquery.uploadify.min.js'></script>
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/jtree/jtree.js'></script>
-    
+    <script type='text/javascript' src='${contextPath }/resources/js/plugins/jstree/jquery.treeview.js'></script>
       
     <script type='text/javascript' src='${contextPath }/resources/js/pm-common.js'></script>
     <%--<script type='text/javascript' src='${contextPath }/resources/js/pm-select.js'></script> //IE8+    --%>
@@ -115,7 +112,10 @@
                     	liStr += "</li>";
                     	$("#treeview").append(liStr);
 		    		});
-		    		$("#treeview").treed();
+		    		$("#treeview").treeview({
+	            		collapsed: true,
+	            		unique: true
+	            	});
 		    		$("#b_popup_select").dialog('open');
 		    	});
             });
@@ -175,7 +175,10 @@
                     	liStr += "</ul></li>";
                     	$("#grouptree").append(liStr);
 		    		});
-		    		$("#grouptree").treed();
+		    		$("#grouptree").treeview({
+	            		collapsed: true,
+	            		unique: true
+	            	});
 		    		$("#b_popup_group").dialog('open');
 		    		
 		    	});
@@ -198,12 +201,13 @@
                 'buttonText': '选择文件……',
 		        'uploader' : '${contextPath}/attachment/upload',
 		        'removeCompleted' : false,
+		        'multi': true,
 		        // Put your options here
 		        'onUploadSuccess': function (file, data, response) {
-		        	//console.log(data);
-                    $('#' + file.id).find('.data').html(' 上传完毕');
-                    var fileids = document.getElementById("fileids").value + '';
-                    document.getElementById("fileids").value = fileids + data;
+		        	console.log(data);
+	                $('#' + file.id).find('.data').html(' 上传完毕');
+	                var fileids = document.getElementById("fileids").value + '';
+	                document.getElementById("fileids").value = fileids + data;
 		        }
 		    });
 
@@ -285,7 +289,7 @@
 	                            <div class="row-form clearfix">
 	                                <div class="col-md-1"><label for="user">申请人:</label></div>
 	                                <div class="col-md-3">
-	                                <input type="text" id="user_name" name="user_name" class="validate[required]">
+	                                <input type="text" id="user_name" readonly="readonly" name="user_name" class="validate[required]">
 	                                <!--<form:select path="applyUser" items="${users }" itemLabel="name" itemValue="username" cssStyle="width:100%"></form:select>--></div>
 	                                <div class="col-md-1"><form:label path="phoneNumber">电话:</form:label></div>
 	                                <div class="col-md-3"><form:input path="phoneNumber"></form:input></div>
@@ -293,7 +297,7 @@
 
 	                            <div class="row-form clearfix">
 	                           	 	<div class="col-md-1"><form:label path="category">分类:</form:label></div>
-	                                <div class="col-md-3"><form:input path="category" class="validate[required,maxSize[50]]"></form:input></div>
+	                                <div class="col-md-3"><form:input path="category" readonly="true" class="validate[required,maxSize[50]]"></form:input></div>
 	                            	<div class="col-md-1"><form:label path="type">类型:</form:label></div>
 	                            	<div class="col-md-3"><form:select path="type" items="${type }" itemLabel="codeName" itemValue="code"></form:select></div>
 	                            	<div class="col-md-1"><form:label path="source">来源:</form:label></div>

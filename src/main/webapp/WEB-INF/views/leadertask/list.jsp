@@ -172,10 +172,10 @@
                             <table class="table" id="eventTable">
                                 <thead>
                                 	<tr>
-                                		<th width="70px">流程号</th>
-                                		<th width="90px">交办领导</th>
+                                		<th width="90px">流程号</th>
+                                		<th width="105px">交办领导</th>
 										<th >任务内容</th>
-										<th width="90px">受派人</th>
+										<th width="100px">受派人</th>
 										<th width="110px">提交时间</th>
 										<th width="110px">到期时间</th>
 										<th width="130px">状态</th>

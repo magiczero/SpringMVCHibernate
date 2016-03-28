@@ -22,6 +22,7 @@ import com.cngc.pm.model.Attachment;
 import com.cngc.pm.model.Document;
 import com.cngc.pm.model.Resources;
 import com.cngc.pm.model.Style;
+import com.cngc.pm.model.SysUser;
 import com.cngc.pm.service.DocumentService;
 import com.googlecode.genericdao.search.Filter;
 import com.googlecode.genericdao.search.Search;
@@ -327,15 +328,54 @@ public class DocumentServiceImpl implements DocumentService {
 			 idss[i] = Long.valueOf(str);
 		}
 		
+		List<Document> list = new ArrayList<>();
+		
 		for(Long k : idss) {
 			Document doc = docDao.find(k);
 			
+			if(doc.getItemSet().size() > 0) {
+				return false;
+			}
+			
+			list.add(doc);
+			
+		}
+		
+		for(Document doc : list) {
 			doc.setEnabled(false);
 			
 			docDao.save(doc);
-			
 		}
 		return true;
+	}
+
+	@Override
+	@Transactional(readOnly=true)
+	public SearchResult<Document> getListWithPageByCode(String code,
+			Integer offset, Integer maxResults) {
+		// TODO Auto-generated method stub
+		Search search = new Search();
+		search.setFirstResult(offset == null?0:offset);
+		search.setMaxResults(maxResults==null?10:maxResults);
+		search.addFilterEqual("enabled", true);
+		search.addFilterEqual("style.code", code);
+		search.addSortDesc("createDate");
+
+		return docDao.searchAndCount(search);
+	}
+
+	@Override
+	@Transactional(readOnly=true)
+	public boolean isEmptyDocsByUser(SysUser user) {
+		// TODO Auto-generated method stub
+		Search search = new Search();
+		
+		search.addField("id");
+		search.addFilterEqual("user", user);
+		
+		if(docDao.search(search).isEmpty()) return true;
+		
+		return false;
 	}
 
 }

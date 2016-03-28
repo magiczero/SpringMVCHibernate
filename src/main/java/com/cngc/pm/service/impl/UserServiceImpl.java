@@ -261,6 +261,7 @@ public class UserServiceImpl implements UserService {
 	public boolean disableUser(String loginname, SysUser user) {
 		// TODO Auto-generated method stub
 		user.setEnabled(false);
+		user.setUsername(user.getUsername()+"_"+user.getId());
 		if(userDao.save(user)) {			//源码中如果是修改，返回false
 			return false;
 		} else {

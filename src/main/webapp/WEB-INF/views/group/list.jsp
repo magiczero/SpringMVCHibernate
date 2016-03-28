@@ -480,7 +480,7 @@
                             <div class="block-fluid">
                                 <div class="row-form clearfix">
                                     <div class="col-md-3">用户名:</div>
-                                    <div class="col-md-9"><input id="username" class="validate[required,minSize[2],maxSize[20]]" name="username" type="text" /></div>
+                                    <div class="col-md-9"><input id="username" class="validate[required,minSize[2],maxSize[20],ajax[ajaxNameCall]]" name="username" type="text" /></div>
                                 </div>                                                           
                             </div>                
                         </div>

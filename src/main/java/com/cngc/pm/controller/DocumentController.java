@@ -154,22 +154,24 @@ public class DocumentController {
 		//去数据库读取系统
 		SysCode code = syscodeService.getById(codeId);
 		
-		List<Document> list = docService.getListByCode(code.getCode());
-		int size = list.size();
+//		List<Document> list = docService.getListByCode(code.getCode());
+//		int size = list.size();
+		
+		SearchResult<Document> result = docService.getListWithPageByCode(code.getCode(), offset, 10);
 		
 		model.addAttribute("syscode", code);
 		model.addAttribute("styles", docService.getStyleListByCode(code.getCode()));
-		int toIndex = 0, startIndex = 0;
-		if(offset != null) startIndex = offset;
-		if(maxResults == null) {
-			toIndex = startIndex + 10;
-		} else {
-			toIndex = startIndex + maxResults;
-		}
-		if(toIndex > size) toIndex = size;
-		model.addAttribute("listDocs", list.subList(startIndex, toIndex));
-		
-		model.addAttribute("count",size);
+//		int toIndex = 0, startIndex = 0;
+//		if(offset != null) startIndex = offset;
+//		if(maxResults == null) {
+//			toIndex = startIndex + 10;
+//		} else {
+//			toIndex = startIndex + maxResults;
+//		}
+//		if(toIndex > size) toIndex = size;
+//		model.addAttribute("listDocs", list.subList(startIndex, toIndex));
+		model.addAttribute("listDocs", result.getResult());
+		model.addAttribute("count",result.getTotalCount());
 		model.addAttribute("offset", offset);
 		//model.addAttribute("document", new Document());
 		model.addAttribute("url", request.getRequestURI());

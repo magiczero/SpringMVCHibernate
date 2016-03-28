@@ -4,8 +4,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.UUID;
 
 import javax.annotation.Resource;
@@ -14,6 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
@@ -29,6 +28,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
+import com.cngc.exception.BusinessException;
 import com.cngc.pm.model.AttachType;
 import com.cngc.pm.model.Attachment;
 import com.cngc.pm.service.AttachService;
@@ -51,6 +51,17 @@ public class AttachmentController {
 //		log.debug("attachment home");
 //		return "attachment/index";
 //	}
+	
+	private boolean isExtension(String ext, String... exts) {
+		boolean flag = false;
+		for(String s : exts) {
+			if(StringUtils.equalsIgnoreCase(ext, s)) {
+				flag = true;
+				break;
+			}
+		}
+		return flag;
+	}
 
 	@RequestMapping(value = "/upload", produces="text/html;charset=UTF-8",method = RequestMethod.POST)
 	public String upload(Model model,MultipartHttpServletRequest request,
@@ -60,68 +71,75 @@ public class AttachmentController {
 		MultipartFile mpf;
 		String type = request.getParameter("type");
 
-		List<Attachment> list = new LinkedList<>();
+		//List<Attachment> list = new LinkedList<>();
 
 		while (itr.hasNext()) {
 			mpf = request.getFile(itr.next());
 			log.debug("Uploading {}", mpf.getOriginalFilename());
 
 			String newFilenameBase = UUID.randomUUID().toString(); // 重命名文件名
-			String originalFileExtension = mpf.getOriginalFilename().substring(
-					mpf.getOriginalFilename().lastIndexOf(".")); // 扩展名
-			String newFilename = newFilenameBase + originalFileExtension; // 重命名
-//			String storageDirectory = request.getSession().getServletContext()
-//					.getRealPath("")
-//					+ fileUploadDirectory;
-			String storageDirectory = fileUploadDirectory;
-			// String contentType = mpf.getContentType();
-			File folder = new File(storageDirectory);
-			if (!folder.exists())
-				folder.mkdirs();
-
-			File newFile = new File(storageDirectory + "/" + newFilename);
-			try {
-				mpf.transferTo(newFile);
-
-				 Attachment attach = new Attachment();
-				 attach.setName(mpf.getOriginalFilename());
-				 //attach.setThumbnailFilename(thumbnailFilename);
-				 attach.setNewFilename(newFilename);
-				 attach.setContentType(mpf.getContentType());
-				 attach.setSize(mpf.getSize());
-				 attach.setPath(folder.getPath());
-				 switch(type) {
-				 	case "1":
-				 		attach.setType(AttachType.doc);
-				 		break;
-				 	case "2" :
-				 		attach.setType(AttachType.event);
-				 		break;
-				 	case "3" :
-				 		attach.setType(AttachType.ci);
-				 		break;
-				 	case "4" :
-				 		attach.setType(AttachType.knowledge);
-				 		break;
-				 	case "5":
-				 		attach.setType(AttachType.secjob);
-				 		break;
-				 }
-//				 if(type.equals("2")) {
-//					 attach.setType(AttachType.event);			//如何灵活判断
-//				 } 
-				 //attach.setThumbnailSize(thumbnailFile==null?0:thumbnailFile.length());
-				 attach = attachService.create(attach);
-				
-				 list.add(attach);
-			} catch (IOException e) {
-				e.printStackTrace();
-				log.error("不能上传文件 " + mpf.getOriginalFilename(), e);
+			String origFilename =  mpf.getOriginalFilename();
+//			String originalFileExtension = mpf.getOriginalFilename().substring(
+//					mpf.getOriginalFilename().lastIndexOf(".")); // 扩展名
+			String originalFileExtension = StringUtils.substring(origFilename,  StringUtils.lastIndexOf(origFilename, "."));
+			
+			if(StringUtils.isEmpty(originalFileExtension)) {
+				throw new BusinessException("非法文件");
+			}
+			//判断是否是指定扩展名
+			if(isExtension(originalFileExtension, ".doc",".docx",".xls",".xlsx",".ppt",".pptx",".jpg",".png")) {
+				String newFilename = newFilenameBase + originalFileExtension; // 重命名
+	//			String storageDirectory = request.getSession().getServletContext()
+	//					.getRealPath("")
+	//					+ fileUploadDirectory;
+				String storageDirectory = fileUploadDirectory;
+				File folder = new File(storageDirectory);
+				if (!folder.exists())
+					folder.mkdirs();
+	
+				File newFile = new File(storageDirectory + "/" + newFilename);
+				try {
+					mpf.transferTo(newFile);
+	
+					 Attachment attach = new Attachment();
+					 attach.setName(origFilename);
+					 //attach.setThumbnailFilename(thumbnailFilename);
+					 attach.setNewFilename(newFilename);
+					 attach.setContentType(mpf.getContentType());
+					 attach.setSize(mpf.getSize());
+					 attach.setPath(folder.getPath());
+					 switch(type) {
+					 	case "1":
+					 		attach.setType(AttachType.doc);
+					 		break;
+					 	case "2" :
+					 		attach.setType(AttachType.event);
+					 		break;
+					 	case "3" :
+					 		attach.setType(AttachType.ci);
+					 		break;
+					 	case "4" :
+					 		attach.setType(AttachType.knowledge);
+					 		break;
+					 	case "5":
+					 		attach.setType(AttachType.secjob);
+					 		break;
+					 }
+					 attach = attachService.create(attach);
+					
+					 //list.add(attach);
+					 model.addAttribute("fileId", attach.getId()+",");
+				} catch (IOException e) {
+					e.printStackTrace();
+					log.error("不能上传文件 " + mpf.getOriginalFilename(), e);
+				}
+			} else {
+				throw new BusinessException("非法文件");
 			}
 
 		}
 
-		model.addAttribute("attachList", list);
+		//model.addAttribute("attachList", list);
 		
 		return "attachment/success";
 	}

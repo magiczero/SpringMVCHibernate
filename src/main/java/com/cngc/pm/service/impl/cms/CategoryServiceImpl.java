@@ -63,7 +63,7 @@ public class CategoryServiceImpl implements CategoryService {
 			if (lastcode.length() > 0) {
 				if (curcode.length() > lastcode.length()) {
 					// 子节点
-					sjson += ",\"nodes\":[";
+					sjson += ",\"collapsed\":true,\"children\":[";
 				} else if (curcode.length() == lastcode.length()) {
 					// 兄弟节点
 					sjson += "},";
@@ -76,7 +76,7 @@ public class CategoryServiceImpl implements CategoryService {
 					sjson += ",";
 				}
 			}
-			sjson += "{\"text\":\"" + category.getCategoryCode() + " " + category.getCategoryName() + "\"";
+			sjson += "{\"text\":\"<a href='javascript:void(0);' onclick='initTable(\\\""+category.getCategoryCode()+"\\\");'>" + category.getCategoryCode() + " " + category.getCategoryName() + "\"";
 			lastcode = curcode;
 		}
 		sjson += "}";

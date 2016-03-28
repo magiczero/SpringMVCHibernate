@@ -43,7 +43,10 @@ function pm_cms_initselectdialog(dialogtype)
             $("#b_popup_ci").dialog('open');
             return false;
     });
-    
+    $('#treeview').treeview({
+    	url : ctx + '/cms/category/getjson?t=' + pm_random()
+    });
+    /*
 	$.getJSON(ctx + '/cms/category/getjson?t=' + pm_random(), function(data){
 		tree_json = data.json;
 		$('#treeview').treeview({
@@ -56,7 +59,7 @@ function pm_cms_initselectdialog(dialogtype)
             	return false;
             }
         });
-	});	
+	});	*/
 }
 function pm_cms_addRelations(relationid)
 {

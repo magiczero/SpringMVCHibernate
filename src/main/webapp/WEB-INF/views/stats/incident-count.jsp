@@ -55,21 +55,60 @@
     <script type="text/javascript">
     	var ctx = "${contextPath}";
     	var mylabels = [<c:forEach items="${stat.column }" var="code" varStatus="status"><c:if test="${status.index>0}">,</c:if>'${code.value}'</c:forEach>];
-    	var mydata=[<c:forEach items="${stat.column }" var="code" varStatus="status"><c:if test="${status.index>0}">,</c:if>${stat.counts[code.key]==null?0:stat.counts[code.key]}</c:forEach>];
+    	var mydata=[<c:forEach items="${stat.column }" var="code" varStatus="status"><c:if test="${status.index>0 }">,</c:if>${stat.counts[code.key]==null?0:stat.counts[code.key]}</c:forEach>];
         $(document).ready(function () {
         	$(".header").load("${contextPath}/header?t="+pm_random());
             $(".menu").load("${contextPath}/menu?t="+pm_random(), function () { $("#node_${moduleId}").addClass("active"); });
             $(".breadLine .buttons").load("${contextPath}/contentbuttons?t="+pm_random());
-            if($("#barChart").length > 0){       
-	            var bctx = $("#barChart").get(0).getContext("2d");
-	            $("#barChart").attr('width',$("#barChart").parent('div').width()).attr('height',300);
-	            barChart = new Chart(bctx).Bar({
-	            	labels : mylabels,
-	                datasets : [{fillColor : "rgba(151,187,205,0.5)",strokeColor : "rgba(151,187,205,1)",data : mydata}]
-	            });
+            if( ($.browser.msie&&$.browser.version=="8.0") )
+            {
+            	if($("#barChart").length > 0){       
+                	$("#barChart").parent('div').resize(function(){
+    		            var bctx = $("#barChart").get(0).getContext("2d");
+    		            $("#barChart").attr('width',$("#barChart").parent('div').width()).attr('height',300);
+    		            var barChart = new Chart(bctx).Bar({
+    		            	labels : mylabels,
+    		                datasets : [{fillColor : "rgba(151,187,205,0.5)",strokeColor : "rgba(151,187,205,1)",data : mydata}]
+    		            });
+                	});
+                }
+            }else{
+            	if($("#barChart").length > 0){       
+    		    	var bctx = $("#barChart").get(0).getContext("2d");
+    		        $("#barChart").attr('width',$("#barChart").parent('div').width()).attr('height',300);
+    		        var barChart = new Chart(bctx).Bar({
+    		          	labels : mylabels,
+    		            datasets : [{fillColor : "rgba(151,187,205,0.5)",strokeColor : "rgba(151,187,205,1)",data : mydata}]
+    		        });
+                }
             }
+
+            /*
+			if($("#chart-2").length > 0){
+				var vData = [[1, 103], [2, 28], [3, 135], [4, 130], [5, 145], [6, 155], [7, 155], [8, 155], [9, 155], [10, 155], [11, 155], [12, 155]]; 
+				//var vData = [];
+				//for(var i=0; i<mylabels.length; i++) {
+				//	vData.push([mylabels[i], mydata[i]]);
+				//}
+
+				$.plot($("#chart-2"), [{ label: "", data: vData}],
+						{
+						    series: { lines: { show: true }, points: { radius: 3,show: true} },
+						    xaxis: { ticks: [[1, "1月"], [3, "3月"], [5, "5月"], [7, "7月"], [9, "9月"], [11, "11月"]], min: 1, max: 12 },  //指定固定的显示内容
+						    yaxis: { ticks: 5, min: 0 }  //在y轴方向显示5个刻度，此时显示内容由 flot 根据所给的数据自动判断
+						}
+				);
+				<style type="text/css">
+		    	#chart-2{
+		        width:100%;
+		        height:300px;
+		    }
+		    </style>
+                
+            }*/
         });
     </script>
+    
 </head>
 <body>
     <div class="wrapper"> 

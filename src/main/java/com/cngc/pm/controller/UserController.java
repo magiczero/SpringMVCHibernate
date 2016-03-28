@@ -28,6 +28,7 @@ import com.cngc.pm.model.Group;
 import com.cngc.pm.model.Role;
 import com.cngc.pm.model.SysUser;
 import com.cngc.pm.model.UserRole;
+import com.cngc.pm.service.DocumentService;
 import com.cngc.pm.service.GroupService;
 import com.cngc.pm.service.RoleService;
 import com.cngc.pm.service.UserService;
@@ -49,6 +50,8 @@ public class UserController extends BaseController  {
 	private IdentityService identityService;
 	@Resource
 	private GroupService groupService;
+	@Resource
+	private DocumentService docService;
 	
 	@RequestMapping(value = "/name-check")
 	@ResponseBody  
@@ -372,17 +375,23 @@ public class UserController extends BaseController  {
 	}
 	
 	@RequestMapping(value="/delete/{id}", method = RequestMethod.GET)
-	public String delete(@PathVariable("id") long id,Model model){
-		if(id!=0)
-		{
-			SysUser user = userService.getById(id);
+	@ResponseBody
+	public Map<String,Object> delete(@PathVariable("id") long id,Model model){
+		Map<String,Object> map = new HashMap<String,Object>();
+		SysUser user = userService.getById(id);
+		if(user == null) {
+			map.put("flag", false);
+		} else if(user.getUserRoles().size()==0 || docService.isEmptyDocsByUser(user)) {
 			//同步到activiti的user
 			identityService.deleteUser(user.getUsername());
 			String username = SecurityContextHolder.getContext().getAuthentication().getName();
 			userService.delById(id, username);
+			map.put("flag", true);
+		} else {
+			map.put("flag", false);
 		}
 		
-		return "redirect:/user/list";
+		return map;
 	}
 	
 	@RequestMapping(value="/get/{id}")

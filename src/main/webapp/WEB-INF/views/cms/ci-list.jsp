@@ -25,8 +25,7 @@
     <link href="${contextPath }/resources/css/styling.css" rel="stylesheet" type="text/css" />
     <link href="${contextPath }/resources/css/validation.css" rel="stylesheet" type="text/css" />
     <link href="${contextPath }/resources/css/mycss.css" rel="stylesheet" type="text/css" />
-    <link href="${contextPath }/resources/css/tree-ie8.css" rel="stylesheet" type="text/css" />
-    <%--<link rel='stylesheet' type='text/css' href='${contextPath }/resources/css/bootstrap-treeview.css' media='print' /> --%>
+    <link href='${contextPath }/resources/js/plugins/jstree/jquery.treeview.css' rel="stylesheet" type="text/css" />
     <!--[if lt IE 8]>
         <link href="${contextPath }/resources/css/ie7.css" rel="stylesheet" type="text/css" />
     <![endif]-->    
@@ -42,8 +41,10 @@
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/highlight/jquery.highlight-4.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/pnotify/jquery.pnotify.min.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/scrollup/jquery.scrollUp.min.js'></script>
-    <%--<script type='text/javascript' src='${contextPath }/resources/js/plugins/treeview/bootstrap-treeview.min.js'></script> --%>
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/jtree/jtree.js'></script>
+    
+    <script type='text/javascript' src='${contextPath }/resources/js/plugins/jstree/jquery.treeview.js'></script>
+    <script type='text/javascript' src='${contextPath }/resources/js/plugins/jstree/jquery.treeview.edit.js'></script>
+    <script type='text/javascript' src='${contextPath }/resources/js/plugins/jstree/jquery.treeview.async.js'></script>
     
     <script type='text/javascript' src='${contextPath }/resources/js/pm-common.js'></script>
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
@@ -53,8 +54,6 @@
     <![endif]-->
     <script type="text/javascript">
     	var ctx = "${contextPath}";
-    	var jsonData = ${category};
-    	//console.log(jsonData);
             $(document).ready(function () {
                 
                 $(".header").load("${contextPath}/header?t="+pm_random());
@@ -72,34 +71,34 @@
                     onNodeSelected: function(event, node) {
                       initTable(node.text.substring(0,node.text.indexOf(" ")));
                     }
-                  });--%>
-                
-                $.each(jsonData, function (i, field) {
-                	var code = field.text.substring(0,field.text.indexOf(" "));
-                	var liStr = "<li><a href=\"#\" onclick=\"initTable("+code+");\">"+field.text+"</a>";
-                	if(field.nodes) {
-                		liStr += "<ul>";
-                		$.each(field.nodes, function(j, node){
-                			var code1 = node.text.substring(0,node.text.indexOf(" "));
-                			liStr+="<li><a href=\"#\" onclick=\"initTable("+code1+");\">"+node.text+"</a>";
-                			if(node.nodes) {
-                				liStr += "<ul>";
-                				$.each(node.nodes, function(k, last){
-                					var code2 = last.text.substring(0,last.text.indexOf(" "));
-                					liStr+="<li><a href=\"#\" onclick=\"initTable("+code2+");\">"+last.text+"</a></li>";
-                				});
-                				liStr += "</ul>";
-                			}
-                			liStr+="</li>"
-                		});
-                		liStr += "</ul>";
-                	}
-                	liStr += "</li>";
-                    //$("#treeview1").append("<li><a href=\"#\" class=\"\" onclick=\"aa(" + field.text + ");\">" + field.text + "</a></li>");
-                    $("#treeview1").append(liStr);
-                }); 
-                
-                $("#treeview1").treed();
+                  });
+                  $.each(jsonData, function (i, field) {
+                  	var code = field.text.substring(0,field.text.indexOf(" "));
+                  	var liStr = "<li><a href=\"#\" onclick=\"initTable("+code+");\">"+field.text+"</a>";
+                  	if(field.nodes) {
+                  		liStr += "<ul>";
+                  		$.each(field.nodes, function(j, node){
+                  			var code1 = node.text.substring(0,node.text.indexOf(" "));
+                  			liStr+="<li><a href=\"#\" onclick=\"initTable("+code1+");\">"+node.text+"</a>";
+                  			if(node.nodes) {
+                  				liStr += "<ul>";
+                  				$.each(node.nodes, function(k, last){
+                  					var code2 = last.text.substring(0,last.text.indexOf(" "));
+                  					liStr+="<li><a href=\"#\" onclick=\"initTable("+code2+");\">"+last.text+"</a></li>";
+                  				});
+                  				liStr += "</ul>";
+                  			}
+                  			liStr+="</li>"
+                  		});
+                  		liStr += "</ul>";
+                  	}
+                  	liStr += "</li>";
+                    $("#treeview").append(liStr);
+                  }); --%>
+                  $("#treeview").treeview({
+                	unique: true,
+            		url : ctx + '/cms/category/getjson?t=' + pm_random()
+            	});
                 
                 initTable("0");
                 /*
@@ -146,6 +145,7 @@
 						
             		}
             		$("#ciTable tbody").append(trs);
+            		/*
             		if ( $.fn.dataTable.isDataTable( '#ciTable' ) ) {
             		    table = $('#ciTable').DataTable({
             		    	paging:true,
@@ -162,7 +162,7 @@
                  			},
                        	"bSort":false} );
             		}
-            		
+            		*/
             		
                     $(".confirm").bind("click",function(){
                     	if(!confirm("确定要执行该操作?"))
@@ -205,48 +205,16 @@
                 </div> 
                 <div class="row">
                 	<div class="col-md-3">
-                		<a href="${contextPath }/cms/ci/list" role="button" class="btn btn-primary btn-block" data-toggle="modal">查看全部</a>
-                		<%--<div id="treeview" ></div> --%>
-                		
-                		<ul id="treeview1" class="tree"></ul>
-                		<%-- <ul class="tree">
-    <li><a href="#">TECH</a>
-        <ul>
-            <li>Company Maintenance</li>
-            <li>Employees
-                <ul>
-                    <li>Reports
-                        <ul>
-                            <li>Report1</li>
-                            <li>Report2</li>
-                            <li>Report3</li>
-                        </ul>
-                    </li>
-                    <li>Employee Maint.</li>
-                </ul>
-            </li>
-            <li>Human Resources</li>
-        </ul>
-    </li>
-    <li><a href="#">XRP</a>
-        <ul>
-            <li>Company Maintenance</li>
-            <li>Employees
-                <ul>
-                    <li>Reports
-                        <ul>
-                            <li>Report1</li>
-                            <li>Report2</li>
-                            <li>Report3</li>
-                        </ul>
-                    </li>
-                    <li>Employee Maint.</li>
-                </ul>
-            </li>
-            <li>Human Resources</li>
-        </ul>
-    </li>
-</ul> --%>
+                	<div class="head clearfix">
+                        <div class="isw-donw_circle"></div>
+                        <h1>配置项类别</h1>
+                           	<ul class="buttons">
+                        		<li><a href="${contextPath }/cms/ci/list" class="isw-list tipl" title="查看全部 "></a>   </li>
+                            </ul>
+                    </div>
+                		<div class="block-fluid">
+                		<ul id="treeview" style="margin-left:10px;"></ul>
+                		</div>
                 	</div>
                     <div class="col-md-9">                    
                         <div class="head clearfix">
@@ -295,12 +263,6 @@
             <!--workplace end-->
         </div>   
     </div>
-    <!-- <script type="text/javascript">
-   
-
-
-    	$('.tree').treed(); -->
-    </script>
 </body>
 
 </html>

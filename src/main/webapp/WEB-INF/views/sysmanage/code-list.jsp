@@ -107,7 +107,7 @@
     		$("#codeTable tbody tr").remove();
     		if(data.list==null)
     			return;
-    		var trs;
+    		var trs = "";
     		for(i=0;i<data.list.length;i++)
     		{
     			trs += "<tr>"
@@ -237,7 +237,7 @@
 									<th width="150px">编码</th>
 									<th>编码名称</th>
 									<th width="120px">类别</th>
-									<th width="130px">操作</th>
+									<th width="180px">操作</th>
 								</tr>
                                 </thead>
                                 <tbody>

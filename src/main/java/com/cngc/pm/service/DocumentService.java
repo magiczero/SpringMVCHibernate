@@ -7,6 +7,7 @@ import java.util.Set;
 import com.cngc.pm.model.Attachment;
 import com.cngc.pm.model.Document;
 import com.cngc.pm.model.Style;
+import com.cngc.pm.model.SysUser;
 import com.googlecode.genericdao.search.SearchResult;
 
 public interface DocumentService {
@@ -40,6 +41,8 @@ public interface DocumentService {
 	 * @return
 	 */
 	List<Document> getAllByPrivate(Long userId);
+	
+	boolean isEmptyDocsByUser(SysUser user);
 
 	boolean delById(Long docid, Long id);
 
@@ -71,6 +74,15 @@ public interface DocumentService {
 	SearchResult<Document> getAllByStyle(Style style, Integer offset, Integer maxResults);
 	
 	SearchResult<Document> getAllByItem(Long itemid, Integer offset, Integer maxResults);
+	
+	/**
+	 * 分页查询 根据code
+	 * @param code
+	 * @param offset
+	 * @param maxResults
+	 * @return
+	 */
+	SearchResult<Document> getListWithPageByCode(String code, Integer offset, Integer maxResults);
 
 	List<Style> getStyleListByCode(String code);
 

@@ -178,10 +178,10 @@
                             <table cellpadding="0" cellspacing="0" width="100%" class="table" id="myTable">
                                 <thead>
                                     <tr>
-                                    	<th width="60px">流水号</th>
+                                    	<th width="80px">流水号</th>
                                         <th>摘要</th>
-                                        <th width="90px">变更申请人</th>
-                                        <th width="80px">风险等级</th>
+                                        <th width="100px">变更申请人</th>
+                                        <th width="90px">风险等级</th>
                                         <th width="130px">申请日期</th>
                                         <th width="130px">完成日期</th>
                                         <th width="70px">操作</th>                                  

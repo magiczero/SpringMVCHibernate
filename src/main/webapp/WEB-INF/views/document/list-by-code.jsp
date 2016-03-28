@@ -167,7 +167,7 @@
         		    						window.location.href="${contextPath }/document/sys-code-list/${syscode.id }";
         		    						
         		    					} else {
-        		    						notify_e('Error','请联系管理员');
+        		    						notify_e('Error','不能完成删除操作，有些被删除文档与检查项相关联，请先解除关联');
         		    					}
         		    				}
         		    			});

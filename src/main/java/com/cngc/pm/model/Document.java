@@ -14,6 +14,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -51,8 +52,18 @@ public class Document implements Serializable {
 	private Style style;
 	
 	private Set<Attachment> attachs = new HashSet<>();							//附件
+	private Set<CheckItems> itemSet = new HashSet<>();							//保密检查项关联关系
 	
-//	@JoinColumnsOrFormulas(value = {
+	@ManyToMany(targetEntity = CheckItems.class, mappedBy="docSet")
+	public Set<CheckItems> getItemSet() {
+		return itemSet;
+	}
+
+	public void setItemSet(Set<CheckItems> itemSet) {
+		this.itemSet = itemSet;
+	}
+
+	//	@JoinColumnsOrFormulas(value = {
 //	@JoinColumnOrFormula(column = @JoinColumn(name = "type_id", referencedColumnName = "id", nullable = true, insertable = false, updatable = false)),
 //	@JoinColumnOrFormula(formula = @JoinFormula(value = "0", referencedColumnName = "type_")) })
 	@OneToMany(targetEntity = Attachment.class, fetch = FetchType.EAGER)

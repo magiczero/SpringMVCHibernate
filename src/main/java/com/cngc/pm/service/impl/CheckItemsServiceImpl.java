@@ -1,6 +1,5 @@
 package com.cngc.pm.service.impl;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -82,6 +81,7 @@ public class CheckItemsServiceImpl implements CheckItemsService {
 	public List<Document> getAllDoc() {
 		// TODO Auto-generated method stub
 		Search search = new Search(Document.class);
+		//search.addFields(new Field("name"), new Field("id"));
 		search.addFilterEqual("enabled", true);
 		
 		return docDao.search(search);
@@ -222,15 +222,30 @@ public class CheckItemsServiceImpl implements CheckItemsService {
 	@Transactional(readOnly=true)
 	public List<Style> getAllItemsByCode(String code) {
 		// TODO Auto-generated method stub
-		List<Object[]> list = itemsDao.getItems(code);
-		List<Style> styles = new ArrayList<>();
-		
-		for(Object[] objs : list) {
-			Style style = (Style)objs[0];
-			styles.add(style);
+		Search search = new Search();
+		if(code.equals("BMB22")) {
+			search.addFilterEqual("style.style.style.style.code", code);
+			search.addSortAsc("style.style.style.style.order");
+			search.addSortAsc("style.style.style.order");
+			search.addSortAsc("style.style.order");
+			search.addSortAsc("style.order");
+		} else {
+			search.addFilterEqual("style.style.style.code", code);
+			search.addSortAsc("style.style.style.order");
+			search.addSortAsc("style.style.order");
+			search.addSortAsc("style.order");
 		}
 		
-		return styles;
+		return styleDao.search(search);
+//		List<Object[]> list = itemsDao.getItems(code);
+//		List<Style> styles = new ArrayList<>();
+//		
+//		for(Object[] objs : list) {
+//			Style style = (Style)objs[0];
+//			styles.add(style);
+//		}
+		
+//		return styles;
 	}
 	
 }

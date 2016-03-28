@@ -53,6 +53,11 @@ function act_dialog_ci_init()
 }
 function act_dialog_ci_select(name,isNode)
 {
+	$('#treeview').treeview({
+    	url : ctx + '/cms/category/getjson?t=' + pm_random()
+    });
+	$("#b_popup_select").dialog('open');
+	/*
 	$.getJSON(ctx + '/cms/category/getjson?t=' + pm_random(), function(data){
 		tree_json = data.json;
 		$('#treeview').treeview({
@@ -77,6 +82,6 @@ function act_dialog_ci_select(name,isNode)
         });
 		$("#b_popup_select").dialog('open');
 	});
-	
+	*/
 	return false;
 }

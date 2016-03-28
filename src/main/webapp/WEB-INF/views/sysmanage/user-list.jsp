@@ -116,6 +116,19 @@
             	 $("#userForm").validationEngine({promptPosition : "topRight", scroll: true});
             });
             
+            function delUser(userid, obj) {
+            	if(confirm('确定删除')) { 
+            		$.getJSON(ctx + '/user/delete/'+userid+'?t=' + pm_random(), function(data){
+                		if(data.flag) {
+                			obj.parentNode.parentNode.remove();
+                			notify_s('删除成功','已删除');
+                		} else {
+                			notify_e('Error','删除失败，请先解除用户与角色的关系或用户与文档之间的关系');
+                		}
+                	});	
+            	
+            	}
+            }
             
     function newUser(){
 		$("#dialogTitle").html("新建用户");
@@ -177,6 +190,9 @@
     }
     function notify_e(title,text){
         $.pnotify({title: title, text: text, opacity: .8, type: 'error'});            
+    }
+    function notify_s(title,text){
+        $.pnotify({title: title, text: text, opacity: .8, type: 'success'});            
     }
     </script>
 </head>
@@ -264,7 +280,7 @@
 										<td>
 											<sec:authorize access="hasAnyRole('security_secrecy_admin','ROLE_ADMIN')"><a class="lnk_setrole" href="#" >设置角色</a></sec:authorize>
 											<sec:authorize access="hasAnyRole('sys_admin','ROLE_ADMIN')"><a class="lnk_modify" href="#">编辑</a></sec:authorize>
-					                        <%--<sec:authorize access="hasAnyRole('sys_admin','ROLE_ADMIN')"><a class="confirm" href="${contextPath}/user/delete/${user.id}">删除</a></sec:authorize> --%>
+					                        <sec:authorize access="hasAnyRole('sys_admin','ROLE_ADMIN')"><a href="javascript:void(0);" onclick="delUser(${user.id},this);">删除</a></sec:authorize>
 					                        <sec:authorize url="/user/enable/*"><c:if test="${!user.enabled }"><a href="javascript:void(0);" onclick="enableUser(${user.id});">启用</a></c:if></sec:authorize>
 					                        <%--<sec:authorize access="hasRole('security_secrecy_admin')"><c:if test="${!user.enabled }"><a href="javascript:void(0);" onclick="enableUser(${user.id});">启用</a></c:if></sec:authorize> --%>
 										</td>

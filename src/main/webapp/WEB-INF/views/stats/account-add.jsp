@@ -56,7 +56,7 @@
     	var ctx = "${contextPath}";
     	var data = [];
     	var data_index=0;
-            $(document).ready(function () {
+        $(document).ready(function () {
             	$(".header").load("${contextPath }/header?t="+pm_random());
             	$(".menu").load("${contextPath }/menu?t="+pm_random(), function() {$("#node_${moduleId}").addClass("active");});
             	$(".breadLine .buttons").load("${contextPath}/contentbuttons?t="+pm_random());
@@ -71,7 +71,12 @@
                 });
                 
                 $("#sel_fields").multiSelect("init");
-            });
+        });
+        
+        function initTable(code) {
+        	$("input[name='category']").attr("value",code);
+    		pm_account_setProperty(code);
+        }
     </script>
 </head>
 <body>

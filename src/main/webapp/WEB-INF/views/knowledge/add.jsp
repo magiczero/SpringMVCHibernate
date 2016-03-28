@@ -26,7 +26,7 @@
     <link href="${contextPath }/resources/css/uploadify.css" rel="stylesheet" type="text/css" />
     <link href="${contextPath }/resources/css/validation.css" rel="stylesheet" type="text/css" />
     <link href="${contextPath }/resources/css/tree-ie8.css" rel="stylesheet" type="text/css" />
-    <link rel='stylesheet' type='text/css' href='${contextPath }/resources/css/bootstrap-treeview.css' media='print' />
+    <link href='${contextPath }/resources/js/plugins/jstree/jquery.treeview.css' rel="stylesheet" type="text/css" />
     <!--[if lt IE 8]>
         <link href="${contextPath }/resources/css/ie7.css" rel="stylesheet" type="text/css" />
     <![endif]-->    
@@ -44,8 +44,7 @@
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/pnotify/jquery.pnotify.min.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/ibutton/jquery.ibutton.min.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/scrollup/jquery.scrollUp.min.js'></script>
-    <%--<script type='text/javascript' src='${contextPath }/resources/js/plugins/treeview/bootstrap-treeview.min.js'></script> --%>
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/jtree/jtree.js'></script>
+    <script type='text/javascript' src='${contextPath }/resources/js/plugins/jstree/jquery.treeview.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/tagsinput/jquery.tagsinput.min.js'></script>
     <!-- umeditor -->
     <link type="text/css"  href="${contextPath }/resources/js/plugins/umeditor/themes/default/css/umeditor.css" rel="stylesheet">
@@ -124,14 +123,24 @@
                     	liStr += "</li>";
                     	$("#treeview").append(liStr);
 		    		});
-		    		$("#treeview").treed();
+		    		//$("#treeview").treed();
+		    		$("#treeview").treeview({
+	            		collapsed: true,
+	            		unique: true
+	            	});
 		    		$("#b_popup_select").dialog('open');
 		    	});
             });
 		    //----------------------IE8 end--------------------
+            if(($.browser.msie&&$.browser.version=="8.0") )
+            {
+			    $("#solution").parent('div').resize(function(){
+			    	var um = UM.getEditor('solution');
+			    });
+		    } else {
+		    	var um = UM.getEditor('solution');
+		    }
             
-            var um = UM.getEditor('solution');
-            //$("#solution").cleditor();
             $('#file_upload').uploadify({
 				'formData' : { 'type' : 4 },
 		        'swf'      : '${contextPath }/resources/flash/uploadify.swf',

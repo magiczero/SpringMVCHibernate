@@ -186,7 +186,7 @@ public class CiController {
 	
 	@RequestMapping(value="/list",method = RequestMethod.GET)
 	public String list(Model model){
-		model.addAttribute("category", categoryService.getJSON());
+		//model.addAttribute("category", categoryService.getJSON());
 		return "cms/ci-list";
 	}
 	

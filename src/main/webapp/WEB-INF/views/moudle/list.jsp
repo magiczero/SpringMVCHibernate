@@ -13,6 +13,7 @@
     
     <title>系统管理--运维管理系统</title>
 
+	<link href="${contextPath }/resources/css/icons.css" rel="stylesheet" type="text/css" />
     <link href="${contextPath }/resources/css/bootstrap.css" rel="stylesheet" type="text/css" />
     <link href="${contextPath }/resources/css/fullcalendar.css" rel="stylesheet" type="text/css" />
     <link href="${contextPath }/resources/css/ui.css" rel="stylesheet" type="text/css" />
@@ -174,8 +175,8 @@
                             <div class="isw-grid"></div>
                             <h1>系统菜单列表</h1>  
 
-                            <ul class="buttons">                          
-                                <li>
+                            <ul class="buttons">
+                        <li>
                                     <a href="#" class="isw-settings tipl" title="操作 "></a>
                                     <ul class="dd-list">
                                         <li><a href="#fModal" data-toggle="modal"><span class="isw-list"></span> 添加</a></li>

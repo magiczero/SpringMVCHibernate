@@ -1,0 +1,342 @@
+<div class="tabs" id="inspection_div">
+	<ul>
+		<li><a href="#tabs-1">内网应用服务器</a></li>
+		<li><a href="#tabs-2">内网安全防护设备</a></li>
+		<li><a href="#tabs-3">内网网络设备</a></li>
+	</ul>
+	
+<div id="tabs-1">
+<div class="tabs-vertical-env tabs-vertical-bordered">
+	<ul class="nav tabs-vertical" id="serverTableTitle">
+		<li class="active"><a href="#v4-step_1" data-toggle="tab">瑞星</a></li>
+		<li><a href="#v4-step_2" data-toggle="tab">运维管理平台</a></li>
+		<li><a href="#v4-step_3" data-toggle="tab">锐捷安管平台</a></li>
+		<li><a href="#v4-step_4" data-toggle="tab">北信源安管平台</a></li>
+		<li><a href="#v4-step_5" data-toggle="tab">北信源三合一</a></li>
+		<li><a href="#v4-step_6" data-toggle="tab">CA RA</a></li>
+		<li><a href="#v4-step_7" data-toggle="tab">OA综合报表</a></li>
+		<li><a href="#v4-step_8" data-toggle="tab">保密管理平台</a></li>
+		<li><a href="#v4-step_9" data-toggle="tab">鼎盾打印</a></li>
+		<li><a href="#v4-step_10" data-toggle="tab">FTP</a></li>
+		<li><a href="#v4-step_11" data-toggle="tab">软件测试过程管理</a></li>
+		<li><a href="#v4-step_12" data-toggle="tab">软件文件配置管理1</a></li>
+		<li><a href="#v4-step_13" data-toggle="tab">软件文件配置管理2</a></li>
+	</ul>
+	<div class="tab-content" id="serverTable">
+		<div class="tab-pane" id="v4-step_i">
+			<div id="title_i" class="label label-info" style="font-size:14px;"></div>
+			<div class="row-form clearfix">
+            	<div class="col-md-3">告警灯是否正常:</div>
+                <div class="col-md-7">
+                    	<label class="checkbox checkbox-inline"><input type="radio" name="item_i_1" value="true" checked/> 是</label>
+                        <label class="checkbox checkbox-inline"><input type="radio" name="item_i_1" value="false"/> 否</label>
+                        &nbsp;&nbsp;<label style='display:none;'>异常说明</label>
+                        <label  style='display:none;'><input type="text" name="item_i_1_remark" /></label>
+            	</div>
+            	<div class="col-md-3">服务器运转声音是否正常:</div>
+                <div class="col-md-7">
+                    	<label class="checkbox checkbox-inline"><input type="radio" name="item_i_2" value="true" checked/> 是</label>
+                        <label class="checkbox checkbox-inline"><input type="radio" name="item_i_2" value="false"/> 否</label>
+                         &nbsp;&nbsp;<label  style='display:none;'>异常说明</label>
+                        <label  style='display:none;'><input type="text" name="item_i_2_remark" /></label>
+            	</div>
+            	<div class="col-md-3">电源线是否接触良好:</div>
+                <div class="col-md-7">
+                    	<label class="checkbox checkbox-inline"><input type="radio" name="item_i_3" value="true" checked/> 是</label>
+                        <label class="checkbox checkbox-inline"><input type="radio" name="item_i_3" value="false"/> 否</label>
+                         &nbsp;&nbsp;<label  style='display:none;'>异常说明</label>
+                        <label  style='display:none;'><input type="text" name="item_i_3_remark" /></label>
+            	</div>
+            	<div class="col-md-3">电源指示灯是否正常亮起:</div>
+                <div class="col-md-7">
+                    	<label class="checkbox checkbox-inline"><input type="radio" name="item_i_4" value="true" checked/> 是</label>
+                        <label class="checkbox checkbox-inline"><input type="radio" name="item_i_4" value="false"/> 否</label>
+                         &nbsp;&nbsp;<label  style='display:none;'>异常说明</label>
+                        <label  style='display:none;'><input type="text" name="item_i_4_remark" /></label>
+            	</div>
+            	<div class="col-md-3">硬盘指示灯是否正常:</div>
+                <div class="col-md-7">
+                    	<label class="checkbox checkbox-inline"><input type="radio" name="item_i_5" value="true" checked/> 是</label>
+                        <label class="checkbox checkbox-inline"><input type="radio" name="item_i_5" value="false"/> 否</label>
+                         &nbsp;&nbsp;<label  style='display:none;'>异常说明</label>
+                        <label  style='display:none;'><input type="text" name="item_i_5_remark" /></label>
+            	</div>
+            	<div class="col-md-3">网卡指示灯是否规律性闪烁:</div>
+                <div class="col-md-7">
+                    	<label class="checkbox checkbox-inline"><input type="radio" name="item_i_6" value="true" checked/> 是</label>
+                        <label class="checkbox checkbox-inline"><input type="radio" name="item_i_6" value="false"/> 否</label>
+                         &nbsp;&nbsp;<label  style='display:none;'>异常说明</label>
+                        <label  style='display:none;'><input type="text" name="item_i_6_remark" /></label>
+            	</div>
+            	<div class="col-md-3">服务器是否有移动或损坏痕迹:</div>
+                <div class="col-md-7">
+                    	<label class="checkbox checkbox-inline"><input type="radio" name="item_i_7" value="true" checked/> 否</label>
+                        <label class="checkbox checkbox-inline"><input type="radio" name="item_i_7" value="false" /> 是</label>
+                         &nbsp;&nbsp;<label  style='display:none;'>异常说明</label>
+                        <label  style='display:none;'><input type="text" name="item_i_7_remark" /></label>
+            	</div>
+            	<div class="col-md-3">标签是否脱落:</div>
+                <div class="col-md-7">
+                    	<label class="checkbox checkbox-inline"><input type="radio" name="item_i_8" value="true" checked/> 否</label>
+                        <label class="checkbox checkbox-inline"><input type="radio" name="item_i_8" value="false"/> 是</label>
+                         &nbsp;&nbsp;<label  style='display:none;'>异常说明</label>
+                        <label  style='display:none;'><input type="text" name="item_i_8_remark" /></label>
+            	</div>
+           	</div>
+           	<div class="row-form clearfix">
+           		<div class="col-md-3">主机连接网络情况是否正常:</div>
+                <div class="col-md-7">
+                    	<label class="checkbox checkbox-inline"><input type="radio" name="item_i_9" value="true" checked/> 是</label>
+                        <label class="checkbox checkbox-inline"><input type="radio" name="item_i_9" value="false"/> 否</label>
+                         &nbsp;&nbsp;<label  style='display:none;'>异常说明</label>
+                        <label  style='display:none;'><input type="text" name="item_i_9_remark" /></label>
+            	</div>
+            	<div class="col-md-3">主机网络配置情况是否正常:</div>
+                <div class="col-md-7">
+                    	<label class="checkbox checkbox-inline"><input type="radio" name="item_i_10" value="true" checked/> 是</label>
+                        <label class="checkbox checkbox-inline"><input type="radio" name="item_i_10" value="false"/> 否</label>
+                         &nbsp;&nbsp;<label  style='display:none;'>异常说明</label>
+                        <label  style='display:none;'><input type="text" name="item_i_10_remark" /></label>
+            	</div>
+            	<div class="col-md-3">系统账户登录情况是否正常:</div>
+                <div class="col-md-7">
+                    	<label class="checkbox checkbox-inline"><input type="radio" name="item_i_11" value="true" checked/> 是</label>
+                        <label class="checkbox checkbox-inline"><input type="radio" name="item_i_11" value="false"/> 否</label>
+                         &nbsp;&nbsp;<label  style='display:none;'>异常说明</label>
+                        <label  style='display:none;'><input type="text" name="item_i_11_remark" /></label>
+            	</div>
+            	<div class="col-md-3">CPU使用率:</div>
+                <div class="col-md-7">
+                        <label><input type="text" name="item_i_12_text" /></label>
+                         &nbsp;&nbsp;是否低于总容量的80%:
+                        <label class="checkbox checkbox-inline"><input type="radio" name="item_i_12" value="true" checked/> 是</label>
+                        <label class="checkbox checkbox-inline"><input type="radio" name="item_i_12" value="false"/> 否</label>
+                         &nbsp;&nbsp;<label  style='display:none;'>异常说明</label>
+                        <label  style='display:none;'><input type="text" name="item_i_12_remark" /></label>
+            	</div>
+            	<div class="col-md-3">内存使用率:</div>
+                <div class="col-md-7">
+                        <label><input type="text" name="item_i_13_text" /></label>
+                        &nbsp;&nbsp;是否低于总容量的80%:
+                        <label class="checkbox checkbox-inline"><input type="radio" name="item_i_13" value="true" checked/> 是</label>
+                        <label class="checkbox checkbox-inline"><input type="radio" name="item_i_13" value="false"/> 否</label>
+                         &nbsp;&nbsp;<label  style='display:none;'>异常说明</label>
+                        <label  style='display:none;'><input type="text" name="item_i_13_remark" /></label>
+            	</div>
+            	<div class="col-md-3">系统磁盘空间使用情况:</div>
+                <div class="col-md-7">
+                        <label><input type="text" name="item_i_14_text" /></label>
+                         &nbsp;&nbsp;是否低于总容量的80%:
+                        <label class="checkbox checkbox-inline"><input type="radio" name="item_i_14" value="true" checked/> 是</label>
+                        <label class="checkbox checkbox-inline"><input type="radio" name="item_i_14" value="false"/> 否</label>
+                         &nbsp;&nbsp;<label  style='display:none;'>异常说明</label>
+                        <label  style='display:none;'><input type="text" name="item_i_14_remark" /></label>
+            	</div>
+            	<div class="col-md-3">事件查看器是否存在异常:</div>
+                <div class="col-md-7">
+                    	<label class="checkbox checkbox-inline"><input type="radio" name="item_i_15" value="true" checked/> 否</label>
+                        <label class="checkbox checkbox-inline"><input type="radio" name="item_i_15" value="false" /> 是</label>
+                         &nbsp;&nbsp;<label  style='display:none;'>异常说明</label>
+                        <label  style='display:none;'><input type="text" name="item_i_15_remark" /></label>
+            	</div>
+            	<div class="col-md-3">杀毒软件是否正常开启:</div>
+                <div class="col-md-7">
+                    	<label class="checkbox checkbox-inline"><input type="radio" name="item_i_16" value="true" checked/> 是</label>
+                        <label class="checkbox checkbox-inline"><input type="radio" name="item_i_16" value="false"/> 否</label>
+                         &nbsp;&nbsp;<label  style='display:none;'>异常说明</label>
+                        <label  style='display:none;'><input type="text" name="item_i_16_remark" /></label>
+            	</div>
+            	<div class="col-md-3">杀毒软件是否及时升级:</div>
+                <div class="col-md-7">
+                    	<label class="checkbox checkbox-inline"><input type="radio" name="item_i_17" value="true" checked/> 是</label>
+                        <label class="checkbox checkbox-inline"><input type="radio" name="item_i_17" value="false"/> 否</label>
+                         &nbsp;&nbsp;<label  style='display:none;'>异常说明</label>
+                        <label  style='display:none;'><input type="text" name="item_i_17_remark" /></label>
+            	</div>
+            	<div class="col-md-3">应用是否正常运行:</div>
+                <div class="col-md-7">
+                    	<label class="checkbox checkbox-inline"><input type="radio" name="item_i_18" value="true" checked/> 是</label>
+                        <label class="checkbox checkbox-inline"><input type="radio" name="item_i_18" value="false"/> 否</label>
+                         &nbsp;&nbsp;<label  style='display:none;'>异常说明</label>
+                        <label  style='display:none;'><input type="text" name="item_i_18_remark" /></label>
+            	</div>
+           	</div>
+		</div>
+		
+	</div>
+	
+</div>
+</div>
+
+
+<div id="tabs-2">
+<div class="tabs-vertical-env tabs-vertical-bordered">
+	<ul class="nav tabs-vertical" id="securityTableTitle">
+		<li class="active"><a href="#v4-step_14" data-toggle="tab">统一漏洞扫描</a></li>
+		<li><a href="#v4-step_15" data-toggle="tab">IPS</a></li>
+		<li><a href="#v4-step_16" data-toggle="tab">吉大网关（主）</a></li>
+		<li><a href="#v4-step_17" data-toggle="tab">吉大网关（备）</a></li>
+		<li><a href="#v4-step_18" data-toggle="tab">磐石终端安全</a></li>
+		<li><a href="#v4-step_19" data-toggle="tab">防火墙</a></li>
+	</ul>
+	<div class="tab-content" id="securityTable">
+		<div class="tab-pane" id="v4-step_i">
+			<div id="title_i" class="label label-info" style="font-size:14px;"></div>
+			<div class="row-form clearfix">
+            	<div class="col-md-3">告警灯是否正常:</div>
+                <div class="col-md-7">
+                    	<label class="checkbox checkbox-inline"><input type="radio" name="item_i_1" value="true" checked/> 是</label>
+                        <label class="checkbox checkbox-inline"><input type="radio" name="item_i_1" value="false"/> 否</label>
+                        &nbsp;&nbsp;<label style='display:none;'>异常说明</label>
+                        <label  style='display:none;'><input type="text" name="item_i_1_remark" /></label>
+            	</div>
+            	<div class="col-md-3">服务器运转声音是否正常:</div>
+                <div class="col-md-7">
+                    	<label class="checkbox checkbox-inline"><input type="radio" name="item_i_2" value="true" checked/> 是</label>
+                        <label class="checkbox checkbox-inline"><input type="radio" name="item_i_2" value="false"/> 否</label>
+                         &nbsp;&nbsp;<label  style='display:none;'>异常说明</label>
+                        <label  style='display:none;'><input type="text" name="item_i_2_remark" /></label>
+            	</div>
+            	<div class="col-md-3">电源线是否接触良好:</div>
+                <div class="col-md-7">
+                    	<label class="checkbox checkbox-inline"><input type="radio" name="item_i_3" value="true" checked/> 是</label>
+                        <label class="checkbox checkbox-inline"><input type="radio" name="item_i_3" value="false"/> 否</label>
+                         &nbsp;&nbsp;<label  style='display:none;'>异常说明</label>
+                        <label  style='display:none;'><input type="text" name="item_i_3_remark" /></label>
+            	</div>
+            	<div class="col-md-3">电源指示灯是否正常亮起:</div>
+                <div class="col-md-7">
+                    	<label class="checkbox checkbox-inline"><input type="radio" name="item_i_4" value="true" checked/> 是</label>
+                        <label class="checkbox checkbox-inline"><input type="radio" name="item_i_4" value="false"/> 否</label>
+                         &nbsp;&nbsp;<label  style='display:none;'>异常说明</label>
+                        <label  style='display:none;'><input type="text" name="item_i_4_remark" /></label>
+            	</div>
+            	<div class="col-md-3">硬盘指示灯是否正常:</div>
+                <div class="col-md-7">
+                    	<label class="checkbox checkbox-inline"><input type="radio" name="item_i_5" value="true" checked/> 是</label>
+                        <label class="checkbox checkbox-inline"><input type="radio" name="item_i_5" value="false"/> 否</label>
+                         &nbsp;&nbsp;<label  style='display:none;'>异常说明</label>
+                        <label  style='display:none;'><input type="text" name="item_i_5_remark" /></label>
+            	</div>
+            	<div class="col-md-3">网卡指示灯是否规律性闪烁:</div>
+                <div class="col-md-7">
+                    	<label class="checkbox checkbox-inline"><input type="radio" name="item_i_6" value="true" checked/> 是</label>
+                        <label class="checkbox checkbox-inline"><input type="radio" name="item_i_6" value="false"/> 否</label>
+                         &nbsp;&nbsp;<label  style='display:none;'>异常说明</label>
+                        <label  style='display:none;'><input type="text" name="item_i_6_remark" /></label>
+            	</div>
+            	<div class="col-md-3">服务器是否有移动或损坏痕迹:</div>
+                <div class="col-md-7">
+                    	<label class="checkbox checkbox-inline"><input type="radio" name="item_i_7" value="true" checked/> 否</label>
+                        <label class="checkbox checkbox-inline"><input type="radio" name="item_i_7" value="false" /> 是</label>
+                         &nbsp;&nbsp;<label  style='display:none;'>异常说明</label>
+                        <label  style='display:none;'><input type="text" name="item_i_7_remark" /></label>
+            	</div>
+            	<div class="col-md-3">标签是否脱落:</div>
+                <div class="col-md-7">
+                    	<label class="checkbox checkbox-inline"><input type="radio" name="item_i_8" value="true" checked/> 否</label>
+                        <label class="checkbox checkbox-inline"><input type="radio" name="item_i_8" value="false"/> 是</label>
+                         &nbsp;&nbsp;<label  style='display:none;'>异常说明</label>
+                        <label  style='display:none;'><input type="text" name="item_i_8_remark" /></label>
+            	</div>
+           	</div>
+    	</div>
+	</div>
+</div>
+</div>
+
+<div id="tabs-3">
+<div class="tabs-vertical-env tabs-vertical-bordered">
+	<ul class="nav tabs-vertical" id="netTableTitle">
+		<li class="active"><a href="#v4-step_20" data-toggle="tab">K203X</a></li>
+		<li><a href="#v4-step_21" data-toggle="tab">K2311</a></li>
+		<li><a href="#v4-step_22" data-toggle="tab">K111(1)</a></li>
+		<li><a href="#v4-step_23" data-toggle="tab">K111(2)</a></li>
+		<li><a href="#v4-step_24" data-toggle="tab">内网机房RG-S12010</a></li>
+		<li><a href="#v4-step_25" data-toggle="tab">内网机房RG-S6000</a></li>
+		<li><a href="#v4-step_26" data-toggle="tab">内网机房RG-S6000</a></li>
+	</ul>
+	<div class="tab-content" id="netTable">
+		<div class="tab-pane" id="v4-step_i">
+			<div id="title_i" class="label label-info" style="font-size:14px;"></div>
+			<div class="row-form clearfix">
+            	<div class="col-md-3">电源是否正常:</div>
+                <div class="col-md-7">
+                    	<label class="checkbox checkbox-inline"><input type="radio" name="item_i_1" value="true" checked/> 是</label>
+                        <label class="checkbox checkbox-inline"><input type="radio" name="item_i_1" value="false"/> 否</label>
+                        &nbsp;&nbsp;<label style='display:none;'>异常说明</label>
+                        <label  style='display:none;'><input type="text" name="item_i_1_remark" /></label>
+            	</div>
+            	<div class="col-md-3">风扇是否正常:</div>
+                <div class="col-md-7">
+                    	<label class="checkbox checkbox-inline"><input type="radio" name="item_i_2" value="true" checked/> 是</label>
+                        <label class="checkbox checkbox-inline"><input type="radio" name="item_i_2" value="false"/> 否</label>
+                         &nbsp;&nbsp;<label  style='display:none;'>异常说明</label>
+                        <label  style='display:none;'><input type="text" name="item_i_2_remark" /></label>
+            	</div>
+            	<div class="col-md-3">板卡是否正常:</div>
+                <div class="col-md-7">
+                    	<label class="checkbox checkbox-inline"><input type="radio" name="item_i_3" value="true" checked/> 是</label>
+                        <label class="checkbox checkbox-inline"><input type="radio" name="item_i_3" value="false"/> 否</label>
+                         &nbsp;&nbsp;<label  style='display:none;'>异常说明</label>
+                        <label  style='display:none;'><input type="text" name="item_i_3_remark" /></label>
+            	</div>
+            	<div class="col-md-3">线缆及标签是否正常:</div>
+                <div class="col-md-7">
+                    	<label class="checkbox checkbox-inline"><input type="radio" name="item_i_4" value="true" checked/> 是</label>
+                        <label class="checkbox checkbox-inline"><input type="radio" name="item_i_4" value="false"/> 否</label>
+                         &nbsp;&nbsp;<label  style='display:none;'>异常说明</label>
+                        <label  style='display:none;'><input type="text" name="item_i_4_remark" /></label>
+            	</div>
+            	<div class="col-md-3">访问页面是否正常:</div>
+                <div class="col-md-7">
+                    	<label class="checkbox checkbox-inline"><input type="radio" name="item_i_5" value="true" checked/> 是</label>
+                        <label class="checkbox checkbox-inline"><input type="radio" name="item_i_5" value="false"/> 否</label>
+                         &nbsp;&nbsp;<label  style='display:none;'>异常说明</label>
+                        <label  style='display:none;'><input type="text" name="item_i_5_remark" /></label>
+            	</div>
+           	</div>
+    	</div>
+	</div>
+</div>
+</div>
+
+	
+</div>
+<script>
+$(document).ready(function(){
+	var tmp = $("#serverTable").html();
+	$("#serverTable").html("");
+	for(i=1;i<=13;i++)
+	{
+		$("#serverTable").append( tmp.replace(/_i/g,"_"+i) );
+		var tid = "#serverTableTitle a[href='#v4-step_"+i+"']";
+		$("#title_"+i).html($(tid).html());
+	}
+	
+	var stmp = $("#securityTable").html();
+	$("#securityTable").html("");
+	for(i=14;i<=19;i++)
+	{
+		$("#securityTable").append( stmp.replace(/_i/g,"_"+i) );
+		var tid = "#securityTableTitle a[href='#v4-step_"+i+"']";
+		$("#title_"+i).html($(tid).html());
+	}
+	
+	var ntmp = $("#netTable").html();
+	$("#netTable").html("");
+	for(i=20;i<=26;i++)
+	{
+		$("#netTable").append( ntmp.replace(/_i/g,"_"+i) );
+		var tid = "#netTableTitle a[href='#v4-step_"+i+"']";
+		$("#title_"+i).html($(tid).html());
+	}
+
+	$("#v4-step_1").addClass("active");
+	$("#v4-step_14").addClass("active"); 
+	$("#v4-step_20").addClass("active"); 
+	
+    $("#inspection_div").tabs();
+});
+</script>
+                        	

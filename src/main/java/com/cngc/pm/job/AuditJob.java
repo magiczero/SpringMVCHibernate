@@ -29,7 +29,7 @@ public class AuditJob {
 		
 		Map<String,String> variables = new HashMap<String,String>();
 		variables.put("type", PropertyFileUtil.getStringValue("syscode.secjob.audit"));
-		variables.put("user", "chenweijia");
+		variables.put("user", PropertyFileUtil.getStringValue("job.audit.user"));
 		
 		formService.submitStartFormData(processDefinition.getId(), variables);
 	}

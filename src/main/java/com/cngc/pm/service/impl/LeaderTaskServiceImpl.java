@@ -59,6 +59,12 @@ public class LeaderTaskServiceImpl implements LeaderTaskService{
 	}
 	@Override
 	@Transactional
+	public SearchResult<LeaderTask> search(List<String> processInstanceIds, String startTime,String endTime)
+	{
+		return leaderTaskDao.search(processInstanceIds, startTime, endTime);
+	}
+	@Override
+	@Transactional
 	public Map<String,Object> getStats(String column,String row,String startTime,String endTime)
 	{
 		return leaderTaskDao.getStats(column, row, startTime, endTime);

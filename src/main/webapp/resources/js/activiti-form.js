@@ -382,9 +382,7 @@ function act_template_display(template_name,address,bsave){
         	if(bsave)
         	{
 	        	$("#form_template").append("<div class='toolbar nopadding-toolbar clear clearfix'>"
-	        				+"<div class='right btn-group'>"
-	        				+"<button class='btn btn-warning' id='lnk_save_template'> 保存数据 </button>"   
-	        				+"</div>"
+	        				+"<button class='btn btn-warning center-block' id='lnk_save_template'> 保存数据 </button>"   
 	        				+"</div>");
 	       		$("#lnk_save_template").bind("click",act_template_saveData);
         	}

@@ -8,12 +8,17 @@
     <startEvent id="startInspection" name="Start">
       <extensionElements>
         <activiti:formProperty id="user" name="分配工程师" type="user"></activiti:formProperty>
+        <activiti:formProperty id="template" name="巡检模板" type="enum">
+          <activiti:value id="INSPECTION_BKY" name="兵科院--日常巡检模板"></activiti:value>
+          <activiti:value id="INSPECTION_XXZX" name="信息中心--日常巡检模板"></activiti:value>
+        </activiti:formProperty>
       </extensionElements>
     </startEvent>
     <userTask id="taskDoInspection" name="巡检执行中" activiti:assignee="${inspection.executionUser}">
       <extensionElements>
         <activiti:formProperty id="template" name="巡检模板" type="enum" expression="${inspection.template}">
-          <activiti:value id="INSPECTION" name="日常巡检模板"></activiti:value>
+          <activiti:value id="INSPECTION_BKY" name="兵科院--日常巡检模板"></activiti:value>
+          <activiti:value id="INSPECTION_XXZX" name="信息中心--日常巡检模板"></activiti:value>
         </activiti:formProperty>
         <activiti:formProperty id="status" name="是否正常" type="enum">
           <activiti:value id="01" name="正常"></activiti:value>

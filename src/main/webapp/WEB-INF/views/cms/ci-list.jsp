@@ -76,17 +76,17 @@
                 
                 $.each(jsonData, function (i, field) {
                 	var code = field.text.substring(0,field.text.indexOf(" "));
-                	var liStr = "<li><a href=\"#\" onclick=\"initTable("+code+");\">"+field.text+"</a>";
+                	var liStr = "<li><a href=\"#\" onclick=\"initTable('"+code+"');\">"+field.text+"</a>";
                 	if(field.nodes) {
                 		liStr += "<ul>";
                 		$.each(field.nodes, function(j, node){
                 			var code1 = node.text.substring(0,node.text.indexOf(" "));
-                			liStr+="<li><a href=\"#\" onclick=\"initTable("+code1+");\">"+node.text+"</a>";
+                			liStr+="<li><a href=\"#\" onclick=\"initTable('"+code1+"');\">"+node.text+"</a>";
                 			if(node.nodes) {
                 				liStr += "<ul>";
                 				$.each(node.nodes, function(k, last){
                 					var code2 = last.text.substring(0,last.text.indexOf(" "));
-                					liStr+="<li><a href=\"#\" onclick=\"initTable("+code2+");\">"+last.text+"</a></li>";
+                					liStr+="<li><a href=\"#\" onclick=\"initTable('"+code2+"');\">"+last.text+"</a></li>";
                 				});
                 				liStr += "</ul>";
                 			}
@@ -112,7 +112,7 @@
             });
             function initTable(code)
             {
-            	
+            	alert(code);
             	$.getJSON(ctx + '/cms/ci/list/'+code+'/?t=' + pm_random() , function(data) {
             		$("#ciTable tbody tr").remove();
             		if(data.list==null)

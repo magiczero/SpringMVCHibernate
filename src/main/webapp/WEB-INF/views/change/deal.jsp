@@ -83,7 +83,7 @@
 				$("#btn_set_property").bind("click",getProperty);
                 
 				act_form_task(taskid,'/change/list');   
-				pm_knowledge_initdialog("incident",changeid);
+				//pm_knowledge_initdialog("incident",changeid);
                 act_comment_getlist(processInstanceId,taskid);
                 if(status=="05")
                 {

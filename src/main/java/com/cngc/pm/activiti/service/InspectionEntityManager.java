@@ -26,6 +26,8 @@ public class InspectionEntityManager {
 		InspectionJpaEntity inspection = new InspectionJpaEntity();
 		inspection.setProcessInstanceId(execution.getProcessInstanceId());
 		inspection.setExecutionUser(execution.getVariable("user").toString());
+		if(execution.getVariable("template")!=null)
+			inspection.setTemplate(execution.getVariable("template").toString());
 		inspection.setCreatedTime(new Date());
 		entityManager.persist(inspection);
 		return inspection;
@@ -34,6 +36,8 @@ public class InspectionEntityManager {
 	@Transactional
 	public boolean setInspectionStatus(DelegateExecution execution) {
 		InspectionJpaEntity inspection = (InspectionJpaEntity) execution.getVariable("inspection");
+		if(inspection==null)
+			return true;
 		inspection.setExecutionUser(execution.getVariable("user").toString());
 		inspection.setExecutionTime(new Date());
 		inspection.setStatus(execution.getVariable("status").toString());

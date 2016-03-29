@@ -178,11 +178,16 @@ public class TaskController {
 				.processDefinitionId(task.getProcessDefinitionId()).singleResult();
 		switch (processDefinition.getKey()) {
 		case "INCIDENT":
-			if (userUtil.IsCommonUser(authentication))
-				re = "/incident/mylist";
-			else
+			if (userUtil.IsEngineer(authentication))
+			{
 				re = "/incident/list";
 			break;
+			}
+			if (userUtil.IsCommonUser(authentication))
+			{
+				re = "/incident/mylist";
+				break;
+			}
 		case "CHANGE":
 			re = "/change/list";
 			break;

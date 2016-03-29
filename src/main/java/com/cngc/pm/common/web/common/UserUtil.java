@@ -69,28 +69,29 @@ public class UserUtil {
 	 * @return
 	 */
 	public Boolean IsWorkflowManager(Authentication authentication) {
-		Boolean bresult = false;
-		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-		
-		if (auth == null)
-			return bresult;
-
-		UserDetails user = (UserDetails) auth.getPrincipal();
-		if (user == null)
-			return bresult;
-		else
-		{
-			SysUser sysuser = userService.getByUsername(user.getUsername());
-			Set<UserRole> roles = sysuser.getUserRoles();
-			for (UserRole role : roles) {
-				if (role.getRole().getRoleName()
-						.equals(PropertyFileUtil.getStringValue("system.user.role.workflowmanager"))) {
-					bresult = true;
-					break;
-				}
-			}
-			return bresult;
-		}
+//		Boolean bresult = false;
+//		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+//		
+//		if (auth == null)
+//			return bresult;
+//
+//		UserDetails user = (UserDetails) auth.getPrincipal();
+//		if (user == null)
+//			return bresult;
+//		else
+//		{
+//			SysUser sysuser = userService.getByUsername(user.getUsername());
+//			Set<UserRole> roles = sysuser.getUserRoles();
+//			for (UserRole role : roles) {
+//				if (role.getRole().getRoleName()
+//						.equals(PropertyFileUtil.getStringValue("system.user.role.workflowmanager"))) {
+//					bresult = true;
+//					break;
+//				}
+//			}
+//			return bresult;
+//		}
+		return QueryUser(authentication,PropertyFileUtil.getStringValue("system.user.role.workflowmanager"));
 	}
 
 	/**
@@ -100,26 +101,27 @@ public class UserUtil {
 	 * @return
 	 */
 	public Boolean IsServiceDesk(Authentication authentication) {
-		Boolean bresult = false;
-		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-		
-		if (auth == null)
-			return bresult;
-		
-		UserDetails user = (UserDetails) auth.getPrincipal();
-		if (user == null)
-			return bresult;
-		else {
-			SysUser sysuser = userService.getByUsername(user.getUsername());
-			Set<UserRole> roles = sysuser.getUserRoles();
-			for (UserRole role : roles) {
-				if (role.getRole().getRoleName().equals(PropertyFileUtil.getStringValue("system.user.servicedesk"))) {
-					bresult = true;
-					break;
-				}
-			}
-			return bresult;
-		}
+//		Boolean bresult = false;
+//		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+//		
+//		if (auth == null)
+//			return bresult;
+//		
+//		UserDetails user = (UserDetails) auth.getPrincipal();
+//		if (user == null)
+//			return bresult;
+//		else {
+//			SysUser sysuser = userService.getByUsername(user.getUsername());
+//			Set<UserRole> roles = sysuser.getUserRoles();
+//			for (UserRole role : roles) {
+//				if (role.getRole().getRoleName().equals(PropertyFileUtil.getStringValue("system.user.servicedesk"))) {
+//					bresult = true;
+//					break;
+//				}
+//			}
+//			return bresult;
+//		}
+		return QueryUser(authentication,PropertyFileUtil.getStringValue("system.user.servicedesk"));
 	}
 
 	/**
@@ -129,6 +131,39 @@ public class UserUtil {
 	 * @return
 	 */
 	public Boolean IsCommonUser(Authentication authentication) {
+//		Boolean bresult = false;
+//		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+//		
+//		if (auth == null)
+//			return bresult;
+//		
+//		UserDetails user = (UserDetails) auth.getPrincipal();
+//		if (user == null)
+//			return bresult;
+//		else {
+//			SysUser sysuser = userService.getByUsername(user.getUsername());
+//			Set<UserRole> roles = sysuser.getUserRoles();
+//			for (UserRole role : roles) {
+//				if (role.getRole().getRoleName().equals(PropertyFileUtil.getStringValue("system.user.role.user"))) {
+//					bresult = true;
+//					break;
+//				}
+//			}
+//			return bresult;
+//		}
+		return QueryUser(authentication,PropertyFileUtil.getStringValue("system.user.role.user"));
+	}
+	
+	/**
+	 * 当前用户是否为工程师
+	 * @param authentication
+	 * @return
+	 */
+	public Boolean IsEngineer(Authentication authentication) {
+	
+		return QueryUser(authentication,PropertyFileUtil.getStringValue("system.user.engineer"));
+	}
+	public Boolean QueryUser(Authentication authentication,String userrole) {
 		Boolean bresult = false;
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		
@@ -142,7 +177,7 @@ public class UserUtil {
 			SysUser sysuser = userService.getByUsername(user.getUsername());
 			Set<UserRole> roles = sysuser.getUserRoles();
 			for (UserRole role : roles) {
-				if (role.getRole().getRoleName().equals(PropertyFileUtil.getStringValue("system.user.role.user"))) {
+				if ( userrole.indexOf(role.getRole().getRoleName())>=0 ) {
 					bresult = true;
 					break;
 				}

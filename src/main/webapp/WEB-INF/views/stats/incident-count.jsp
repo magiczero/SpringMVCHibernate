@@ -52,7 +52,7 @@
       <script src="${contextPath }/resources/js/html5shiv.js"></script>
       <script src="${contextPath }/resources/js/respond.min.js"></script>
     <![endif]-->
-    <script type="text/javascript">
+        <script type="text/javascript">
     	var ctx = "${contextPath}";
     	var mylabels = [<c:forEach items="${stat.column }" var="code" varStatus="status"><c:if test="${status.index>0}">,</c:if>'${code.value}'</c:forEach>];
     	var mydata=[<c:forEach items="${stat.column }" var="code" varStatus="status"><c:if test="${status.index>0}">,</c:if>${stat.counts[code.key]==null?0:stat.counts[code.key]}</c:forEach>];
@@ -60,16 +60,32 @@
         	$(".header").load("${contextPath}/header?t="+pm_random());
             $(".menu").load("${contextPath}/menu?t="+pm_random(), function () { $("#node_${moduleId}").addClass("active"); });
             $(".breadLine .buttons").load("${contextPath}/contentbuttons?t="+pm_random());
-            if($("#barChart").length > 0){       
-	            var bctx = $("#barChart").get(0).getContext("2d");
-	            $("#barChart").attr('width',$("#barChart").parent('div').width()).attr('height',300);
-	            barChart = new Chart(bctx).Bar({
-	            	labels : mylabels,
-	                datasets : [{fillColor : "rgba(151,187,205,0.5)",strokeColor : "rgba(151,187,205,1)",data : mydata}]
-	            });
+
+            if( ($.browser.msie&&$.browser.version=="8.0") )
+            {
+            	if($("#barChart").length > 0){       
+                	$("#barChart").parent('div').resize(function(){
+    		            var bctx = $("#barChart").get(0).getContext("2d");
+    		            $("#barChart").attr('width',$("#barChart").parent('div').width()).attr('height',300);
+    		            var barChart = new Chart(bctx).Bar({
+    		            	labels : mylabels,
+    		                datasets : [{fillColor : "rgba(151,187,205,0.5)",strokeColor : "rgba(151,187,205,1)",data : mydata}]
+    		            });
+                	});
+                }
+            }else{
+            	if($("#barChart").length > 0){       
+    		    	var bctx = $("#barChart").get(0).getContext("2d");
+    		        $("#barChart").attr('width',$("#barChart").parent('div').width()).attr('height',300);
+    		        var barChart = new Chart(bctx).Bar({
+    		          	labels : mylabels,
+    		            datasets : [{fillColor : "rgba(151,187,205,0.5)",strokeColor : "rgba(151,187,205,1)",data : mydata}]
+    		        });
+                }
             }
         });
-    </script>
+    	</script>
+   	
 </head>
 <body>
     <div class="wrapper"> 

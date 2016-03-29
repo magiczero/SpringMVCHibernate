@@ -1,5 +1,6 @@
 package com.cngc.pm.dao.impl;
 
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +31,16 @@ public class LeaderTaskDAOImpl extends BaseDAOImpl<LeaderTask,Long> implements L
 		Search search = new Search();
 		search.addFilterCustom("DATE(apply_time)>='"+startTime+"'");
 		search.addFilterCustom("DATE(apply_time)<='"+endTime+"'");
+		
+		return this.searchAndCount(search);
+	}
+	@Override
+	public SearchResult<LeaderTask> search(List<String> processInstanceIds, String startTime,String endTime)
+	{
+		Search search = new Search();
+		search.addFilterCustom("DATE(apply_time)>='"+startTime+"'");
+		search.addFilterCustom("DATE(apply_time)<='"+endTime+"'");
+		search.addFilterIn("processInstanceId", processInstanceIds);
 		
 		return this.searchAndCount(search);
 	}

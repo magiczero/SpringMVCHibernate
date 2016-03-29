@@ -89,16 +89,16 @@
          	// 巡检结果对话框初始化
             $("#b_popup_inspection").dialog({
                 autoOpen: false,
-                width: 900,
-                height: 400,
+                width: 1150,
+                height: 600,
                 buttons: { "关闭": function () { $(this).dialog("close") } }
             });
             // 流程跟踪
             pm_workflow_inittracedialog();
         });
-        function viewInspection(id)
+        function viewInspection(template,id)
         {
-        	act_template_display('INSPECTION',ctx + '/record/inspection/'+id+'/template/get?t=' + pm_random(),false);
+        	act_template_display(template,ctx + '/record/inspection/'+id+'/template/get?t=' + pm_random(),false);
         	$("#b_popup_inspection").dialog('open');
         	return false;
         }
@@ -221,7 +221,7 @@
 												<a href="${contextPath }/record/inspection/deal/${inspection.id}/${mytask.id}"><span class="glyphicon glyphicon-edit"></span> 办理</a>
 											</c:if>
 											<c:if test="${empty task }">
-												<a href="#" onclick="javascript:viewInspection(${inspection.id});"><span class="glyphicon glyphicon-search"></span> 查看</a>
+												<a href="#" onclick="javascript:viewInspection('${inspection.template}',${inspection.id});"><span class="glyphicon glyphicon-search"></span> 查看</a>
 											</c:if>
 										</td>
 									</tr>

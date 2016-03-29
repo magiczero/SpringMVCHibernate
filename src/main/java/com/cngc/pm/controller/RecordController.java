@@ -244,7 +244,10 @@ public class RecordController {
 
 		ObjectMapper mapper = new ObjectMapper();
 		try {
-			result.put("result", mapper.readValue(inspection.getTemplateData(), Map.class));
+			if(inspection.getTemplateData()!=null && inspection.getTemplateData()!="")
+				result.put("result", mapper.readValue(inspection.getTemplateData(), Map.class));
+			else
+				result.put("result", "");
 		} catch (JsonParseException e) {
 
 		} catch (JsonMappingException e) {

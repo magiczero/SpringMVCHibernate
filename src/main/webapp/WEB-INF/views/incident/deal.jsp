@@ -72,7 +72,7 @@
             $(".breadLine .buttons").load("${contextPath}/contentbuttons?t=" + pm_random());
   
             act_comment_getlist(processInstanceId,taskId);
-            pm_knowledge_initdialog("incident",incidentId);
+            //pm_knowledge_initdialog("incident",incidentId);
             pm_cms_initselectdialog('incident');
             
             $(".tabs").find("li").bind("click",function(){

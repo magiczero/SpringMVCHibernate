@@ -1,6 +1,7 @@
 package com.cngc.pm.controller;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
@@ -10,9 +11,11 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
 import org.activiti.engine.FormService;
+import org.activiti.engine.HistoryService;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
+import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.task.Task;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
@@ -35,6 +38,8 @@ public class LeaderTaskController {
 	private RuntimeService runtimeService;
 	@Resource
 	private RepositoryService repositoryService;
+	@Resource
+	private HistoryService historyService;
 	@Resource
 	private FormService formService;
 	@Resource
@@ -62,17 +67,22 @@ public class LeaderTaskController {
 			endTime = formatter.format(now.getTime());
 		}
 
+		List<LeaderTask> list = null;
 		List<Task> tasks = null;
 		List<Task> mytasks = null;
 		Map<String, Task> taskmap = null;
 		Map<String, Task> mytaskmap = new HashMap<String, Task>();
+		List<String> processInstanceIds = new ArrayList<String>();
+		
 		// 我的任务
 		mytasks = taskService.createTaskQuery()
 				.processDefinitionKey(PropertyFileUtil.getStringValue("workflow.processkey.leadertask"))
 				.taskCandidateOrAssigned(userUtil.getUserId(authentication)).active().list();
 		for (Task task : mytasks)
+		{
 			mytaskmap.put(task.getProcessInstanceId(), task);
-
+			processInstanceIds.add(task.getProcessInstanceId());
+		}
 		// 所有任务
 		tasks = taskService.createTaskQuery()
 				.processDefinitionKey(PropertyFileUtil.getStringValue("workflow.processkey.leadertask")).active()
@@ -80,10 +90,23 @@ public class LeaderTaskController {
 		taskmap = new HashMap<String, Task>();
 		for (Task task : tasks)
 			taskmap.put(task.getProcessInstanceId(), task);
+		
+		// 我参与过的任务
+		List<HistoricTaskInstance> myhistory = historyService.createHistoricTaskInstanceQuery()
+				.processDefinitionKey(PropertyFileUtil.getStringValue("workflow.processkey.leadertask"))
+				.taskAssignee(userUtil.getUserId(authentication)).list();
+		for (HistoricTaskInstance task : myhistory)
+			processInstanceIds.add(task.getProcessInstanceId());
+		if (userUtil.IsWorkflowManager(authentication)) // 流程管理者可查看所有领导交办任务信息
+		{
+			list = leaderTaskService.search(startTime, endTime).getResult();
+		}
+		else
+			list = leaderTaskService.search(processInstanceIds, startTime, endTime).getResult();
 
 		model.addAttribute("tasks", taskmap);
 		model.addAttribute("mytasks", mytaskmap);
-		model.addAttribute("list", leaderTaskService.search(startTime, endTime).getResult());
+		model.addAttribute("list", list);
 
 		return "leadertask/list";
 	}

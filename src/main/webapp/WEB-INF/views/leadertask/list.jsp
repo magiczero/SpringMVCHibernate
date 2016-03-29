@@ -192,26 +192,36 @@
 										<td><fmt:formatDate value="${leaderTask.applyTime }" pattern="yyyy-MM-dd"></fmt:formatDate></td>
 										<td><fmt:formatDate value="${leaderTask.dueTime }" pattern="yyyy-MM-dd"></fmt:formatDate></td>
 										<td>
-											<c:if test="${not empty task }">
+											<c:if test="${not empty mytask }">
+												<a class="lnk_trace" href='#' pid="${leaderTask.processInstanceId }" pdid="${mytask.processDefinitionId }" title="点击查看流程图">
+													${mytask.name }
+												</a>
+											</c:if>
+											<c:if test="${empty mytask && not empty task }">
 												<a class="lnk_trace" href='#' pid="${leaderTask.processInstanceId }" pdid="${task.processDefinitionId }" title="点击查看流程图">
 													${task.name }
 												</a>
 											</c:if>
-											<c:if test="${empty task }">
+											<c:if test="${empty task && empty mytask }">
 												已完成
 											</c:if>
 										</td>
 										<td>
 
-											<c:if test="${empty task }">
+											<c:if test="${empty task && empty mytask }">
 												<a href="#" onclick="act_comment_open('${leaderTask.processInstanceId}',true)"><span class="glyphicon glyphicon-edit"></span> 意见</a>
 											</c:if>
-											<c:if test="${not empty task }">
+											<c:if test="${not empty task || not empty mytask }">
 												<a href="#" onclick="act_comment_open('${leaderTask.processInstanceId}',false)"><span class="glyphicon glyphicon-edit"></span> 意见</a>
 											</c:if>
 											<a href="#" onclick="act_history_open('${leaderTask.processInstanceId}')"><span class="glyphicon glyphicon-list-alt"></span> 历史</a>
 											<c:if test="${not empty mytask }">
-												<a href="${contextPath }/leadertask/deal/${leaderTask.id}/${mytask.id}"><span class="glyphicon glyphicon-edit"></span> 办理</a>
+												<c:if test="${empty mytask.assignee }">
+													<a class="claim confirm" href="${contextPath }/workflow/task/claim/${mytask.id}"><span class="glyphicon glyphicon-edit"></span> 签收</a>
+												</c:if>
+												<c:if test="${not empty mytask.assignee }">
+													<a href="${contextPath }/leadertask/deal/${leaderTask.id}/${mytask.id}"><span class="glyphicon glyphicon-edit"></span> 办理</a>
+												</c:if>
 											</c:if>
 											<c:if test="${empty mytask }">
 												<a href="${contextPath }/leadertask/view/${leaderTask.id}" ><span class="glyphicon glyphicon-search"></span> 详情</a>

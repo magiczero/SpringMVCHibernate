@@ -35,8 +35,16 @@ public class InspectionJob {
 				.processDefinitionKey( processKey ).latestVersion().singleResult();
 		
 		Map<String,String> variables = new HashMap<String,String>();
-		variables.put("user", "chenweijia");
-		
-		formService.submitStartFormData(processDefinition.getId(), variables);
+		String struser = PropertyFileUtil.getStringValue("job.inspection.user");
+		String strtemplate = PropertyFileUtil.getStringValue("job.inspection.template");
+		String[] users = struser.split(",");
+		String[] templates = strtemplate.split(",");
+		for(int i=0;i<users.length;i++)
+		{
+			variables.put("user", users[i]);
+			if(templates.length>i)
+				variables.put("template", templates[i]);
+			formService.submitStartFormData(processDefinition.getId(), variables);
+		}
 	}
 }

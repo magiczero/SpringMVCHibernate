@@ -43,7 +43,6 @@
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/pnotify/jquery.pnotify.min.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/ibutton/jquery.ibutton.min.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/scrollup/jquery.scrollUp.min.js'></script>
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/treeview/bootstrap-treeview.min.js'></script>
     
     <script type='text/javascript' src='${contextPath }/resources/js/pm-common.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/activiti-comment.js'></script>

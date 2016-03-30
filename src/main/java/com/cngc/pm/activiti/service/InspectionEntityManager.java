@@ -38,10 +38,22 @@ public class InspectionEntityManager {
 		InspectionJpaEntity inspection = (InspectionJpaEntity) execution.getVariable("inspection");
 		if(inspection==null)
 			return true;
-		inspection.setExecutionUser(execution.getVariable("user").toString());
+		if(execution.getVariable("user")!=null)
+			inspection.setExecutionUser(execution.getVariable("user").toString());
 		inspection.setExecutionTime(new Date());
-		inspection.setStatus(execution.getVariable("status").toString());
-		if (inspection.getStatus().equals("02")) {
+		if(execution.getVariable("status")!=null)
+			inspection.setStatus(execution.getVariable("status").toString());
+		else
+			inspection.setStatus( PropertyFileUtil.getStringValue("syscode.inspection.normal") );
+
+		if(execution.getCurrentActivityName()!=null)
+		{
+			// 按流程步骤运行至结束
+			if(execution.getCurrentActivityName().equals("End"))
+				inspection.setEndbyuser(true);
+		}
+		
+		if (inspection.getStatus().equals( PropertyFileUtil.getPropertyValue("syscode.inspection.abnormal") )) {
 			// 异常生成工单
 			IncidentJpaEntity incident = new IncidentJpaEntity();
 			incident.setAbs(execution.getVariable("abstract").toString());

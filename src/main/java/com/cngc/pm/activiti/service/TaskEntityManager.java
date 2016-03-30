@@ -46,6 +46,12 @@ public class TaskEntityManager {
     @Transactional
     public boolean setTaskStatus(DelegateExecution execution){
     	TaskJpaEntity task = (TaskJpaEntity)execution.getVariable("mytask");
+		if(execution.getCurrentActivityName()!=null)
+		{
+			// 按流程步骤运行至结束
+			if(execution.getCurrentActivityName().equals("End"))
+				task.setEndbyuser(true);
+		}
     	task.setExecutionTime(new Date());
     	entityManager.persist(task);
     	return true;

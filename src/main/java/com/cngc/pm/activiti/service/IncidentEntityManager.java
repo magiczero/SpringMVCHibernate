@@ -29,6 +29,12 @@ public class IncidentEntityManager {
 	public boolean setIncidentStatus(DelegateExecution execution,String status){
 		IncidentJpaEntity incident = (IncidentJpaEntity)execution.getVariable("incident");
 		incident.setStatus(status);
+		if(execution.getCurrentActivityName()!=null)
+		{
+			// 按流程步骤运行至结束
+			if(execution.getCurrentActivityName().equals("End"))
+				incident.setEndbyuser(true);
+		}
 		if( status.equals(PropertyFileUtil.getStringValue("syscode.incident.status.finished")) )
 			incident.setRecoverTime(new Date());
 		entityManager.persist(incident);

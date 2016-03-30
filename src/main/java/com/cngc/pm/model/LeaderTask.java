@@ -31,6 +31,7 @@ public class LeaderTask implements Serializable{
 	private Date dueTime;
 	private String userId;
 	private Date executionTime;
+	private boolean endbyuser;
 	@Transient
 	private String fromUserName;
 	@Transient
@@ -121,6 +122,13 @@ public class LeaderTask implements Serializable{
 	}
 	public void setToUserName(String toUserName) {
 		this.toUserName = toUserName;
+	}
+	@Column(name="endbyuser")
+	public boolean isEndbyuser() {
+		return endbyuser;
+	}
+	public void setEndbyuser(boolean endbyuser) {
+		this.endbyuser = endbyuser;
 	}
 	
 }

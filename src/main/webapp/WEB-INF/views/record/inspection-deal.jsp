@@ -108,8 +108,7 @@
                     <h4>错误!</h4>请至少选择一项
                 </div> 
                 <div class="row">
-                  <div class="col-md-1"></div>
-                  <div class="col-md-10">
+                  <div class="col-md-12">
                         <div class="head clearfix">
                             <div class="isw-chats"></div>
                             <h1>${task.name }</h1>

@@ -34,6 +34,7 @@ public class SecJob implements Serializable{
 	private Date applyTime;
 	private Date executionTime;
 	private String processInstanceId;
+	private boolean endbyuser;
 	
 	@Transient
 	private String userName;
@@ -116,6 +117,13 @@ public class SecJob implements Serializable{
 	}
 	public void setTypeName(String typeName) {
 		this.typeName = typeName;
+	}
+	@Column(name="endbyuser")
+	public boolean isEndbyuser() {
+		return endbyuser;
+	}
+	public void setEndbyuser(boolean endbyuser) {
+		this.endbyuser = endbyuser;
 	}
 	
 	

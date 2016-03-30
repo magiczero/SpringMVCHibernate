@@ -248,13 +248,14 @@
 <div id="tabs-3">
 <div class="tabs-vertical-env tabs-vertical-bordered">
 	<ul class="nav tabs-vertical" id="netTableTitle">
-		<li class="active"><a href="#v4-step_20" data-toggle="tab">K203X</a></li>
-		<li><a href="#v4-step_21" data-toggle="tab">K2311</a></li>
-		<li><a href="#v4-step_22" data-toggle="tab">K111(1)</a></li>
-		<li><a href="#v4-step_23" data-toggle="tab">K111(2)</a></li>
-		<li><a href="#v4-step_24" data-toggle="tab">内网机房RG-S12010</a></li>
-		<li><a href="#v4-step_25" data-toggle="tab">内网机房RG-S6000</a></li>
+		<li class="active"><a href="#v4-step_20" data-toggle="tab">K203X(1)</a></li>
+		<li><a href="#v4-step_21" data-toggle="tab">K203X(2)</a></li>
+		<li><a href="#v4-step_22" data-toggle="tab">K2311</a></li>
+		<li><a href="#v4-step_23" data-toggle="tab">K111(1)</a></li>
+		<li><a href="#v4-step_24" data-toggle="tab">K111(2)</a></li>
+		<li><a href="#v4-step_25" data-toggle="tab">内网机房RG-S12010</a></li>
 		<li><a href="#v4-step_26" data-toggle="tab">内网机房RG-S6000</a></li>
+		<li><a href="#v4-step_27" data-toggle="tab">内网机房RG-S6000</a></li>
 	</ul>
 	<div class="tab-content" id="netTable">
 		<div class="tab-pane" id="v4-step_i">
@@ -325,7 +326,7 @@ $(document).ready(function(){
 	
 	var ntmp = $("#netTable").html();
 	$("#netTable").html("");
-	for(i=20;i<=26;i++)
+	for(i=20;i<=27;i++)
 	{
 		$("#netTable").append( ntmp.replace(/_i/g,"_"+i) );
 		var tid = "#netTableTitle a[href='#v4-step_"+i+"']";

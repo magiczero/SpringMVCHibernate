@@ -30,6 +30,7 @@ public class Update implements Serializable{
 	private Date executionTime;
 	private Date createdTime;
 	private String source;
+	private boolean endbyuser;
 	@Transient
 	private String userName;
 	@Transient
@@ -113,6 +114,13 @@ public class Update implements Serializable{
 	}
 	public void setTypeName(String typeName) {
 		this.typeName = typeName;
+	}
+	@Column(name="endbyuser")
+	public boolean isEndbyuser() {
+		return endbyuser;
+	}
+	public void setEndbyuser(boolean endbyuser) {
+		this.endbyuser = endbyuser;
 	}
 	
 	

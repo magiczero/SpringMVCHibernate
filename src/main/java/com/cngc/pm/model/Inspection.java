@@ -30,6 +30,7 @@ public class Inspection implements Serializable{
 	private String processInstanceId;
 	private Date createdTime;
 	private Long incidentId;
+	private boolean endbyuser;
 	@Transient
 	private String statusName;
 	@Transient
@@ -113,6 +114,13 @@ public class Inspection implements Serializable{
 	}
 	public void setIncidentId(Long incidentId) {
 		this.incidentId = incidentId;
+	}
+	@Column(name="endbyuser")
+	public boolean isEndbyuser() {
+		return endbyuser;
+	}
+	public void setEndbyuser(boolean endbyuser) {
+		this.endbyuser = endbyuser;
 	}
 	
 	

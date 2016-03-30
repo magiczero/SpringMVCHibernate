@@ -105,7 +105,7 @@ function pm_cms_initdialogtable(code)
 		$("#ciTable tbody tr").remove();
 		if(data.list==null)
 			return;
-		var trs;
+		var trs = "";
 		for(i=0;i<data.list.length;i++)
 		{
 			trs += "<tr>"
@@ -126,7 +126,7 @@ function pm_cms_inittable(relationId)
 	$.getJSON(ctx + '/cms/ci/getrelation/'+ciId+'/'+relationId+'?t=' + Math.random() , function(data) {
 		if(data.cis==null)
 			return;
-		var trs;
+		var trs = "";
 		for(i=0;i<data.cis.length;i++)
 		{
 			$("#table_"+relationId+" tbody tr").remove();

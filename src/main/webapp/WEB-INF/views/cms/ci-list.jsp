@@ -112,7 +112,6 @@
             });
             function initTable(code)
             {
-            	alert(code);
             	$.getJSON(ctx + '/cms/ci/list/'+code+'/?t=' + pm_random() , function(data) {
             		$("#ciTable tbody tr").remove();
             		if(data.list==null)

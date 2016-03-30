@@ -37,6 +37,12 @@ public class SecJobEntityManager {
 	    @Transactional
 	    public boolean setSecJobStatus(DelegateExecution execution){
 	    	SecJobJpaEntity job = (SecJobJpaEntity)execution.getVariable("secjob");
+			if(execution.getCurrentActivityName()!=null)
+			{
+				// 按流程步骤运行至结束
+				if(execution.getCurrentActivityName().equals("End"))
+					job.setEndbyuser(true);
+			}
 	    	job.setExecutionTime(new Date());
 	    	entityManager.persist(job);
 	    	return true;

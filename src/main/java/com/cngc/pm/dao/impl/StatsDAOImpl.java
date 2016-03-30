@@ -173,6 +173,9 @@ public class StatsDAOImpl extends BaseDAOImpl<Object, Long> implements StatsDAO 
 			if (status != null) {
 				if (!status.equals("00"))
 					sql += " AND status_='" + status + "' ";
+				// 统计工单时仅统计正常关闭的工单
+				if(status.equals(PropertyFileUtil.getStringValue("syscode.incident.status.finished")))
+					sql += " AND endbyuser=TRUE ";
 			}
 			sql += " GROUP BY " + columnName;
 			;
@@ -209,6 +212,9 @@ public class StatsDAOImpl extends BaseDAOImpl<Object, Long> implements StatsDAO 
 			if (status != null) {
 				if (!status.equals("00"))
 					sql += " AND status_='" + status + "' ";
+				// 统计工单时仅统计正常关闭的工单
+				if(status.equals(PropertyFileUtil.getStringValue("syscode.incident.status.finished")))
+					sql += " AND endbyuser=TRUE ";
 			}
 			sql += " GROUP BY R.SECONDARY_ID ";
 		} else {
@@ -217,6 +223,9 @@ public class StatsDAOImpl extends BaseDAOImpl<Object, Long> implements StatsDAO 
 			if (status != null) {
 				if (!status.equals("00"))
 					sql += " AND status_='" + status + "' ";
+				// 统计工单时仅统计正常关闭的工单
+				if(status.equals(PropertyFileUtil.getStringValue("syscode.incident.status.finished")))
+					sql += " AND endbyuser=TRUE ";
 			}
 			sql += "  GROUP BY " + columnName;
 			;
@@ -259,6 +268,9 @@ public class StatsDAOImpl extends BaseDAOImpl<Object, Long> implements StatsDAO 
 			if (status != null) {
 				if (!status.equals("00"))
 					sql += " AND status_='" + status + "' ";
+				// 统计工单时仅统计正常关闭的工单
+				if(status.equals(PropertyFileUtil.getStringValue("syscode.change.status.finished")))
+					sql += " AND endbyuser=TRUE ";
 			}
 			sql += " GROUP BY " + columnName;
 			;
@@ -296,6 +308,9 @@ public class StatsDAOImpl extends BaseDAOImpl<Object, Long> implements StatsDAO 
 			if (status != null) {
 				if (!status.equals("00"))
 					sql += " AND status_='" + status + "' ";
+				// 统计工单时仅统计正常关闭的工单
+				if(status.equals(PropertyFileUtil.getStringValue("syscode.change.status.finished")))
+					sql += " AND endbyuser=TRUE ";
 			}
 			sql += " GROUP BY R.CHANGE_ID ";
 		} else {
@@ -304,6 +319,9 @@ public class StatsDAOImpl extends BaseDAOImpl<Object, Long> implements StatsDAO 
 			if (status != null) {
 				if (!status.equals("00"))
 					sql += " AND status_='" + status + "' ";
+				// 统计工单时仅统计正常关闭的工单
+				if(status.equals(PropertyFileUtil.getStringValue("syscode.change.status.finished")))
+					sql += " AND endbyuser=TRUE ";
 			}
 			sql += "  GROUP BY " + columnName;
 			;
@@ -454,7 +472,7 @@ public class StatsDAOImpl extends BaseDAOImpl<Object, Long> implements StatsDAO 
 			String sql = "SELECT COUNT(*) AS COUNT," + columnName + " AS COLUMNID FROM wk_task ";
 			sql += " where " + rowName + "='" + entry.getKey() + "'";
 			sql += " AND DATE(apply_time) BETWEEN '" + startTime + "'  AND '" + endTime + "' ";
-			sql += " AND execution_time IS NOT NULL ";
+			sql += " AND execution_time IS NOT NULL AND endbyuser=TRUE ";
 			sql += " GROUP BY " + columnName;
 			;
 			Query query = this.getSession().createSQLQuery(sql);
@@ -534,7 +552,7 @@ public class StatsDAOImpl extends BaseDAOImpl<Object, Long> implements StatsDAO 
 		String sql = "";
 		sql = "SELECT COUNT(*) AS COUNT," + columnName + " AS COLUMNID FROM wk_task "
 				+ "  WHERE DATE(apply_time) BETWEEN '" + startTime + "'  AND '" + endTime + "' ";
-		sql += " AND execution_time IS NOT NULL ";
+		sql += " AND execution_time IS NOT NULL AND endbyuser=TRUE ";
 		sql += "  GROUP BY " + columnName;
 		;
 
@@ -566,7 +584,7 @@ public class StatsDAOImpl extends BaseDAOImpl<Object, Long> implements StatsDAO 
 		String sql = "";
 		sql = "SELECT COUNT(*) AS COUNT," + columnName + " AS COLUMNID FROM wk_inspection "
 				+ "  WHERE DATE(created_time) BETWEEN '" + startTime + "'  AND '" + endTime + "' ";
-		sql += " AND execution_time IS NOT NULL ";
+		sql += " AND execution_time IS NOT NULL AND endbyuser=TRUE ";
 		sql += "  GROUP BY " + columnName;
 		;
 
@@ -601,7 +619,7 @@ public class StatsDAOImpl extends BaseDAOImpl<Object, Long> implements StatsDAO 
 			String sql = "SELECT COUNT(*) AS COUNT," + columnName + " AS COLUMNID FROM wk_inspection ";
 			sql += " where " + rowName + "='" + entry.getKey() + "'";
 			sql += " AND DATE(created_time) BETWEEN '" + startTime + "'  AND '" + endTime + "' ";
-			sql += " AND execution_time IS NOT NULL ";
+			sql += " AND execution_time IS NOT NULL AND endbyuser=TRUE  ";
 			sql += " GROUP BY " + columnName;
 			;
 			Query query = this.getSession().createSQLQuery(sql);
@@ -633,7 +651,7 @@ public class StatsDAOImpl extends BaseDAOImpl<Object, Long> implements StatsDAO 
 		String sql = "";
 		sql = "SELECT COUNT(*) AS COUNT," + columnName + " AS COLUMNID FROM wk_update "
 				+ "  WHERE DATE(created_time) BETWEEN '" + startTime + "'  AND '" + endTime + "' ";
-		sql += " AND execution_time IS NOT NULL ";
+		sql += " AND execution_time IS NOT NULL AND endbyuser=TRUE  ";
 		sql += "  GROUP BY " + columnName;
 		;
 
@@ -668,7 +686,7 @@ public class StatsDAOImpl extends BaseDAOImpl<Object, Long> implements StatsDAO 
 			String sql = "SELECT COUNT(*) AS COUNT," + columnName + " AS COLUMNID FROM wk_update ";
 			sql += " where " + rowName + "='" + entry.getKey() + "'";
 			sql += " AND DATE(created_time) BETWEEN '" + startTime + "'  AND '" + endTime + "' ";
-			sql += " AND execution_time IS NOT NULL ";
+			sql += " AND execution_time IS NOT NULL AND endbyuser=TRUE ";
 			sql += " GROUP BY " + columnName;
 			;
 			Query query = this.getSession().createSQLQuery(sql);
@@ -700,7 +718,7 @@ public class StatsDAOImpl extends BaseDAOImpl<Object, Long> implements StatsDAO 
 		String sql = "";
 		sql = "SELECT COUNT(*) AS COUNT," + columnName + " AS COLUMNID FROM wk_sec_job "
 				+ "  WHERE DATE(apply_time) BETWEEN '" + startTime + "'  AND '" + endTime + "' ";
-		sql += " AND execution_time IS NOT NULL ";
+		sql += " AND execution_time IS NOT NULL AND endbyuser=TRUE  ";
 		sql += "  GROUP BY " + columnName;
 		;
 
@@ -736,7 +754,7 @@ public class StatsDAOImpl extends BaseDAOImpl<Object, Long> implements StatsDAO 
 			String sql = "SELECT COUNT(*) AS COUNT," + columnName + " AS COLUMNID FROM wk_sec_job ";
 			sql += " where " + rowName + "='" + entry.getKey() + "'";
 			sql += " AND DATE(apply_time) BETWEEN '" + startTime + "'  AND '" + endTime + "' ";
-			sql += " AND execution_time IS NOT NULL ";
+			sql += " AND execution_time IS NOT NULL AND endbyuser=TRUE ";
 			sql += " GROUP BY " + columnName;
 			;
 			Query query = this.getSession().createSQLQuery(sql);

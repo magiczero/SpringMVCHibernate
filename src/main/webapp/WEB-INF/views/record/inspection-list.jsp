@@ -204,7 +204,8 @@
 												</a>
 											</c:if>
 											<c:if test="${empty task }">
-												已完成
+												<c:if test="${inspection.endbyuser }">已完成</c:if>
+												<c:if test="${!inspection.endbyuser }">由系统关闭</c:if>
 											</c:if>
 										</td>
 										<td>

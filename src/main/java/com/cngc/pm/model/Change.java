@@ -47,6 +47,7 @@ public class Change {
 	private String result;
 	private String processInstanceId;
 	private Date endTime;
+	private boolean endbyuser;
 	
 	@Transient
 	private String priorityName;
@@ -288,6 +289,13 @@ public class Change {
 	}
 	public void setDelegateUserName(String delegateUserName) {
 		this.delegateUserName = delegateUserName;
+	}
+	@Column(name="endbyuser")
+	public boolean isEndbyuser() {
+		return endbyuser;
+	}
+	public void setEndbyuser(boolean endbyuser) {
+		this.endbyuser = endbyuser;
 	}
 	
 }

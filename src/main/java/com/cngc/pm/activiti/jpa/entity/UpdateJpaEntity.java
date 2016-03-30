@@ -28,6 +28,7 @@ public class UpdateJpaEntity implements Serializable{
 	private Date executionTime;
 	private Date createdTime;
 	private String source;
+	private boolean endbyuser;
 	
     @Id
     @Column(name="ID")
@@ -96,8 +97,14 @@ public class UpdateJpaEntity implements Serializable{
 	public void setCreatedTime(Date createdTime) {
 		this.createdTime = createdTime;
 	}
-	
-    @Override
+	@Column(name="endbyuser")
+	public boolean isEndbyuser() {
+		return endbyuser;
+	}
+	public void setEndbyuser(boolean endbyuser) {
+		this.endbyuser = endbyuser;
+	}
+	@Override
     public String toString() {
         return ToStringBuilder.reflectionToString(this);
     }

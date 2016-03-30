@@ -38,6 +38,7 @@ public class Knowledge implements Serializable {
 	private String processInstanceId;
 	private Long hits;
 	private Date lastReadTime;
+	private boolean endbyuser;
 	
 	@Transient
 	private String statusName;
@@ -191,6 +192,13 @@ private Set<Attachment> attachs = new HashSet<>();							//附件
 
 	public void setApplyUserName(String applyUserName) {
 		this.applyUserName = applyUserName;
+	}
+	@Column(name="endbyuser")
+	public boolean isEndbyuser() {
+		return endbyuser;
+	}
+	public void setEndbyuser(boolean endbyuser) {
+		this.endbyuser = endbyuser;
 	}
 	
 }

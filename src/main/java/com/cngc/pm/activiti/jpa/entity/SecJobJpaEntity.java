@@ -30,6 +30,7 @@ public class SecJobJpaEntity  implements Serializable{
 	private Date applyTime;
 	private Date executionTime;
 	private String processInstanceId;
+	private boolean endbyuser;
 	
 	private Set<AttachmentEntity> attachs = new HashSet<>();							//附件
 	
@@ -93,6 +94,13 @@ public class SecJobJpaEntity  implements Serializable{
 	}
 	public void setProcessInstanceId(String processInstanceId) {
 		this.processInstanceId = processInstanceId;
+	}
+	@Column(name="endbyuser")
+	public boolean isEndbyuser() {
+		return endbyuser;
+	}
+	public void setEndbyuser(boolean endbyuser) {
+		this.endbyuser = endbyuser;
 	}
 	
 }

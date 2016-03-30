@@ -197,7 +197,7 @@
                         <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>                        
                         <h4 id="dialogTitle">流程结束</h4>
                     </div>
-                    <form id="userForm" action="${contextPath}//workflow/processinstance/delete" method="post">
+                    <form id="userForm" action="${contextPath}/workflow/processinstance/delete" method="post">
                     <div class="modal-body modal-body-np">
                         <div class="row">
                             <div class="block-fluid">

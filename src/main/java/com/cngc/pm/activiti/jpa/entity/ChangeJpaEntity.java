@@ -36,6 +36,7 @@ public class ChangeJpaEntity {
 	private String result;
 	private String processInstanceId;
 	private Date endTime;
+	private boolean endbyuser;
 	
 	@Id
 	@Column(name="id")
@@ -193,7 +194,13 @@ public class ChangeJpaEntity {
 	public void setEndTime(Date endTime) {
 		this.endTime = endTime;
 	}
-	
+	@Column(name="endbyuser")
+	public boolean isEndbyuser() {
+		return endbyuser;
+	}
+	public void setEndbyuser(boolean endbyuser) {
+		this.endbyuser = endbyuser;
+	}
 	@Override
     public String toString() {
         return ToStringBuilder.reflectionToString(this);

@@ -36,6 +36,7 @@ public class IncidentJpaEntity {
 	private String processInstanceId;
 	private String satisfaction;
 	private String feedback;
+	private boolean endbyuser;
 	
 	@Id
 	@Column(name="id")
@@ -199,6 +200,13 @@ public class IncidentJpaEntity {
 	}
 	public void setFeedback(String feedback) {
 		this.feedback = feedback;
+	}
+	@Column(name="endbyuser")
+	public boolean isEndbyuser() {
+		return endbyuser;
+	}
+	public void setEndbyuser(boolean endbyuser) {
+		this.endbyuser = endbyuser;
 	}
 	@Override
     public String toString() {

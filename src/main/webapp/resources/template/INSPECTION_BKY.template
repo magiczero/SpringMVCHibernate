@@ -103,7 +103,7 @@
             	</div>
             	<div class="col-md-3">CPU使用率:</div>
                 <div class="col-md-7">
-                        <label><input type="text" name="item_i_12_text" /></label>
+                        <label><input type="text" name="item_i_12_text" /></label>%
                          &nbsp;&nbsp;是否低于总容量的80%:
                         <label class="checkbox checkbox-inline"><input type="radio" name="item_i_12" value="true" checked/> 是</label>
                         <label class="checkbox checkbox-inline"><input type="radio" name="item_i_12" value="false"/> 否</label>
@@ -112,7 +112,7 @@
             	</div>
             	<div class="col-md-3">内存使用率:</div>
                 <div class="col-md-7">
-                        <label><input type="text" name="item_i_13_text" /></label>
+                        <label><input type="text" name="item_i_13_text" /></label>%
                         &nbsp;&nbsp;是否低于总容量的80%:
                         <label class="checkbox checkbox-inline"><input type="radio" name="item_i_13" value="true" checked/> 是</label>
                         <label class="checkbox checkbox-inline"><input type="radio" name="item_i_13" value="false"/> 否</label>
@@ -121,7 +121,7 @@
             	</div>
             	<div class="col-md-3">系统磁盘空间使用情况:</div>
                 <div class="col-md-7">
-                        <label><input type="text" name="item_i_14_text" /></label>
+                        <label><input type="text" name="item_i_14_text" /></label>G
                          &nbsp;&nbsp;是否低于总容量的80%:
                         <label class="checkbox checkbox-inline"><input type="radio" name="item_i_14" value="true" checked/> 是</label>
                         <label class="checkbox checkbox-inline"><input type="radio" name="item_i_14" value="false"/> 否</label>

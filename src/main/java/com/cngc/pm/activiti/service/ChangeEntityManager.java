@@ -35,6 +35,12 @@ public class ChangeEntityManager {
 	public boolean setChangeStatus(DelegateExecution execution,String status){
 		ChangeJpaEntity change = (ChangeJpaEntity)execution.getVariable("change");
 		change.setStatus( status );
+		if(execution.getCurrentActivityName()!=null)
+		{
+			// 按流程步骤运行至结束
+			if(execution.getCurrentActivityName().equals("End"))
+				change.setEndbyuser(true);
+		}
 		if( status.equals(PropertyFileUtil.getStringValue("syscode.change.status.finished")) )
 		{
 			changeService.updateCi(change.getId());

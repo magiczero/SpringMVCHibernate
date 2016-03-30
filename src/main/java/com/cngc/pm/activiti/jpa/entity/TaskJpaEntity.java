@@ -24,6 +24,7 @@ public class TaskJpaEntity {
     private Date dueTime;
     private String userId;
     private Date executionTime;
+    private boolean endbyuser;
     
     @Id
     @Column(name="ID")
@@ -109,7 +110,13 @@ public class TaskJpaEntity {
 	public void setExecutionTime(Date executionTime) {
 		this.executionTime = executionTime;
 	}
-
+	@Column(name="endbyuser")
+	public boolean isEndbyuser() {
+		return endbyuser;
+	}
+	public void setEndbyuser(boolean endbyuser) {
+		this.endbyuser = endbyuser;
+	}
 	@Override
     public String toString() {
         return ToStringBuilder.reflectionToString(this);

@@ -48,6 +48,7 @@ public class Incident implements Serializable{
 	private String processInstanceId;
 	private String satisfaction;
 	private String feedback;
+	private boolean endbyuser;
 	
 	@Transient
 	private String priorityName;
@@ -315,6 +316,13 @@ public class Incident implements Serializable{
 	}
 	public void setCurrentDelegateUserName(String currentDelegateUserName) {
 		this.currentDelegateUserName = currentDelegateUserName;
+	}
+	@Column(name="endbyuser")
+	public boolean isEndbyuser() {
+		return endbyuser;
+	}
+	public void setEndbyuser(boolean endbyuser) {
+		this.endbyuser = endbyuser;
 	}
 	
 }

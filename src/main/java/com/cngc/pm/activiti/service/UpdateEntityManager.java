@@ -29,6 +29,12 @@ public class UpdateEntityManager {
     @Transactional
     public boolean setUpdateStatus(DelegateExecution execution){
     	UpdateJpaEntity update = (UpdateJpaEntity)execution.getVariable("update");
+		if(execution.getCurrentActivityName()!=null)
+		{
+			// 按流程步骤运行至结束
+			if(execution.getCurrentActivityName().equals("End"))
+				update.setEndbyuser(true);
+		}
     	update.setExecutionTime(new Date());
     	entityManager.persist(update);
     	return true;

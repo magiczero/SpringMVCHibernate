@@ -203,7 +203,8 @@
 												</a>
 											</c:if>
 											<c:if test="${empty task && empty mytask }">
-												已完成
+												<c:if test="${leaderTask.endbyuser }">已完成</c:if>
+												<c:if test="${!leaderTask.endbyuser }">由系统关闭</c:if>
 											</c:if>
 										</td>
 										<td>

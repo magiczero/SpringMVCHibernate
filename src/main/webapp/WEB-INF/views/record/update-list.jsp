@@ -187,7 +187,8 @@
 												</a>
 											</c:if>
 											<c:if test="${empty task }">
-												已完成
+												<c:if test="${update.endbyuser }">已完成</c:if>
+												<c:if test="${!update.endbyuser }">由系统关闭</c:if>
 											</c:if>
 										</td>
 										<td>

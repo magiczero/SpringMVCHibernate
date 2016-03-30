@@ -24,6 +24,7 @@ public class KnowledgeJpaEntity {
 	private String status;
 	private boolean locked;
 	private String processInstanceId;
+	private boolean endbyuser;
 
 	@Id
 	@Column(name = "id")
@@ -119,8 +120,15 @@ public class KnowledgeJpaEntity {
 	public void setCategory(String category) {
 		this.category = category;
 	}
-	
-    @Override
+	@Column(name="endbyuser")
+	public boolean isEndbyuser() {
+		return endbyuser;
+	}
+	public void setEndbyuser(boolean endbyuser) {
+		this.endbyuser = endbyuser;
+	}
+
+	@Override
     public String toString() {
         return ToStringBuilder.reflectionToString(this);
     }

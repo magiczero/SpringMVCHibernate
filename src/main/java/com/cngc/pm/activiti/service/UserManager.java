@@ -1,7 +1,6 @@
 package com.cngc.pm.activiti.service;
 
 import java.util.List;
-import java.util.Map;
 
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.identity.Group;

@@ -45,6 +45,7 @@
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/charts/jquery.flot.pie.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/charts/jquery.flot.resize.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/charts/chart.min.js'></script>
+    <script type='text/javascript' src='${contextPath }/resources/js/plugins/charts/modernizr.min.js'></script>
     
     <script type='text/javascript' src='${contextPath }/resources/js/pm-common.js'></script>
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
@@ -70,7 +71,7 @@
     		            var barChart = new Chart(bctx).Bar({
     		            	labels : mylabels,
     		                datasets : [{fillColor : "rgba(151,187,205,0.5)",strokeColor : "rgba(151,187,205,1)",data : mydata}]
-    		            });
+    		            }, {animation : Modernizr.canvas});
                 	});
                 }
             }else{

@@ -427,7 +427,7 @@
                                 <div class="row-form clearfix">
                                     <div class="col-md-3"><form:label path="parentGroup.id">上级部门：</form:label></div>
                                     <div class="col-md-9">
-                                    	<form:select path="parentGroup.id" class="validate[required]">
+                                    	<form:select path="parentGroup.id" >
                                     	<form:option value="">#</form:option>
                                     	<c:forEach items="${groupList }" var="group">
                                     	

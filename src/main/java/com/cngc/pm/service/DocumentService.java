@@ -7,6 +7,7 @@ import java.util.Set;
 import com.cngc.pm.model.Attachment;
 import com.cngc.pm.model.Document;
 import com.cngc.pm.model.Style;
+import com.cngc.pm.model.SysCode;
 import com.cngc.pm.model.SysUser;
 import com.googlecode.genericdao.search.SearchResult;
 
@@ -92,4 +93,8 @@ public interface DocumentService {
 
 	boolean enabledByIds(String ids);
 
+	String getJSONByCodes(List<SysCode> codeList);
+
+	boolean delStyle(Long id);
+	
 }

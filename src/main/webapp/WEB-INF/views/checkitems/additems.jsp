@@ -10,30 +10,17 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <![endif]-->
 
-    <title>添加类别</title>
+    <title>检查项操作</title>
 
 	<link href="${contextPath }/resources/css/icons.css" rel="stylesheet" type="text/css" />
     <link href="${contextPath }/resources/css/bootstrap.css" rel="stylesheet" type="text/css" />
-    <link href="${contextPath }/resources/css/fullcalendar.css" rel="stylesheet" type="text/css" />
     <link href="${contextPath }/resources/css/ui.css" rel="stylesheet" type="text/css" />
-    <link href="${contextPath }/resources/css/select2.css" rel="stylesheet" type="text/css" />
-    <link href="${contextPath }/resources/css/uniform.default.css" rel="stylesheet" type="text/css" />
-    <link href="${contextPath }/resources/css/validation.css" rel="stylesheet" type="text/css" />
-    <link href="${contextPath }/resources/css/mCustomScrollbar.css" rel="stylesheet" type="text/css" />
-    <link href="${contextPath }/resources/css/cleditor.css" rel="stylesheet" type="text/css" />
-    <link href="${contextPath }/resources/css/fancybox/jquery.fancybox.css" rel="stylesheet" type="text/css" />
-    <link href="${contextPath }/resources/css/elfinder.min.css" rel="stylesheet" type="text/css" />
-    <link href="${contextPath }/resources/css/elfinder.css" rel="stylesheet" type="text/css" />
-    <link href="${contextPath }/resources/css/multi-select.css" rel="stylesheet" type="text/css" />
     <link href="${contextPath }/resources/css/pnotify.css" rel="stylesheet" type="text/css" />
-    <link href="${contextPath }/resources/css/ibutton.css" rel="stylesheet" type="text/css" />
-    <link href="${contextPath }/resources/css/stepy.css" rel="stylesheet" type="text/css" />
-    <link href="${contextPath }/resources/css/tagsinput.css" rel="stylesheet" type="text/css" />
-    <link href="${contextPath }/resources/css/dataTables.css" rel="stylesheet" type="text/css" />
     <link href="${contextPath }/resources/css/stylesheet.css" rel="stylesheet" type="text/css" />
     <link href="${contextPath }/resources/css/styling.css" rel="stylesheet" type="text/css" />
+    <link href="${contextPath }/resources/css/validation.css" rel="stylesheet" type="text/css" />
     <link href="${contextPath }/resources/css/mycss.css" rel="stylesheet" type="text/css" />
-	<link href="${contextPath }/resources/css/stylesheets2.css" rel="stylesheet" type="text/css" />
+	 <link href='${contextPath }/resources/js/plugins/jstree/jquery.treeview.css' rel="stylesheet" type="text/css" />
     <!--[if lt IE 8]>
         <link href="${contextPath }/resources/css/ie7.css" rel="stylesheet" type="text/css" />
     <![endif]-->
@@ -47,11 +34,6 @@
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/cookie/jquery.cookies.2.2.0.min.js'></script>
 
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/bootstrap.min.js'></script>
-
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/charts/jquery.flot.js'></script>
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/charts/jquery.flot.stack.js'></script>
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/charts/jquery.flot.pie.js'></script>
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/charts/jquery.flot.resize.js'></script>
 
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/sparklines/jquery.sparkline.min.js'></script>
 
@@ -87,13 +69,11 @@
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/scrollup/jquery.scrollUp.min.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/tagsinput/jquery.tagsinput.min.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/multiselect/jquery.multi-select.js'></script>
+    
+    <script type='text/javascript' src='${contextPath }/resources/js/plugins/jstree/jquery.treeview.js'></script>
+    <script type='text/javascript' src='${contextPath }/resources/js/plugins/jstree/jquery.treeview.edit.js'></script>
+    <script type='text/javascript' src='${contextPath }/resources/js/plugins/jstree/jquery.treeview.async.js'></script>
 
-    <script type='text/javascript' src='${contextPath }/resources/js/cookies.js'></script>
-    <script type='text/javascript' src='${contextPath }/resources/js/actions.js'></script>
-    <script type='text/javascript' src='${contextPath }/resources/js/charts.js'></script>
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins.js'></script>
-    <script type='text/javascript' src='${contextPath }/resources/js/settings.js'></script>
-    <script type='text/javascript' src='${contextPath }/resources/js/faq.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/pm-common.js'></script>
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
@@ -102,14 +82,95 @@
     <![endif]-->
     <script type="text/javascript">
     var ctx = "${contextPath}";
+    var itemname = "";
+    var itemid = 0;
             $(document).ready(function () {
             	$(".header").load("${contextPath }/header");
                 $(".menu").load("${contextPath }/menu?t="+pm_random(), function() {$("#node_${moduleId}").addClass("active");});
                 $(".breadLine .buttons").load("${contextPath }/contentbuttons");
 
                 $("#style").validationEngine({promptPosition : "topRight", scroll: true});
-
+				
+                $("#treeview").treeview({
+                	unique: true,
+            		url : ctx + '/checkitems/getAllJSonItems?t=' + pm_random()
+            	});
             });
+            
+            function addTop() {
+            	itemname = "";
+                itemid = 0;
+            	$("#id").val("");
+            	$.getJSON(ctx + '/checkitems/get-top-parentid?t=' + pm_random(), function(data){
+            		if(data == null) {alert('无法执行操作，请联系管理员'); return false;}
+            		else {
+            			$("#style\\.id").val(data);
+            		}
+            	});
+            	$("#styleid").html("");
+            }
+            
+            function checked(name, obj) {
+            	itemname = name;
+            	itemid = obj.parentNode.parentNode.getAttribute("id"); 
+            }
+            
+            function addItem() {
+            	if(itemname == "") {
+            		alert('请先选中项');
+            		return false;
+            	} else if(itemid == 0) {
+            		alert('请先选中项');
+            		return false;
+            	} else {
+            		$("#id").val("");
+            		$("#style\\.id").val(itemid);
+                	$("#styleid").html(itemname);
+            	}
+            }
+            
+            function editItem() {
+            	if(itemid == 0) {
+            		alert('请先选中项');
+            		return false;
+            	} else {
+            		$.getJSON(ctx + '/checkitems/get-style/'+itemid+'?t=' + pm_random(), function(data){
+            			if(data == "") {
+            				alert('未找到检查项，请联系管理员');
+            				return false;
+            			} else {
+            				var data1 = data[0];
+            				$("#id").val(data1.id);
+            				$("#name").val(data1.name);
+            				$("#style\\.id").val(data1.parentid);
+            				$("#styleid").html(data1.parentname);
+            				$("#order").val(data1.order);
+            				$("#desc").val(data1.desc);
+            			}
+            		});
+            	}
+            }
+            
+            function deleteitem() {
+            	if(itemid == 0) {
+            		alert('请先选中项');
+            		return false;
+            	} else {
+            		if(confirm('确定删除？')) {
+            			$.getJSON(ctx + '/checkitems/delete-style/'+itemid+'?t=' + pm_random(), function(data){
+            				if(data.flag) {
+            					//成功后刷新页面
+            					window.location.reload();
+            				} else {
+            					alert('删除失败，请确保此项下没有子项，且没有与文档相关联');
+            					return false;
+            				}
+            			});
+            		} else {
+            			return false;
+            		}
+            	}
+            }
     </script>
 </head>
 <body>
@@ -142,14 +203,37 @@
             <div class="workplace">
 
                 <div class="row">
-                    <div class="col-md-1"></div>
-                    <div class="col-md-10">
+                    <div class="col-md-4">
+                    <div class="head clearfix">
+                        <div class="isw-donw_circle"></div>
+                        <h1>检查项</h1>
+                        <ul class="buttons">                          
+                            	<li>
+                                    <span class="isw-plus tipb" onclick="addTop();" title="添加顶层"></span>
+                                </li>
+                                <li>
+                                    <a href="#" class="isw-settings tipl" title="操作 "></a>
+                                    <ul class="dd-list">
+                                    	<li><a href="javascript:void(0);" onclick="addItem();"><span class="isw-target"></span> 添加子项</a></li>
+                                        <li><a href="javascript:void(0);" onclick="editItem();"><span class="isw-edit"></span> 编辑</a></li>
+                                        <li><a href="javascript:void(0);" onclick="deleteitem();"><span class="isw-delete"></span> 删除</a></li>
+                                    </ul>
+                                </li>
+                            </ul> 
+                    </div>
+                    	<div class="block-fluid">
+                		<ul id="treeview" style="margin-left:10px;"></ul>
+                		</div>
+                    </div>
+                    <div class="col-md-8">
                         <div class="head clearfix">
                             <div class="isw-documents"></div>
                             <h1>类别信息录入</h1>
                         </div><c:url var="addAction" value="/checkitems/saveitems" ></c:url>
 						<form:form action="${addAction}" commandName="style">
+						<form:hidden path="id" value="" />
 						<form:hidden path="code" value="NON"/>
+						<form:hidden path="style.id" value="" class="validate[required]"/>
                         <div class="block-fluid">
                           <div class="row-form clearfix">
                                 <div class="col-md-2"><form:label path="name">检查项名称*</form:label></div>
@@ -157,27 +241,10 @@
                             </div>
                             <div class="row-form clearfix">
                                 <div class="col-md-2">
-                                <label for="style.id">所属项</label>
+                                <label>所属项</label>
                                 </div>
                                 <div class="col-md-7">
-									<form:select path="style.id">
-									<form:option value="${itemsAll.id }">-</form:option>
-									<c:forEach items="${itemsAll.child}" var="styleOne">
-										<form:option value="${styleOne.id }">${styleOne.name }</form:option>
-										<c:forEach items="${styleOne.child}" var="styleTwo">
-											<form:option value="${styleTwo.id }">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;| - ${styleTwo.name }</form:option>
-											<c:forEach items="${styleTwo.child}" var="styleThree">
-												<form:option value="${styleThree.id }">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;| - ${styleThree.name }</form:option>
-												<c:forEach items="${styleThree.child}" var="styleFour">
-													<form:option value="${styleFour.id }">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;| - ${styleFour.name }</form:option>
-													<c:forEach items="${styleFour.child}" var="styleFive">
-														<form:option value="${styleFive.id }">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;| - ${styleFive.name }</form:option>
-													</c:forEach>
-												</c:forEach>
-											</c:forEach>
-										</c:forEach>
-									</c:forEach>
-									</form:select>
+									<span id="styleid"></span>
                                 </div>
                             </div>
                             <div class="row-form clearfix">

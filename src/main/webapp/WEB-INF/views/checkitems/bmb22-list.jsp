@@ -524,7 +524,7 @@
                             </div>
 							<div class="row-form clearfix">
 								<form:select multiple="true" path="docSet" class="validate[required] multiselect">
-									<form:options items="${docList}"  itemLabel="name"/>
+									<form:options items="${docList}" itemValue="id" itemLabel="name"/>
 								</form:select>
 	                            
 	                            <div class="btn-group">

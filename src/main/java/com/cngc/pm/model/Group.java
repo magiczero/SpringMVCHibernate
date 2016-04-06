@@ -74,7 +74,8 @@ public class Group implements Serializable {
 		this.groupName = groupName;
 	}
 	
-	@ManyToOne(targetEntity=Group.class)
+	@ManyToOne(targetEntity=Group.class,optional=true)
+	@NotFound(action = NotFoundAction.IGNORE)
 	@JoinColumn(name = "parent_id")
 	public Group getParentGroup() {
 		return parentGroup;

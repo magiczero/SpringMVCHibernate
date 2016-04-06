@@ -1,7 +1,6 @@
 package com.cngc.pm.controller;
 
 import java.beans.PropertyEditorSupport;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -31,7 +30,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.cngc.exception.ParameterException;
 import com.cngc.pm.annotation.ControllerLog;
 import com.cngc.pm.model.Attachment;
-import com.cngc.pm.model.DocAuth;
 import com.cngc.pm.model.Document;
 import com.cngc.pm.model.SecretLevel;
 import com.cngc.pm.model.Style;
@@ -85,7 +83,7 @@ public class DocumentController {
                 return id != null ? docService.loadStyleById(id) : null;
             }
           });
-//        binder.registerCustomEditor(DocAuth.class, new AuthEnumEditor());
+        binder.registerCustomEditor(SecretLevel.class, new String2SecretLevel());
      // String类型转换，将所有传递进来的String进行HTML编码，防止XSS攻击
      		binder.registerCustomEditor(String.class, new PropertyEditorSupport() {
      			@Override
@@ -116,19 +114,85 @@ public class DocumentController {
 	 */
 	@RequestMapping(value="/add-style", method = RequestMethod.GET)
 	public String addStyle(Model model) {
-		List<SysCode> list = syscodeService.getAllByType(PropertyFileUtil.getStringValue("syscode.cms.ci.system")).getResult();
-		model.addAttribute("syscodeList", list);
-		
-		List<Style> styleList = new ArrayList<>();
-		
-		for(SysCode code : list) {
-			styleList.addAll(docService.getStyleListByCode(code.getCode()));
-		}
-		
-		model.addAttribute("styleList",styleList);
+//		List<SysCode> list = syscodeService.getAllByType(PropertyFileUtil.getStringValue("syscode.cms.ci.system")).getResult();
+//		model.addAttribute("syscodeList", list);
+//		
+//		List<Style> styleList = new ArrayList<>();
+//		
+//		for(SysCode code : list) {
+//			styleList.addAll(docService.getStyleListByCode(code.getCode()));
+//		}
+//		
+//		model.addAttribute("styleList",styleList);
 		model.addAttribute("style", new Style());
 		
 		return "document/add-style";
+	}
+	
+	@RequestMapping(value = "/get-style-tree", method = RequestMethod.GET)
+	@ResponseBody
+	public String getJSONTree() {
+		List<SysCode> list = syscodeService.getAllByType(PropertyFileUtil.getStringValue("syscode.cms.ci.system")).getResult();
+		
+		return docService.getJSONByCodes(list);
+	}
+	
+	@RequestMapping(value = "/del-style/{id}", method = RequestMethod.GET)
+	@ResponseBody
+	public Map<String , Object> delStyle(@PathVariable() Long id) {
+		Map<String,Object> map = new HashMap<String,Object>();
+		Style style = docService.loadStyleById(id);
+		
+		if(style ==null) map.put("flag", false);
+		else {
+			if(style.getChild().size()>0 || docService.getByStyle(style.getId()).size()>0) {
+				map.put("flag", false);
+			} else {
+				//删除
+				boolean b = docService.delStyle(style.getId());
+				map.put("flag", b);
+			}
+		}
+		
+		return map;
+	}
+	
+	@RequestMapping(value = "/get-style/{id}", method = RequestMethod.GET)
+	@ResponseBody
+	public String getStyle(@PathVariable() Long id) {
+		Style style = docService.loadStyleById(id);
+		
+		String str = "";
+		if(style !=null) {
+			String parentId="";
+			String parentName = "";
+			boolean b = true;
+			Style parent = style.getStyle();
+			for(Style topParent : docService.getStyleListByCode("document_")) {
+				if(parent==topParent) {
+					parentId = style.getCode();
+					List<SysCode> list = syscodeService.getAllByType(PropertyFileUtil.getStringValue("syscode.cms.ci.system")).getResult();
+					for(SysCode code : list) {
+						if(code.getCode().equals(style.getCode())) {
+							parentName = code.getCodeName();
+							break;
+						}
+					}
+					b  = false;
+					break;
+				} 
+			}
+			if(b) {
+				if(("document_").equals(style.getStyle().getStyle().getCode())) {
+					parentId = style.getStyle().getCode()+"-"+style.getId();
+				} else{
+					parentId = style.getStyle().getStyle().getCode()+"-"+style.getId();
+				}
+				parentName = parent.getName();
+			}
+			str="[{\"id\":\""+style.getId()+"\",\"name\":\""+style.getName()+"\",\"code\":\""+style.getCode()+"\",\"parentid\":\""+parentId+"\",\"parentname\":\""+parentName+"\",\"order\":\""+style.getOrder()+"\",\"desc\":\""+style.getDesc()+"\"}]";
+		}
+		return str;
 	}
 	
 	@RequestMapping(value="/save-style", method = RequestMethod.POST)
@@ -140,7 +204,7 @@ public class DocumentController {
 			style.setCode(parent);
 			style.setStyle(styleParent);
 		} else {
-			String parentid = parent.substring(parent.lastIndexOf("-"), parent.length());
+			String parentid = parent.substring(parent.lastIndexOf("-")+1, parent.length());
 			style.setStyle(docService.loadStyleById(Long.valueOf(parentid)));
 		}
 		
@@ -449,6 +513,17 @@ public class DocumentController {
 		}
 	}
 	
+	class String2SecretLevel extends PropertyEditorSupport {
+		@Override
+		public void setAsText(String text) throws java.lang.IllegalArgumentException {
+			String value = text.trim();
+			
+			this.setValue(SecretLevel.get(value));
+		}
+			
+	}
+	
+	/*
 	class AuthEnumEditor extends PropertyEditorSupport {
 		@Override
 		public void setAsText(String text) throws java.lang.IllegalArgumentException {
@@ -461,4 +536,5 @@ public class DocumentController {
 			}
 		}
 	}
+	*/
 }

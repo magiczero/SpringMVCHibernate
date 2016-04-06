@@ -194,7 +194,11 @@
 									<c:set var="mytask" value="${mytasks[inspection.processInstanceId]}" />
 									<tr>
 										<td>${inspection.processInstanceId }</td>
-										<td>${inspection.executionUserName }</td>
+										<td>
+											<c:if test="${empty task }">
+											${inspection.executionUserName }
+											</c:if>
+										</td>
 										<td><fmt:formatDate value="${inspection.createdTime }" pattern="yyyy-MM-dd HH:mm"></fmt:formatDate></td>
 										<td><fmt:formatDate value="${inspection.executionTime }" pattern="yyyy-MM-dd HH:mm"></fmt:formatDate></td>
 										<td>

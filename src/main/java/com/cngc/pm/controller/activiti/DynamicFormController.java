@@ -152,7 +152,7 @@ public class DynamicFormController {
 	@SuppressWarnings("unchecked")
 	public String submitStartFormAndStartProcessInstance(
 			@PathVariable("processDefinitionId") String processDefinitionId, RedirectAttributes redirectAttributes,
-			HttpServletRequest request) {
+			HttpServletRequest request,Authentication authentication) {
 		Map<String, String> formProperties = new HashMap<String, String>();
 
 		// 从request中读取参数然后转换
@@ -176,7 +176,7 @@ public class DynamicFormController {
 		// }
 		ProcessInstance processInstance = null;
 		try {
-			identityService.setAuthenticatedUserId("andyhe");
+			identityService.setAuthenticatedUserId( userUtil.getUserId(authentication) );
 			processInstance = formService.submitStartFormData(processDefinitionId, formProperties);
 			// logger.debug("start a processinstance: {}", processInstance);
 		} finally {

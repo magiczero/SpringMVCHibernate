@@ -74,7 +74,7 @@
 		</property>
 		<!-- cron表达式 -->
 		<property name="cronExpression">
-			<value>0 15 8 ? * 2,4 *</value>
+			<value>0 15 8 ? * 2,5 *</value>
 		</property>
 	</bean>
 	<bean id="leaderTaskTime" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">

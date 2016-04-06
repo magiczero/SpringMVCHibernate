@@ -199,7 +199,14 @@
 									<tr>
 										<td>${job.processInstanceId }</td>
 										<td>${job.typeName }</td>
-										<td>${job.userName }</td>
+										<td>
+											<c:if test="${not empty task }">
+											${task.assignee }
+											</c:if>
+											<c:if test="${empty task }">
+											${job.userName }
+											</c:if>
+										</td>
 										<td><fmt:formatDate value="${job.applyTime }" pattern="yyyy-MM-dd HH:mm"></fmt:formatDate></td>
 										<td><fmt:formatDate value="${job.executionTime }" pattern="yyyy-MM-dd HH:mm"></fmt:formatDate></td>
 										<td>

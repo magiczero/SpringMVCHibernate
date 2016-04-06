@@ -41,7 +41,10 @@ public class SecJobEntityManager {
 			{
 				// 按流程步骤运行至结束
 				if(execution.getCurrentActivityName().equals("End"))
+				{
+					//job.setUserId(execution.);
 					job.setEndbyuser(true);
+				}
 			}
 	    	job.setExecutionTime(new Date());
 	    	entityManager.persist(job);

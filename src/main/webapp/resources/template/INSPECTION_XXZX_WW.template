@@ -1,0 +1,118 @@
+<div class="tabs" id="inspection_div">
+	<ul>
+		<li><a href="#tabs-1">外网安全防护设备</a></li>
+		<li><a href="#tabs-2">外网网络设备</a></li>
+	</ul>
+	
+<div id="tabs-1">
+<div class="tabs-vertical-env tabs-vertical-bordered">
+	<ul class="nav tabs-vertical" id="securityTableTitle">
+		<li class="active"><a href="#v4-step_1" data-toggle="tab">任子行</a></li>
+	</ul>
+	<div class="tab-content" id="securityTable">
+		<div class="tab-pane" id="v4-step_i">
+			<div id="title_i" class="label label-info" style="font-size:14px;"></div>
+			<div class="row-form clearfix">
+            	<div class="col-md-3">告警灯是否正常:</div>
+                <div class="col-md-7">
+                    	<label class="checkbox checkbox-inline"><input type="radio" name="item_i_1" value="true" checked/> 是</label>
+                        <label class="checkbox checkbox-inline"><input type="radio" name="item_i_1" value="false"/> 否</label>
+                        &nbsp;&nbsp;<label style='display:none;'>异常说明</label>
+                        <label  style='display:none;'><input type="text" name="item_i_1_remark" /></label>
+            	</div>
+            	<div class="col-md-3">服务器运转声音是否正常:</div>
+                <div class="col-md-7">
+                    	<label class="checkbox checkbox-inline"><input type="radio" name="item_i_2" value="true" checked/> 是</label>
+                        <label class="checkbox checkbox-inline"><input type="radio" name="item_i_2" value="false"/> 否</label>
+                         &nbsp;&nbsp;<label  style='display:none;'>异常说明</label>
+                        <label  style='display:none;'><input type="text" name="item_i_2_remark" /></label>
+            	</div>
+            	<div class="col-md-3">电源线是否接触良好:</div>
+                <div class="col-md-7">
+                    	<label class="checkbox checkbox-inline"><input type="radio" name="item_i_3" value="true" checked/> 是</label>
+                        <label class="checkbox checkbox-inline"><input type="radio" name="item_i_3" value="false"/> 否</label>
+                         &nbsp;&nbsp;<label  style='display:none;'>异常说明</label>
+                        <label  style='display:none;'><input type="text" name="item_i_3_remark" /></label>
+            	</div>
+            	<div class="col-md-3">电源指示灯是否正常亮起:</div>
+                <div class="col-md-7">
+                    	<label class="checkbox checkbox-inline"><input type="radio" name="item_i_4" value="true" checked/> 是</label>
+                        <label class="checkbox checkbox-inline"><input type="radio" name="item_i_4" value="false"/> 否</label>
+                         &nbsp;&nbsp;<label  style='display:none;'>异常说明</label>
+                        <label  style='display:none;'><input type="text" name="item_i_4_remark" /></label>
+            	</div>
+            	<div class="col-md-3">硬盘指示灯是否正常:</div>
+                <div class="col-md-7">
+                    	<label class="checkbox checkbox-inline"><input type="radio" name="item_i_5" value="true" checked/> 是</label>
+                        <label class="checkbox checkbox-inline"><input type="radio" name="item_i_5" value="false"/> 否</label>
+                         &nbsp;&nbsp;<label  style='display:none;'>异常说明</label>
+                        <label  style='display:none;'><input type="text" name="item_i_5_remark" /></label>
+            	</div>
+            	<div class="col-md-3">网卡指示灯是否规律性闪烁:</div>
+                <div class="col-md-7">
+                    	<label class="checkbox checkbox-inline"><input type="radio" name="item_i_6" value="true" checked/> 是</label>
+                        <label class="checkbox checkbox-inline"><input type="radio" name="item_i_6" value="false"/> 否</label>
+                         &nbsp;&nbsp;<label  style='display:none;'>异常说明</label>
+                        <label  style='display:none;'><input type="text" name="item_i_6_remark" /></label>
+            	</div>
+            	<div class="col-md-3">服务器是否有移动或损坏痕迹:</div>
+                <div class="col-md-7">
+                    	<label class="checkbox checkbox-inline"><input type="radio" name="item_i_7" value="true" checked/> 否</label>
+                        <label class="checkbox checkbox-inline"><input type="radio" name="item_i_7" value="false" /> 是</label>
+                         &nbsp;&nbsp;<label  style='display:none;'>异常说明</label>
+                        <label  style='display:none;'><input type="text" name="item_i_7_remark" /></label>
+            	</div>
+            	<div class="col-md-3">标签是否脱落:</div>
+                <div class="col-md-7">
+                    	<label class="checkbox checkbox-inline"><input type="radio" name="item_i_8" value="true" checked/> 否</label>
+                        <label class="checkbox checkbox-inline"><input type="radio" name="item_i_8" value="false"/> 是</label>
+                         &nbsp;&nbsp;<label  style='display:none;'>异常说明</label>
+                        <label  style='display:none;'><input type="text" name="item_i_8_remark" /></label>
+            	</div>
+           	</div>
+    	</div>
+	</div>
+</div>
+</div>
+
+<div id="tabs-2">
+<div class="tabs-vertical-env tabs-vertical-bordered">
+	<ul class="nav tabs-vertical" id="netTableTitle">
+		<li class="active"><a href="#v4-step_2" data-toggle="tab">K1外网交换机</a></li>
+	</ul>
+	<div class="tab-content" id="netTable">
+		<div class="tab-pane" id="v4-step_i">
+    	</div>
+	</div>
+</div>
+</div>
+
+	
+</div>
+<script>
+$(document).ready(function(){
+	
+	var stmp = $("#securityTable").html();
+	$("#securityTable").html("");
+	for(i=1;i<=1;i++)
+	{
+		$("#securityTable").append( stmp.replace(/_i/g,"_"+i) );
+		var tid = "#securityTableTitle a[href='#v4-step_"+i+"']";
+		$("#title_"+i).html($(tid).html());
+	}
+	
+	$("#netTable").html("");
+	for(i=2;i<=6;i++)
+	{
+		$("#netTable").append( stmp.replace(/_i/g,"_"+i) );
+		var tid = "#netTableTitle a[href='#v4-step_"+i+"']";
+		$("#title_"+i).html($(tid).html());
+	}
+
+	$("#v4-step_1").addClass("active");
+	$("#v4-step_2").addClass("active"); 
+	
+    $("#inspection_div").tabs();
+});
+</script>
+                        	

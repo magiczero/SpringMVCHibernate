@@ -27,6 +27,8 @@ public class ServiceTest {
 	
 	@Autowired
 	private GroupService groupService;
+	@Autowired
+	private CheckItemsService itemsService;
 	
 	Logger LOGGER = LoggerFactory.getLogger(ServiceTest.class);
 	
@@ -46,7 +48,7 @@ public class ServiceTest {
     }
     
     @Test
-    
+    @Ignore
     public void testfindCurrentYearStudent() {
     	
     	String str = groupService.getAllWithJson();
@@ -69,9 +71,13 @@ public class ServiceTest {
     }
 
     @Test
-    @Ignore
+    
     public void testCollegeFind() {
-
+    	String str = itemsService.getJSonByCode("CI");
+    	
+    	System.out.println(str);
+    	
+    	assertNotNull(str);
 //    	List<Person> persons = personService.testPersons();
 //    	LOGGER.info("Persons :" + persons);
 //    	assertNotNull(persons);

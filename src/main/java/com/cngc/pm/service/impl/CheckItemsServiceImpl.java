@@ -205,6 +205,8 @@ public class CheckItemsServiceImpl implements CheckItemsService {
 		// TODO Auto-generated method stub
 		return itemsDao.remove(find(id));
 	}
+	
+	
 
 	@Override
 	@Transactional
@@ -247,5 +249,85 @@ public class CheckItemsServiceImpl implements CheckItemsService {
 		
 //		return styles;
 	}
-	
+
+	@Override
+	@Transactional(readOnly=true)
+	public String getJSonByCode(String code) {
+		// TODO Auto-generated method stub
+		Search search = new Search(Style.class);
+		
+		search.addFilterEqual("code", code);
+		
+		search.addSortAsc("order");
+		
+		Style style = styleDao.searchUnique(search);
+		
+		StringBuffer sb = new StringBuffer("[");
+		
+		for(Style child : style.getChild()) {
+			sb.append("{\"text\":\"<a href=\\\"javascript:void(0);\\\" onclick=\\\"checked('"+child.getName()+"',this);\\\">"+child.getName()+"\",\"id\":\""+child.getId()+"\"");
+			if(child.getChild().size()>0) {
+				sb.append(",\"collapsed\":true,\"children\":[");
+				for(Style child1 : child.getChild()) {
+					sb.append("{\"text\":\"<a href=\\\"javascript:void(0);\\\" onclick=\\\"checked('"+child1.getName()+"',this);\\\">"+child1.getName()+"\",\"id\":\""+child1.getId()+"\"");
+					if(child1.getChild().size()>0) {
+						sb.append(",\"children\":[");
+						for(Style child2 : child1.getChild()) {
+							sb.append("{\"text\":\"<a href=\\\"javascript:void(0);\\\" onclick=\\\"checked('"+child2.getName()+"',this);\\\">"+child2.getName()+"\",\"id\":\""+child2.getId()+"\"");
+							if(child2.getChild().size()>0) {
+								sb.append(",\"children\":[");
+								for(Style child3 : child2.getChild()) {
+									sb.append("{\"text\":\"<a href=\\\"javascript:void(0);\\\" onclick=\\\"checked('"+child3.getName()+"',this);\\\">"+child3.getName()+"\",\"id\":\""+child3.getId()+"\"");
+									if(child3.getChild().size()>0) {
+										sb.append(",\"children\":[");
+										for(Style child4 : child3.getChild()) {
+											sb.append("{\"text\":\"<a href=\\\"javascript:void(0);\\\" onclick=\\\"checked('"+child4.getName()+"',this);\\\">"+child4.getName()+"\",\"id\":\""+child4.getId()+"\"},");
+										}
+										sb.deleteCharAt(sb.length()-1);
+										sb.append("]},");
+									} else {
+										sb.append("},");
+									}
+								}
+								sb.deleteCharAt(sb.length()-1);
+								sb.append("]},");
+							} else {
+								sb.append("},");
+							}
+						}
+						sb.deleteCharAt(sb.length()-1);
+						sb.append("]},");
+					} else {
+						sb.append("},");
+					}
+				}
+				sb.deleteCharAt(sb.length()-1);
+				sb.append("]},");
+			} else {
+				sb.append("},");
+			}
+		}
+		sb.deleteCharAt(sb.length()-1);
+		sb.append("]");
+		return sb.toString();
+	}
+
+	@Override
+	@Transactional
+	public boolean delCheckItemStyle(Long id) {
+		// TODO Auto-generated method stub
+		Style style = styleDao.find(id);
+		if(style == null) return false;
+		if(style.getChild().size()>0) return false;
+		if(style.getItems().size()>0) return false;
+		return styleDao.remove(style);
+	}
+
+	@Override
+	public Long getCIId() {
+		// TODO Auto-generated method stub
+		Search search = new Search(Style.class);
+		search.addFilterEqual("code", "CI");
+		return ((Style)styleDao.searchUnique(search)).getId();
+	}
 }

@@ -46,4 +46,10 @@ public interface CheckItemsService {
 	 * @return
 	 */
 	List<Style> getAllItemsByCode(String code);
+	
+	String getJSonByCode(String code);
+	
+	boolean delCheckItemStyle(Long id);
+	
+	Long getCIId();
 }

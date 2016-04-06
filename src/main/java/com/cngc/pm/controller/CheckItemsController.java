@@ -160,7 +160,7 @@ public class CheckItemsController {
 	@RequestMapping(value = "/additems", method = RequestMethod.GET)
 	public String addItems(Model model) {
 		
-		model.addAttribute("itemsAll", itemsService.getAllByCode());
+		//model.addAttribute("itemsAll", itemsService.getAllByCode());
 		model.addAttribute("style", new Style());
 		
 		return "checkitems/additems";
@@ -169,10 +169,8 @@ public class CheckItemsController {
 	@RequestMapping(value = "/saveitems", method = RequestMethod.POST)
 	public String saveItems(@Valid @ModelAttribute() Style style) {
 		itemsService.save(style);
-		String code = itemsService.getCodeByTypeid(style.getId());
 		
-		return "redirect:/checkitems/bmb-list/"+code;
-//		return "redirect:/checkitems/additems";
+		return "redirect:/checkitems/additems";
 	}
 	
 	@RequestMapping(value = "/update/{id}", method = RequestMethod.GET)
@@ -186,6 +184,20 @@ public class CheckItemsController {
 		return "checkitems/add";
 	}
 	
+	@RequestMapping(value = "/getAllJSonItems")
+	@ResponseBody
+	public String getJSon() {
+		
+		return itemsService.getJSonByCode("CI");
+	}
+	
+	@RequestMapping(value = "/get-top-parentid")
+	@ResponseBody
+	public Long getTopParentid() {
+		
+		return itemsService.getCIId();
+	}
+	
 	@RequestMapping(value = "/delete/{id}")
 	@ResponseBody
 	public Map<String, Object> delete(@PathVariable() Long id) {
@@ -195,6 +207,34 @@ public class CheckItemsController {
 		map.put("flag", isDelete);
 		
 		return map;
+	}
+	
+	@RequestMapping(value = "/delete-style/{id}")
+	@ResponseBody
+	public Map<String, Object> deleteStyle(@PathVariable() Long id) {
+		Map<String, Object> map = new HashMap<String, Object>();
+		boolean isDelete = itemsService.delCheckItemStyle(id);
+		
+		map.put("flag", isDelete);
+		
+		return map;
+	}
+	
+	@RequestMapping(value = "/get-style/{id}")
+	@ResponseBody
+	public String getStyle(@PathVariable() Long id) {
+		Style style = styleService.getById(id);
+		String str = "";
+		if(style != null){
+			Long parentId = 0L;
+			String parentName = "";
+			if(style.getStyle() != null) {
+				parentId = style.getStyle().getId();
+				parentName = style.getStyle().getName();
+			}
+			str = "[{\"id\":\""+style.getId()+"\",\"name\":\""+style.getName()+"\",\"parentid\":\""+parentId+"\",\"parentname\":\""+parentName+"\",\"order\":\""+style.getOrder()+"\",\"desc\":\""+style.getDesc()+"\"}]";
+		} 
+		return str;
 	}
 	
 	@RequestMapping(value = "/save", method = RequestMethod.POST)

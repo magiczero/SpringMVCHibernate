@@ -22,6 +22,7 @@ import com.cngc.pm.model.Attachment;
 import com.cngc.pm.model.Document;
 import com.cngc.pm.model.Resources;
 import com.cngc.pm.model.Style;
+import com.cngc.pm.model.SysCode;
 import com.cngc.pm.model.SysUser;
 import com.cngc.pm.service.DocumentService;
 import com.googlecode.genericdao.search.Filter;
@@ -355,11 +356,13 @@ public class DocumentServiceImpl implements DocumentService {
 			Integer offset, Integer maxResults) {
 		// TODO Auto-generated method stub
 		Search search = new Search();
+		
+		search.addFilterOr(new Filter("style.code", code), new Filter("style.style.code", code),new Filter("style.style.style.code", code));
+		
+		search.addFilterEqual("enabled", true);
+		search.addSortDesc("createDate");
 		search.setFirstResult(offset == null?0:offset);
 		search.setMaxResults(maxResults==null?10:maxResults);
-		search.addFilterEqual("enabled", true);
-		search.addFilterEqual("style.code", code);
-		search.addSortDesc("createDate");
 
 		return docDao.searchAndCount(search);
 	}
@@ -377,5 +380,68 @@ public class DocumentServiceImpl implements DocumentService {
 		
 		return false;
 	}
+
+	@Override
+	@Transactional(readOnly=true)
+	public String getJSONByCodes(List<SysCode> codeList) {
+		// TODO Auto-generated method stub
+		StringBuffer sb = new StringBuffer("[");
+		for(SysCode code : codeList) {
+			String root = code.getCode();
+			sb.append("{\"text\":\"<a href=\\\"javascript:void(0);\\\" onclick=\\\"checkself('"+code.getCodeName()+"', this);\\\">"+code.getCodeName()+"</a>\",\"id\":\""+root+"\"");
+			List<Style> styleList = getStyleListByCode(code.getCode());
+			if(styleList.size() > 0) {
+				sb.append(",\"collapsed\":true,\"children\":[");
+				for(Style style : styleList) {
+					sb.append("{\"text\":\"<a href=\\\"javascript:void(0);\\\" onclick=\\\"checkself('"+style.getName()+"', this);\\\">"+style.getName()+"</a>\",\"id\":\""+root+"-"+style.getId()+"\"");
+					if(style.getChild().size()>0) {
+						sb.append(",\"children\":[");
+						for(Style s2 : style.getChild()) {
+							sb.append("{\"text\":\"<a href=\\\"javascript:void(0);\\\" onclick=\\\"checkself('"+s2.getName()+"', this);\\\">"+s2.getName()+"</a>\",\"id\":\""+root+"-"+s2.getId()+"\"");
+							if(s2.getChild().size()>0) {
+								sb.append(",\"children\":[");
+								for(Style s3 : s2.getChild()) {
+									sb.append("{\"text\":\"<a href=\\\"javascript:void(0);\\\" onclick=\\\"checkself('"+s3.getName()+"', this);\\\">"+s3.getName()+"</a>\",\"id\":\""+root+"-"+s3.getId()+"\"");
+									if(s3.getChild().size()>0) {
+										sb.append(",\"children\":[");
+										for(Style s4 : s3.getChild()) {
+											sb.append("{\"text\":\"<a href=\\\"javascript:void(0);\\\" onclick=\\\"checkself('"+s4.getName()+"', this);\\\">"+s4.getName()+"</a>\",\"id\":\""+root+"-"+s4.getId()+"\"},");
+										}
+										sb.deleteCharAt(sb.length()-1);
+										sb.append("]");
+									} 
+									sb.append("},");
+								}
+								sb.deleteCharAt(sb.length()-1);
+								sb.append("]");
+							} 
+							sb.append("},");
+						}
+						sb.deleteCharAt(sb.length()-1);
+						sb.append("]");
+					} 
+					sb.append("},");
+				}
+				sb.deleteCharAt(sb.length()-1);
+				sb.append("]");
+			}
+			sb.append("},");
+		}
+		sb.deleteCharAt(sb.length()-1);
+		sb.append("]");
+		return sb.toString();
+	}
+
+	@Override
+	@Transactional
+	public boolean delStyle(Long id) {
+		// TODO Auto-generated method stub
+		Style style = styleDao.find(id);
+		
+		if(style.getChild().size()>0) return false;
+		
+		return styleDao.remove(style);
+	}
+
 
 }

@@ -9,56 +9,32 @@
 
 	<!-- DispatcherServlet Context: defines this servlet's request-processing 
 		infrastructure -->
-	<context:component-scan base-package="com.cngc.pm" />
+	<context:component-scan base-package="com.cngc.pm.activiti" />
+	<context:component-scan base-package="com.cngc.pm.annotation" />
+	<context:component-scan base-package="com.cngc.pm.dao" />
+	<context:component-scan base-package="com.cngc.pm.service" />
+	<context:component-scan base-package="com.cngc.pm.annotation" />
+	<context:component-scan base-package="com.cngc.pm.model" />
+	<context:component-scan base-package="com.cngc.pm.security" />
 	<!-- Enables the Spring MVC @Controller programming model -->
 	<!-- <annotation-driven /> -->
-	<annotation-driven conversion-service="conversionService" />
+	<!-- <annotation-driven conversion-service="conversionService" /> -->
 	
 	<!-- <beans:bean id="exceptionHandler" class="com.cngc.exception.MyExceptionHandler" /> -->
-	<!-- 以后有好的方法，这个应该就用不到了 -->
-	<interceptors>
-		<!-- <beans:bean class="com.cngc.pm.interceptor.AuthInterceptor"></beans:bean> -->
-		<interceptor>
-			<mapping path="/document/**"/>
-			<mapping path="/moudle/**"/>
-			<mapping path="/resource/**"/>
-			<mapping path="/authority/**"/>
-			<mapping path="/user/**"/>
-			<mapping path="/style/**"/>
-			<mapping path="/checkitems/**"/>
-			<mapping path="/role/**"/>
-			<mapping path="/cms/**" />
-			<mapping path="/records/**" />
-			<mapping path="/incident/**" />
-			<mapping path="/change/**" />
-			<mapping path="/record/**" />
-			<mapping path="/knowledge/**" />
-			<mapping path="/stats/**" />
-			<mapping path="/workflow/**" />
-			<mapping path="/leadertask/**" />
-			<mapping path="/group/**" />
-			<mapping path="/system/**" /><!-- /system/syscode/list -->
-			<beans:bean class="com.cngc.pm.interceptor.MyInterceptor"></beans:bean>
-		</interceptor>
-		<!-- <interceptor>
-			<mapping path="/user/**"/>
-			<mapping path="/authority/**"/>
-			<beans:bean class="com.cngc.pm.interceptor.LogInterceptor"></beans:bean>
-		</interceptor> -->
-	</interceptors>
+	
 
 	<beans:bean id="messageSource" class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
 		<beans:property name="basename" value="classpath:messages"></beans:property>		
 	</beans:bean>
 	
-	<beans:bean id="conversionService" class="org.springframework.format.support.FormattingConversionServiceFactoryBean">
+	<!-- <beans:bean id="conversionService" class="org.springframework.format.support.FormattingConversionServiceFactoryBean">
 		<beans:property name="converters">
 			<beans:set>
 				<beans:bean class="com.cngc.pm.service.impl.String2LevelConvertor"/>
 			</beans:set>
 		</beans:property>
 	</beans:bean>
-	<!-- <beans:bean id="conversionService"
+	<beans:bean id="conversionService"
       class="org.springframework.context.support.ConversionServiceFactoryBean">
         <beans:property name="converters">
             <beans:list>

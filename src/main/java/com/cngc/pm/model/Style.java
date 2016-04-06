@@ -7,7 +7,6 @@ import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -21,6 +20,8 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
+import org.hibernate.annotations.NotFound;
+import org.hibernate.annotations.NotFoundAction;
 
 /**
  * @author HP
@@ -75,7 +76,8 @@ public class Style implements Serializable {
 		this.desc = desc;
 	}
 
-	@ManyToOne(cascade = { CascadeType.PERSIST },fetch=FetchType.EAGER, optional=true)
+	@ManyToOne(cascade = { CascadeType.REFRESH},optional=true)
+	@NotFound(action = NotFoundAction.IGNORE)
 	@JoinColumn(name = "parent_id")
 	public Style getStyle() {
 		return style;
@@ -85,7 +87,7 @@ public class Style implements Serializable {
 		this.style = style;
 	}
 
-	@OneToMany(cascade={CascadeType.REFRESH,CascadeType.PERSIST,CascadeType.REMOVE,CascadeType.MERGE},fetch=FetchType.EAGER, mappedBy = "style")
+	@OneToMany(cascade={CascadeType.REFRESH,CascadeType.PERSIST,CascadeType.REMOVE,CascadeType.MERGE}, mappedBy = "style")
 	@OrderBy(value="order")
 	public Set<Style> getChild() {
 		return child;

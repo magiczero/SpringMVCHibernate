@@ -28,6 +28,7 @@ public class TaskEntityManager {
     	task.setFromUser(execution.getVariable("fromUser").toString());
     	task.setToUser(execution.getVariable("toUser").toString());
     	task.setTaskTitle(execution.getVariable("taskTitle").toString());
+    	task.setTaskContent(execution.getVariable("taskContent").toString());
         task.setApplyTime(new Date());
         task.setDueTime((Date)execution.getVariable("dueTime"));
 /*        try

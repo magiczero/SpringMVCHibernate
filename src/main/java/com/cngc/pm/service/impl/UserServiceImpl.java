@@ -273,4 +273,14 @@ public class UserServiceImpl implements UserService {
 			return true;
 		}
 	}
+	@Override
+	@Transactional
+	public String getUserName(String userid)
+	{
+		SysUser user = userDao.getUserByUserName(userid);
+		if(user==null)
+			return "";
+		else
+			return user.getName();
+	}
 }

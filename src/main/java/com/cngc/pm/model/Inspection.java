@@ -35,6 +35,8 @@ public class Inspection implements Serializable{
 	private String statusName;
 	@Transient
 	private String executionUserName;
+	@Transient
+	private String templateName;
 	
 	@Id
 	@Column(name = "id")
@@ -122,6 +124,12 @@ public class Inspection implements Serializable{
 	public void setEndbyuser(boolean endbyuser) {
 		this.endbyuser = endbyuser;
 	}
-	
+	@Formula(value="(SELECT a.code_name FROM sys_code a WHERE a.type_='INSPECTION_TYPE' AND a.code_= template)")
+	public String getTemplateName() {
+		return templateName;
+	}
+	public void setTemplateName(String templateName) {
+		this.templateName = templateName;
+	}
 	
 }

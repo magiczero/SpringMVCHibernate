@@ -25,6 +25,7 @@ public class LeaderTask implements Serializable{
 	private String fromUser;
 	private String toUser;
 	private String taskTitle;
+	private String taskContent;
 	private String taskResult;
 	private String processInstanceId;
 	private Date applyTime;
@@ -66,6 +67,13 @@ public class LeaderTask implements Serializable{
 	}
 	public void setTaskTitle(String taskTitle) {
 		this.taskTitle = taskTitle;
+	}
+    @Column(name = "TASK_CONTENT")
+    public String getTaskContent() {
+		return taskContent;
+	}
+	public void setTaskContent(String taskContent) {
+		this.taskContent = taskContent;
 	}
 	@Column(name="task_result")
 	public String getTaskResult() {

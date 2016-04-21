@@ -30,5 +30,10 @@ public class InspectionDAOImpl extends BaseDAOImpl<Inspection,Long> implements I
 	{
 		return statsDao.getStats("INSPECTION", column, row, startTime, endTime, null);
 	}
-	
+	@Override
+	public SearchResult<Inspection> getByProcessInstance(String processInstanceId) {
+		Search search = new Search();
+		search.addFilterEqual("processInstanceId", processInstanceId);
+		return this.searchAndCount(search);
+	}
 }

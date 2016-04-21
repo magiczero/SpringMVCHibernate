@@ -40,4 +40,6 @@ public interface UserService {
 	boolean enableUser(String loginname,SysUser user );
 
 	boolean disableUser(String username, SysUser user);
+	
+	String getUserName(String userid);
 }

@@ -205,6 +205,7 @@
                             <h3>运维工作管理</h3>
                             <div class="active">
                                 <ul>
+                                <li><a href="#" class="lnk_type" title="INSPECTION_TYPE"> 巡检表</a><span class="arrow"></span></li>
                                 <li><a href="#" class="lnk_type" title="INSPECTION_STATUS"> 巡检结果</a><span class="arrow"></span></li>
                                 <li><a href="#" class="lnk_type" title="UPDATE_TYPE"> 升级类型</a><span class="arrow"></span></li>
                                 <li><a href="#" class="lnk_type" title="SECJOB_TYPE"> 三员工作类型</a><span class="arrow"></span></li>

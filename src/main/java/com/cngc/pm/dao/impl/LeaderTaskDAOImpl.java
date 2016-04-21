@@ -49,5 +49,11 @@ public class LeaderTaskDAOImpl extends BaseDAOImpl<LeaderTask,Long> implements L
 	{
 		return statsDao.getStats("LEADERTASK", column, row, startTime, endTime, null);
 	}
-	
+
+	@Override
+	public SearchResult<LeaderTask> getByProcessInstance(String processInstanceId) {
+		Search search = new Search();
+		search.addFilterEqual("processInstanceId", processInstanceId);
+		return this.searchAndCount(search);
+	}
 }

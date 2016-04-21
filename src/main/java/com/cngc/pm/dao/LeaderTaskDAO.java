@@ -13,4 +13,5 @@ public interface LeaderTaskDAO extends GenericDAO<LeaderTask,Long>{
 	SearchResult<LeaderTask> search(String startTime,String endTime);
 	SearchResult<LeaderTask> search(List<String> processInstanceIds, String startTime,String endTime);
 	Map<String,Object> getStats(String column,String row,String startTime,String endTime);
+	SearchResult<LeaderTask> getByProcessInstance(String processInstanceId);
 }

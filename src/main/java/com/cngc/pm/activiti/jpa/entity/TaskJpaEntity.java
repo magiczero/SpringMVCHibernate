@@ -18,6 +18,7 @@ public class TaskJpaEntity {
     private String fromUser;
     private String toUser;
     private String taskTitle;
+    private String taskContent;
     private String taskResult;
     private String processInstanceId;
     private Date applyTime;
@@ -60,7 +61,16 @@ public class TaskJpaEntity {
     public void setTaskTitle(String taskTitle){
     	this.taskTitle = taskTitle;
     }
-    @Column(name = "TASK_RESULT")
+    @Column(name = "TASK_CONTENT")
+    public String getTaskContent() {
+		return taskContent;
+	}
+
+	public void setTaskContent(String taskContent) {
+		this.taskContent = taskContent;
+	}
+
+	@Column(name = "TASK_RESULT")
     public String getTaskResult(){
     	return taskResult;
     }

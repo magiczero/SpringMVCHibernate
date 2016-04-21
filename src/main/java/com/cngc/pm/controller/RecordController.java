@@ -24,6 +24,7 @@ import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -201,7 +202,7 @@ public class RecordController {
 	}
 
 	@RequestMapping(value = "/income/save", method = RequestMethod.POST)
-	public String save(@Valid @ModelAttribute("income") Income income, HttpServletRequest request,
+	public String save(@Valid @ModelAttribute("income") Income income, BindingResult result, HttpServletRequest request,
 			Authentication authentication) {
 
 		income.setCreatedTime(new Date());

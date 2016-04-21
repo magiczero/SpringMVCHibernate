@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
@@ -33,6 +34,7 @@ import com.cngc.pm.model.AttachType;
 import com.cngc.pm.model.Attachment;
 import com.cngc.pm.service.AttachService;
 import com.cngc.utils.Common;
+import com.cngc.utils.Uploader;
 
 @Controller
 @RequestMapping("/attachment")
@@ -87,7 +89,7 @@ public class AttachmentController {
 				throw new BusinessException("非法文件");
 			}
 			//判断是否是指定扩展名
-			if(isExtension(originalFileExtension, ".doc",".docx",".xls",".xlsx",".ppt",".pptx",".jpg",".png")) {
+			if(isExtension(originalFileExtension, ".doc",".docx",".xls",".xlsx",".pdf",".ppt",".pptx",".jpg",".png",".zip",".rar")) {
 				String newFilename = newFilenameBase + originalFileExtension; // 重命名
 	//			String storageDirectory = request.getSession().getServletContext()
 	//					.getRealPath("")
@@ -142,6 +144,83 @@ public class AttachmentController {
 		//model.addAttribute("attachList", list);
 		
 		return "attachment/success";
+	}
+	
+	@RequestMapping(value="/imageup", method = RequestMethod.POST)
+	public @ResponseBody String imageUp(HttpServletRequest request) {
+		Uploader up = new Uploader(request);
+		
+		up.setSavePath("upload");
+	    String[] fileType = {".gif" , ".png" , ".jpg" , ".jpeg" , ".bmp"};
+	    up.setAllowFiles(fileType);
+	    up.setMaxSize(10000); //单位KB
+	    try {
+			up.upload();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+	    //String callback = request.getParameter("callback");
+
+	    String result = "{\"name\":\""+ up.getFileName() +"\", \"originalName\": \""+ up.getOriginalName() +"\", \"size\": "+ up.getSize() +", \"state\": \""+ up.getState() +"\", \"type\": \""+ up.getType() +"\", \"url\": \""+ up.getUrl() +"\"}";
+
+	    result = result.replaceAll( "\\\\", "\\\\" );
+	    
+	    return result;
+	}
+	
+	@RequestMapping(value="/picload", method = RequestMethod.POST)
+	public @ResponseBody  String picLoad(MultipartHttpServletRequest request) {
+		String msg = "";
+		Iterator<String> itr = request.getFileNames();
+		MultipartFile mpf;
+
+		while (itr.hasNext()) {
+			mpf = request.getFile(itr.next());
+			log.debug("Uploading {}", mpf.getOriginalFilename());
+
+			String newFilenameBase = UUID.randomUUID().toString(); // 重命名文件名
+			String origFilename =  mpf.getOriginalFilename();
+//			String originalFileExtension = mpf.getOriginalFilename().substring(
+//					mpf.getOriginalFilename().lastIndexOf(".")); // 扩展名
+			String originalFileExtension = StringUtils.substring(origFilename,  StringUtils.lastIndexOf(origFilename, "."));
+			
+			if(StringUtils.isEmpty(originalFileExtension)) {
+				throw new BusinessException("非法文件");
+			}
+			//判断是否是指定扩展名
+				String newFilename = newFilenameBase + originalFileExtension; // 重命名
+				String storageDirectory = request.getSession().getServletContext()
+						.getRealPath("")
+						+ "/resources/ueuploadfiles/";
+				File folder = new File(storageDirectory);
+				if (!folder.exists())
+					folder.mkdirs();
+	
+				File newFile = new File(storageDirectory + "/" + newFilename);
+				try {
+					mpf.transferTo(newFile);
+	
+					 Attachment attach = new Attachment();
+					 attach.setName(origFilename);
+					 attach.setNewFilename(newFilename);
+					 attach.setContentType(mpf.getContentType());
+					 attach.setSize(mpf.getSize());
+					 attach.setPath(folder.getPath());
+					 attach.setType(AttachType.uefile);
+					 attach = attachService.create(attach);
+					
+					//msg = "{\"original\":\""+attach.getName()+"\",\"url\":\"../resources/ueuploadfiles/"+attach.getNewFilename()+"\",\"title\":\"\",\"state\":\"\"}";
+					msg = "{\"name\":\""+ attach.getNewFilename() +"\", \"originalName\": \""+ attach.getName() +"\", \"size\": "+ attach.getSize() +", \"state\": \"SUCCESS\", \"type\": \""+ originalFileExtension +"\", \"url\": \"resources/ueuploadfiles/"+attach.getNewFilename()+"\"}";
+					msg = msg.replaceAll( "\\\\", "\\\\" );
+				} catch (IOException e) {
+					e.printStackTrace();
+					log.error("不能上传文件 " + mpf.getOriginalFilename(), e);
+				}
+				break;
+		}
+		return msg;
 	}
 
 	/**

@@ -16,7 +16,6 @@
     <link href="${contextPath }/resources/css/bootstrap.css" rel="stylesheet" type="text/css" />
     <link href="${contextPath }/resources/css/fullcalendar.css" rel="stylesheet" type="text/css" />
     <link href="${contextPath }/resources/css/ui.css" rel="stylesheet" type="text/css" />
-    <link href="${contextPath }/resources/css/select2.css" rel="stylesheet" type="text/css" />
     <link href="${contextPath }/resources/css/uniform.default.css" rel="stylesheet" type="text/css" />
     <link href="${contextPath }/resources/css/validation.css" rel="stylesheet" type="text/css" />
     <link href="${contextPath }/resources/css/mCustomScrollbar.css" rel="stylesheet" type="text/css" />
@@ -59,8 +58,6 @@
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/sparklines/jquery.sparkline.min.js'></script>
     
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/fullcalendar/fullcalendar.min.js'></script>
-    
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/select2/select2.min.js'></script>
     
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/uniform/uniform.js'></script>
     
@@ -121,7 +118,7 @@
                 	$('#file_upload').uploadify({
         				'formData' : { 'type' : 1 },
         		        'swf'      : '${contextPath }/resources/flash/uploadify.swf',
-        		        'fileTypeExts': '*.jpg;*.doc;*.docx',//允许上传的文件类型，限制弹出文件选择框里能选择的文件
+        		        'fileTypeExts': '*.jpg;*.doc;*.docx;*.xls;*.xlsx;*.pdf;*.ppt;*.pptx',//允许上传的文件类型，限制弹出文件选择框里能选择的文件
         		      //按钮显示的文字
                         'buttonText': '选择文件……',
         		        'uploader' : '${contextPath}/attachment/upload',

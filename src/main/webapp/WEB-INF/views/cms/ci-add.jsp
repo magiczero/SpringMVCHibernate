@@ -25,6 +25,7 @@
     <link href="${contextPath }/resources/js/plugins/select2/select2.css" rel="stylesheet" type="text/css" />
     <link href="${contextPath }/resources/css/uploadify.css" rel="stylesheet" type="text/css" />
     <link href="${contextPath }/resources/css/validation.css" rel="stylesheet" type="text/css" />
+    <link href='${contextPath }/resources/js/plugins/jstree/jquery.treeview.css' rel="stylesheet" type="text/css" />
     <!--[if lt IE 8]>
         <link href="${contextPath }/resources/css/ie7.css" rel="stylesheet" type="text/css" />
     <![endif]-->    
@@ -41,7 +42,9 @@
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/pnotify/jquery.pnotify.min.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/scrollup/jquery.scrollUp.min.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/select2/select2.min.js'></script>
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/jtree/jtree.js'></script>
+    <!-- <script type='text/javascript' src='${contextPath }/resources/js/plugins/jtree/jtree.js'></script>-->
+    <script type='text/javascript' src='${contextPath }/resources/js/plugins/jstree/jquery.treeview.js'></script>
+    <script type='text/javascript' src='${contextPath }/resources/js/plugins/jstree/jquery.treeview.async.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/uploadify/jquery.uploadify.min.js'></script>
     
     <script type='text/javascript' src='${contextPath }/resources/js/pm-common.js'></script>
@@ -82,47 +85,15 @@
                 $("input[name='categoryCode']").bind("click",function(){
                 	
                 	//act_dialog_ci_select("categoryCode",true);//IE8+
-                	$("#treeview").html('');
-                	$.getJSON(ctx + '/cms/category/getjson?t=' + pm_random(), function(data){
-                		//tree_json = data.json;
-                		obj= $.parseJSON(data.json);
-                		//console.log(obj);
-                		$.each(obj, function (i, field) {
-                			//console.log(field.text);
-                        	var liStr = "<li><a href=\"#\">"+field.text+"</a>";
-                        	if(!field.nodes) {
-                        		var code = field.text.substring(0,field.text.indexOf(" "));
-                        		liStr = "<li><a href=\"#\" onclick=\"inputAttr('categoryCode','"+code+"');\">"+field.text+"</a>";
-                        	} 
-                        	if(field.nodes) {
-                        		liStr += "<ul>";
-                        		$.each(field.nodes, function(j, node){
-                        			if(node.nodes) {
-                        				liStr+="<li><a href=\"#\">"+node.text+"</a>";                        				
-                        			} else {
-                        				var code1 = node.text.substring(0,node.text.indexOf(" "));
-                        				liStr+="<li><a href=\"#\" onclick=\"inputAttr('categoryCode','"+code1+"');\">"+node.text+"</a>";
-                        			}
-                        			if(node.nodes) {
-                        				liStr += "<ul>";
-                        				$.each(node.nodes, function(k, last){
-                        					var code2 = last.text.substring(0,last.text.indexOf(" "));
-                        					liStr+="<li><a href=\"#\" onclick=\"inputAttr('categoryCode','"+code2+"');\">"+last.text+"</a></li>";
-                        				});
-                        				liStr += "</ul>";
-                        			}
-                        			liStr+="</li>"
-                        		});
-                        		liStr += "</ul>";
-                        	}
-                        	liStr += "</li>";
-                            $("#treeview").append(liStr);
-                		});
-                		
-                		$("#treeview").treed();
-                		
-                		$("#b_popup_select").dialog('open');
-                	});
+                	//$("#treeview").html('');
+                	
+                	
+                	$("#treeview").treeview({
+                		unique: true,
+                		url : ctx + '/cms/category/getjson?t=' + pm_random()
+	            	});
+            		
+            		$("#b_popup_select").dialog('open');
                 	
                 });
                 $("#userInMaintenance").select2();
@@ -148,9 +119,9 @@
             	$("select[name='status'] option[value='03']").attr("selected","selected");
             }
             
-            function inputAttr(name,value) {
+            function initTable(value) {
             	//console.log(value);
-            	$("input[name='"+name+"']").attr("value",value);
+            	$("#categoryCode").attr("value",value);
             }	
     </script>
     <style type="text/css">
@@ -267,7 +238,7 @@
                                 <div class="col-md-1"><form:label path="model">型号:</form:label></div>
                                 <div class="col-md-3"><form:input path="model"></form:input></div>
                                 <div class="col-md-1"><form:label path="categoryCode">分类:</form:label></div>
-                                <div class="col-md-3"><form:input path="categoryCode" class="validate[required,maxSize[50]]"></form:input></div>
+                                <div class="col-md-3"><form:input path="categoryCode" readonly="true" class="validate[required,maxSize[50]]"></form:input></div>
                             </div>
                             <div class="row-form clearfix">
                             	<div class="col-md-1"><form:label path="securityLevel">密级:</form:label></div>

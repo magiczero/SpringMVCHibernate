@@ -42,6 +42,7 @@ public class UserSerializer extends JsonSerializer<SysUser> {
         	}
         }
         jgen.writeStringField("tel", user.getDepName());
+        jgen.writeStringField("mechName", user.getMechName());
         jgen.writeEndObject(); 
 	}
 

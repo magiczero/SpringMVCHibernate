@@ -32,7 +32,6 @@ import com.cngc.pm.service.DocumentService;
 import com.cngc.pm.service.GroupService;
 import com.cngc.pm.service.RoleService;
 import com.cngc.pm.service.UserService;
-import com.cngc.utils.Common;
 import com.cngc.utils.UserSerializer;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -169,14 +168,18 @@ public class UserController extends BaseController  {
 	@RequestMapping(value="/save-user", method = RequestMethod.POST)
 	public @ResponseBody Map<String, Object> saveUser(Model model, HttpServletRequest request) {
 		Map<String , Object> map = new HashMap<>();
+		map.put("flag", false);
 		if(StringUtils.isEmpty(request.getParameter("group"))) {
-			map.put("flag", false);
+			
 			return map;
 		}
 		SysUser user = new SysUser();
 		
 		String username = request.getParameter("username");
-		
+		//判断唯一性
+		if(userService.getByUsername(username) != null) {
+			return map;
+		}
 		user.setUsername(username);
 		user.setName(request.getParameter("name"));
 		Md5PasswordEncoder md5 = new Md5PasswordEncoder();
@@ -191,6 +194,7 @@ public class UserController extends BaseController  {
 		user.setDepId(Integer.parseInt(request.getParameter("sort")));
 		user.setDepName(request.getParameter("tel"));
 		user.setMechId(Integer.parseInt(request.getParameter("priority")));
+		user.setMechName(request.getParameter("mechName"));
 				
 		userService.save(user, currentName, true);
 		//同步到activiti的user
@@ -263,6 +267,7 @@ public class UserController extends BaseController  {
 			euser.setDepId(Integer.parseInt(request.getParameter("esort")));
 			euser.setDepName(request.getParameter("etel"));
 			euser.setMechId(Integer.parseInt(request.getParameter("epriority")));
+			euser.setMechName(request.getParameter("emechName"));
 			String currentUsername = SecurityContextHolder.getContext().getAuthentication().getName();
 			
 			userService.save(euser, currentUsername, true);
@@ -317,14 +322,14 @@ public class UserController extends BaseController  {
 		{
 			SysUser user = userService.getById(id);
 			
-			if(Common.isEmpty(roleIds)) {
-				//清空用户的所有角色
-				user.setUserRoles(null);
-				
-				userService.save(user,username, user.isEnabled());
-			} else {
+//			if(Common.isEmpty(roleIds)) {
+//				//清空用户的所有角色
+//				user.setUserRoles(null);
+//				
+//				userService.save(user,username, user.isEnabled());
+//			} else {
 				userService.setRole(username,user,roleIds);
-			}
+//			}
 			
 //			if(!StringUtils.equals(roles, "0"))
 //			{
@@ -381,7 +386,7 @@ public class UserController extends BaseController  {
 		SysUser user = userService.getById(id);
 		if(user == null) {
 			map.put("flag", false);
-		} else if(user.getUserRoles().size()==0 || docService.isEmptyDocsByUser(user)) {
+		} else if(user.getUserRoles().size()==0 && docService.isEmptyDocsByUser(user)) {
 			//同步到activiti的user
 			identityService.deleteUser(user.getUsername());
 			String username = SecurityContextHolder.getContext().getAuthentication().getName();

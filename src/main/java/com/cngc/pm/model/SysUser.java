@@ -15,18 +15,20 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
+import org.hibernate.validator.constraints.NotBlank;
 import org.springframework.format.annotation.DateTimeFormat;
 
 
 @Entity
 @DynamicUpdate(true)  
 @DynamicInsert(true)
-@Table(name = "sys_users")  
+@Table(name = "sys_users",uniqueConstraints = {@UniqueConstraint(columnNames="username")})  
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region="sys_user")  
 public class SysUser implements Serializable {
 
@@ -44,7 +46,7 @@ public class SysUser implements Serializable {
 	private Date deadline;							//截止日期
 	private String loginIP;							//最后登录截止IP
 	private Integer mechId;							//所属机构id -- 优先级
-	private String mechName;					//所属机构名称
+	private String mechName;					//所属机构名称 -- 房间号
 	private Integer depId;								//地区id--排序
 	private String depName;						//地区名称--电话
 	private boolean enabled;
@@ -114,6 +116,7 @@ public class SysUser implements Serializable {
         this.id = id;  
     }  
 	  
+    @NotBlank
     public String getUsername() {
 		return username;
 	}

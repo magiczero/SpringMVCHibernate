@@ -15,7 +15,7 @@
                 </div>
                 <ul class="control">                
                     <li><span class="glyphicon glyphicon-comment"></span> <a href="${contextPath }/message/list">消息</a></li>
-                    <li><span class="glyphicon glyphicon-cog"></span> <a href="#fModal" role="button" data-toggle="modal">修改密码</a></li>
+                    <li><span class="glyphicon glyphicon-cog"></span> <a href="#pwdModal" role="button" data-toggle="modal">修改密码</a></li>
                     <li><span class="glyphicon glyphicon-share-alt"></span> <a href="${contextPath }/logout">退出</a></li>
                 </ul>
                 <div class="info">
@@ -91,7 +91,7 @@
                 </c:forEach>
 
             </ul>
-            <div class="modal fade" id="fModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal fade" id="pwdModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
                 <form id="pwdForm" action="${contextPath }/user/update-pwd" method="post">

@@ -24,7 +24,6 @@
     <link href="${contextPath }/resources/css/styling.css" rel="stylesheet" type="text/css" />
     <link href="${contextPath }/resources/css/mycss.css" rel="stylesheet" type="text/css" />
     <link href="${contextPath }/resources/css/validation.css" rel="stylesheet" type="text/css" />
-    <link href="${contextPath }/resources/css/select2.css" rel="stylesheet" type="text/css" />
     <!--[if lt IE 8]>
         <link href="${contextPath }/resources/css/ie7.css" rel="stylesheet" type="text/css" />
     <![endif]-->    
@@ -34,7 +33,6 @@
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/jquery/jquery.mousewheel.min.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/cookie/jquery.cookies.2.2.0.min.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/bootstrap.min.js'></script>
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/select2/select2.min.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/uniform/uniform.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/mcustomscrollbar/jquery.mCustomScrollbar.min.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/dataTables/jquery.dataTables.min.js'></script>
@@ -194,13 +192,14 @@
                             </div>                
                         </div>
                         <div class="row">
-                            <div class="block-fluid">
-                        	<label class='checkbox checkbox-inline'><input type='checkbox' name='isnotify' checked='checked' value='true'/> 提醒任务办理人 </label>
-                    		</div>
+                        		<div class="col-md-12">
+                        		
+                        		<label class='checkbox checkbox-inline'><input type='checkbox' name='isnotify' checked='checked' value='true'/> 提醒任务办理人 </label>
+                        		</div>
                     	</div>
                     </div>   
                     <div class="modal-footer">
-                    	<input type="hidden" name="redirectAddress" value="/leadertask/deal/${leaderTask.id}" />
+                    	<input type="hidden" name="redirectAddress" value="/leadertask/deal/${leaderTask.id}/${task.id}" />
                     	<input type="hidden" name="fp_taskId" value="${task.id }" />
                     	<input type="hidden" name="fp_processInstanceId" value="${leaderTask.processInstanceId }" />
                         <button class="btn btn-primary" aria-hidden="true">提交</button> 

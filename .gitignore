@@ -1,5 +1,4 @@
 /.classpath
 /.settings/
 /target/
-/src/main/resources/activiti.xml
-/src/main/resources/spring-datasource.xml
+/.project

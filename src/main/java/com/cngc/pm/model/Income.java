@@ -72,7 +72,7 @@ public class Income  implements Serializable{
 		this.accompany = accompany;
 	}
 	@Column(name="in_time")
-	@DateTimeFormat( pattern = "yyyy-MM-dd" )
+	@DateTimeFormat( pattern = "yyyy-MM-dd HH:mm" )
 	public Date getInTime() {
 		return inTime;
 	}
@@ -80,7 +80,7 @@ public class Income  implements Serializable{
 		this.inTime = inTime;
 	}
 	@Column(name="out_time")
-	@DateTimeFormat( pattern = "yyyy-MM-dd" )
+	@DateTimeFormat( pattern = "yyyy-MM-dd HH:mm" )
 	public Date getOutTime() {
 		return outTime;
 	}

@@ -16,7 +16,6 @@
     <link href="${contextPath }/resources/css/bootstrap.css" rel="stylesheet" type="text/css" />
     <link href="${contextPath }/resources/css/fullcalendar.css" rel="stylesheet" type="text/css" />
     <link href="${contextPath }/resources/css/ui.css" rel="stylesheet" type="text/css" />
-    <link href="${contextPath }/resources/css/select2.css" rel="stylesheet" type="text/css" />
     <link href="${contextPath }/resources/css/uniform.default.css" rel="stylesheet" type="text/css" />
     <link href="${contextPath }/resources/css/validation.css" rel="stylesheet" type="text/css" />
     <link href="${contextPath }/resources/css/mCustomScrollbar.css" rel="stylesheet" type="text/css" />
@@ -51,8 +50,6 @@
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/sparklines/jquery.sparkline.min.js'></script>
     
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/fullcalendar/fullcalendar.min.js'></script>
-    
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/select2/select2.min.js'></script>
     
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/uniform/uniform.js'></script>
     
@@ -174,7 +171,7 @@
 	    		var trs = "";
 	    		$.each(user, function (index, element) {
 	    			index = index+1;
-	    			trs += "<tr><td>"+index+"</td><td>"+element.userName+"</td><td>"+element.name+"</td><td>"+element.groupName+"</td><td>"+element.priorityCH+"</td><td>"+element.tel+"</td><td><a href=\"javascript:void(0);\" onclick=\"initEditUserForm("+element.userid+");\">编辑</a>&nbsp;<a href=\"javascript:void(0);\" onclick=\"delUser("+element.userid+","+groupid+");\">删除</a></td></tr>";
+	    			trs += "<tr><td>"+index+"</td><td>"+element.userName+"</td><td>"+element.name+"</td><td>"+element.mechName+"</td><td>"+element.groupName+"</td><td>"+element.priorityCH+"</td><td>"+element.tel+"</td><td><a href=\"javascript:void(0);\" onclick=\"initEditUserForm("+element.userid+");\">编辑</a>&nbsp;<a href=\"javascript:void(0);\" onclick=\"delUser("+element.userid+","+groupid+");\">删除</a></td></tr>";
 	    		});
 	    		$("#userTable tbody tr").remove();
 	    		$("#userTable tbody").append(trs);
@@ -228,6 +225,7 @@
     		$("#ename").attr("value",user.name);
     		$("#epriority").attr("value",user.priority);
     		$("#etel").attr("value",user.tel);
+    		$("#emechName").attr("value",user.mechname);
     		$("#esort").attr("value",user.sort);
     		$("#userEditFormDialog").modal('show');
     	});
@@ -271,7 +269,8 @@
     	}
     	
     	$.getJSON(ctx + '/group/group/'+grpid+'?t=' + pm_random(), function(data){
-    		group= $.parseJSON(data.group);
+    		var group= $.parseJSON(data.group);
+    		//var group = eval("("+data.group+")");
     		//清空
     		$("#id").attr("value",group.groupid);
     		$("#groupName").attr("value",group.groupName);
@@ -286,6 +285,7 @@
     	$("#username").attr("value",'');
     	$("#name").attr("value",'');
     	$("#tel").attr("value",'');
+    	$("#mechName").attr("value",'');
     	$("#sort").attr("value",'');
     	$("#userFormDialog").modal('show');
     }
@@ -310,7 +310,7 @@
 	            		viewUsers(grpid);
 	            		$("#userFormDialog").modal('hide');
 					} else {
-						notify_e('Error','请选择部门');
+						notify_e('Error','用户名重复或者未选中部门');
 					}
 	            }
 	        });
@@ -389,6 +389,7 @@
 									<th width="50px">序号</th>
 									<th width="15%">用户名</th>
 									<th>真实姓名</th>
+									<th>房间号</th>
 									<th>所属部门</th>
 									<th>优先级</th>
 									<th >电话</th>
@@ -428,9 +429,7 @@
                                     <div class="col-md-3"><form:label path="parentGroup.id">上级部门：</form:label></div>
                                     <div class="col-md-9">
                                     	<form:select path="parentGroup.id" >
-                                    	<form:option value="">#</form:option>
                                     	<c:forEach items="${groupList }" var="group">
-                                    	
 	                                    <form:option value="${group.id }">&nbsp;${group.groupName }</form:option>
 	                                    <c:forEach items="${group.child }" var="child">
 	                                    <form:option value="${child.id }">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;| - ${child.groupName }</form:option>
@@ -480,7 +479,7 @@
                             <div class="block-fluid">
                                 <div class="row-form clearfix">
                                     <div class="col-md-3">用户名:</div>
-                                    <div class="col-md-9"><input id="username" class="validate[required,minSize[2],maxSize[20],ajax[ajaxNameCall]]" name="username" type="text" /></div>
+                                    <div class="col-md-9"><input id="username" class="validate[required,minSize[2],maxSize[20]]" name="username" type="text" /></div>
                                 </div>                                                           
                             </div>                
                         </div>
@@ -511,6 +510,14 @@
                                 <div class="row-form clearfix">
                                     <div class="col-md-3">联系电话:</div>
                                     <div class="col-md-9"><input id="tel" name="tel" type="text" class="validate[required,custom[phone]]"></input></div>
+                                </div>                                                           
+                            </div>                
+                        </div>
+                        <div class="row">
+                            <div class="block-fluid">
+                                <div class="row-form clearfix">
+                                    <div class="col-md-3">房间号:</div>
+                                    <div class="col-md-9"><input id="mechName" name="mechName" type="text" class="validate[required]"></input></div>
                                 </div>                                                           
                             </div>                
                         </div>
@@ -581,6 +588,14 @@
                                 <div class="row-form clearfix">
                                     <div class="col-md-3">联系电话:</div>
                                     <div class="col-md-9"><input id="etel" name="etel" type="text" class="validate[required,custom[phone]]"></input></div>
+                                </div>                                                           
+                            </div>                
+                        </div>
+                        <div class="row">
+                            <div class="block-fluid">
+                                <div class="row-form clearfix">
+                                    <div class="col-md-3">房间号:</div>
+                                    <div class="col-md-9"><input id="emechName" name="emechName" type="text" class="validate[required]"></input></div>
                                 </div>                                                           
                             </div>                
                         </div>

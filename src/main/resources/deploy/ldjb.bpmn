@@ -9,13 +9,15 @@
       <extensionElements>
         <activiti:formProperty id="fromUser" name="交办领导" type="leader"></activiti:formProperty>
         <activiti:formProperty id="toUser" name="交办对象" type="user"></activiti:formProperty>
-        <activiti:formProperty id="taskTitle" name="任务内容" type="bigtext"></activiti:formProperty>
+        <activiti:formProperty id="taskTitle" name="任务标题" type="string"></activiti:formProperty>
+        <activiti:formProperty id="taskContent" name="任务内容" type="bigtext"></activiti:formProperty>
         <activiti:formProperty id="dueTime" name="到期时间" type="date" datePattern="yyyy-MM-dd"></activiti:formProperty>
       </extensionElements>
     </startEvent>
     <userTask id="taskDoLeaderTask" name="任务执行中" activiti:assignee="${mytask.toUser}">
       <extensionElements>
-        <activiti:formProperty id="taskTitle" name="任务内容" type="string" expression="${mytask.taskTitle}" writable="false"></activiti:formProperty>
+        <activiti:formProperty id="taskTitle" name="任务标题" type="string" expression="${mytask.taskTitle}" writable="false"></activiti:formProperty>
+        <activiti:formProperty id="taskContent" name="任务内容" type="bigtext" expression="${mytask.taskContent}" writable="false"></activiti:formProperty>
         <activiti:formProperty id="taskResult" name="工作结果" type="bigtext" expression="${mytask.taskResult}"></activiti:formProperty>
       </extensionElements>
     </userTask>
@@ -23,7 +25,8 @@
       <extensionElements>
         <activiti:formProperty id="fromUser" name="交办领导" type="leader" expression="${mytask.fromUser}" writable="false"></activiti:formProperty>
         <activiti:formProperty id="toUser" name="交办对象" type="user" expression="${mytask.toUser}"></activiti:formProperty>
-        <activiti:formProperty id="taskTitle" name="任务内容" type="string" expression="${mytask.taskTitle}" writable="false"></activiti:formProperty>
+        <activiti:formProperty id="taskTitle" name="任务标题" type="string" expression="${mytask.taskTitle}" writable="false"></activiti:formProperty>
+        <activiti:formProperty id="taskContent" name="任务内容" type="bigtext" expression="${mytask.taskContent}" writable="false"></activiti:formProperty>
         <activiti:formProperty id="dueTime" name="到期时间" type="date" expression="${mytask.dueTime}" datePattern="yyyy-MM-dd" writable="false"></activiti:formProperty>
       </extensionElements>
     </userTask>

@@ -1,6 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>    
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<%@ page import="java.util.*"%>
+<%@ page import="java.text.*"%>
 <c:set var="contextPath" value="${pageContext.request.contextPath}"></c:set>
 <!DOCTYPE html>
 <html lang="en">
@@ -170,7 +172,7 @@
                                 	<tr>
                                 		<th width="90px">流程号</th>
                                 		<th width="105px">交办领导</th>
-										<th >任务内容</th>
+										<th >任务标题</th>
 										<th width="100px">受派人</th>
 										<th width="110px">提交时间</th>
 										<th width="110px">到期时间</th>
@@ -179,6 +181,9 @@
 									</tr>
                                 </thead>
                                 <tbody>
+                                	<c:set var="currentTime">
+                                		<%=new java.text.SimpleDateFormat("yyyy-MM-dd").format(Calendar.getInstance().getTime())%>
+                                	</c:set>
                                 	<c:forEach items="${list}" var="leaderTask">
 									<c:set var="task" value="${tasks[leaderTask.processInstanceId]}" />
 									<c:set var="mytask" value="${mytasks[leaderTask.processInstanceId]}" />
@@ -204,9 +209,11 @@
 												<c:if test="${leaderTask.endbyuser }">已完成</c:if>
 												<c:if test="${!leaderTask.endbyuser }">由系统关闭</c:if>
 											</c:if>
+											<c:if test="${leaderTask.dueTime < currentTime }">
+											<span class="label label-danger">已超时</span>
+											</c:if>
 										</td>
 										<td>
-
 											<c:if test="${empty task && empty mytask }">
 												<a href="#" onclick="act_comment_open('${leaderTask.processInstanceId}',true)"><span class="glyphicon glyphicon-edit"></span> 意见</a>
 											</c:if>

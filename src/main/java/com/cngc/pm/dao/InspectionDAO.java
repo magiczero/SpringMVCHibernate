@@ -9,4 +9,5 @@ import com.googlecode.genericdao.search.SearchResult;
 public interface InspectionDAO extends GenericDAO<Inspection,Long>{
 	SearchResult<Inspection> search(String startTime,String endTime);
 	Map<String,Object> getStats(String column,String row,String startTime,String endTime);
+	SearchResult<Inspection> getByProcessInstance(String processInstanceId);
 }

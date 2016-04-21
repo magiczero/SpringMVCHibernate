@@ -1,6 +1,7 @@
 package com.cngc.pm.service.impl;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -89,6 +90,17 @@ public class ChangeServiceImpl implements ChangeService{
 	public SearchResult<Change> getByProcessInstance(List<String> processInstanceIds)
 	{
 		return changeDao.getByProcessInstance(processInstanceIds);
+	}
+	@Override
+	@Transactional
+	public Long getIdByProcessInstance(String processInstanceId){
+		List<String> ids = new ArrayList<String>();
+		ids.add(processInstanceId);
+		SearchResult<Change> re = getByProcessInstance(ids);
+		if(re.getTotalCount()>0)
+			return re.getResult().get(0).getId();
+		else
+			return Long.getLong("0");
 	}
 	@Override
 	@Transactional

@@ -35,8 +35,12 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.cngc.pm.common.web.common.UserUtil;
+import com.cngc.pm.service.ChangeService;
+import com.cngc.pm.service.IncidentService;
+import com.cngc.pm.service.InspectionService;
 import com.cngc.pm.service.MessageService;
 import com.cngc.pm.service.UserService;
+import com.cngc.pm.service.LeaderTaskService;
 
 @Controller
 @RequestMapping("/workflow/task")
@@ -58,6 +62,14 @@ public class TaskController {
 	private UserUtil userUtil;
 	@Resource
 	private UserService userService;
+	@Resource
+	private IncidentService incidentService;
+	@Resource
+	private ChangeService changeService;
+	@Resource
+	private LeaderTaskService leaderTaskService;
+	@Resource
+	private InspectionService inspectionService;
 
 	/**
 	 * 待办任务
@@ -168,7 +180,7 @@ public class TaskController {
 
 		String re = "/workflow/task/mytask";
 		Task task = taskService.createTaskQuery().taskId(taskId).singleResult();
-
+		
 		taskService.claim(taskId, userUtil.getUserId(authentication));
 		// redirectAttributes.addFlashAttribute("message", "任务已签收");
 		if (task == null)
@@ -176,21 +188,44 @@ public class TaskController {
 
 		ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery()
 				.processDefinitionId(task.getProcessDefinitionId()).singleResult();
-		switch (processDefinition.getKey()) {
+//		switch (processDefinition.getKey()) {
+//		case "INCIDENT":
+//			if (userUtil.IsEngineer(authentication))
+//			{
+//				re = "/incident/list";
+//			break;
+//			}
+//			if (userUtil.IsCommonUser(authentication))
+//			{
+//				re = "/incident/mylist";
+//				break;
+//			}
+//		case "CHANGE":
+//			re = "/change/list";
+//			break;
+//		}
+		switch(processDefinition.getKey()){
 		case "INCIDENT":
-			if (userUtil.IsEngineer(authentication))
-			{
-				re = "/incident/list";
+			re = "/incident/deal/" + incidentService.getIdByProcessInstance(task.getProcessInstanceId()) + "/" + taskId;
 			break;
-			}
-			if (userUtil.IsCommonUser(authentication))
-			{
-				re = "/incident/mylist";
-				break;
-			}
 		case "CHANGE":
-			re = "/change/list";
+			re = "/change/deal/" + changeService.getIdByProcessInstance(task.getProcessInstanceId())  + "/" + taskId;
 			break;
+		case "LEADERTASK":
+			re = "/leadertask/deal/" + leaderTaskService.getIdByProcessInstance(task.getProcessInstanceId()) + "/" + taskId;
+			break;
+		case "INSPECTION":
+			re = "/record/inspection/deal/" + inspectionService.getIdByProcessInstance(task.getProcessInstanceId()) + "/" + taskId;
+			break;
+//		case "SECJOB":
+//			re = "";
+//			break;
+//		case "UPDATE":
+//			re = "";
+//			break;
+//		case "KNOWLEDGE":
+//			re = "";
+//			break;
 		}
 		return "redirect:" + re;
 	}

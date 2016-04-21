@@ -49,5 +49,14 @@ public class InspectionServiceImpl implements InspectionService{
 	{
 		return inspectionDao.getStats(column, row, startTime, endTime);
 	}
-			
+	@Override
+	@Transactional
+	public Long getIdByProcessInstance(String processInstanceId)
+	{
+		SearchResult<Inspection> re = inspectionDao.getByProcessInstance(processInstanceId);
+		if(re.getTotalCount()==0)
+			return Long.getLong("0");
+		else
+			return re.getResult().get(0).getId();
+	}		
 }

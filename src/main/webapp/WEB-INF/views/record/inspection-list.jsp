@@ -1,3 +1,5 @@
+<%@page import="com.cngc.pm.service.UserService"%>
+<%@page import="org.springframework.web.context.support.WebApplicationContextUtils,org.springframework.web.context.WebApplicationContext"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>    
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
@@ -57,7 +59,7 @@
         $(document).ready(function () {
             $("#myTable").dataTable({"oLanguage": {
      			"sUrl": "${contextPath}/resources/json/Chinese.json"
- 			},"aaSorting":[[2,'desc']]});
+ 			},"aaSorting":[[3,'desc']]});
             $(".header").load("${contextPath}/header?t="+pm_random());
             $(".menu").load("${contextPath}/menu?t="+pm_random(), function () { $("#node_${moduleId}").addClass("active"); });
             $(".breadLine .buttons").load("${contextPath}/contentbuttons?t="+pm_random());
@@ -178,15 +180,20 @@
                                 	<tr>
                                 		<th width="80px">流水号</th>
 										<th>执行人</th>
-										<th width="160px">发起时间</th>
-										<th width="160px">完成时间</th>
-										<th width="120px">流程步骤</th>
+										<th width="160px">巡检内容</th>
+										<th width="120px">发起时间</th>
+										<th width="120px">完成时间</th>
+										<th width="90px">状态</th>
 										<th width="70px">结果</th>
-										<th width="105px">事件编号</th>
+										<th width="95px">事件编号</th>
 										<th width="90px">操作</th>
 									</tr>
                                 </thead>
                                 <tbody>
+                                <%
+                                	WebApplicationContext wac =  WebApplicationContextUtils.getWebApplicationContext(this.getServletContext());
+                                	UserService  userService = (UserService)wac.getBean("userServiceImpl");
+                                %>
                                 	<c:forEach items="${list}" var="inspection">
 									<c:set var="task" value="${tasks[inspection.processInstanceId]}" />
 									<c:set var="mytask" value="${mytasks[inspection.processInstanceId]}" />
@@ -194,9 +201,14 @@
 										<td>${inspection.processInstanceId }</td>
 										<td>
 											<c:if test="${empty task }">
-											${inspection.executionUserName }
+												${inspection.executionUserName }
+											</c:if>
+											<c:if test="${not empty task }">
+												<c:set var="user" value="${task.assignee }"/>
+												<%=userService.getUserName(pageContext.getAttribute("user").toString()) %>
 											</c:if>
 										</td>
+										<td>${inspection.templateName }</td>
 										<td><fmt:formatDate value="${inspection.createdTime }" pattern="yyyy-MM-dd HH:mm"></fmt:formatDate></td>
 										<td><fmt:formatDate value="${inspection.executionTime }" pattern="yyyy-MM-dd HH:mm"></fmt:formatDate></td>
 										<td>

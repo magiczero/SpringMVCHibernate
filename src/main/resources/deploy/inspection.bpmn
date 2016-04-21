@@ -10,7 +10,12 @@
         <activiti:formProperty id="user" name="分配工程师" type="user"></activiti:formProperty>
         <activiti:formProperty id="template" name="巡检模板" type="enum">
           <activiti:value id="INSPECTION_BKY" name="兵科院--日常巡检模板"></activiti:value>
+          <activiti:value id="INSPECTION_BKY_WW" name="兵科院外网--日常巡检模板"></activiti:value>
+          <activiti:value id="INSPECTION_BKY_RD" name="兵科院弱电间--日常巡检模板"></activiti:value>
           <activiti:value id="INSPECTION_XXZX" name="信息中心--日常巡检模板"></activiti:value>
+          <activiti:value id="INSPECTION_XXZX_WW" name="信息中心外网--日常巡检模板"></activiti:value>
+          <activiti:value id="INSPECTION_XXZX_WX" name="信息中心-鼎盾及邮箱"></activiti:value>
+          <activiti:value id="INSPECTION_GGW" name="骨干网--日常巡检模板"></activiti:value>
         </activiti:formProperty>
       </extensionElements>
     </startEvent>
@@ -18,7 +23,12 @@
       <extensionElements>
         <activiti:formProperty id="template" name="巡检模板" type="enum" expression="${inspection.template}">
           <activiti:value id="INSPECTION_BKY" name="兵科院--日常巡检模板"></activiti:value>
+          <activiti:value id="INSPECTION_BKY_WW" name="兵科院外网--日常巡检模板"></activiti:value>
+          <activiti:value id="INSPECTION_BKY_RD" name="兵科院弱电间--日常巡检模板"></activiti:value>
           <activiti:value id="INSPECTION_XXZX" name="信息中心--日常巡检模板"></activiti:value>
+          <activiti:value id="INSPECTION_XXZX_WW" name="信息中心外网--日常巡检模板"></activiti:value>
+          <activiti:value id="INSPECTION_XXZX_WX" name="信息中心-鼎盾及邮箱"></activiti:value>
+          <activiti:value id="INSPECTION_GGW" name="骨干网--日常巡检模板"></activiti:value>
         </activiti:formProperty>
         <activiti:formProperty id="status" name="是否正常" type="enum">
           <activiti:value id="01" name="正常"></activiti:value>

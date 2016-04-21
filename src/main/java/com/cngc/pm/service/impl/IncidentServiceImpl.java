@@ -2,6 +2,7 @@ package com.cngc.pm.service.impl;
 
 import static com.cngc.utils.Common.isNumeric;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -126,7 +127,18 @@ public class IncidentServiceImpl implements IncidentService {
 	public SearchResult<Incident> getByProcessInstance(List<String> processInstanceIds) {
 		return incidentDao.getByProcessInstance(processInstanceIds);
 	}
-
+	
+	@Override
+	@Transactional
+	public Long getIdByProcessInstance(String processInstanceId){
+		List<String> ids = new ArrayList<String>();
+		ids.add(processInstanceId);
+		SearchResult<Incident> re = getByProcessInstance(ids);
+		if(re.getTotalCount()>0)
+			return re.getResult().get(0).getId();
+		else
+			return Long.getLong("0");
+	}
 	@Override
 	@Transactional
 	public Map<String, Object> getCountByCategory(String startTime, String endTime) {

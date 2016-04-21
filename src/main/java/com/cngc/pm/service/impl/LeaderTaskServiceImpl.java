@@ -69,4 +69,14 @@ public class LeaderTaskServiceImpl implements LeaderTaskService{
 	{
 		return leaderTaskDao.getStats(column, row, startTime, endTime);
 	}
+	@Override
+	@Transactional
+	public Long getIdByProcessInstance(String processInstanceId)
+	{
+		SearchResult<LeaderTask> re = leaderTaskDao.getByProcessInstance(processInstanceId);
+		if(re.getTotalCount()==0)
+			return Long.getLong("0");
+		else
+			return re.getResult().get(0).getId();
+	}
 }

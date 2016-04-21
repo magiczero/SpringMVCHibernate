@@ -22,4 +22,5 @@ public interface ChangeService {
 	boolean updateCi(Long changeId);
 	SearchResult<Change> getByIds(List<Long> ids);
 	SearchResult<Change> getByProcessInstance(List<String> processInstanceIds);
+	Long getIdByProcessInstance(String processInstanceId);
 }

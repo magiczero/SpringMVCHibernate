@@ -97,6 +97,7 @@ $(document).ready(function() {
 		return false;
 	});
 	// 消息提醒
+	//$.pnotify.defaults.styling = "bootstrap";
 	$.pnotify.defaults.styling = "jqueryui";
     $.pnotify.defaults.history = false;
     $.pnotify.defaults.delay = 2000;   

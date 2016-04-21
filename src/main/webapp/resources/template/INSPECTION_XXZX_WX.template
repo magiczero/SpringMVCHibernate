@@ -1,0 +1,63 @@
+<div class="tabs" id="inspection_div">
+	<ul>
+		<li><a href="#tabs-1">信息中心鼎盾及外网邮箱</a></li>
+	</ul>
+	
+<div id="tabs-1">
+<div class="tabs-vertical-env tabs-vertical-bordered">
+	<ul class="nav tabs-vertical" id="netTableTitle">
+		<li class="active"><a href="#v4-step_1" data-toggle="tab">安全产品</a></li>
+		<li><a href="#v4-step_2" data-toggle="tab">外网邮箱</a></li>
+	</ul>
+	<div class="tab-content" id="netTable">
+		<div class="tab-pane" id="v4-step_1">
+			<div id="title_i" class="label label-info" style="font-size:14px;"></div>
+			<div class="row-form clearfix">
+            	<div class="col-md-3">磐石终端安全系统是否正常:</div>
+                <div class="col-md-7">
+                    	<label class="checkbox checkbox-inline"><input type="radio" name="item_1_1" value="true" checked/> 是</label>
+                        <label class="checkbox checkbox-inline"><input type="radio" name="item_1_1" value="false"/> 否</label>
+                        &nbsp;&nbsp;<label style='display:none;'>异常说明</label>
+                        <label  style='display:none;'><input type="text" name="item_1_1_remark" /></label>
+            	</div>
+            	<div class="col-md-3">身份认证网关是否正常:</div>
+                <div class="col-md-7">
+                    	<label class="checkbox checkbox-inline"><input type="radio" name="item_2_2" value="true" checked/> 是</label>
+                        <label class="checkbox checkbox-inline"><input type="radio" name="item_2_2" value="false"/> 否</label>
+                         &nbsp;&nbsp;<label  style='display:none;'>异常说明</label>
+                        <label  style='display:none;'><input type="text" name="item_2_2_remark" /></label>
+            	</div>
+            	<div class="col-md-3">鼎盾打印刻录审计系统是否正常:</div>
+                <div class="col-md-7">
+                    	<label class="checkbox checkbox-inline"><input type="radio" name="item_3_3" value="true" checked/> 是</label>
+                        <label class="checkbox checkbox-inline"><input type="radio" name="item_3_3" value="false"/> 否</label>
+                         &nbsp;&nbsp;<label  style='display:none;'>异常说明</label>
+                        <label  style='display:none;'><input type="text" name="item_3_3_remark" /></label>
+            	</div>
+           	</div><!--end row-->
+    	</div><!--end pane-->
+    	<div class="tab-pane" id="v4-step_2">
+			<div id="title_i" class="label label-info" style="font-size:14px;"></div>
+			<div class="row-form clearfix">
+            	<div class="col-md-3">收发邮件是否正常:</div>
+                <div class="col-md-7">
+                    	<label class="checkbox checkbox-inline"><input type="radio" name="item_4_4" value="true" checked/> 是</label>
+                        <label class="checkbox checkbox-inline"><input type="radio" name="item_4_4" value="false"/> 否</label>
+                        &nbsp;&nbsp;<label style='display:none;'>异常说明</label>
+                        <label  style='display:none;'><input type="text" name="item_4_4_remark" /></label>
+            	</div>
+           	</div><!--end row-->
+    	</div><!--end pane-->
+	</div><!--end content-->
+</div>
+</div>
+
+	
+</div>
+<script>
+$(document).ready(function(){
+	$("#v4-step_1").addClass("active");
+    $("#inspection_div").tabs();
+});
+</script>
+                        	

@@ -12,4 +12,5 @@ public interface InspectionService {
 	List<Inspection> getAll();
 	SearchResult<Inspection> search(String startTime,String endTime);
 	Map<String,Object> getStats(String column,String row,String startTime,String endTime);
+	Long getIdByProcessInstance(String processInstanceId);
 }

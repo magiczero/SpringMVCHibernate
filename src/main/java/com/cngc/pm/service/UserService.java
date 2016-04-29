@@ -2,6 +2,7 @@ package com.cngc.pm.service;
 
 import java.util.List;
 
+import com.cngc.pm.model.Group;
 import com.cngc.pm.model.Resources;
 import com.cngc.pm.model.Role;
 import com.cngc.pm.model.SysUser;
@@ -42,4 +43,6 @@ public interface UserService {
 	boolean disableUser(String username, SysUser user);
 	
 	String getUserName(String userid);
+	
+	Group getTopGroupByUser(SysUser user);
 }

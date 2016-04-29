@@ -113,43 +113,26 @@
                     <h4>错误!</h4>请至少选择一项
                 </div> 
                 <div class="row">
-                   <div class="col-md-3 clearfix" id="mails_navigation">                    
-                       <div class="block-fluid without-head">
-                			<div class="toolbar nopadding-toolbar clearfix">
-                                <h4>查询</h4>
-                            </div>
-                            <form action="${contextPath }/record/update">
-	                            <div class="row-form clearfix">
-	                                <div class="col-md-4">开始时间</div>
-	                                <div class="col-md-8"><input type="text" name="startTime" class="dateISO"/></div>
-	                            </div> 
-	                             <div class="row-form clearfix">
-	                                <div class="col-md-4">截至时间</div>
-	                                <div class="col-md-8"><input type="text" name="endTime" class="dateISO"/></div>
-	                            </div> 
-	                            <div class="footer tac">
-	                            	<button class="btn btn-primary"> 查 询 </button>
-	                            </div>
-                            </form>
-                		</div>                      
-                    </div>
-                    <div class="col-md-9">                    
+                	<div class="col-md-12">
+  							<div class="btn-group">
+  								<button class="btn btn-primary" data-toggle="modal" data-target="#myModal" >查询</button> 
+  							</div>
+                        	<div class="btn-group pull-right">       
+                                <button data-toggle="dropdown" class="btn btn-warning dropdown-toggle">操作 <span class="caret"></span></button>
+                                            <ul class="dropdown-menu">
+                                            	<li><a href="javascript:void(0);" id="lnk_start_update">发起升级任务</a></li>
+                                                <li><a id="delBtn" href="${contextPath }/workflow/processinstance/running" role="button" data-toggle="modal">结束流程</a></li>
+                                                <li><a href="javascript:void(0);" onclick="pm_refresh()">刷新</a></li>
+                                            </ul>
+                        	</div>
+            		</div>
+            	</div>
+                <div class="row">
+                    <div class="col-md-12">                    
                         <div class="head clearfix">
                             <div class="isw-grid"></div>
                             <h1>升级记录</h1>  
 
-                            <ul class="buttons">
-                           		 <li>
-                                    <a href="#" id="lnk_start_update" class="isw-plus tipb" title="发起升级任务"></a>
-                                </li>                          
-                                <li>
-                                    <a href="#" class="isw-settings tipl" title="操作 "></a>
-                                    <ul class="dd-list">
-                                        <li><a href="${contextPath }/workflow/processinstance/running" id="delBtn"><span class="isw-list"></span> 结束流程</a></li>
-                                        <li><a href="#" onclick="pm_refresh()"><span class="isw-refresh"></span> 刷新</a></li>
-                                    </ul>
-                                </li>
-                            </ul>                             
                         </div>
                         <div class="block-fluid table-sorting clearfix">
                             <table class="table" id="myTable">
@@ -208,6 +191,42 @@
         <!-- 动态表单 -->
         <div class="modal fade" id="dynamicForm" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"></div>
     	<!-- 动态表单 end -->
+    	<!-- 查询 modal form -->
+    	<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>                        
+                        <h4>查询</h4>
+                    </div>
+                    <form action="${contextPath }/record/update">
+                    <div class="modal-body modal-body-np">
+                        <div class="row">
+                            <div class="block-fluid">
+                                <div class="row-form clearfix">
+                                    <div class="col-md-3">开始时间:</div>
+                                    <div class="col-md-9"><input type="text" name="startTime" class="dateISO"/></div>
+                                </div>                                                           
+                            </div>                
+                        </div>
+                        <div class="row">
+                            <div class="block-fluid">
+                                <div class="row-form clearfix">
+                                    <div class="col-md-3">结束时间:</div>
+                                    <div class="col-md-9"><input type="text" name="endTime" class="dateISO"/></div>
+                                </div>                                                           
+                            </div>                
+                        </div>
+                    </div>   
+                    <div class="modal-footer">
+                        <button class="btn btn-primary" id="btn_set_role"> 查询 </button> 
+                        <button class="btn btn-default" data-dismiss="modal" aria-hidden="true">关闭</button>            
+                    </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    	<!-- 查询 end from -->
     </div>
 </body>
 

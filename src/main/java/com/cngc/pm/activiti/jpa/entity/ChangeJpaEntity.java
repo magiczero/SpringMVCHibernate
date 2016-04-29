@@ -9,6 +9,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.springframework.format.annotation.DateTimeFormat;
 
 @Entity(name = "wk_change")
 public class ChangeJpaEntity {
@@ -90,6 +91,7 @@ public class ChangeJpaEntity {
 		this.fallback = fallback;
 	}
 	@Column(name="plan_start_time")
+	@DateTimeFormat( pattern = "yyyy-MM-dd HH:mm" )
 	public Date getPlanStartTime() {
 		return planStartTime;
 	}
@@ -97,6 +99,7 @@ public class ChangeJpaEntity {
 		this.planStartTime = planStartTime;
 	}
 	@Column(name="plan_end_time")
+	@DateTimeFormat( pattern = "yyyy-MM-dd HH:mm" )
 	public Date getPlanEndTime() {
 		return planEndTime;
 	}

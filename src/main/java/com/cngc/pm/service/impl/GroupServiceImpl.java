@@ -28,18 +28,83 @@ public class GroupServiceImpl implements GroupService {
 	@Transactional(readOnly=true)
 	public String getAllWithJson() {
 		// TODO Auto-generated method stub
+		String groupIdStr = "{\"groupId\":\"";
+		String groupNameStr = "\",\"groupName\":\"";
+		String groupEndStr = "\"";
+		String users = ",\"users\":[";
+		String endStr = "]";
+		String userIdStr = "{\"userId\":\"";
+		String userNameStr = "\",\"userName\":\"";
+		String userTelStr = "\",\"userTel\":\"";
+		String userRoomStr = "\",\"userRoom\":\"";
+		String userEndStr = "\"},";
+		String childStr = ",\"child\":[";
+		String endStr2 = "},";
+		StringBuffer jsonStr = new StringBuffer("[");
+		/*
+		 * 此方法可用此类org.activiti.engine.impl.util.json.JSONObject，但可能效率低
+		 */
+		for(Group group : groupDao.getAllTopGroup()) {
+			jsonStr.append(groupIdStr).append(group.getId()).append(groupNameStr).append(group.getGroupName()).append(groupEndStr);
+			if(!group.getUsers().isEmpty()) {
+				jsonStr.append(users);
+				for(SysUser user : group.getUsers()) {
+					jsonStr.append(userIdStr).append(user.getUsername()).append(userNameStr).append(user.getName()).append(userTelStr).append(user.getDepName()).append(userRoomStr).append(user.getMechName()).append(userEndStr);
+				}
+				jsonStr.deleteCharAt(jsonStr.length()-1);
+				jsonStr.append(endStr);
+			}
+			if(!group.getChild().isEmpty()) {
+				jsonStr.append(childStr);
+				for(Group child1 : group.getChild()) {
+					jsonStr.append(groupIdStr).append(child1.getId()).append(groupNameStr).append(child1.getGroupName()).append(groupEndStr);
+					if(!child1.getUsers().isEmpty()) {
+						jsonStr.append(users);
+						for(SysUser user : child1.getUsers()) {
+							jsonStr.append(userIdStr).append(user.getUsername()).append(userNameStr).append(user.getName()).append(userTelStr).append(user.getDepName()).append(userRoomStr).append(user.getMechName()).append(userEndStr);
+						}
+						jsonStr.deleteCharAt(jsonStr.length()-1);
+						jsonStr.append(endStr);
+					}
+					if(!child1.getChild().isEmpty()) {
+						jsonStr.append(childStr);
+						for(Group child2 : child1.getChild()) {
+							jsonStr.append(groupIdStr).append(child2.getId()).append(groupNameStr).append(child2.getGroupName()).append(groupEndStr);
+							if(!child2.getUsers().isEmpty()) {
+								jsonStr.append(users);
+								for(SysUser user : child2.getUsers()) {
+									jsonStr.append(userIdStr).append(user.getUsername()).append(userNameStr).append(user.getName()).append(userTelStr).append(user.getDepName()).append(userRoomStr).append(user.getMechName()).append(userEndStr);
+								}
+								jsonStr.deleteCharAt(jsonStr.length()-1);
+								jsonStr.append(endStr);
+							}
+							jsonStr.append(endStr2);
+						}
+						jsonStr.deleteCharAt(jsonStr.length()-1);
+						jsonStr.append(endStr);
+					}
+					jsonStr.append(endStr2);
+				}
+				jsonStr.deleteCharAt(jsonStr.length()-1);
+				jsonStr.append(endStr);
+			}
+			jsonStr.append(endStr2);
+		}
+		jsonStr.deleteCharAt(jsonStr.length()-1);
+		jsonStr.append(endStr);
+		//原始代码，不能删
+		/*
 		String jsonStr = "[";
 		for(Group group : groupDao.getAllTopGroup()) {
 			jsonStr += "{\"groupId\":\""+group.getId()+"\",\"groupName\":\""+group.getGroupName()+"\"";
 			if(!group.getUsers().isEmpty()) {
 				jsonStr += ",\"users\":[";
 				for(SysUser user : group.getUsers()) {
-					jsonStr += "{\"userId\":\""+user.getUsername()+"\",\"userName\":\""+user.getName()+"\",\"userTel\":\""+user.getDepName()+"\"},";
+					jsonStr += "{\"userId\":\""+user.getUsername()+"\",\"userName\":\""+user.getName()+"\",\"userTel\":\""+user.getDepName()+"\",\"userRoom\":\""+user.getMechName()+"\"},";
 				}
 				jsonStr = jsonStr.substring(0, jsonStr.length()-1);
 				jsonStr += "]";
 			}
-			//jsonStr = jsonStr.substring(0, jsonStr.length()-1);
 			if(!group.getChild().isEmpty()) {
 				jsonStr += ",\"child\":[";
 				for(Group child1 : group.getChild()) {
@@ -47,12 +112,11 @@ public class GroupServiceImpl implements GroupService {
 					if(!child1.getUsers().isEmpty()) {
 						jsonStr += ",\"users\":[";
 						for(SysUser user : child1.getUsers()) {
-							jsonStr += "{\"userId\":\""+user.getUsername()+"\",\"userName\":\""+user.getName()+"\",\"userTel\":\""+user.getDepName()+"\"},";
+							jsonStr += "{\"userId\":\""+user.getUsername()+"\",\"userName\":\""+user.getName()+"\",\"userTel\":\""+user.getDepName()+"\",\"userRoom\":\""+user.getMechName()+"\"},";
 						}
 						jsonStr = jsonStr.substring(0, jsonStr.length()-1);
 						jsonStr += "]";
 					}
-					//jsonStr = jsonStr.substring(0, jsonStr.length()-1);
 					if(!child1.getChild().isEmpty()) {
 						jsonStr += ",\"child\":[";
 						for(Group child2 : child1.getChild()) {
@@ -60,7 +124,7 @@ public class GroupServiceImpl implements GroupService {
 							if(!child2.getUsers().isEmpty()) {
 								jsonStr += ",\"users\":[";
 								for(SysUser user : child2.getUsers()) {
-									jsonStr += "{\"userId\":\""+user.getUsername()+"\",\"userName\":\""+user.getName()+"\",\"userTel\":\""+user.getDepName()+"\"},";
+									jsonStr += "{\"userId\":\""+user.getUsername()+"\",\"userName\":\""+user.getName()+"\",\"userTel\":\""+user.getDepName()+"\",\"userRoom\":\""+user.getMechName()+"\"},";
 								}
 								jsonStr = jsonStr.substring(0, jsonStr.length()-1);
 								jsonStr += "]";
@@ -70,18 +134,17 @@ public class GroupServiceImpl implements GroupService {
 						jsonStr = jsonStr.substring(0, jsonStr.length()-1);
 						jsonStr += "]";
 					}
-					//jsonStr = jsonStr.substring(0, jsonStr.length()-1);
 					jsonStr+= "},";
 				}
 				jsonStr = jsonStr.substring(0, jsonStr.length()-1);
 				jsonStr += "]";
 			}
-			//jsonStr = jsonStr.substring(0, jsonStr.length()-1);
 			jsonStr += "},";
 		}
 		jsonStr = jsonStr.substring(0, jsonStr.length()-1);
 		jsonStr += "]";
-		return jsonStr;
+		*/
+		return jsonStr.toString();
 	}
 
 	@Override

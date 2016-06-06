@@ -15,6 +15,7 @@ import com.cngc.pm.dao.RecordsDAO;
 import com.cngc.pm.dao.RoleDAO;
 import com.cngc.pm.dao.UserDAO;
 import com.cngc.pm.dao.UserRoleDAO;
+import com.cngc.pm.model.Group;
 import com.cngc.pm.model.Records;
 import com.cngc.pm.model.RecordsType;
 import com.cngc.pm.model.Resources;
@@ -282,5 +283,21 @@ public class UserServiceImpl implements UserService {
 			return "";
 		else
 			return user.getName();
+	}
+	@Override
+	public Group getTopGroupByUser(SysUser user) {
+		// TODO Auto-generated method stub
+		Group group = user.getGroup();
+		return getTopGroup(group);
+			
+	}
+	
+	Group getTopGroup(Group group) {
+		
+		Group groupParent = group.getParentGroup();
+		if(groupParent==null)
+			return group;
+		else
+			return getTopGroup(groupParent);
 	}
 }

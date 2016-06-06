@@ -41,11 +41,14 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.cngc.pm.common.web.common.UserUtil;
 import com.cngc.pm.model.Attachment;
 import com.cngc.pm.model.ChangeItem;
+import com.cngc.pm.model.Group;
 import com.cngc.pm.model.Incident;
+import com.cngc.pm.model.SysUser;
 import com.cngc.pm.model.cms.Ci;
 import com.cngc.pm.service.AttachService;
 import com.cngc.pm.service.ChangeItemService;
 import com.cngc.pm.service.ChangeService;
+import com.cngc.pm.service.GroupService;
 import com.cngc.pm.service.IncidentService;
 import com.cngc.pm.service.ItilRelationService;
 import com.cngc.pm.service.SysCodeService;
@@ -86,6 +89,8 @@ public class IncidentController {
 	private UserService userService;
 	@Resource
 	private AttachService attachService;
+	@Resource
+	private GroupService groupService;
 
 	/**
 	 * 创建新事件
@@ -174,7 +179,10 @@ public class IncidentController {
 		incident.setPriority("04");
 		incident.setType("01");
 		incident.setStatus("01");
-		incident.setApplyUser(userUtil.getUserId(authentication));
+		SysUser user = userService.getByUsername(userUtil.getUserId(authentication));
+		incident.setApplyUser(user.getUsername());
+		//incident.setApplyUserRoom(user.getMechName());
+		incident.setPhoneNumber(user.getDepName());
 		incident.setApplyTime(new Date());
 		
 		if(!StringUtils.isEmpty(request.getParameter("fileids"))) {
@@ -607,6 +615,7 @@ public class IncidentController {
 		String applyUser = request.getParameter("applyUser");
 		String engineer = request.getParameter("engineer");
 		String satisfaction = request.getParameter("satisfaction");
+		String unit = request.getParameter("unit");
 		if (satisfaction != null) {
 			if (satisfaction.equals("00")) // 查看全部
 				satisfaction = null;
@@ -619,13 +628,34 @@ public class IncidentController {
 			if (engineer.equals("00")) // 查看全部
 				engineer = null;
 		}
-		SearchResult<Incident> result = incidentService.search(abs, applyUser, engineer, satisfaction, startDate, endDate,offset,maxResults);
+		List<Incident> list = new LinkedList<>();
+		//List<Incident> list1 = new LinkedList<>();
+		int count = 0;
+		if(unit ==null) {
+			SearchResult<Incident> result = incidentService.search(abs, applyUser, engineer, satisfaction, startDate, endDate,offset,maxResults);
+			list = result.getResult();
+			count = result.getTotalCount();
+		} else {
+			if(!unit.equals("00")) {
+				List<Incident> listAll = incidentService.search(abs, applyUser, engineer, satisfaction, startDate, endDate);
+				Group group = groupService.getById(Long.valueOf(unit));
+				
+				for(Incident in : listAll) {
+					Group group1 = userService.getTopGroupByUser(userService.getByUsername(in.getApplyUser()));
+					if(group1 == group) {
+						list.add(in);
+					}
+				}
+				count = list.size();
+			}
+		}
 		model.addAttribute("satisfaction", syscodeService.getAllByType("INCIDENT_SATISFACTION").getResult());
-		model.addAttribute("list", result.getResult());
+		model.addAttribute("list", list);
+		model.addAttribute("units", groupService.getAllTop());
 		model.addAttribute("engineers", userService.getEngineer());
 		model.addAttribute("users", userService.getCommonUser());
 		model.addAttribute("offset", offset);
-		model.addAttribute("count", result.getTotalCount());
+		model.addAttribute("count", count);
 		model.addAttribute("url", request.getRequestURI());
 
 		return "incident/search";

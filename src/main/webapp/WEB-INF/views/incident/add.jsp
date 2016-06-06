@@ -139,7 +139,7 @@
 		    				liStr += "<ul>";
 	                    	if(element.users) {
 	                    		$.each(element.users, function (j, user) {
-	                    			liStr += "<li><a href=\"javascript:void(0);\" onclick=\"inputUserinfo('"+user.userId+"','"+user.userName+"','"+user.userTel+"');\">"+user.userName+"</a></li>";
+	                    			liStr += "<li><a href=\"javascript:void(0);\" onclick=\"inputUserinfo('"+user.userId+"','"+user.userName+"','"+user.userTel+"','"+user.userRoom+"');\">"+user.userName+"</a></li>";
 	                    		});
 	                    	} 
 	                    	if(element.child) {
@@ -149,7 +149,7 @@
 	                    				liStr += "<ul>";
 	                    				if(child.users) {
 		                    				$.each(child.users, function (j, user1) {
-		    	                    			liStr += "<li><a href=\"javascript:void(0);\" onclick=\"inputUserinfo('"+user1.userId+"','"+user1.userName+"','"+user1.userTel+"');\">"+user1.userName+"</a></li>";
+		    	                    			liStr += "<li><a href=\"javascript:void(0);\" onclick=\"inputUserinfo('"+user1.userId+"','"+user1.userName+"','"+user1.userTel+"','"+user1.userRoom+"');\">"+user1.userName+"</a></li>";
 		    	                    		});
 	                    				}
 	                    				if(child.child) {
@@ -158,7 +158,7 @@
 				                    			if(child1.users) {
 				                    				liStr += "<ul>";
 				                    				$.each(child1.users, function (j, user2) {
-				    	                    			liStr += "<li><a href=\"javascript:void(0);\" onclick=\"inputUserinfo('"+user2.userId+"','"+user2.userName+"','"+user2.userTel+"');\">"+user2.userName+"</a></li>";
+				    	                    			liStr += "<li><a href=\"javascript:void(0);\" onclick=\"inputUserinfo('"+user2.userId+"','"+user2.userName+"','"+user2.userTel+"','"+user2.userRoom+"');\">"+user2.userName+"</a></li>";
 				    	                    		});
 				                    				liStr += "</ul>";
 				                    			}
@@ -170,9 +170,9 @@
 	                    			liStr += "</li>";
 	                    		});
 	                    	}
-	                    	liStr += "<ul>";
+	                    	liStr += "</ul>";
 		    			}
-                    	liStr += "</ul></li>";
+                    	liStr += "</li>";
                     	$("#grouptree").append(liStr);
 		    		});
 		    		$("#grouptree").treeview({
@@ -222,10 +222,11 @@
         	$("input[name='"+name+"']").attr("value",value);
         }
         
-        function inputUserinfo(userid,username,tel) {
+        function inputUserinfo(userid,username,tel,room) {
         	$("#applyUser").attr("value", userid);
         	$("input[name='user_name']").attr("value",username);
         	$("input[name='phoneNumber']").attr("value",tel);
+        	$("#room").attr("value", room);
         }
     </script>
     <style type="text/css">
@@ -289,10 +290,12 @@
 	                            <div class="row-form clearfix">
 	                                <div class="col-md-1"><label for="user">申请人:</label></div>
 	                                <div class="col-md-3">
-	                                <input type="text" id="user_name" readonly="readonly" name="user_name" class="validate[required]">
+	                                <input type="text" id="user_name" value="${incident.applyUserName }" readonly="readonly" name="user_name" class="validate[required]">
 	                                <!--<form:select path="applyUser" items="${users }" itemLabel="name" itemValue="username" cssStyle="width:100%"></form:select>--></div>
 	                                <div class="col-md-1"><form:label path="phoneNumber">电话:</form:label></div>
 	                                <div class="col-md-3"><form:input path="phoneNumber"></form:input></div>
+	                                <div class="col-md-1"><label>房间号:</label></div>
+	                                <div class="col-md-3"><input type="text" value="${incident.applyUserRoom }" readonly="readonly" id="room" /></div>
 	                            </div> 
 
 	                            <div class="row-form clearfix">

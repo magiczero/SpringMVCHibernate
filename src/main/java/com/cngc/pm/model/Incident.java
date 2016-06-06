@@ -67,6 +67,8 @@ public class Incident implements Serializable{
 	@Transient
 	private String applyUserName;
 	@Transient
+	private String applyUserRoom;
+	@Transient
 	private String satisfactionName;
 	@Transient
 	private String currentDelegateUserName;
@@ -288,6 +290,14 @@ public class Incident implements Serializable{
 	}
 	public void setApplyUserName(String applyUserName) {
 		this.applyUserName = applyUserName;
+	}
+	@Formula(value="(SELECT a.MECH_NAME FROM sys_users a WHERE a.USERNAME=apply_user)")
+	public String getApplyUserRoom() {
+		return applyUserRoom;
+	}
+
+	public void setApplyUserRoom(String applyUserRoom) {
+		this.applyUserRoom = applyUserRoom;
 	}
 	@Column(name="satisfaction")
 	public String getSatisfaction() {

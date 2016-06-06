@@ -1,7 +1,13 @@
 package com.cngc.pm.service;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotNull;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.activiti.engine.impl.util.json.JSONObject;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -14,6 +20,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.cngc.pm.model.Document;
+import com.cngc.pm.model.Group;
+import com.cngc.pm.model.SysUser;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath:servlet-context.xml"})
@@ -29,6 +40,8 @@ public class ServiceTest {
 	private GroupService groupService;
 	@Autowired
 	private CheckItemsService itemsService;
+	@Autowired
+	private DocumentService docService;
 	
 	Logger LOGGER = LoggerFactory.getLogger(ServiceTest.class);
 	
@@ -49,13 +62,66 @@ public class ServiceTest {
     
     @Test
     @Ignore
+    @Transactional(readOnly=true)
     public void testfindCurrentYearStudent() {
+    	JSONObject jsonObj = new JSONObject();
+    	List<Map<String, Object>> list2= new ArrayList<>();
+    	for(Group group : groupService.getAllTop()) {
+    		Map<String, Object> map2= new HashMap<>();
+    		System.out.println(group.getGroupName());
+    		map2.put("groupId", group.getId());
+    		map2.put("groupName", group.getGroupName());
+    		if(!group.getUsers().isEmpty()) {
+    			List<Map<String, String>> list= new ArrayList<>();
+    			for(SysUser user : group.getUsers()) {
+    				System.out.println(user.getUsername());
+    				Map<String, String> map = new HashMap<>();
+    				map.put("userId", user.getUsername());
+    				map.put("userName", user.getName());
+    				map.put("userTel", user.getDepName());
+    				map.put("userRoom", user.getMechName());
+    				list.add(map);
+    			}
+    			map2.put("users", list);
+    		}
+    		
+    		if(!group.getChild().isEmpty()) {
+    			List<Map<String, Object>> list= new ArrayList<>();
+    			for(Group group1 : group.getChild()) {
+    				System.out.println(group1.getGroupName());
+    				Map<String, Object> map = new HashMap<>();
+    				map.put("groupId", group1.getId());
+    				map.put("groupName", group1.getGroupName());
+    				if(!group1.getUsers().isEmpty()) {
+    					List<Map<String, String>> list1= new ArrayList<>();
+    	    			for(SysUser user : group1.getUsers()) {
+    	    				System.out.println(user.getUsername());
+    	    				Map<String, String> map1 = new HashMap<>();
+    	    				map1.put("userId", user.getUsername());
+    	    				map1.put("userName", user.getName());
+    	    				map1.put("userTel", user.getDepName());
+    	    				map1.put("userRoom", user.getMechName());
+    	    				list1.add(map1);
+    	    			}
+    	    			map.put("users", list1);
+    				}
+    				list.add(map);
+    			}
+    			map2.put("child", list);
+    		}
+    		list2.add(map2);
+    	}
+    	System.out.println("");
+    	System.out.println(list2);
+    	System.out.println("");
+    	jsonObj.put("map", list2);
+    	System.out.println(jsonObj);
     	
-    	String str = groupService.getAllWithJson();
-    	
-    	System.out.println(str);
-    	
-    	assertNotNull(str);
+//    	String str = groupService.getAllWithJson();
+//    	
+//    	System.out.println(str);
+//    	
+//    	assertNotNull(str);
 
 //        List<Object[]> list = checkService.getAllItemsByCode("BMB22");
 //        for(Object[] objs : list) {
@@ -71,13 +137,13 @@ public class ServiceTest {
     }
 
     @Test
-    
     public void testCollegeFind() {
-    	String str = itemsService.getJSonByCode("CI");
+    	List<Document> list = docService.getListByUserAndNum("admin", 0);
+    	//String str = itemsService.getJSonByCode("CI");
     	
-    	System.out.println(str);
+    	System.out.println("document size is "+list.size());
     	
-    	assertNotNull(str);
+    	//assertNotNull(str);
 //    	List<Person> persons = personService.testPersons();
 //    	LOGGER.info("Persons :" + persons);
 //    	assertNotNull(persons);

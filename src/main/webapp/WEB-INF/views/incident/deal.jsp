@@ -183,6 +183,10 @@
                                 <div class="text">${incident.applyUserName }（电话:${incident.phoneNumber }）</div>
                             </li>
                             <li>
+                                <div class="title">房间号:</div>
+                                <div class="text">${incident.applyUserRoom }</div>
+                            </li>
+                            <li>
                                 <div class="title">影响度:</div>
                                 <div class="text">${incident.influenceName }</div>
                             </li> 

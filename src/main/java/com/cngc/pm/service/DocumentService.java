@@ -97,4 +97,6 @@ public interface DocumentService {
 
 	boolean delStyle(Long id);
 	
+	List<Document> getListByUserAndNum(String username, int num);
+	
 }

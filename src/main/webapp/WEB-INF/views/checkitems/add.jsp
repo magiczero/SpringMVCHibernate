@@ -163,6 +163,7 @@
 						<form:form action="${addAction}" commandName="checkitems">
 						<form:hidden path="id" class="validate[required]" />
 						<form:hidden path="item.id" class="validate[required]" />
+						<form:hidden path="base" value="true" />
                         <div class="block-fluid">                        
                             <div class="row-form clearfix">
                                 <div class="col-md-2">
@@ -180,14 +181,7 @@
                                 <form:input path="name" class="validate[required,minSize[2],maxSize[30]] text-input"/>
                                 </div>
                             </div>
-                            <div class="row-form clearfix">
-                                <div class="col-md-2">
-                                <label for="base">基本评测项</label>
-                                </div>
-                                <div class="col-md-7">
-                                <form:radiobutton path="base" value="true" label="是"/>&nbsp;&nbsp;&nbsp;&nbsp;<form:radiobutton path="base" value="false" label="否"/>
-                                </div>
-                            </div>
+                            
                             <div class="row-form clearfix">
                                 <div class="col-md-2">
                                 <label for="demand">对应条目</label>

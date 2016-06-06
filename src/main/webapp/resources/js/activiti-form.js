@@ -132,7 +132,8 @@ function act_form_getTaskFields(taskId,redirectAddress) {
 			});
 		}
 		// 初始化日期组件
-		$form.find('.dateISO').datepicker();
+		//$form.find('.dateISO').datepicker();
+		$form.find('.dateISO').datetimepicker({autoclose: true,language: 'zh-CN',minuteStep: 5,todayBtn: true});
 		// 表单验证
 		//$form.validate($.extend({}, $.common.plugin.validator));
 		
@@ -306,6 +307,7 @@ var act_form_fieldcreator = {
 			result += "<div class='col-md-8'><input type='text' id='" + prop.id + "' name='fp_" + prop.id + "' class='dateISO " + className 
 			+ "' value='"+(prop.value==null?"":prop.value)+"' /></div>";
 		} else {
+			//console.log(prop.value);
 			result += "<div class='col-md-3'>" + prop.value + "</div>";
 		}
 		return result;

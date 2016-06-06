@@ -26,4 +26,5 @@ public interface IncidentService {
 	SearchResult<Incident> getByIds(List<Long> ids);
 	SearchResult<Incident> getByProcessInstance(List<String> processInstanceIds);
 	Long getIdByProcessInstance(String processInstanceId);
+	List<Incident> search(String abs,String applyUser,String engineer,String satisfaction,Date startTime,Date endTime);
 }

@@ -169,4 +169,33 @@ public class IncidentServiceImpl implements IncidentService {
 		return incidentDao.getByIds(ids);
 	}
 
+	@Override
+	public List<Incident> search(String abs, String applyUser,
+			String engineer, String satisfaction, Date startTime, Date endTime) {
+		// TODO Auto-generated method stub
+		Search search = new Search();
+		if (applyUser != null) {
+			if (!applyUser.isEmpty())
+				search.addFilterEqual("applyUser", applyUser);
+		}
+		if (engineer != null) {
+			if (!engineer.isEmpty())
+				search.addFilterEqual("currentDelegateUser", engineer);
+		}
+		if (satisfaction != null)
+			search.addFilterEqual("satisfaction", satisfaction);
+		if (startTime != null)
+			search.addFilterGreaterOrEqual("applyTime", startTime);
+		if (endTime != null)
+			search.addFilterLessOrEqual("recoverTime", endTime);
+		if (abs != null) {
+			if (!abs.isEmpty())
+				search.addFilterLike("abs", "%" + abs + "%");
+		}
+
+		search.addFilterEqual("status", PropertyFileUtil.getStringValue("syscode.incident.status.finished"));
+		search.addSort("applyTime", true);
+		return incidentDao.search(search);
+	}
+
 }

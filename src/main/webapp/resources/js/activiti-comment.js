@@ -7,7 +7,7 @@ function act_commont_initdialog()
 			+"<div class='dr'><span></span></div>"	
 			+"<div class='controls' id='messagebox'>"
 				+" <form id='validation' action='"+ctx+"/workflow/task/comment/save' method='post'><div class=‘control'>"
-                +"<textarea name='fp_message' placeholder='填写意见...' style='height: 70px; width: 100%;' class='validate[required,maxSize[50]]'></textarea>"
+                +"<textarea name='fp_message' placeholder='填写意见...' style='height: 70px; width: 100%;' class='validate[required,maxSize[2000]]'></textarea>"
                 +"</div><input type='hidden' name='redirectAddress' value='/leadertask/list' />"
                 +"<input type='hidden' name='fp_taskId' value='0' />"
                 +"<input type='hidden' name='fp_processInstanceId' value='' />"

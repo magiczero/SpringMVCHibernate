@@ -26,6 +26,7 @@
     <link href="${contextPath }/resources/css/uploadify.css" rel="stylesheet" type="text/css" />
     <link href="${contextPath }/resources/css/validation.css" rel="stylesheet" type="text/css" />
     <link href='${contextPath }/resources/js/plugins/jstree/jquery.treeview.css' rel="stylesheet" type="text/css" />
+    <link href="${contextPath }/resources/js/plugins/datetimepicker/datetimepicker.min.css" rel="stylesheet" type="text/css" />
     <!--[if lt IE 8]>
         <link href="${contextPath }/resources/css/ie7.css" rel="stylesheet" type="text/css" />
     <![endif]-->    
@@ -42,6 +43,8 @@
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/pnotify/jquery.pnotify.min.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/scrollup/jquery.scrollUp.min.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/select2/select2.min.js'></script>
+    <script type='text/javascript' src='${contextPath }/resources/js/plugins/datetimepicker/datetimepicker.min.js' charset="UTF-8"></script>
+    <script type='text/javascript' src='${contextPath }/resources/js/plugins/datetimepicker/datetimepicker.zh-CN.js'></script>
     <!-- <script type='text/javascript' src='${contextPath }/resources/js/plugins/jtree/jtree.js'></script>-->
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/jstree/jquery.treeview.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/jstree/jquery.treeview.async.js'></script>
@@ -65,7 +68,17 @@
               	//表单验证
                 $("#validation").validationEngine({promptPosition : "topRight", scroll: true});
               
-                $(".dateISO").datepicker();
+                //$(".dateISO").datepicker();
+                $('.form_date').datetimepicker({
+                    language:  'zh-CN',
+                    weekStart: 1,
+                    todayBtn:  1,
+            		autoclose: 1,
+            		todayHighlight: 1,
+            		startView: 2,
+            		minView: 2,
+            		forceParse: 0
+                });
                 
                 //act_dialog_ci_init();			//IE8+
                 $(".wrapper").append("<div class='dialog' id='b_popup_select' style='display: none;' title='分类'></div>");
@@ -126,71 +139,6 @@
     </script>
     <style type="text/css">
     	.uploadify-button-text {color:#fff !important;}
-
-.tree, .tree ul {
-    margin:0;
-    padding:0;
-    list-style:none
-}
-.tree ul {
-    margin-left:1em;
-    position:relative
-}
-.tree ul ul {
-    margin-left:.5em
-}
-.tree ul:before {
-    content:"";
-    display:block;
-    width:0;
-    position:absolute;
-    top:0;
-    bottom:0;
-    left:0;
-    border-left:1px solid
-}
-.tree li {
-    margin:0;
-    padding:0 1em;
-    line-height:2em;
-    color:#369;
-    font-weight:700;
-    position:relative;
-    cursor:pointer;
-}
-.tree ul li:before {
-    content:"";
-    display:block;
-    width:10px;
-    height:0;
-    border-top:1px solid;
-    margin-top:-1px;
-    position:absolute;
-    top:1em;
-    left:0
-}
-.tree ul li:last-child:before {
-    background:#fff;
-    height:auto;
-    top:1em;
-    bottom:0
-}
-.indicator {
-    margin-right:5px;
-}
-.tree li a {
-    text-decoration: none;
-    color:#369;
-}
-.tree li button, .tree li button:active, .tree li button:focus {
-    text-decoration: none;
-    color:#369;
-    border:none;
-    background:transparent;
-    margin:0px 0px 0px 0px;
-    padding:0px 0px 0px 0px;
-    outline: 0;
-}
     </style>
 </head>
 <body>
@@ -263,10 +211,28 @@
                                 <div class="col-md-3"><form:input path="purpose"></form:input></div>
                             </div> 
                             <div class="row-form clearfix">
-                                <div class="col-md-1"><form:label path="serviceStartTime">服务开始时间:</form:label></div>
-                                <div class="col-md-3"><form:input path="serviceStartTime" cssClass="dateISO"></form:input></div>
-                                <div class="col-md-1"><form:label path="serviceEndTime">服务结束时间:</form:label></div>
-                                <div class="col-md-3"><form:input path="serviceEndTime" cssClass="dateISO"></form:input></div>
+                          		<div class="col-md-1">
+				                	<label for="serviceStartTime">服务开始时间</label>
+				                </div>
+				                <div class="col-md-3">
+				                <div class="input-group date form_date " data-date="" data-date-format="yyyy-mm-dd" data-link-field="serviceStartTime" data-link-format="yyyy-mm-dd">
+				                    <input class="form-control" type="text" value="" readonly>
+				                    <span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
+									<span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+				                </div>
+								<form:hidden path="serviceStartTime"></form:hidden>
+								</div>
+				           		<div class="col-md-1">
+				                <label for="serviceEndTime">服务结束时间</label>
+				                </div>
+				                <div class="col-md-3">
+				                <div class="input-group date form_date " data-date="" data-date-format="yyyy-mm-dd" data-link-field="serviceEndTime" data-link-format="yyyy-mm-dd">
+				                    <input class="form-control" type="text" value="" readonly>
+				                    <span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
+									<span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+				                </div>
+								<form:hidden path="serviceEndTime"></form:hidden>
+				            	</div>
                                 <div class="col-md-1"><form:label path="status">状态:</form:label></div>
 	                            <div class="col-md-3"><form:select path="status" items="${status }" itemLabel="codeName" itemValue="code"></form:select></div>
                             </div>                              
@@ -280,7 +246,13 @@
                                 <div class="col-md-1"><form:label path="producer">厂商:</form:label></div>
                                 <div class="col-md-3"><form:input path="producer"></form:input></div>
                                 <div class="col-md-1"><form:label path="expirationTime">截至日期:</form:label></div>
-                                <div class="col-md-3"><form:input path="expirationTime" cssClass="dateISO"></form:input></div>
+                                <div class="col-md-3">
+                                <div class="input-group date form_date" data-date="" data-date-format="yyyy-mm-dd" data-link-field="expirationTime" data-link-format="yyyy-mm-dd">
+				                    <input class="form-control" type="text" value="" readonly>
+				                    <span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
+									<span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+				                </div>
+                                <form:hidden path="expirationTime"></form:hidden></div>
                                 <div class="col-md-1"><form:label path="remark">备注:</form:label></div>
                                 <div class="col-md-3"><form:input path="remark" ></form:input></div>
                             </div>  

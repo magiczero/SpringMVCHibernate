@@ -40,45 +40,26 @@
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/jquery/jquery-ui-1.10.1.custom.min.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/jquery/jquery-migrate-1.2.1.min.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/jquery/jquery.mousewheel.min.js'></script>
-    
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/cookie/jquery.cookies.2.2.0.min.js'></script>
-    
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/bootstrap.min.js'></script>
-    
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/submenu/bootstrap-submenu.min.js'></script>
-    
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/sparklines/jquery.sparkline.min.js'></script>
-    
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/fullcalendar/fullcalendar.min.js'></script>
-    
-    
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/uniform/uniform.js'></script>
-    
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/maskedinput/jquery.maskedinput-1.3.min.js'></script>
-    
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/validation/languages/jquery.validationEngine-zh-CN.js' charset='utf-8'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/validation/jquery.validationEngine.js' charset='utf-8'></script>
-    
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/mcustomscrollbar/jquery.mCustomScrollbar.min.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/animatedprogressbar/animated_progressbar.js'></script>
-    
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/qtip/jquery.qtip-1.0.0-rc3.min.js'></script>
-    
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/cleditor/jquery.cleditor.js'></script>
-    
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/dataTables/jquery.dataTables.min.js'></script>    
-    
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/fancybox/jquery.fancybox.pack.js'></script>
-    
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/multiselect/jquery.multi-select.js'></script>
-        
     <script type="text/javascript" src="${contextPath }/resources/js/plugins/elfinder/elfinder.min.js"></script>
-    
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/highlight/jquery.highlight-4.js'></script>
-    
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/pnotify/jquery.pnotify.min.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/ibutton/jquery.ibutton.min.js'></script>
-    
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/scrollup/jquery.scrollUp.min.js'></script>
     
     <script type='text/javascript' src='${contextPath }/resources/js/pm-common.js'></script>
@@ -165,7 +146,7 @@
 
                             <ul class="buttons">
                                 <li>
-                                    <a href="${contextPath }/change/add" class="isw-plus tipb" title="创建新变更"></a>
+                                    <a href="${contextPath }/change/add" class="isw-plus tipl" title="创建新变更"></a>
                                 </li>                            
                                 <li>
                                     <a href="#" class="isw-settings tipl" title="操作 "></a>
@@ -188,7 +169,7 @@
                                         <th width="120px">流程步骤</th>
                                         <th width="120px">申请日期</th>
                                         <th width="120px">状态</th>  
-                                        <th width="120px">操作</th>                                  
+                                        <th width="90px">操作</th>                                  
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -199,11 +180,11 @@
 	                                	 	<td>${change.processInstanceId }</td>
 	                                        <td>
 		                                        <span class="label label-warning tipb" title="优先级">${change.priorityName }</span>
-		                                        <a href="${contextPath }/change/view/${change.id}" title="查看详情">${change.description}</a>
+		                                        <a href="${contextPath }/change/view/${change.id}" title="查看详情" class="tipr" target="_blank">${change.description}</a>
 	                                        </td>
 	                                         <td>${change.applyUserName }</td>
 	                                        <td>
-	                                        	<a class="lnk_trace" href='#' pid="${incident.processInstanceId }" pdid="${task.processDefinitionId }" title="点击查看流程图">
+	                                        	<a class="lnk_trace" href='#' pid="${change.processInstanceId }" pdid="${task.processDefinitionId }" title="点击查看流程图">
 														${task.name }
 												</a>
 	                                        </td>
@@ -229,11 +210,11 @@
 	                                	 	<td>${change.processInstanceId }</td>
 	                                        <td>
 		                                        <span class="label label-warning tipb" title="优先级">${change.priorityName }</span>
-		                                        <a href="${contextPath }/change/view/${change.id}" title="查看详情">${change.description}</a>
+		                                        <a href="${contextPath }/change/view/${change.id}" title="查看详情" class="tipr" target="_blank">${change.description}</a>
 	                                        </td>
 	                                         <td>${change.applyUserName }</td>
 	                                        <td>
-	                                        	<a class="lnk_trace" href='#' pid="${incident.processInstanceId }" pdid="${task.processDefinitionId }" title="点击查看流程图">
+	                                        	<a class="lnk_trace" href='#' pid="${change.processInstanceId }" pdid="${task.processDefinitionId }" title="点击查看流程图">
 														${task.name }
 												</a>
 	                                        </td>
@@ -280,6 +261,9 @@
                             <div>
                                 <ul>
                                     <li><a href="${contextPath }/change/add">创建新变更</a></li>
+                                    <li><a href="${contextPath }/change/list">查看待处理变更</a></li>
+                                    <li><a href="${contextPath }/change/mydealedlist">跟踪处理过的变更</a></li>
+                                    <li><a href="${contextPath }/change/search">历史变更查询</a></li>
                                     <!-- <li><a href="#" id="lnk_knowledge">知识库</a></li> -->
                                 </ul>                                                
                             </div>                     

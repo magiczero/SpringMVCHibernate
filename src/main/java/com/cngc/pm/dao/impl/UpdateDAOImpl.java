@@ -31,5 +31,12 @@ public class UpdateDAOImpl extends BaseDAOImpl<Update,Long> implements UpdateDAO
 	{
 		return statsDao.getStats("UPDATE", column, row, startTime, endTime, null);
 	}
-	
+	@Override
+	public SearchResult<Update> getNotFinishedTask()
+	{
+		Search search = new Search();
+		search.addFilterEmpty("executionTime");
+		
+		return this.searchAndCount(search);
+	}
 }

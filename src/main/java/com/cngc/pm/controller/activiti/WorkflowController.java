@@ -43,6 +43,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.cngc.pm.service.UserService;
 import com.cngc.utils.activiti.WorkflowUtils;
 
 /**工作流
@@ -61,6 +62,8 @@ public class WorkflowController {
 	private ManagementService managementService;
 	@Resource
 	private HistoryService historyService;
+	@Resource
+	private UserService userService;
 	
 	/**
 	 * 获取所有流程信息
@@ -247,6 +250,7 @@ public class WorkflowController {
     @ResponseBody
     public Map<String,Object> getEventLogList(@PathVariable("processInstanceId") String processInstanceId, Model model){
     	Map<String,Object> result = new LinkedHashMap<String,Object>();
+    	Map<String,String> usernames = new HashMap<String,String>();
     	List<EventLogEntry> list = managementService.getEventLogEntriesByProcessInstanceId(processInstanceId);
     	
     	// 提取任务任务名称
@@ -255,8 +259,13 @@ public class WorkflowController {
         for (HistoricTaskInstance historicTaskInstance : tasklist) {
             taskNames.put(historicTaskInstance.getId(), historicTaskInstance.getName());
         }
+        for(EventLogEntry log:list)
+        {
+        	if(log.getUserId()!=null)
+        		usernames.put(log.getUserId(), userService.getUserName(log.getUserId()));
+        }
         result.put("taskNames", taskNames);
-        
+        result.put("usernames", usernames);
     	result.put("eventlogs", list );
     	
     	return result;

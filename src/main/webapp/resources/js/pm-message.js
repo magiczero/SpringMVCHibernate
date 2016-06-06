@@ -43,7 +43,7 @@ function pm_message_gettipscount()
 		isRead = true;
 		if(datas.count=="0")
 			return;
-		$("#popup_messages_count").text("("+datas.count+")");
+		$(".popup_messages_count").text("("+datas.count+")");
 		$.pnotify({title: "消息提醒", text: "您有"+datas.count+"条信息需要查阅", opacity: .9, type:'info'});
 	});
 }

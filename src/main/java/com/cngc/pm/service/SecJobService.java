@@ -8,4 +8,5 @@ import com.googlecode.genericdao.search.SearchResult;
 public interface SecJobService {
 	SearchResult<SecJob> search(String startTime,String endTime);
 	Map<String,Object> getStats(String column,String row,String startTime,String endTime);
+	SearchResult<SecJob> getNotFinishedTask();
 }

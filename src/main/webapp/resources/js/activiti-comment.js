@@ -53,7 +53,7 @@ function act_comment_getlist(processInstanceId,taskId) {
 		{
 			$.each(datas.events, function(i, v) {
 				var tdiv = "<div class='item clearfix'>";
-				var user = (v.userId || '');
+				var user = v.userId ?datas.usernames[v.userId]:'';
 				if(user) {
 					user =  "<div class='image'><a href='#'><img src='"+ctx+"/resources/img/users/aqvatarius.jpg' class='img-thumbnail' /></a></div>"
 					+"<div class='info'>"
@@ -68,9 +68,12 @@ function act_comment_getlist(processInstanceId,taskId) {
 					user += " [ " + taskName + " ]";
 				}
 				tdiv += user +"<p>"+ comment + "</p><span>"+new Date(v.time).toLocaleString()+"</span>";
-				tdiv += "<div class='controls'>"                                    
-					+ " <a href='#' msgid='"+v.id+"' class='lnk_comment_delete glyphicon glyphicon-trash tip' title='删除'></a>"
-					+ "</div>";
+				if(datas.enables[v.id] && datas.enables[v.id]=='true')
+				{
+					tdiv += "<div class='controls'>"                                    
+						+ " <a href='#' msgid='"+v.id+"' class='lnk_comment_delete glyphicon glyphicon-trash tip' title='删除'></a>"
+						+ "</div>";
+				}
 				tdiv += "</div></div>";
 				divs += tdiv;
 			});

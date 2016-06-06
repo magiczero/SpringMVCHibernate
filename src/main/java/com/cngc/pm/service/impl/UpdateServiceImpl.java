@@ -35,4 +35,10 @@ public class UpdateServiceImpl implements UpdateService{
 	{
 		return updateDao.getStats(column, row, startTime, endTime);
 	}
+	@Override
+	@Transactional
+	public SearchResult<Update> getNotFinishedTask()
+	{
+		return updateDao.getNotFinishedTask();
+	}
 }

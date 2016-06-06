@@ -307,7 +307,7 @@
                         </div>
                         <div class="row">
                             <div class="block-fluid">
-                        	<label class='checkbox checkbox-inline'><input type='checkbox' name='isnotify' checked='checked' value='true'/> 提醒任务办理人 </label>
+                        	&nbsp;&nbsp;&nbsp;&nbsp;<label class='checkbox checkbox-inline'><input type='checkbox' name='isnotify' checked='checked' value='true'/> 提醒任务办理人 </label>
                     		</div>
                     	</div>
                     </div>   

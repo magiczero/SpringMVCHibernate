@@ -442,6 +442,23 @@ public class DocumentServiceImpl implements DocumentService {
 		
 		return styleDao.remove(style);
 	}
-
+	@Override
+	@Transactional(readOnly=true)
+	public List<Document> getListByUserAndNum(String username, int num) {
+		// TODO Auto-generated method stub
+		Search search = new Search();
+		
+		search.addFilterEqual("user.username", username);
+		search.addFilterEqual("enabled", true);
+		
+		if(num > 0) {
+			search.setFirstResult(0);
+			search.setMaxResults(num);
+		}
+			
+		search.addSortDesc("createDate");
+			
+		return docDao.search(search);
+	}
 
 }

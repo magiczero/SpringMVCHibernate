@@ -12,7 +12,7 @@
     </startEvent>
     <userTask id="incidentClassify" name="事件初步支持" activiti:candidateGroups="WK_SERVICE_DESK">
       <extensionElements>
-        <activiti:formProperty id="currentDelegateGroup" name="受派组" type="string" expression="${incident.currentDelegateGroup}"></activiti:formProperty>
+        <activiti:formProperty id="currentDelegateGroup" name="受派组" type="string" expression="${incident.currentDelegateGroup}" readable="false"></activiti:formProperty>
         <activiti:formProperty id="currentDelegateUser" name="受派人" type="user" expression="${incident.currentDelegateUser}"></activiti:formProperty>
         <activiti:formProperty id="firstResult" name="解决情况" type="enum">
           <activiti:value id="false" name="未解决"></activiti:value>

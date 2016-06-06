@@ -36,4 +36,12 @@ public class InspectionDAOImpl extends BaseDAOImpl<Inspection,Long> implements I
 		search.addFilterEqual("processInstanceId", processInstanceId);
 		return this.searchAndCount(search);
 	}
+	@Override
+	public SearchResult<Inspection> getNotFinishedTask()
+	{
+		Search search = new Search();
+		search.addFilterEmpty("executionTime");
+		
+		return this.searchAndCount(search);
+	}
 }

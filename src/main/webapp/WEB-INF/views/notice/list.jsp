@@ -12,7 +12,7 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <![endif]-->
     
-    <title>运维记录管理--运维管理系统</title>
+    <title>运维公告--运维管理系统</title>
 
     <link rel="icon" type="image/ico" href="favicon.ico"/>
     
@@ -24,8 +24,10 @@
     <link href="${contextPath }/resources/css/stylesheet.css" rel="stylesheet" type="text/css" />
     <link href="${contextPath }/resources/css/styling.css" rel="stylesheet" type="text/css" />
     <link href="${contextPath }/resources/css/mycss.css" rel="stylesheet" type="text/css" />
-    <link href="${contextPath }/resources/css/validation.css" rel="stylesheet" type="text/css" />
     <link href="${contextPath }/resources/js/plugins/select2/select2.css" rel="stylesheet" type="text/css" />
+    
+    <link href="${contextPath }/resources/js/plugins/datetimepicker/datetimepicker.min.css" rel="stylesheet" type="text/css" />
+    <link href="${contextPath }/resources/css/validation.css" rel="stylesheet" type="text/css" />
     <!--[if lt IE 8]>
         <link href="${contextPath }/resources/css/ie7.css" rel="stylesheet" type="text/css" />
     <![endif]-->    
@@ -35,15 +37,17 @@
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/jquery/jquery.mousewheel.min.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/cookie/jquery.cookies.2.2.0.min.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/bootstrap.min.js'></script>
+    <script type='text/javascript' src='${contextPath }/resources/js/plugins/validation/languages/jquery.validationEngine-zh-CN.js' charset='utf-8'></script>
+    <script type='text/javascript' src='${contextPath }/resources/js/plugins/validation/jquery.validationEngine.js' charset='utf-8'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/select2/select2.min.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/uniform/uniform.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/mcustomscrollbar/jquery.mCustomScrollbar.min.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/dataTables/jquery.dataTables.min.js'></script>
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/validation/languages/jquery.validationEngine-zh-CN.js' charset='utf-8'></script>
-<script type='text/javascript' src='${contextPath }/resources/js/plugins/validation/jquery.validationEngine.js' charset='utf-8'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/highlight/jquery.highlight-4.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/pnotify/jquery.pnotify.min.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/ibutton/jquery.ibutton.min.js'></script>
+    <script type='text/javascript' src='${contextPath }/resources/js/plugins/datetimepicker/datetimepicker.min.js' charset="UTF-8"></script>
+    <script type='text/javascript' src='${contextPath }/resources/js/plugins/datetimepicker/datetimepicker.zh-CN.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/scrollup/jquery.scrollUp.min.js'></script>
     
     <script type='text/javascript' src='${contextPath }/resources/js/pm-common.js'></script>
@@ -53,22 +57,21 @@
       <script src="${contextPath }/resources/js/respond.min.js"></script>
     <![endif]-->
     <script type="text/javascript">
-   		var ctx = "${contextPath}";
+    	var ctx = "${contextPath}";
         $(document).ready(function () {
             $("#eventTable").dataTable({
             	"oLanguage": {
          			"sUrl": "${contextPath}/resources/json/Chinese.json"
-     			}
-            });
+     			},"aaSorting":[[1,'desc']]});
             $(".header").load("${contextPath}/header?t="+pm_random());
             $(".menu").load("${contextPath}/menu?t="+pm_random(), function () { $("#node_${moduleId}").addClass("active"); });
             $(".breadLine .buttons").load("${contextPath}/contentbuttons?t="+pm_random());
+            
+          	//表单验证
             $(".confirm").bind("click",function(){
-              	if(!confirm("确定要执行该操作?"))
-               		return false;
+               	if(!confirm("确定要执行该操作?"))
+              		return false;
             });
-            $(".dateISO").datepicker();
-            $("#userName").select2();
         });
     </script>
 </head>
@@ -90,7 +93,7 @@
                 <ul class="breadcrumb">
                     <li><a href="#">运维管理系统</a> <span class="divider">></span></li>
                     <li><a href="#">运维工作管理</a> <span class="divider">></span></li>       
-                    <li class="active">三员培训记录</li>
+                    <li class="active">运维公告</li>
                 </ul>
 
                 <ul class="buttons"></ul>
@@ -104,53 +107,43 @@
                     <h4>错误!</h4>请至少选择一项
                 </div> 
                 <div class="row">
-                	<div class="col-md-12">
-  							<div class="btn-group">
-  								<button class="btn btn-default" onclick="javascript:window.location='${contextPath }/record/income';" type="button">机房人员出入</button> 
-  								<button class="btn btn-primary" type="button" onclick="javascript:window.location='${contextPath }/record/training';">三员培训</button>
-  							</div>
-            		</div>
-            	</div>
-                <div class="row">
                     <div class="col-md-12">                    
                         <div class="head clearfix">
                             <div class="isw-grid"></div>
-                            <h1>记录列表</h1>  
+                            <h1>运维公告列表</h1>  
 							<ul class="buttons">
                                 <li>
-                                    <a href="#newForm" class="isw-plus tipb" data-toggle="modal" title="创建新记录"></a>
+                                    <a href="${contextPath }/notice/add" class="isw-plus tipb" title="创建新公告"></a>
                                 </li>                            
                                 <li>
                                     <a href="#" class="isw-settings tipl" title="操作 "></a>
                                     <ul class="dd-list">
-                                    	<li><a href="#newForm" data-toggle="modal"  role="button"><span class="isw-plus"></span> 创建新记录</a></li>
                                         <li><a href="#" onclick="pm_refresh()"><span class="isw-refresh"></span> 刷新</a></li>
                                     </ul>
                                 </li>
-                            </ul>
+                            </ul>    
                         </div>
                         <div class="block-fluid table-sorting clearfix">
                             <table class="table" id="eventTable">
                                 <thead>
                                 	<tr>
-										<th width="100px">培训人</th>
-										<th>培训单位</th>
-										<th width="100px">证书</th>
-										<th width="100px">证书编号</th>
-										<th width="100px">有效期</th>
-										<th width="80px">操作</th>
+										<th>标题</th>
+										<th width="130px">发布时间</th>
+										<th width="80px">状态</th>
+										<th width="130px">发布人</th>
+										<th width="120px">操作</th>
 									</tr>
                                 </thead>
                                 <tbody>
-                                	<c:forEach items="${list}" var="training">
+                                	<c:forEach items="${list}" var="notice">
 									<tr>
-										<td>${training.userName }</td>
-										<td>${training.company }</td>
-										<td>${training.certification }</td>
-										<td>${training.certificationNo }</td>
-										<td><fmt:formatDate value="${training.expiryDate }" pattern="yyyy-MM-dd"></fmt:formatDate></td>
+										<td>${notice.title }</td>
+										<td><fmt:formatDate value="${notice.createdTime}" pattern="yyyy-MM-dd HH:mm"></fmt:formatDate></td>
+										<td>${notice.statusName }</td>
+										<td>${notice.createdUserName }</td>
 										<td>
-											<a href="${contextPath }/record/training/delete/${training.id}" class="confirm"><span class="glyphicon glyphicon-remove"></span> 删除</a>
+										<a href="${contextPath }/notice/update/${notice.id}" ><span class="glyphicon glyphicon-edit"></span> 修改</a>
+											<a href="${contextPath }/notice/delete/${notice.id}" class="confirm"><span class="glyphicon glyphicon-remove"></span> 删除</a>
 										</td>
 									</tr>
 								</c:forEach>   
@@ -163,66 +156,7 @@
             </div>
             <!--workplace end-->
         </div>   
-        <!-- modal form -->
-        <div class="modal fade" id="newForm" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>                        
-                        <h4>三员培训记录</h4>
-                    </div>
-                    <form:form action="${contextPath}/record/training/save" commandName="training" method="post">
-                    <div class="modal-body modal-body-np">
-                        <div class="row">
-                            <div class="block-fluid">
-                                <div class="row-form clearfix">
-                                    <div class="col-md-3"><form:label path="userName">培训人：</form:label></div>
-                                    <div class="col-md-9"><form:select path="userName" items="${users }" itemLabel="name" itemValue="name" cssStyle="width:100%"></form:select></div>
-                                </div>                                                           
-                            </div>                
-                        </div>
-                        <div class="row">
-                            <div class="block-fluid">
-                                <div class="row-form clearfix">
-                                    <div class="col-md-3"><form:label path="company">培训单位：</form:label></div>
-                                    <div class="col-md-9"><form:input path="company"></form:input></div>
-                                </div>                                                           
-                            </div>                
-                        </div>
-                        <div class="row">
-                            <div class="block-fluid">
-                                <div class="row-form clearfix">
-                                    <div class="col-md-3"><form:label path="certification">证书：</form:label></div>
-                                    <div class="col-md-9"><form:input path="certification"></form:input></div>
-                                </div>                                                           
-                            </div>                
-                        </div>
-                         <div class="row">
-                            <div class="block-fluid">
-                                <div class="row-form clearfix">
-                                    <div class="col-md-3"><form:label path="certificationNo">证书编号：</form:label></div>
-                                    <div class="col-md-9"><form:input path="certificationNo"></form:input></div>
-                                </div>                                                           
-                            </div>                
-                        </div>
-                        <div class="row">
-                            <div class="block-fluid">
-                                <div class="row-form clearfix">
-                                    <div class="col-md-3"><form:label path="expiryDate">有效期：</form:label></div>
-                                    <div class="col-md-9"><form:input path="expiryDate" cssClass="dateISO"></form:input></div>
-                                </div>                                                           
-                            </div>                
-                        </div>
-                    </div>   
-                    <div class="modal-footer">
-                        <button class="btn btn-primary" aria-hidden="true">提交</button> 
-                        <button class="btn btn-default" data-dismiss="modal" aria-hidden="true">关闭</button>            
-                    </div>
-                    </form:form>
-                </div>
-            </div>
-        </div>
-    	<!-- modal form end -->
+
     </div>
 </body>
 

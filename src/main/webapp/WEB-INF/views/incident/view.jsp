@@ -37,7 +37,7 @@
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/mcustomscrollbar/jquery.mCustomScrollbar.min.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/dataTables/jquery.dataTables.min.js'></script>   
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/validation/languages/jquery.validationEngine-zh-CN.js' charset='utf-8'></script>
-<script type='text/javascript' src='${contextPath }/resources/js/plugins/validation/jquery.validationEngine.js' charset='utf-8'></script> 
+	<script type='text/javascript' src='${contextPath }/resources/js/plugins/validation/jquery.validationEngine.js' charset='utf-8'></script> 
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/highlight/jquery.highlight-4.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/pnotify/jquery.pnotify.min.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/ibutton/jquery.ibutton.min.js'></script>
@@ -46,6 +46,7 @@
     <script type='text/javascript' src='${contextPath }/resources/js/pm-common.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/activiti-form.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/activiti-comment.js'></script>
+    <script type='text/javascript' src='${contextPath }/resources/js/activiti-history.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/pm-knowledge.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/pm-cms.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/pm-incident.js'></script>
@@ -61,6 +62,7 @@
    		var ctx = "${contextPath}"; 
    		var incidentId = '${incident.id}';
    		var processInstanceId = "${incident.processInstanceId}";
+   		var p_processInstanceId = "${incident.processInstanceId}";
    		
             $(document).ready(function () {
                 $("#eventTable").dataTable({
@@ -69,10 +71,9 @@
          			}
                 });
                 $(".header").load("${contextPath}/header?t="+pm_random());
-                $(".menu").load("${contextPath}/menu?t="+pm_random(), function () { $("#node_${moduleId}").addClass("active"); });
-                $(".breadLine .buttons").load("${contextPath}/contentbuttons?t="+pm_random());
   
                 act_comment_getlist(processInstanceId,taskId);
+                act_history_init();
                 $(".tabs").find("li").bind("click",function(){
                 	switch($(this).children("a").attr("href"))
                 	{
@@ -98,7 +99,7 @@
         <div class="menu"></div>
         <!--menu end-->
 
-        <div class="content">
+        <div class="content wide">
             <!--breadline-->
             <div class="breadLine">
 
@@ -147,6 +148,10 @@
                             <li>
                                 <div class="title">联系人:</div>
                                 <div class="text">${incident.applyUserName }（电话:${incident.phoneNumber }）</div>
+                            </li>
+                            <li>
+                                <div class="title">房间号:</div>
+                                <div class="text">${incident.applyUserRoom==null?"-":incident.applyUserRoom }</div>
                             </li>
                             <li>
                                 <div class="title">影响度:</div>
@@ -231,7 +236,17 @@
 								</tr>
 							</table>
                   		</div>
-                   	<div class="head clearfix">
+                  		<div class="head clearfix">
+                            <div class="isw-sync"></div>
+                            <h1>操作历史</h1>
+                            <ul class="buttons">        
+                                <li class="toggle active"><a href="#"></a></li>
+                            </ul> 
+                        </div>             
+                        <div class="block history" > 
+                        	<div id='scroll_history' class='scroll' style='height:260px;display:none;'></div>
+                        </div>
+                   		<div class="head clearfix">
                             <div class="isw-list"></div>
                             <h1>关联信息</h1>
                         </div>
@@ -239,9 +254,6 @@
 
                             <ul>
                             	<li><a href="#tabs-comment"> 意见 <span class="label label-success" id="commentTitle"></span> </a></li>
-                                <li><a href="#tabs-incident"> 相关事件 </a></li>
-                                <li><a href="#tabs-change"> 相关变更 </a></li>
-                                <li><a href="#tabs-ci"> 相关资产 </a></li>
                                 <li><a href="#tabs-knowledge"> 引用知识 </a></li>
                                 <li><a href="#tabs-object"> 关联其它资产 </a></li>
                             </ul>                        
@@ -260,106 +272,6 @@
 	                                    <c:if test="${incident.status=='06' }">                                  
 	                                    	<button href="#newForm" role="button" data-toggle="modal" class="btn btn-default" disabled>添加意见</button>
 	                                    </c:if>                                     
-	                                </div>                        
-                           		 </div>
-                            </div>
-                            <div id="tabs-incident">
-                            	<div style="height:300px;">
-                                <table class="table">
-                                <thead>
-                                    <tr>                                    
-                                        <th>摘要</th>
-                                        <th width="120px">申报时间</th>
-                                        <th width="60px">状态</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                	<c:forEach items="${relIncidents }" var="incident">
-                                	<tr>                                    
-                                        <td><a href="${contextPath }/incident/deal/${incident.id}" target=_blank>${incident.abs }</a></td>
-                                        <td><fmt:formatDate value="${incident.applyTime }" pattern="yyyy-MM-dd HH:mm"></fmt:formatDate> </td>
-                                        <td>${incident.statusName }</td>
-                                    </tr>
-                                	</c:forEach>
-                                </tbody>
-                            	</table>
-                            	</div>
-                            	<div class="toolbar bottom-toolbar clearfix">                         
-	                                <div class="right">                                       
-	                                    <ul class="pagination pagination-sm">
-	                                        <li class="disabled"><a href="#">Prev</a></li>
-	                                        <li class="disabled"><a href="#">1</a></li>
-	                                        <li><a href="#">2</a></li>
-	                                        <li><a href="#">Next</a></li>
-	                                    </ul>                                        
-	                                </div>                        
-                           		 </div>
-                            </div>                        
-
-                            <div id="tabs-change">
-                                <div style="height:300px;">
-                                <table class="table">
-                                <thead>
-                                    <tr>                                    
-                                        <th>摘要</th>
-                                        <th width="120px">申报时间</th>
-                                        <th width="60px">状态</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                	<c:forEach items="${relchanges }" var="change">
-                                	<tr>                                    
-                                        <td><a href="${contextPath }/change/deal/${change.id}" target=_blank>${change.description }</a></td>
-                                        <td><fmt:formatDate value="${change.applyTime }" pattern="yyyy-MM-dd HH:mm"></fmt:formatDate> </td>
-                                        <td>${change.statusName }</td>
-                                    </tr>
-                                	</c:forEach>
-                                </tbody>
-                            	</table>
-                            	</div>
-                            	<div class="toolbar bottom-toolbar clearfix">                         
-	                                <div class="right">                                       
-	                                    <ul class="pagination pagination-sm">
-	                                        <li class="disabled"><a href="#">Prev</a></li>
-	                                        <li class="disabled"><a href="#">1</a></li>
-	                                        <li><a href="#">2</a></li>
-	                                        <li><a href="#">Next</a></li>
-	                                    </ul>                                        
-	                                </div>                        
-                           		 </div>
-                            </div>
-
-                            <div id="tabs-ci">
-								<div style="height:300px;">
-                                <table class="table">
-                                <thead>
-                                    <tr>                                    
-                                        <th>名称</th>
-                                        <th width="120px">类别</th>
-                                        <th width="120px">位置</th>
-                                        <th width="60px">状态</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                	<c:forEach items="${relCis }" var="ci">
-                                	<tr>                                    
-                                        <td><a href="${contextPath }/cms/ci/deal/${ci.id}" target=_blank>${ci.name }</a></td>
-                                        <td>${ci.categoryName }</td>
-                                        <td>${ci.location }</td>
-                                        <td>${ci.statusName }</td>
-                                    </tr>
-                                	</c:forEach>
-                                </tbody>
-                            	</table>
-                            	</div>
-                            	<div class="toolbar bottom-toolbar clearfix">                         
-	                                <div class="right">                                       
-	                                    <ul class="pagination pagination-sm">
-	                                        <li class="disabled"><a href="#">Prev</a></li>
-	                                        <li class="disabled"><a href="#">1</a></li>
-	                                        <li><a href="#">2</a></li>
-	                                        <li><a href="#">Next</a></li>
-	                                    </ul>                                        
 	                                </div>                        
                            		 </div>
                             </div>
@@ -412,7 +324,6 @@
 	                                </div>                        
                            		 </div>
                             </div>
-
                         </div>
                     </div>
                	
@@ -432,14 +343,14 @@
                         <div class="row">
                             <div class="block-fluid">
                                 <div class="row-form clearfix">
-                                    <div class="col-md-3">意见：</div>
-                                    <div class="col-md-9"><textarea name="fp_message" id="fp_message"></textarea></div>
+                                    <div class="col-md-2">意见：</div>
+                                    <div class="col-md-10"><textarea name="fp_message" id="fp_message"></textarea></div>
                                 </div>                                                           
                             </div>                
                         </div>
                         <div class="row">
                             <div class="block-fluid">
-                        	<label class='checkbox checkbox-inline'><input type='checkbox' name='isnotify' checked='checked' value='true'/> 提醒任务办理人 </label>
+                            	&nbsp;&nbsp;&nbsp;&nbsp;<label class='checkbox checkbox-inline'><input type='checkbox' name='isnotify' value='true'/> 提醒任务办理人 </label>
                     		</div>
                     	</div>
                     </div>   

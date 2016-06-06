@@ -1,13 +1,17 @@
 package com.cngc.pm.controller;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.security.core.userdetails.User;
@@ -17,6 +21,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.cngc.pm.model.Moudle;
 import com.cngc.pm.model.Role;
@@ -43,6 +48,21 @@ public class SystemController {
 		}
 	   return list;  
 	} 
+	@RequestMapping(value = "/getcurrentusers", method = RequestMethod.GET)
+	@ResponseBody
+	public Map<String,Object> getCurrentUsers(Model model, HttpSession session, Authentication authentication)
+	{
+		Map<String, Object> map = new HashMap<String, Object>();
+		List<String> list = new ArrayList<>();
+		List<Object> slist =sessionRegistry.getAllPrincipals();
+		for(int i=0; i<slist.size(); i++) {
+			 //List<SessionInformation> sessionList = sessionRegistry.getAllSessions(slist.get(i),true);  
+			User user=(User)slist.get(i); 
+			list.add( userService.getUserName(user.getUsername()) );
+		}
+		map.put("users", list);
+		return map;
+	}
 	
 	@RequestMapping(value = "/header", method = RequestMethod.GET)
 	public String header() {
@@ -77,6 +97,7 @@ public class SystemController {
 		
 		model.addAttribute("menu1", menu1);
 		model.addAttribute("menu2", menu2);
+		model.addAttribute("user", user);
 
 		//model.addAttribute("lastLogin", user.getLastWhile());
 		

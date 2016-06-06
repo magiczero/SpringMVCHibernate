@@ -26,6 +26,8 @@ public class Message implements Serializable{
 	private boolean isRead;
 	private Date createdTime;
 	private Date readTime;
+	//@Transient
+	//private String fromUserName;
 	
 	@Id
 	@Column(name = "id")
@@ -85,4 +87,12 @@ public class Message implements Serializable{
 	public void setReadTime(Date readTime) {
 		this.readTime = readTime;
 	}
+/*	@Formula(value="(SELECT a.NAME FROM sys_users a WHERE a.USERNAME=from_user)")
+	public String getFromUserName() {
+		return fromUserName;
+	}
+	public void setFromUserName(String fromUserName) {
+		this.fromUserName = fromUserName;
+	}*/
+	
 }

@@ -40,46 +40,27 @@
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/jquery/jquery-ui-1.10.1.custom.min.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/jquery/jquery-migrate-1.2.1.min.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/jquery/jquery.mousewheel.min.js'></script>
-    
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/cookie/jquery.cookies.2.2.0.min.js'></script>
-    
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/bootstrap.min.js'></script>
-    
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/submenu/bootstrap-submenu.min.js'></script>
-    
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/sparklines/jquery.sparkline.min.js'></script>
-    
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/fullcalendar/fullcalendar.min.js'></script>
-    
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/uniform/uniform.js'></script>
-    
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/maskedinput/jquery.maskedinput-1.3.min.js'></script>
-    
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/validation/languages/jquery.validationEngine-zh-CN.js' charset='utf-8'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/validation/jquery.validationEngine.js' charset='utf-8'></script>
-    
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/mcustomscrollbar/jquery.mCustomScrollbar.min.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/animatedprogressbar/animated_progressbar.js'></script>
-    
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/qtip/jquery.qtip-1.0.0-rc3.min.js'></script>
-    
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/cleditor/jquery.cleditor.js'></script>
-    
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/dataTables/jquery.dataTables.min.js'></script>    
-    
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/fancybox/jquery.fancybox.pack.js'></script>
-    
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/multiselect/jquery.multi-select.js'></script>
-        
     <script type="text/javascript" src="${contextPath }/resources/js/plugins/elfinder/elfinder.min.js"></script>
-    
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/highlight/jquery.highlight-4.js'></script>
-    
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/pnotify/jquery.pnotify.min.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/ibutton/jquery.ibutton.min.js'></script>
-    
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/scrollup/jquery.scrollUp.min.js'></script>
-    
     <script type='text/javascript' src='${contextPath }/resources/js/pm-common.js'></script>   
     <!-- <script type='text/javascript' src='${contextPath }/resources/js/pm-workflow.js'></script> -->
     <script type='text/javascript' src='${contextPath }/resources/js/pm-knowledge.js'></script>
@@ -171,6 +152,7 @@
                                 <li>
                                     <a href="#" class="isw-settings tipl" title="操作 "></a>
                                     <ul class="dd-list">
+                                    	<li><a href="${contextPath }/incident/list"><span class="isw-plus"></span> 创建新事件</a></li>
                                         <li><a href="${contextPath }/incident/list"><span class="isw-list"></span> 查看待处理事件</a></li>
                                         <li><a href="${contextPath }/incident/mydealedlist"><span class="isw-pin"></span> 跟踪处理过的事件</a></li>
                                         <li><a href="${contextPath }/incident/search"><span class="isw-zoom"></span> 历史事件查询</a></li>
@@ -186,11 +168,11 @@
                                     	<th width="70px">流水号</th>
                                         <th>摘要</th>
                                         <th width="70px">申请人</th>
-                                        <th width="70px">受派者</th>
-                                        <th width="150px">流程步骤</th>
-                                        <th width="120px">申请时间</th>
-                                        <th width="70px">状态</th> 
-                                        <th width="110px">操作</th>                                    
+                                        <th width="60px">受派者</th>
+                                        <th width="130px">流程步骤</th>
+                                        <th width="110px">申请时间</th>
+                                        <th width="60px">状态</th> 
+                                        <th width="90px">操作</th>                                    
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -200,13 +182,13 @@
 	                                    <tr>
 	                                    	<td>${incident.processInstanceId }</td>
 	                                        <td>
-	                                        	<span class="label label-warning tipb" title="优先级">${incident.priorityName }</span>
-	                                        	<a href="${contextPath }/incident/view/${incident.id}" title="查看详情">${incident.abs }</a>
+	                                        	<span class="label label-warning tipb" title="优先级:${incident.priorityName }">${incident.priorityName }</span>
+	                                        	<a href="${contextPath }/incident/view/${incident.id}" title="查看详情" class="tipr" target="_blank">${incident.abs }</a>
 	                                        </td>
 	                                        <td>${incident.applyUserName }</td>
 	                                        <td>${incident.currentDelegateUserName }</td>
 	                                        <td>
-												<a class="lnk_trace" href="#" pid="${incident.processInstanceId }" pdid="${task.processDefinitionId }" title="点击查看流程图">
+												<a class="lnk_trace tipb" href="#" pid="${incident.processInstanceId }" pdid="${task.processDefinitionId }" title="点击查看流程图">
 													${task.name }
 												</a>
 											</td>
@@ -231,8 +213,8 @@
                                     		<tr>
                                     			<td>${incident.processInstanceId }</td>
 		                                        <td>
-		                                        	<span class="label label-warning tipb" title="优先级">${incident.priorityName }</span>
-		                                        	<a href="${contextPath }/incident/view/${incident.id}" title="查看详情">${incident.abs }</a>
+		                                        	<span class="label label-warning tipb" title="优先级:${incident.priorityName }">${incident.priorityName }</span>
+		                                        	<a href="${contextPath }/incident/view/${incident.id}" title="查看详情"  target="_blank">${incident.abs }</a>
 		                                        </td>
 		                                        <td>${incident.applyUserName }</td>
 		                                        <td>${incident.currentDelegateUserName }</td>
@@ -241,7 +223,7 @@
 														${task.name }
 													</a>
 												</td>
-		                                        <td><fmt:formatDate value="${incident.applyTime }" pattern="MM-dd HH:mm" /></td>
+		                                        <td><fmt:formatDate value="${incident.applyTime }" pattern="yyyy-MM-dd HH:mm" /></td>
 		                                        <td>${incident.statusName }</td>
 		                                        <td>
 			                                        <c:if test="${not empty ROLE_MODIFY }">
@@ -283,7 +265,9 @@
                             <div>
                                 <ul>
                                     <li><a href="${contextPath }/incident/add">创建新事件</a></li>
-                                    <!-- <li><a href="#" id="lnk_knowledge">知识库</a></li>-->
+                                    <li><a href="${contextPath }/incident/list">查看待处理事件</a></li>
+                                    <li><a href="${contextPath }/incident/mydealedlist">跟踪处理过的事件</a></li>
+                                    <li><a href="${contextPath }/incident/search">历史事件查询</a></li>
                                 </ul>                                                
                             </div>                     
 

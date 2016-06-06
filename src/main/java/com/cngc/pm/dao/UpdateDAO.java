@@ -9,4 +9,5 @@ import com.googlecode.genericdao.search.SearchResult;
 public interface UpdateDAO extends GenericDAO<Update,Long> {
 	SearchResult<Update> search(String startTime,String endTime);
 	Map<String,Object> getStats(String column,String row,String startTime,String endTime);
+	SearchResult<Update> getNotFinishedTask();
 }

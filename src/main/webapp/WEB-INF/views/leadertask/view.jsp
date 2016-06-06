@@ -60,8 +60,6 @@
    		
             $(document).ready(function () {
                 $(".header").load("${contextPath}/header?t="+pm_random());
-                $(".menu").load("${contextPath}/menu?t="+pm_random(), function () {$("#node_${moduleId}").addClass("active"); });
-                $(".breadLine .buttons").load("${contextPath}/contentbuttons?t="+pm_random());
   
                 act_comment_getlist(processInstanceId,taskId);
             });
@@ -78,7 +76,7 @@
         <div class="menu"></div>
         <!--menu end-->
 
-        <div class="content">
+        <div class="content wide">
             <!--breadline-->
             <div class="breadLine">
 

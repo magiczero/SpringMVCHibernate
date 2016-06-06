@@ -48,6 +48,7 @@
     <script type='text/javascript' src='${contextPath }/resources/js/pm-common.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/activiti-form.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/activiti-comment.js'></script>
+    <script type='text/javascript' src='${contextPath }/resources/js/activiti-history.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/pm-knowledge.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/pm-cms.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/pm-incident.js'></script>
@@ -77,6 +78,7 @@
             act_comment_getlist(processInstanceId,taskId);
             //pm_knowledge_initdialog("incident",incidentId);
             pm_cms_initselectdialog('incident');
+            act_history_initdialog();
             
             $(".tabs").find("li").bind("click",function(){
             	switch($(this).children("a").attr("href"))
@@ -149,12 +151,15 @@
                	  <div class="col-md-4">
                      	<div style="text-align:right;">
                             <div class="btn-group">
+                            	<!-- 
                             	<c:if test="${not empty task.assignee }">
                             		<button class="btn btn-default" type="button" disabled >指派给我</button>
                             	</c:if>
                             	<c:if test="${empty task.assignee }">
                             		<button class="btn btn-default" type="button">指派给我</button>
                             	</c:if>
+                            	-->
+                            	<button class="btn btn-default" type="button" onclick="act_history_open('${incident.processInstanceId}')">操作历史</button>
                             	<button class="btn btn-default" type="button" onclick="pm_cms_addRelations(' ')">创建关联对象</button>
                             	<button class="btn btn-default" type="button" id="lnk_knowledge">查看知识库</button>
                             </div>
@@ -184,7 +189,7 @@
                             </li>
                             <li>
                                 <div class="title">房间号:</div>
-                                <div class="text">${incident.applyUserRoom }</div>
+                                <div class="text">${incident.applyUserRoom==null?"-":incident.applyUserRoom }</div>
                             </li>
                             <li>
                                 <div class="title">影响度:</div>
@@ -243,6 +248,7 @@
                         <div class="block-fluid tabs">
                             <ul>
                             	<li><a href="#tabs-comment" > 意见 <span class="label label-success" id="commentTitle"></span></a></li>
+                            	<li><a href="#tabs-notice"> 运维公告 </a></li>
                                 <li><a href="#tabs-incident"> 相关事件 </a></li>
                                 <li><a href="#tabs-change"> 相关变更 </a></li>
                                 <li><a href="#tabs-ci"> 相关资产 </a></li>
@@ -259,6 +265,28 @@
                             	<div class="toolbar bottom-toolbar clearfix">                         
 	                                <div class="left">                                       
 	                                    <button href="#newForm" role="button" data-toggle="modal" class="btn btn-default">添加意见</button>                                        
+	                                </div>                        
+                           		 </div>
+                            </div>
+                            <div id="tabs-notice">
+                            	<div style="height:300px;">
+	                            	<div class="block-withoutborder messages scrollBox">                        
+			                        	<div class="scroll" style="height: 260px;">
+			                        	<c:forEach items="${notices }" var="notice">
+										<div class="item">
+											<div class="info">
+											<a href="#" id="lnk_message">${notice.title }</a>
+											<p>${notice.content }</p>
+											<span class="date"><fmt:formatDate value="${notice.createdTime}" pattern="yyyy-MM-dd HH:mm"></fmt:formatDate></span>
+											</div>
+										</div>
+										</c:forEach>
+			                        	</div>
+			                        </div>
+                            	</div>
+                            	<div class="toolbar bottom-toolbar clearfix">                         
+	                                <div class="left">                                       
+	                                    <button href="#newNotice" role="button" data-toggle="modal" class="btn btn-default">发布公告</button>                                        
 	                                </div>                        
                            		 </div>
                             </div>
@@ -438,7 +466,7 @@
                         </div>
                         <div class="row">
                             <div class="block-fluid">
-                        	<label class='checkbox checkbox-inline'><input type='checkbox' name='isnotify' checked='checked' value='true'/> 提醒任务办理人 </label>
+                        	&nbsp;&nbsp;&nbsp;&nbsp;<label class='checkbox checkbox-inline'><input type='checkbox' name='isnotify' checked='checked' value='true'/> 提醒任务办理人 </label>
                     		</div>
                     	</div>
                     </div>   
@@ -453,6 +481,39 @@
                 </div>
             </div>
         </div>
+        <!-- notice start -->
+        <div class="modal fade" id="newNotice" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>                        
+                        <h4>发布公告</h4>
+                    </div>
+                    <form action="${contextPath}/notice/savedialog" method="post">
+                    <div class="modal-body modal-body-np">
+                        <div class="row">
+                            <div class="block-fluid">
+                            <div class="row-form clearfix">
+                                <div class="col-md-3">公告标题：</div>
+                                    <div class="col-md-9"><input type="text" name="fp_notice_title" id="fp_notice_title"></input></div>
+                                </div>
+                                <div class="row-form clearfix">
+                                    <div class="col-md-3">公告内容：</div>
+                                    <div class="col-md-9"><textarea name="fp_notice_content" id="fp_notice_content"></textarea></div>
+                                </div>                                                           
+                            </div>                
+                        </div>
+                    </div>   
+                    <div class="modal-footer">
+                    	<input type="hidden" name="redirectAddress" value="/incident/deal/${incident.id}/${task.id}" />
+                        <button class="btn btn-primary" aria-hidden="true"> 提 交 </button> 
+                        <button class="btn btn-default" data-dismiss="modal" aria-hidden="true"> 关 闭 </button>            
+                    </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <!-- notice end -->
     </div>
 </body>
 

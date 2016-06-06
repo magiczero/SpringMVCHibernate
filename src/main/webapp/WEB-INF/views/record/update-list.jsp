@@ -113,26 +113,23 @@
                     <h4>错误!</h4>请至少选择一项
                 </div> 
                 <div class="row">
-                	<div class="col-md-12">
-  							<div class="btn-group">
-  								<button class="btn btn-primary" data-toggle="modal" data-target="#myModal" >查询</button> 
-  							</div>
-                        	<div class="btn-group pull-right">       
-                                <button data-toggle="dropdown" class="btn btn-warning dropdown-toggle">操作 <span class="caret"></span></button>
-                                            <ul class="dropdown-menu">
-                                            	<li><a href="javascript:void(0);" id="lnk_start_update">发起升级任务</a></li>
-                                                <li><a id="delBtn" href="${contextPath }/workflow/processinstance/running" role="button" data-toggle="modal">结束流程</a></li>
-                                                <li><a href="javascript:void(0);" onclick="pm_refresh()">刷新</a></li>
-                                            </ul>
-                        	</div>
-            		</div>
-            	</div>
-                <div class="row">
                     <div class="col-md-12">                    
                         <div class="head clearfix">
                             <div class="isw-grid"></div>
                             <h1>升级记录</h1>  
-
+							<ul class="buttons">
+                                <li>
+                                    <a href="#" class="isw-zoom tipb" data-toggle="modal" data-target="#myModal" title="查询"></a>
+                                </li>                            
+                                <li>
+                                    <a href="#" class="isw-settings tipl" title="操作 "></a>
+                                    <ul class="dd-list">
+                                    	<li><a href="#" id="lnk_start_update"><span class="isw-plus"></span> 发起升级任务</a></li>
+                                        <li><a href="#" data-toggle="modal" data-target="#myModal"><span class="isw-zoom"></span> 任务查询</a></li>
+                                        <li><a href="#" onclick="pm_refresh()"><span class="isw-refresh"></span> 刷新</a></li>
+                                    </ul>
+                                </li>
+                            </ul>
                         </div>
                         <div class="block-fluid table-sorting clearfix">
                             <table class="table" id="myTable">

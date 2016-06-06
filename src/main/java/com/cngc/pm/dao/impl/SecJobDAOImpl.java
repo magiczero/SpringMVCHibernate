@@ -29,5 +29,13 @@ public class SecJobDAOImpl extends BaseDAOImpl<SecJob, Long> implements SecJobDA
 	public Map<String, Object> getStats(String column, String row, String startTime, String endTime) {
 		return statsDao.getStats("SECJOB", column, row, startTime, endTime, null);
 	}
-
+	
+	@Override
+	public SearchResult<SecJob> getNotFinishedTask()
+	{
+		Search search = new Search();
+		search.addFilterEmpty("executionTime");
+		
+		return this.searchAndCount(search);
+	}
 }

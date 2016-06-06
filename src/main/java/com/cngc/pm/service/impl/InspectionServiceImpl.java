@@ -58,5 +58,11 @@ public class InspectionServiceImpl implements InspectionService{
 			return Long.getLong("0");
 		else
 			return re.getResult().get(0).getId();
-	}		
+	}	
+	@Override
+	@Transactional
+	public SearchResult<Inspection> getNotFinishedTask()
+	{
+		return inspectionDao.getNotFinishedTask();
+	}
 }

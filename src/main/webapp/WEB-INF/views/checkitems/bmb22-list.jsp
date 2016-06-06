@@ -345,7 +345,7 @@
                                 	<tr><td>${ci.style.style.style.name }</td>
                                         <td>${ci.style.style.name }</td>
 										<td>${ci.style.name }</td>
-										<td>${ci.name }<br/><sec:authorize access="!hasRole('check_item_view')"><a href="javascript:void(0);" onclick="javascript:addItem(${ci.id},'${ci.name }');">添加</a></sec:authorize></td>
+										<td>${ci.name }<!-- <br/><sec:authorize access="!hasRole('check_item_view')"><a href="javascript:void(0);" onclick="javascript:addItem(${ci.id},'${ci.name }');">添加</a></sec:authorize> --></td>
 										<td>${child.name }</td>
 										<td>${child.demand}</td>
 										<td>${child.technique }</td>

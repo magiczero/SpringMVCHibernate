@@ -22,6 +22,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.cngc.pm.model.Document;
 import com.cngc.pm.model.Group;
 import com.cngc.pm.model.SysUser;
 
@@ -39,6 +40,8 @@ public class ServiceTest {
 	private GroupService groupService;
 	@Autowired
 	private CheckItemsService itemsService;
+	@Autowired
+	private DocumentService docService;
 	
 	Logger LOGGER = LoggerFactory.getLogger(ServiceTest.class);
 	
@@ -58,6 +61,7 @@ public class ServiceTest {
     }
     
     @Test
+    @Ignore
     @Transactional(readOnly=true)
     public void testfindCurrentYearStudent() {
     	JSONObject jsonObj = new JSONObject();
@@ -133,13 +137,13 @@ public class ServiceTest {
     }
 
     @Test
-    @Ignore
     public void testCollegeFind() {
-    	String str = itemsService.getJSonByCode("CI");
+    	List<Document> list = docService.getListByUserAndNum("admin", 0);
+    	//String str = itemsService.getJSonByCode("CI");
     	
-    	System.out.println(str);
+    	System.out.println("document size is "+list.size());
     	
-    	assertNotNull(str);
+    	//assertNotNull(str);
 //    	List<Person> persons = personService.testPersons();
 //    	LOGGER.info("Persons :" + persons);
 //    	assertNotNull(persons);

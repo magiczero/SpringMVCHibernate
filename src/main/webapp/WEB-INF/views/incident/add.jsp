@@ -170,9 +170,9 @@
 	                    			liStr += "</li>";
 	                    		});
 	                    	}
-	                    	liStr += "<ul>";
+	                    	liStr += "</ul>";
 		    			}
-                    	liStr += "</ul></li>";
+                    	liStr += "</li>";
                     	$("#grouptree").append(liStr);
 		    		});
 		    		$("#grouptree").treeview({

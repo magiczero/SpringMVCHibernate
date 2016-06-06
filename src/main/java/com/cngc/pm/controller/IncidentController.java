@@ -43,6 +43,7 @@ import com.cngc.pm.model.Attachment;
 import com.cngc.pm.model.ChangeItem;
 import com.cngc.pm.model.Group;
 import com.cngc.pm.model.Incident;
+import com.cngc.pm.model.SysUser;
 import com.cngc.pm.model.cms.Ci;
 import com.cngc.pm.service.AttachService;
 import com.cngc.pm.service.ChangeItemService;
@@ -178,7 +179,10 @@ public class IncidentController {
 		incident.setPriority("04");
 		incident.setType("01");
 		incident.setStatus("01");
-		incident.setApplyUser(userUtil.getUserId(authentication));
+		SysUser user = userService.getByUsername(userUtil.getUserId(authentication));
+		incident.setApplyUser(user.getUsername());
+		//incident.setApplyUserRoom(user.getMechName());
+		incident.setPhoneNumber(user.getDepName());
 		incident.setApplyTime(new Date());
 		
 		if(!StringUtils.isEmpty(request.getParameter("fileids"))) {

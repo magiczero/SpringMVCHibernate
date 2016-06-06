@@ -25,6 +25,7 @@
     <link href="${contextPath }/resources/css/mycss.css" rel="stylesheet" type="text/css" />
 	<link href="${contextPath }/resources/css/uploadify.css" rel="stylesheet" type="text/css" />
     <link href="${contextPath }/resources/css/validation.css" rel="stylesheet" type="text/css" />
+    <link href="${contextPath }/resources/js/plugins/select2/select2.css" rel="stylesheet" type="text/css" />
     <!--[if lt IE 8]>
         <link href="${contextPath }/resources/css/ie7.css" rel="stylesheet" type="text/css" />
     <![endif]-->    
@@ -44,6 +45,7 @@
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/ibutton/jquery.ibutton.min.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/scrollup/jquery.scrollUp.min.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/uploadify/jquery.uploadify.min.js'></script>
+    <script type='text/javascript' src='${contextPath }/resources/js/plugins/select2/select2.min.js'></script>
     
     <script type='text/javascript' src='${contextPath }/resources/js/pm-common.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/activiti-form.js'></script>

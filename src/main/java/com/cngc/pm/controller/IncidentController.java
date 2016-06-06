@@ -51,6 +51,7 @@ import com.cngc.pm.service.ChangeService;
 import com.cngc.pm.service.GroupService;
 import com.cngc.pm.service.IncidentService;
 import com.cngc.pm.service.ItilRelationService;
+import com.cngc.pm.service.NoticeService;
 import com.cngc.pm.service.SysCodeService;
 import com.cngc.pm.service.UserService;
 import com.cngc.pm.service.cms.CiService;
@@ -91,6 +92,8 @@ public class IncidentController {
 	private AttachService attachService;
 	@Resource
 	private GroupService groupService;
+	@Resource
+	private NoticeService noticeService;
 
 	/**
 	 * 创建新事件
@@ -465,10 +468,15 @@ public class IncidentController {
 		model.addAttribute("relIncidents", incidentService.getByApplyUser(incident.getApplyUser()).getResult());
 		model.addAttribute("relCis", cilist);
 		model.addAttribute("relchanges", changeService.getByIds(changeids).getResult());
+		model.addAttribute("notices", noticeService.getAll());
 
 		return "incident/deal";
 	}
-
+	@RequestMapping(value = "/dealbyprocess/{pid}/{taskid}", method = RequestMethod.GET)
+	public String dealByProcessInstanceId(@PathVariable("pid") String pid,@PathVariable("taskid") String taskid){
+		
+		return "redirect:/incident/deal/" + incidentService.getIdByProcessInstance(pid) + "/"+taskid;
+	}
 	/**
 	 * 查看事件信息
 	 * 
@@ -483,23 +491,14 @@ public class IncidentController {
 		if (id != 0)
 			incident = incidentService.getById(id);
 
-		// 根据申请用户获取其相关资产
-		List<Ci> cilist = ciService.getByUser(incident.getApplyUser()).getResult();
-		List<Long> ciids = new LinkedList<Long>();
-		for (Ci ci : cilist)
-			ciids.add(ci.getId());
-		// 根据用户资产获取相关变更
-		List<ChangeItem> items = changeitemService.getByCi(ciids).getResult();
-		List<Long> changeids = new LinkedList<Long>();
-		for (ChangeItem item : items)
-			changeids.add(item.getChangeId());
-
 		model.addAttribute("incident", incident);
-		model.addAttribute("relIncidents", incidentService.getByApplyUser(incident.getApplyUser()).getResult());
-		model.addAttribute("relCis", cilist);
-		model.addAttribute("relchanges", changeService.getByIds(changeids).getResult());
 
 		return "incident/view";
+	}
+	@RequestMapping(value = "/viewbyprocess/{pid}", method = RequestMethod.GET)
+	public String viewByProcessInstanceId(@PathVariable("pid") String pid){
+		
+		return "redirect:/incident/view/" + incidentService.getIdByProcessInstance(pid);
 	}
 
 	@RequestMapping(value = "/delete/{id}", method = RequestMethod.GET)

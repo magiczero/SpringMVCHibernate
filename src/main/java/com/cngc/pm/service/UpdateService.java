@@ -12,4 +12,5 @@ public interface UpdateService {
 	List<Update> getAll();
 	SearchResult<Update> search(String startTime,String endTime);
 	Map<String,Object> getStats(String column,String row,String startTime,String endTime);
+	SearchResult<Update> getNotFinishedTask();
 }

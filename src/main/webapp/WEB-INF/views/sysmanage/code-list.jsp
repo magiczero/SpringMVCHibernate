@@ -209,6 +209,7 @@
                                 <li><a href="#" class="lnk_type" title="INSPECTION_STATUS"> 巡检结果</a><span class="arrow"></span></li>
                                 <li><a href="#" class="lnk_type" title="UPDATE_TYPE"> 升级类型</a><span class="arrow"></span></li>
                                 <li><a href="#" class="lnk_type" title="SECJOB_TYPE"> 三员工作类型</a><span class="arrow"></span></li>
+                                <li><a href="#" class="lnk_type" title="NOTICE_STATUS"> 运维公告状态</a><span class="arrow"></span></li>
                                 </ul>                                                
                             </div>                   
                         </div>

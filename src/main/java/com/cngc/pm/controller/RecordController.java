@@ -183,6 +183,11 @@ public class RecordController {
 
 		return "record/inspection-deal";
 	}
+	@RequestMapping(value = "/inspection/dealbyprocess/{pid}/{taskid}", method = RequestMethod.GET)
+	public String dealByProcessInstanceId(@PathVariable("pid") String pid,@PathVariable("taskid") String taskid){
+		
+		return "redirect:/record/inspection/deal/" + inspectionService.getIdByProcessInstance(pid) + "/"+taskid;
+	}
 
 	@RequestMapping(value = "/income", method = RequestMethod.GET)
 	public String income(Model model) {

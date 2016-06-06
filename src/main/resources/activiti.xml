@@ -29,10 +29,10 @@
     <bean id="mydataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
         <!-- Connection Info -->
         <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
-        <property name="url" value="jdbc:mysql://localhost:3396/pmsys?useUnicode=true&amp;characterEncoding=utf8"/>
+        <property name="url" value="jdbc:mysql://localhost:3306/pmsys?useUnicode=true&amp;characterEncoding=utf8"/>
         <property name="username" value="root"/>
 
-        <property name="password" value="myoa888"/>
+        <property name="password" value="1234"/>
 
 
         <!-- Connection Pooling Info -->
@@ -79,6 +79,8 @@
          <!-- 生成流程图的字体 -->
         <property name="activityFontName" value="\u5B8B\u4F53"/>
         <property name="labelFontName" value="\u5B8B\u4F53"/>
+        <!-- 使用系统用户信息 -->
+        <property name="dbIdentityUsed" value="false" />
         <!-- JPA -->
         <property name="jpaEntityManagerFactory" ref="entityManagerFactory" />
         <property name="jpaHandleTransaction" value="false" />

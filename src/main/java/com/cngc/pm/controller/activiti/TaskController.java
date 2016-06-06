@@ -1,6 +1,9 @@
 package com.cngc.pm.controller.activiti;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -16,6 +19,7 @@ import org.activiti.engine.FormService;
 import org.activiti.engine.HistoryService;
 import org.activiti.engine.IdentityService;
 import org.activiti.engine.RepositoryService;
+import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
 import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.repository.ProcessDefinition;
@@ -24,6 +28,7 @@ import org.activiti.engine.task.Event;
 import org.activiti.engine.task.IdentityLink;
 import org.activiti.engine.task.Task;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.time.FastDateFormat;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -35,12 +40,19 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.cngc.pm.common.web.common.UserUtil;
+import com.cngc.pm.model.LeaderTask;
 import com.cngc.pm.service.ChangeService;
 import com.cngc.pm.service.IncidentService;
 import com.cngc.pm.service.InspectionService;
-import com.cngc.pm.service.MessageService;
-import com.cngc.pm.service.UserService;
 import com.cngc.pm.service.LeaderTaskService;
+import com.cngc.pm.service.MessageService;
+import com.cngc.pm.service.NoticeService;
+import com.cngc.pm.service.SecJobService;
+import com.cngc.pm.service.SysCodeService;
+import com.cngc.pm.service.UpdateService;
+import com.cngc.pm.service.UserService;
+import com.cngc.utils.PropertyFileUtil;
+import com.cngc.utils.activiti.ProcessDefinitionCache;
 
 @Controller
 @RequestMapping("/workflow/task")
@@ -69,7 +81,17 @@ public class TaskController {
 	@Resource
 	private LeaderTaskService leaderTaskService;
 	@Resource
+	private SecJobService secjobService;
+	@Resource
 	private InspectionService inspectionService;
+	@Resource
+	private NoticeService noticeService;
+	@Resource
+	private SysCodeService syscodeService;
+	@Resource
+	private RuntimeService runtimeService;
+	@Resource
+	private UpdateService updateService;
 
 	/**
 	 * 待办任务
@@ -82,14 +104,173 @@ public class TaskController {
 		// User user = UserUtil.getUserFromSession(request.getSession());
 
 		List<Task> tasks = new ArrayList<Task>();
+		int nLeaderTask = 0;
 
 		tasks = taskService.createTaskQuery().taskCandidateOrAssigned(userUtil.getUserId(authentication)).active()
 				.list();
-
+		Map<String, String> startusers = new HashMap<String, String>();
+		// 未填报领导交办
+		FastDateFormat fmt = FastDateFormat.getInstance("yyyy-MM-dd");
+		Date current = new Date();
+		String sdate = fmt.format(current);
+		for (Task task : tasks) {
+			if (task.getProcessDefinitionId()
+					.indexOf(PropertyFileUtil.getStringValue("workflow.processkey.leadertask")) >= 0) {
+				// 领导交办
+				boolean isadd = false;
+				List<Comment> comments = taskService.getProcessInstanceComments(task.getProcessInstanceId());
+				for (Comment cmt : comments) {
+					if (cmt.getUserId().equals(task.getAssignee()) && fmt.format(cmt.getTime()).equals(sdate))
+						isadd = true;
+				}
+				if (!isadd) {
+					// 当天没有添加意见
+					nLeaderTask++;
+				}
+			}
+			String startuser = historyService.createHistoricProcessInstanceQuery()
+					.processInstanceId(task.getProcessInstanceId()).singleResult().getStartUserId();
+			startusers.put(task.getProcessInstanceId(), userService.getUserName(startuser));
+		}
 		model.addAttribute("tasks", tasks);
 		model.addAttribute("res", repositoryService);
+		model.addAttribute("LeaderTask", nLeaderTask);
+		model.addAttribute("notices", noticeService.getLastNotice().getResult());
+		model.addAttribute("startusers", startusers);
 
 		return "/workflow/mytask";
+	}
+
+	@RequestMapping(value = "/board", method = RequestMethod.GET)
+	public String board(Model model, HttpSession session, Authentication authentication) {
+		int leadertaskout = 0, leadertaskfeed = 0;
+		Date currentTime = Calendar.getInstance().getTime();
+		List<LeaderTask> leaderlist = leaderTaskService.getNotFinishedTask().getResult();
+		// 已超时的领导交办工作
+		for(LeaderTask leader:leaderlist)
+		{
+			if(leader.getDueTime().getTime() < currentTime.getTime())
+				leadertaskout += 1;
+		}
+		// 未反馈领导交办
+		FastDateFormat fmt = FastDateFormat.getInstance("yyyy-MM-dd");
+		Date current = new Date();
+		String sdate = fmt.format(current);
+		boolean isadd = false;
+		for(LeaderTask leader:leaderlist)
+		{
+			List<Comment> comments = taskService.getProcessInstanceComments(leader.getProcessInstanceId());
+			for (Comment cmt : comments) {
+				if (cmt.getUserId().equals(leader.getToUser()) && fmt.format(cmt.getTime()).equals(sdate))
+					isadd = true;
+			}
+			if (!isadd) {
+				// 当天没有添加意见
+				leadertaskfeed++;
+			}
+		}
+		model.addAttribute("notices", noticeService.getLastNotice().getResult());
+		model.addAttribute("incidentCount", incidentService.getCountByStatus());
+		model.addAttribute("incidentType",
+				syscodeService.getAllByType(PropertyFileUtil.getStringValue("syscode.incident.status")).getResult());
+		model.addAttribute("changeCount", changeService.getCountByStatus());
+		model.addAttribute("changeType",
+				syscodeService.getAllByType(PropertyFileUtil.getStringValue("syscode.change.status")).getResult());
+		model.addAttribute(
+				"leadertaskCount",
+				runtimeService.createProcessInstanceQuery().processDefinitionKey(
+						PropertyFileUtil.getStringValue("workflow.processkey.leadertask")).active().count());
+		model.addAttribute("leadertaskOut",leadertaskout);
+		model.addAttribute("leadertaskFeed",leadertaskfeed);
+		model.addAttribute(
+				"inspectionCount",
+				runtimeService.createProcessInstanceQuery().processDefinitionKey(
+						PropertyFileUtil.getStringValue("workflow.processkey.inspection")).active().count());
+		model.addAttribute(
+				"secjobCount",
+				runtimeService.createProcessInstanceQuery().processDefinitionKey(
+						PropertyFileUtil.getStringValue("workflow.processkey.secjob")).active().count());
+		model.addAttribute(
+				"updateCount",
+				runtimeService.createProcessInstanceQuery().processDefinitionKey(
+						PropertyFileUtil.getStringValue("workflow.processkey.update")).active().count());
+		// 事件统计
+		String startTime, endTime;
+		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+		Calendar now = Calendar.getInstance();
+		startTime = String.valueOf(now.get(Calendar.YEAR)) + "-01-01";
+		endTime = formatter.format(now.getTime());
+		model.addAttribute(
+				"incidentStat",
+				incidentService.getStats("DATE_MONTH", null, startTime, endTime,
+						PropertyFileUtil.getStringValue("syscode.incident.status.finished")));
+		model.addAttribute(
+				"incidentSatisfaction",
+				incidentService.getStats("CODE_SATISFACTION", null, startTime, endTime,
+						PropertyFileUtil.getStringValue("syscode.incident.status.finished")));
+		model.addAttribute("engineers", userService.getEngineer());
+		Map<String,Object> usertask = new HashMap<String,Object>();
+		List<Task> tasks = taskService.createTaskQuery().active().list();
+		for(Task task:tasks)
+		{
+			if(task.getAssignee()!=null)
+			{
+				if(usertask.get(task.getAssignee())!=null)
+					usertask.put(task.getAssignee(), Integer.valueOf(usertask.get(task.getAssignee()).toString()));
+				else
+					usertask.put(task.getAssignee(), 1);
+			}
+		}
+		model.addAttribute("usertask", usertask);
+		model.addAttribute("leadertasks", leaderTaskService.getNotFinishedTask().getResult());
+		model.addAttribute("secjobs", secjobService.getNotFinishedTask().getResult());
+		model.addAttribute("inspections", inspectionService.getNotFinishedTask().getResult());
+		model.addAttribute("updates", updateService.getNotFinishedTask().getResult());
+		
+		return "/workflow/board";
+	}
+
+	@RequestMapping(value = "/getmytask", method = RequestMethod.GET)
+	@ResponseBody
+	public Map<String, Object> getMyTaskList(Model model, HttpSession session, Authentication authentication) {
+		Map<String, Object> map = new HashMap<String, Object>();
+		List<Task> tasks = new ArrayList<Task>();
+		String s = "";
+		tasks = taskService.createTaskQuery().taskCandidateOrAssigned(userUtil.getUserId(authentication)).active()
+				.list();
+
+		s = "[";
+		int i = 0;
+		for (Task task : tasks) {
+			if (i >= 5)
+				break;
+			if (s.length() > 2)
+				s += ",";
+			String startuser = historyService.createHistoricProcessInstanceQuery()
+					.processInstanceId(task.getProcessInstanceId()).singleResult().getStartUserId();
+			String processname = task.getProcessDefinitionId().substring(0, task.getProcessDefinitionId().indexOf(':'));
+			String url = "";
+			switch (processname) {
+			case "INSPECTION":
+			case "UPDATE":
+			case "SECJOB":
+				url = "/record/" + processname.toLowerCase();
+				break;
+			default:
+				url = "/" + processname.toLowerCase() + "/list";
+				break;
+			}
+			s += "{\"id\":\"" + task.getId() + "\",\"processname\":\""
+					+ ProcessDefinitionCache.getProcessName(task.getProcessDefinitionId()) + "\",\"taskname\":\""
+					+ task.getName() + "\",\"createtime\":\"" + task.getCreateTime().toString() + "\",\"user\":\""
+					+ userService.getUserName(startuser) + "\",\"url\":\"" + url + "\"}";
+
+			i++;
+		}
+		s += "]";
+
+		map.put("tasks", s);
+		return map;
 	}
 
 	/**
@@ -105,11 +286,13 @@ public class TaskController {
 	public Map<String, Object> getMyTaskCount(Model model, HttpSession session, Authentication authentication) {
 		Map<String, Object> map = new HashMap<String, Object>();
 		int myjob = 0, claim = 0;
-		
-/*		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-		String userid = null;
-		if(auth!=null)
-			userid = ((UserDetails) auth.getPrincipal()).getUsername();*/
+
+		/*
+		 * Authentication auth =
+		 * SecurityContextHolder.getContext().getAuthentication(); String userid
+		 * = null; if(auth!=null) userid = ((UserDetails)
+		 * auth.getPrincipal()).getUsername();
+		 */
 
 		myjob = taskService.createTaskQuery().taskCandidateOrAssigned(userUtil.getUserId(authentication)).active()
 				.list().size();
@@ -153,10 +336,10 @@ public class TaskController {
 
 		if (taskid != "0") {
 			if (!assignee.isEmpty()) {
-				if(!assignee.equals("00"))
+				if (!assignee.equals("00"))
 					taskService.setAssignee(taskid, assignee);
 			}
-			if (candidateuser!=null) {
+			if (candidateuser != null) {
 				taskService.addCandidateUser(taskid, candidateuser);
 			}
 			if (!candidategroup.isEmpty()) {
@@ -180,7 +363,7 @@ public class TaskController {
 
 		String re = "/workflow/task/mytask";
 		Task task = taskService.createTaskQuery().taskId(taskId).singleResult();
-		
+
 		taskService.claim(taskId, userUtil.getUserId(authentication));
 		// redirectAttributes.addFlashAttribute("message", "任务已签收");
 		if (task == null)
@@ -188,44 +371,46 @@ public class TaskController {
 
 		ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery()
 				.processDefinitionId(task.getProcessDefinitionId()).singleResult();
-//		switch (processDefinition.getKey()) {
-//		case "INCIDENT":
-//			if (userUtil.IsEngineer(authentication))
-//			{
-//				re = "/incident/list";
-//			break;
-//			}
-//			if (userUtil.IsCommonUser(authentication))
-//			{
-//				re = "/incident/mylist";
-//				break;
-//			}
-//		case "CHANGE":
-//			re = "/change/list";
-//			break;
-//		}
-		switch(processDefinition.getKey()){
+		// switch (processDefinition.getKey()) {
+		// case "INCIDENT":
+		// if (userUtil.IsEngineer(authentication))
+		// {
+		// re = "/incident/list";
+		// break;
+		// }
+		// if (userUtil.IsCommonUser(authentication))
+		// {
+		// re = "/incident/mylist";
+		// break;
+		// }
+		// case "CHANGE":
+		// re = "/change/list";
+		// break;
+		// }
+		switch (processDefinition.getKey()) {
 		case "INCIDENT":
 			re = "/incident/deal/" + incidentService.getIdByProcessInstance(task.getProcessInstanceId()) + "/" + taskId;
 			break;
 		case "CHANGE":
-			re = "/change/deal/" + changeService.getIdByProcessInstance(task.getProcessInstanceId())  + "/" + taskId;
+			re = "/change/deal/" + changeService.getIdByProcessInstance(task.getProcessInstanceId()) + "/" + taskId;
 			break;
 		case "LEADERTASK":
-			re = "/leadertask/deal/" + leaderTaskService.getIdByProcessInstance(task.getProcessInstanceId()) + "/" + taskId;
+			re = "/leadertask/deal/" + leaderTaskService.getIdByProcessInstance(task.getProcessInstanceId()) + "/"
+					+ taskId;
 			break;
 		case "INSPECTION":
-			re = "/record/inspection/deal/" + inspectionService.getIdByProcessInstance(task.getProcessInstanceId()) + "/" + taskId;
+			re = "/record/inspection/deal/" + inspectionService.getIdByProcessInstance(task.getProcessInstanceId())
+					+ "/" + taskId;
 			break;
-//		case "SECJOB":
-//			re = "";
-//			break;
-//		case "UPDATE":
-//			re = "";
-//			break;
-//		case "KNOWLEDGE":
-//			re = "";
-//			break;
+		// case "SECJOB":
+		// re = "";
+		// break;
+		// case "UPDATE":
+		// re = "";
+		// break;
+		// case "KNOWLEDGE":
+		// re = "";
+		// break;
 		}
 		return "redirect:" + re;
 	}
@@ -278,7 +463,7 @@ public class TaskController {
 		// 设置当前人为意见的所属人
 		identityService.setAuthenticatedUserId(userUtil.getUserId(authentication));
 		Task task;
-		if (taskId==null || taskId.equals("") || taskId.equals("0")) {
+		if (taskId == null || taskId.equals("") || taskId.equals("0")) {
 			task = taskService.createTaskQuery().processInstanceId(processInstanceId).singleResult();
 			taskId = task.getId();
 		} else {
@@ -290,7 +475,8 @@ public class TaskController {
 		if (isnotify != null) {
 			if (isnotify.equals("true")) {
 				String s = message;
-				s = userUtil.getUserId(authentication) + "对 [" + task.getName() + "] 任务" + "发表了意见:" + message;
+				s = userService.getUserName(userUtil.getUserId(authentication)) + " 对 [" + task.getName() + "] 任务"
+						+ "发表了意见:" + message;
 				messageService.sendMessage("系统提示", task.getAssignee(), s, "#");
 			}
 		}
@@ -300,11 +486,11 @@ public class TaskController {
 		else
 			return "redirect:" + request.getParameter("redirectAddress");
 	}
-	
+
 	@RequestMapping(value = "/comment/delete/{id}")
 	@ResponseBody
-	public Map<String,Object> deleteComment(@PathVariable("id") String id){
-		Map<String,Object> result = new HashMap<String,Object>();
+	public Map<String, Object> deleteComment(@PathVariable("id") String id) {
+		Map<String, Object> result = new HashMap<String, Object>();
 		taskService.deleteComment(id);
 		result.put("result", "true");
 		return result;
@@ -313,18 +499,26 @@ public class TaskController {
 	@RequestMapping(value = "/comment/list")
 	@ResponseBody
 	public Map<String, Object> getCommentList(@RequestParam("processInstanceId") String processInstanceId,
-			@RequestParam("taskId") String taskId, Model model) {
+			@RequestParam("taskId") String taskId, Model model, Authentication authentication) {
 		Map<String, Object> result = new HashMap<String, Object>();
 		Map<String, Object> commentAndEventsMap = new LinkedHashMap<String, Object>();
+		Map<String, String> username = new HashMap<String, String>();
+		Map<String, String> enables = new HashMap<String, String>();
+		String currentuser = userUtil.getUserId(authentication);
 		/*
 		 * 根据不同情况使用不同方式查询
 		 */
 		if (StringUtils.isNotBlank(processInstanceId)) {
 			List<Comment> processInstanceComments = taskService.getProcessInstanceComments(processInstanceId);
 			for (Comment comment : processInstanceComments) {
-				// String commentId = (String)
-				// PropertyUtils.getProperty(comment, "id");
 				String commentId = comment.getId();
+				username.put(comment.getUserId(), userService.getUserName(comment.getUserId()));
+				if (comment.getUserId().equals(currentuser)) {
+					// 可以删除
+					enables.put(commentId, "true");
+				} else
+					enables.put(commentId, "false");
+
 				commentAndEventsMap.put(commentId, comment);
 			}
 			// 提取任务任务名称
@@ -342,12 +536,12 @@ public class TaskController {
 		if (StringUtils.isNotBlank(taskId)) { // 根据任务ID查询
 			List<Event> taskEvents = taskService.getTaskEvents(taskId);
 			for (Event event : taskEvents) {
-				// String eventId = (String) PropertyUtils.getProperty(event,
-				// "id");
 				String eventId = event.getId();
 				commentAndEventsMap.put(eventId, event);
 			}
 		}
+		result.put("usernames", username);
+		result.put("enables", enables);
 		result.put("events", commentAndEventsMap.values());
 		return result;
 	}

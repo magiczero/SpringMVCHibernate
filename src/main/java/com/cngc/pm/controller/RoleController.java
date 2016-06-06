@@ -9,7 +9,6 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
 import org.activiti.engine.IdentityService;
-import org.activiti.engine.identity.Group;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -72,11 +71,6 @@ public class RoleController {
 		String username = SecurityContextHolder.getContext().getAuthentication().getName();
 		roleService.save(role, username);
 		
-		// 同步到activiti的group
-		Group group = identityService.newGroup(role.getRoleName());
-		group.setName(role.getRoleDesc());
-		identityService.saveGroup(group);
-		
 		return "redirect:/role/list";
 	}
 	
@@ -92,8 +86,7 @@ public class RoleController {
 		String username = SecurityContextHolder.getContext()
 				.getAuthentication().getName();
 		if(	roleService.del(role, username)) {
-			// 同步到activiti的group
-			identityService.deleteGroup(role.getRoleName());
+			
 		} else {
 			throw new BusinessException("无法删除角色，请先清空角色与用户及权限的关系");
 		}

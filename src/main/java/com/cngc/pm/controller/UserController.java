@@ -27,7 +27,6 @@ import com.cngc.pm.common.web.BaseController;
 import com.cngc.pm.model.Group;
 import com.cngc.pm.model.Role;
 import com.cngc.pm.model.SysUser;
-import com.cngc.pm.model.UserRole;
 import com.cngc.pm.service.DocumentService;
 import com.cngc.pm.service.GroupService;
 import com.cngc.pm.service.RoleService;
@@ -197,10 +196,6 @@ public class UserController extends BaseController  {
 		user.setMechName(request.getParameter("mechName"));
 				
 		userService.save(user, currentName, true);
-		//同步到activiti的user
-		org.activiti.engine.identity.User actuser = identityService.newUser(user.getUsername());
-		actuser.setFirstName(user.getName());
-		identityService.saveUser(actuser);
 				
 		map.put("flag", true);
 		
@@ -246,11 +241,6 @@ public class UserController extends BaseController  {
 		user.setDepName(request.getParameter("tel"));
 		
 		userService.save(user, username, false);
-		
-		//同步到activiti的user
-		org.activiti.engine.identity.User actuser = identityService.newUser(user.getUsername());
-		actuser.setFirstName(user.getName());
-		identityService.saveUser(actuser);
 		
 		return "redirect:/user/list";
 	}
@@ -344,18 +334,6 @@ public class UserController extends BaseController  {
 //				user.setRoles(set);
 //				userService.save(user);
 				
-				//同步到activity的user-group，先删除再新增
-				List<org.activiti.engine.identity.Group> groups = identityService.createGroupQuery().groupMember(user.getUsername()).list();
-				if(groups!=null)
-				{
-					for(org.activiti.engine.identity.Group group:groups)
-						identityService.deleteMembership(user.getUsername(),group.getId());
-				}
-				if(user.getUserRoles() !=null)
-				{
-					for(UserRole ur : user.getUserRoles())
-						identityService.createMembership(user.getUsername(), ur.getRole().getRoleName());
-				}
 //			}
 		}
 		return "redirect:/user/list";
@@ -387,10 +365,6 @@ public class UserController extends BaseController  {
 		if(user == null) {
 			map.put("flag", false);
 		} else if(user.getUserRoles().size()==0 && docService.isEmptyDocsByUser(user)) {
-			//同步到activiti的user
-			identityService.deleteUser(user.getUsername());
-			String username = SecurityContextHolder.getContext().getAuthentication().getName();
-			userService.delById(id, username);
 			map.put("flag", true);
 		} else {
 			map.put("flag", false);

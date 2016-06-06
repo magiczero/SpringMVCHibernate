@@ -116,13 +116,7 @@
   								<button class="btn btn-primary" onclick="javascript:window.location='${contextPath }/record/income';" type="button">机房人员出入</button> 
   								<button class="btn btn-default" type="button" onclick="javascript:window.location='${contextPath }/record/training';">三员培训</button>
   							</div>
-                        	<div class="btn-group pull-right">       
-                                <button data-toggle="dropdown" class="btn btn-warning dropdown-toggle">操作 <span class="caret"></span></button>
-                                            <ul class="dropdown-menu">
-                                                <li><a href="#newForm" role="button" data-toggle="modal">创建新纪录</a></li>
-                                                <li><a href="#" onclick="pm_refresh()">刷新</a></li>
-                                            </ul>
-                        	</div>
+ 
             		</div>
             	</div>
                 <div class="row">
@@ -130,7 +124,18 @@
                         <div class="head clearfix">
                             <div class="isw-grid"></div>
                             <h1>记录列表</h1>  
-
+							<ul class="buttons">
+                                <li>
+                                    <a href="#newForm" class="isw-plus tipb" data-toggle="modal" title="创建新记录"></a>
+                                </li>                            
+                                <li>
+                                    <a href="#" class="isw-settings tipl" title="操作 "></a>
+                                    <ul class="dd-list">
+                                    	<li><a href="#newForm" data-toggle="modal"  role="button"><span class="isw-plus"></span> 创建新记录</a></li>
+                                        <li><a href="#" onclick="pm_refresh()"><span class="isw-refresh"></span> 刷新</a></li>
+                                    </ul>
+                                </li>
+                            </ul>
                         </div>
                         <div class="block-fluid table-sorting clearfix">
                             <table class="table" id="eventTable">

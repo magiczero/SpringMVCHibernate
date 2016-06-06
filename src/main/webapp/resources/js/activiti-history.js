@@ -56,7 +56,7 @@ function act_history_init()
 			        divs = "<div class='item'>"
 		            		+"<div class='text'>"
 		                +"<div class='info clearfix'>"
-		                +"<span class='name'>"+(v.userId==null?'系统':v.userId)+"</span>"
+		                +"<span class='name'>"+(v.userId==null?'系统': datas.usernames[v.userId] )+"</span>"
 		                +"<span class='date'>"+new Date(v.timeStamp).toLocaleString()+"</span>"
 		                +"</div>"
 		                + act_history_eventHandler[v.type](v,datas.taskNames)

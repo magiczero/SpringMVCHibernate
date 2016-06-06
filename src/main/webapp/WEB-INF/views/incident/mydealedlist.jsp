@@ -107,7 +107,6 @@
                                         <th width="120px">申请时间</th>
                                         <th width="120px">关闭时间</th>
                                         <th width="70px">状态</th>
-                                        <th width="70px">操作</th>                                    
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -116,7 +115,7 @@
                                     <tr>
                                         <td>
                                         	<span class="label label-warning tipb" title="优先级">${incident.priorityName }</span>
-                                        	${incident.abs }
+                                        	<a href="${contextPath }/incident/view/${incident.id}" title="查看详情" class="tipr" target="_blank">${incident.abs }</a>
                                         </td>
                                         <td>${incident.applyUserName }</td>
                                         <td>${incident.currentDelegateUserName }</td>
@@ -124,9 +123,6 @@
                                         <td><fmt:formatDate value="${incident.applyTime }" pattern="yyyy-MM-dd HH:mm" /></td>
                                         <td><fmt:formatDate value="${incident.recoverTime }" pattern="yyyy-MM-dd HH:mm" /></td>
                                         <td>${incident.statusName }</td>
-                                        <td>
-                                        	<a href="${contextPath }/incident/view/${incident.id}" target="_blank"><span class="glyphicon glyphicon-search"></span> 查看</a>
-                                        </td>
                                     </tr>
                                    </c:forEach>
                                 </tbody>

@@ -184,7 +184,6 @@
                                         <th width="90px">风险等级</th>
                                         <th width="130px">申请日期</th>
                                         <th width="130px">完成日期</th>
-                                        <th width="70px">操作</th>                                  
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -194,16 +193,13 @@
                                     	<td>${change.processInstanceId }</td>
                                         <td>
 	                                        <span class="label label-warning tipb" title="优先级">${change.priorityName }</span>
-	                                        ${change.description}
+	                                        <a href="${contextPath }/change/view/${change.id}" title="查看详情" class="tipr" target="_blank">${change.description}</a>
                                         </td>
                                          <td>${change.applyUserName }</td>
                                         <td>${change.riskName }</td>
                                        
                                         <td><fmt:formatDate value="${change.applyTime }" pattern="yyyy-MM-dd HH:mm" /></td>
                                         <td><fmt:formatDate value="${change.endTime }" pattern="yyyy-MM-dd HH:mm" /></td>
-                                        <td>
-                                        	<a href="${contextPath }/change/view/${change.id}" target=_blank><span class="glyphicon glyphicon-search"></span> 查看</a>
-                                        </td>
                                     </tr>
                                    </c:forEach>
                                 </tbody>

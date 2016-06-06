@@ -326,6 +326,11 @@ public class ChangeController {
 
 		return "change/deal";
 	}
+	@RequestMapping(value = "/dealbyprocess/{pid}/{taskid}", method = RequestMethod.GET)
+	public String dealByProcessInstanceId(@PathVariable("pid") String pid,@PathVariable("taskid") String taskid){
+		
+		return "redirect:/change/deal/" + changeService.getIdByProcessInstance(pid) + "/"+taskid;
+	}
 
 	/**
 	 * 查看变更信息
@@ -343,6 +348,11 @@ public class ChangeController {
 		model.addAttribute("change", change);
 
 		return "change/view";
+	}
+	@RequestMapping(value = "/viewbyprocess/{pid}", method = RequestMethod.GET)
+	public String viewByProcessInstanceId(@PathVariable("pid") String pid){
+		
+		return "redirect:/change/view/" + changeService.getIdByProcessInstance(pid);
 	}
 
 	@RequestMapping(value = "/delete/{id}", method = RequestMethod.GET)

@@ -45,6 +45,7 @@
     
     <script type='text/javascript' src='${contextPath }/resources/js/pm-common.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/activiti-comment.js'></script>
+    <script type='text/javascript' src='${contextPath }/resources/js/activiti-history.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/pm-change.js'></script>
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
@@ -58,14 +59,14 @@
    		var ctx = "${contextPath}"; 
    		var changeid = '${change.id}';
    		var processInstanceId = "${change.processInstanceId}";
+   		var p_processInstanceId = "${change.processInstanceId}";
    		var status = "${change.status}";
    		
             $(document).ready(function () {
                 $(".header").load("${contextPath}/header?t="+pm_random());
-                $(".menu").load("${contextPath}/menu?t="+pm_random(), function () { $("#node_${moduleId}").addClass("active"); });
-                $(".breadLine .buttons").load("${contextPath}/contentbuttons?t="+pm_random());
                 
                 act_comment_getlist(processInstanceId,taskid);
+                act_history_init();
                 $("#form_items").load("${contextPath}/change/items/${change.id}?t="+pm_random(),function(){
             		$("#div_save_button").hide();
             	});
@@ -83,14 +84,14 @@
         <div class="menu"></div>
         <!--menu end-->
 
-        <div class="content">
+        <div class="content wide">
             <!--breadline-->
             <div class="breadLine">
 
                 <ul class="breadcrumb">
                     <li><a href="#">运维管理系统</a> <span class="divider">></span></li>
                     <li><a href="${contextPath }/change/list">变更管理</a> <span class="divider">></span></li>       
-                    <li class="active">变更处理</li>
+                    <li class="active">查看变更信息</li>
                 </ul>
 
                 <ul class="buttons"></ul>
@@ -222,23 +223,39 @@
                         <div id="div_items" class="block clearfix" >
                          	<form id="form_items" action="${contextPath }/change/${change.id}/saveitems/" method="post"></form>
                         </div>
-                        
+                        <div class="head clearfix">
+                            <div class="isw-sync"></div>
+                            <h1>操作历史</h1>
+                            <ul class="buttons">        
+                                <li class="toggle active"><a href="#"></a></li>
+                            </ul> 
+                        </div>             
+                        <div class="block history" > 
+                        	<div id='scroll_history' class='scroll' style='height:260px;display:none;'></div>
+                        </div>
 						<div class="head clearfix">
                             <div class="isw-mail"></div>                        
                             <h1>意见列表 <span id="commentTitle" class="label label-success"></span></h1>
                             <ul class="buttons">
-                            	<c:if test="${change.status!='08' }">
-                                <li>
-                                    <a href="#newForm"  role="button" data-toggle="modal" class="isw-plus tipl" title="添加意见"></a>                            
-                                </li>
-                                </c:if>
                                 <li class="toggle"><a href="#"></a></li>                                                    
                             </ul>
                         </div>
-                        <div class="block messages scrollBox">                        
-                            <div id="commentList" class="scroll" style="height: 250px;">
-                            </div>
-                        </div>
+                        <div>
+							<div class="block messages scrollBox">
+								<div id="commentList" class="scroll" style="height: 250px;"></div>
+
+								<div class="toolbar bottom-toolbar clearfix">
+									<div class="left">
+										<c:if test="${change.status!='08' }">
+											<button href="#newForm" role="button" data-toggle="modal" class="btn btn-default">添加意见</button>
+										</c:if>
+										<c:if test="${change.status=='08' }">
+											<button href="#newForm" role="button" data-toggle="modal" class="btn btn-default" disabled>添加意见</button>
+										</c:if>
+									</div>
+								</div>
+							</div>
+						</div>
                     	
                     </div>
                	
@@ -265,7 +282,7 @@
                         </div>
                         <div class="row">
                             <div class="block-fluid">
-                        	<label class='checkbox checkbox-inline'><input type='checkbox' name='isnotify' checked='checked' value='true'/> 提醒任务办理人 </label>
+                        	&nbsp;&nbsp;&nbsp;&nbsp;<label class='checkbox checkbox-inline'><input type='checkbox' name='isnotify' checked='checked' value='true'/> 提醒任务办理人 </label>
                     		</div>
                     	</div>
                     </div>   

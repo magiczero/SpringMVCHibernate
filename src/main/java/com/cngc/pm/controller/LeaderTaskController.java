@@ -126,7 +126,11 @@ public class LeaderTaskController {
 
 		return "leadertask/deal";
 	}
-	
+	@RequestMapping(value = "/dealbyprocess/{pid}/{taskid}", method = RequestMethod.GET)
+	public String dealByProcessInstanceId(@PathVariable("pid") String pid,@PathVariable("taskid") String taskid){
+		
+		return "redirect:/leadertask/deal/" + leaderTaskService.getIdByProcessInstance(pid) + "/"+taskid;
+	}
 	@RequestMapping(value = "/view/{id}", method = RequestMethod.GET)
 	public String view(@PathVariable("id") long id, Model model) {
 		LeaderTask leaderTask = null;
@@ -136,5 +140,10 @@ public class LeaderTaskController {
 		model.addAttribute("leaderTask", leaderTask);
 
 		return "leadertask/view";
+	}
+	@RequestMapping(value = "/viewbyprocess/{pid}", method = RequestMethod.GET)
+	public String viewByProcessInstanceId(@PathVariable("pid") String pid){
+		
+		return "redirect:/leadertask/view/" + leaderTaskService.getIdByProcessInstance(pid);
 	}
 }

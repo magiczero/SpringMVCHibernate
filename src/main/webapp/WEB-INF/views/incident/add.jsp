@@ -270,7 +270,7 @@
 	                <div class="col-md-10">
 	                        <div class="head clearfix">
 	                            <div class="isw-empty_document"></div>
-	                            <h1>事件信息录入</h1>
+	                            <h1>事件信息</h1>
 	                        </div>
 	                        <c:url var="addAction" value="/incident/save" ></c:url>
 	                        <form:form action="${addAction}" commandName="incident" method="post" id="validation">

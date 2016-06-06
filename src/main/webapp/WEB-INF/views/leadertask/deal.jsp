@@ -192,10 +192,9 @@
                             </div>                
                         </div>
                         <div class="row">
-                        		<div class="col-md-12">
-                        		
+                        	<div class="col-md-12">
                         		<label class='checkbox checkbox-inline'><input type='checkbox' name='isnotify' checked='checked' value='true'/> 提醒任务办理人 </label>
-                        		</div>
+                        	</div>
                     	</div>
                     </div>   
                     <div class="modal-footer">

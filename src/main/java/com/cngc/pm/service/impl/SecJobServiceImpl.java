@@ -28,4 +28,10 @@ public class SecJobServiceImpl implements SecJobService{
 	{
 		return secjobDao.getStats(column, row, startTime, endTime);
 	}
+	@Override
+	@Transactional
+	public SearchResult<SecJob> getNotFinishedTask()
+	{
+		return secjobDao.getNotFinishedTask();
+	}
 }

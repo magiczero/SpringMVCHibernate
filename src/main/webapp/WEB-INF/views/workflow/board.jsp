@@ -101,7 +101,7 @@
 						$(".menu").load(
 								"${contextPath}/menu?t=" + pm_random(),
 								function() {
-									$(".navigation > li:eq(0)").addClass(
+									$("#node_${moduleId}").addClass(
 											"active");
 								});
 						if( ($.browser.msie&&$.browser.version=="8.0") )

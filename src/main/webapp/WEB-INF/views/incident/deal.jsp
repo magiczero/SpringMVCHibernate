@@ -22,6 +22,8 @@
     <link href="${contextPath }/resources/css/mycss.css" rel="stylesheet" type="text/css" />
     <link href='${contextPath }/resources/js/plugins/jstree/jquery.treeview.css' rel="stylesheet" type="text/css" />
     <link href="${contextPath }/resources/css/validation.css" rel="stylesheet" type="text/css" />
+    <link href="${contextPath }/resources/js/plugins/datetimepicker/datetimepicker.min.css" rel="stylesheet" type="text/css" />
+    
     <!--[if lt IE 8]>
         <link href="${contextPath }/resources/css/ie7.css" rel="stylesheet" type="text/css" />
     <![endif]-->    
@@ -40,6 +42,9 @@
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/validation/languages/jquery.validationEngine-zh-CN.js' charset='utf-8'></script>
 <script type='text/javascript' src='${contextPath }/resources/js/plugins/validation/jquery.validationEngine.js' charset='utf-8'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/scrollup/jquery.scrollUp.min.js'></script>
+    
+    <script type='text/javascript' src='${contextPath }/resources/js/plugins/datetimepicker/datetimepicker.min.js' charset="UTF-8"></script>
+    <script type='text/javascript' src='${contextPath }/resources/js/plugins/datetimepicker/datetimepicker.zh-CN.js'></script>
     
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/jstree/jquery.treeview.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/jstree/jquery.treeview.edit.js'></script>
@@ -91,7 +96,19 @@
             		break;
             	}
             });
+            
+            $("#b_popup_incident").dialog({
+		        autoOpen: false,
+		        width: 400,
+		        height:500,
+		        buttons: { "确定": function () { $(this).dialog("close") } }
+		    });
+            
         });
+        
+        function inputAttr(name,value) {
+        	$("#cateogry").attr("value",value);
+        }
        
         function initTable(code)
         {
@@ -514,6 +531,9 @@
             </div>
         </div>
         <!-- notice end -->
+        <div class='dialog' id='b_popup_incident' style='display: none;' title='事件分类'>
+    	<div class='block dialog_block messages '><div><ul id='incidenttreeview'></ul></div></div>
+    </div>
     </div>
 </body>
 

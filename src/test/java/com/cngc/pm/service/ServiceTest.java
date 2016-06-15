@@ -1,7 +1,5 @@
 package com.cngc.pm.service;
 
-import static org.junit.Assert.assertNotNull;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -22,8 +20,8 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.cngc.pm.model.Document;
 import com.cngc.pm.model.Group;
+import com.cngc.pm.model.SysCode;
 import com.cngc.pm.model.SysUser;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -138,10 +136,11 @@ public class ServiceTest {
 
     @Test
     public void testCollegeFind() {
-    	List<Document> list = docService.getListByUserAndNum("admin", 0);
+    	//List<Document> list = docService.getListByUserAndNum("admin", 0);
+    	SysCode code = docService.getCode(docService.getById(107l));
     	//String str = itemsService.getJSonByCode("CI");
     	
-    	System.out.println("document size is "+list.size());
+    	System.out.println("document size is "+code.getId());
     	
     	//assertNotNull(str);
 //    	List<Person> persons = personService.testPersons();

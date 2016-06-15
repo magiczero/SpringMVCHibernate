@@ -55,6 +55,7 @@ public class DocumentController {
 	private AttachService attachService;
 	@Resource
 	private SysCodeService syscodeService;
+	private String attachIds;
 	
 	@InitBinder
     protected void initBinder(WebDataBinder binder) {
@@ -301,6 +302,30 @@ public class DocumentController {
 			return "document/update_version";
 		}
 	}
+	
+	@RequestMapping(value="/edit/{docId}", method = RequestMethod.GET)
+	public String edit(Model model, @PathVariable() long docId) {
+		Document doc = docService.getById(docId);
+		SysCode code = docService.getCode(doc);
+		
+		model.addAttribute("document", doc);
+		model.addAttribute("styleList", docService.getListStyle());
+		model.addAttribute("levels", SecretLevel.values());
+		model.addAttribute("code", code);
+		
+		return "document/edit";
+	}
+	
+	@RequestMapping(value="/delAttach/{docid}/{attachid}")
+	@ResponseBody
+	public Map<String,Object> delAttach(@PathVariable("docid") long docid,@PathVariable("attachid") long attachid){
+		Map<String, Object> map = new HashMap<String, Object>();
+		
+		boolean del = docService.delAttachById(docid, attachid);
+		
+		map.put("flag", del);
+		return map;
+	}
 
 	/**
 	 * 添加文档
@@ -335,6 +360,28 @@ public class DocumentController {
 		model.addAttribute("document", new Document());
 		
 		return "document/add";
+	}
+	
+	@RequestMapping(value = "/update", method = RequestMethod.POST)
+	public String update(@Valid @ModelAttribute("document") Document document, BindingResult result, HttpServletRequest request) {
+		attachIds = request.getParameter("fileids");
+		Set<Attachment> set = docService.getAttachsByDoc(document);
+		if(!attachIds.equals("")) {
+			Set<Attachment> setAttach = attachService.getSetByIds(attachIds);
+			set.addAll(setAttach);
+		}
+		UserDetails user1 = (UserDetails)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		SysUser user = userService.getByUsername(user1.getUsername());
+		
+		document.setAttachs(set);
+		document.setUser(user);
+//		docService.refreshDoc(document);
+//		docService.save(document);
+		docService.mergeDoc(document);
+		Style style = this.getTopStyle(docService.loadStyleById(document.getStyle().getId()));
+		SysCode code = syscodeService.getCode(style.getCode(), PropertyFileUtil.getStringValue("syscode.cms.ci.system"));
+		
+		return "redirect:/document/sys-code-list/"+code.getId();
 	}
 	
 	@RequestMapping(value = "/save", method = RequestMethod.POST)

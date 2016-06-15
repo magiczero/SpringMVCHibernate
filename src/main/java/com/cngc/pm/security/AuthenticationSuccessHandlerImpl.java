@@ -12,6 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.web.DefaultRedirectStrategy;
 import org.springframework.security.web.RedirectStrategy;
@@ -35,6 +36,8 @@ public class AuthenticationSuccessHandlerImpl implements
 
 	private String defaultTargetUrl; 
 	
+	private static final String boardUrl = "/workflow/task/board";
+	
 	@Resource
 	private UserService userService;
 	@Resource
@@ -56,6 +59,13 @@ public class AuthenticationSuccessHandlerImpl implements
 		// TODO Auto-generated method stub
 
 		User user1 = (User)authentication.getPrincipal();
+		boolean isLeader = false;
+		for(GrantedAuthority ga :user1.getAuthorities()) {
+			if(ga.getAuthority().equals("WK_LEADER")) {
+				isLeader = true;
+				break;
+			}
+		}
 		String username = user1.getUsername();
 		SysUser user = userService.getByUsername(username);
 		request.getSession().setAttribute("lastLogin", user.getLastWhile());
@@ -80,9 +90,15 @@ public class AuthenticationSuccessHandlerImpl implements
               
             request.getRequestDispatcher(this.defaultTargetUrl).forward(request, response);  
         }else{  
-            logger.info("Login success,Redirecting to "+this.defaultTargetUrl);  
-              
-            this.redirectStrategy.sendRedirect(request, response, this.defaultTargetUrl);  
+        	if(isLeader) {
+        		logger.info("Login success,Redirecting to board");
+        		
+        		 this.redirectStrategy.sendRedirect(request, response, boardUrl); 
+        	} else {
+	            logger.info("Login success,Redirecting to "+this.defaultTargetUrl);  
+	              
+	            this.redirectStrategy.sendRedirect(request, response, this.defaultTargetUrl);
+        	}
         }  
         
 	}

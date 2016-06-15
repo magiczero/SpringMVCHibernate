@@ -99,4 +99,14 @@ public interface DocumentService {
 	
 	List<Document> getListByUserAndNum(String username, int num);
 
+	SysCode getCode(Document doc);
+
+	boolean delAttachById(long docid, long attachId);
+
+	Set<Attachment> getAttachsByDoc(Document document);
+	
+	void refreshDoc(Document doc);
+	
+	void mergeDoc(Document doc);
+
 }

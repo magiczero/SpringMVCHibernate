@@ -101,6 +101,46 @@ function act_form_getTaskFields(taskId,redirectAddress) {
 
 		// 添加表单内容
 		$('#dynamic_form_table').html(divs);
+		if($(document).find("#cateogry") ) {
+            $("#cateogry").bind("click",function(){
+		    	$("#incidenttreeview").html('');
+		    	$.getJSON(ctx + '/system/syscode/getjson/INCIDENT_CATEGORY?t=' + pm_random(), function(data){
+		    		obj= $.parseJSON(data.json);
+		    		$.each(obj, function (index, element) {
+		    			var liStr = "";
+                    	if(element.nodes) {
+                    		liStr = "<li><a href=\"javascript:void(0);\">"+element.text+"</a><ul>";
+                    		$.each(element.nodes, function (j, element1) {
+                    			if(element1.nodes) {
+                    				liStr += "<li><a href=\"javascript:void(0);\">"+element1.text+"</a><ul>";
+                    				$.each(element1.nodes, function (k, element2) {
+                    					var code2 = element2.text.substring(0,element2.text.indexOf(" "));
+                        				liStr += "<li><a href=\"javascript:void(0);\" onclick=\"inputAttr('category','"+code2+"');\">"+element2.text+"</a></li>";
+                    				});
+                    				liStr += "</ul>";
+                    			} else {
+                    				var code1 = element1.text.substring(0,element1.text.indexOf(" "));
+                    				liStr += "<li><a href=\"javascript:void(0);\" onclick=\"inputAttr('category','"+code1+"');\">"+element1.text+"</a></li>";
+                    			}
+                    		})
+                    		liStr += "</ul>";
+                    	} else {
+                    		var code = element.text.substring(0,element.text.indexOf(" "));
+                    		liStr = "<li><a href=\"javascript:void(0);\" onclick=\"inputAttr('category','"+code+"');\">"+element.text+"</a>";
+                    	}
+                    	
+                    	liStr += "</li>";
+                    	$("#incidenttreeview").append(liStr);
+		    		});
+		    		$("#incidenttreeview").treeview({
+	            		collapsed: true,
+	            		unique: true
+	            	});
+		    		
+		    	});
+		    	$("#b_popup_incident").dialog('open');
+            });
+        }
 		// 初始化工程师选择下拉框
 		if($form.find('.user').length>0)
 		{

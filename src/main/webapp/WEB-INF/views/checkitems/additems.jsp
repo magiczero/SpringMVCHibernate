@@ -235,7 +235,7 @@
                         <div class="block-fluid">
                           <div class="row-form clearfix">
                                 <div class="col-md-2"><form:label path="name">检查项名称*</form:label></div>
-                                <div class="col-md-7"><form:input path="name" class="validate[required,minSize[2],maxSize[30]] text-input" /><form:errors path="name" cssClass="error" /></div>
+                                <div class="col-md-7"><form:input path="name" class="validate[required,minSize[2],maxSize[200]] text-input" /><form:errors path="name" cssClass="error" /></div>
                             </div>
                             <div class="row-form clearfix">
                                 <div class="col-md-2">

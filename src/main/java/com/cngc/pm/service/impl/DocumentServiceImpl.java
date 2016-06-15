@@ -18,6 +18,7 @@ import com.cngc.pm.dao.AttachmentDAO;
 import com.cngc.pm.dao.DocumentDAO;
 import com.cngc.pm.dao.ResourcesDAO;
 import com.cngc.pm.dao.StyleDAO;
+import com.cngc.pm.dao.SysCodeDAO;
 import com.cngc.pm.model.Attachment;
 import com.cngc.pm.model.Document;
 import com.cngc.pm.model.Resources;
@@ -25,6 +26,7 @@ import com.cngc.pm.model.Style;
 import com.cngc.pm.model.SysCode;
 import com.cngc.pm.model.SysUser;
 import com.cngc.pm.service.DocumentService;
+import com.cngc.utils.PropertyFileUtil;
 import com.googlecode.genericdao.search.Filter;
 import com.googlecode.genericdao.search.Search;
 import com.googlecode.genericdao.search.SearchResult;
@@ -43,6 +45,9 @@ public class DocumentServiceImpl implements DocumentService {
 	
 	@Autowired
 	private ResourcesDAO resDao;
+	
+	@Autowired
+	private SysCodeDAO codeDao;
 
 	@Override
 	@Transactional(readOnly=true)
@@ -460,6 +465,70 @@ public class DocumentServiceImpl implements DocumentService {
 		search.addSortDesc("createDate");
 			
 		return docDao.search(search);
+	}
+
+	@Override
+	@Transactional(readOnly=true)
+	public SysCode getCode(Document doc) {
+		// TODO Auto-generated method stub
+		Search search = new Search();
+		search.addFilterEmpty("style");
+		search.addFilterEqual("code", "document_");
+		Style style = styleDao.searchUnique(search);
+		
+		Style style2 = getStyleTopParent(doc.getStyle(), style.getId());
+		
+		String code = style2.getCode();
+		
+		Search search1 = new Search();
+		search1.addFilterEqual("code", code);
+		search1.addFilterEqual("type", PropertyFileUtil.getStringValue("syscode.cms.ci.system"));
+		
+		
+		return codeDao.searchUnique(search1);
+	}
+	
+	private Style getStyleTopParent(Style style, long topId) {
+		if(style.getStyle().getId() == topId) {
+			return style;
+		} else {
+			return getStyleTopParent(style.getStyle(), topId);
+		}
+	}
+
+	@Override
+	@Transactional
+	public boolean delAttachById(long docid,long attachId) {
+		// TODO Auto-generated method stub
+		Document doc = docDao.find(docid);
+		Set<Attachment> set = doc.getAttachs();
+		Attachment attach = attachDao.find(attachId);
+		set.remove(attach);
+		doc.setAttachs(set);
+		
+		return docDao.save(doc);
+	}
+
+	@Override
+	@Transactional(readOnly=true)
+	public Set<Attachment> getAttachsByDoc(Document document) {
+		// TODO Auto-generated method stub
+		Document doc = docDao.find(document.getId());
+		return doc.getAttachs();
+	}
+
+	@Override
+	@Transactional
+	public void refreshDoc(Document doc) {
+		// TODO Auto-generated method stub
+		docDao.refresh(doc);
+	}
+
+	@Override
+	@Transactional
+	public void mergeDoc(Document doc) {
+		// TODO Auto-generated method stub
+		docDao.merge(doc);
 	}
 
 }

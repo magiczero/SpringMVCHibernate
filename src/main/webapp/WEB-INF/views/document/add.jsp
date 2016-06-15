@@ -179,7 +179,7 @@
 
                 <ul class="breadcrumb">
                     <li><a href="#">运维管理系统</a> <span class="divider">></span></li>
-                    <li><a href="#">文档管理</a> <span class="divider">></span></li>         
+                    <li><a href="${contextPath}/document">文档管理</a> <span class="divider">></span></li>         
                     <li class="active">文档信息</li>
                 </ul>
 

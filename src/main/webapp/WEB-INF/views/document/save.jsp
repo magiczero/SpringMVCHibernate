@@ -175,7 +175,8 @@
             					notify_e('Error','请上传文件');
             					return false;
             				} else {
-            					$('form')[2].submit();
+            					//$('form')[2].submit();
+            					$this.submit();
             				}
             			}
             	        return false;
@@ -210,8 +211,8 @@
 
                 <ul class="breadcrumb">
                     <li><a href="#">运维管理系统</a> <span class="divider">></span></li>
-                    <li><a href="#">文档管理</a> <span class="divider">></span></li>    
-                    <li><a href="#">${syscode.codeName }</a> <span class="divider">></span></li>       
+                    <li><a href="${contextPath}/document">文档管理</a> <span class="divider">></span></li>    
+                    <li><a href="${contextPath}/document/increases/${syscode.id }">${syscode.codeName }</a> <span class="divider">></span></li>       
                     <li class="active">文档信息</li>
                 </ul>
 
@@ -243,7 +244,7 @@
                                 </div>
                             </div> 
                             <div class="row-form clearfix">
-                             <div class="col-md-2"><form:label path="auth">密级*</form:label></div>
+                             <div class="col-md-2"><form:label path="secretLevel">密级*</form:label></div>
                                 <div class="col-md-4">
 									<form:select path="secretLevel" multiple="false">
 										<c:forEach items="${levels }" var="level">

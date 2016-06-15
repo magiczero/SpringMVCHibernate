@@ -44,6 +44,7 @@
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/charts/jquery.flot.pie.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/charts/jquery.flot.resize.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/charts/chart.min.js'></script>
+    <script type='text/javascript' src='${contextPath }/resources/js/plugins/charts/modernizr.min.js'></script>
     
     <script type='text/javascript' src='${contextPath }/resources/js/pm-common.js'></script>
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
@@ -59,14 +60,28 @@
 	    	$(".header").load("${contextPath }/header?t=" + pm_random());
             $(".menu").load("${contextPath }/menu?t=" + pm_random(), function () { $("#node_${moduleId}").addClass("active"); });
             $(".breadLine .buttons").load("${contextPath }/contentbuttons?t=" + pm_random());
-	        if($("#barChart").length > 0){       
-	            var bctx = $("#barChart").get(0).getContext("2d");
-	            $("#barChart").attr('width',$("#barChart").parent('div').width()).attr('height',300);
-	            barChart = new Chart(bctx).Bar({
-	            	labels : mylabels,
-	                datasets : mydatasets
-	            });
-	        }
+            if( ($.browser.msie&&$.browser.version=="8.0") )
+            {
+            	if($("#barChart").length > 0){       
+                	$("#barChart").parent('div').resize(function(){
+    		            var bctx = $("#barChart").get(0).getContext("2d");
+    		            $("#barChart").attr('width',$("#barChart").parent('div').width()).attr('height',300);
+    		            var barChart = new Chart(bctx).Bar({
+    		            	labels : mylabels,
+    		                datasets : mydatasets
+    		            }, {animation : Modernizr.canvas});
+                	});
+                }
+            }else{
+            	if($("#barChart").length > 0){       
+    		    	var bctx = $("#barChart").get(0).getContext("2d");
+    		        $("#barChart").attr('width',$("#barChart").parent('div').width()).attr('height',300);
+    		        var barChart = new Chart(bctx).Bar({
+    		          	labels : mylabels,
+    		            datasets : mydatasets
+    		        });
+                }
+            }
 	    });
     </script>
 </head>

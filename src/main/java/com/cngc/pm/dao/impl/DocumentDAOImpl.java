@@ -129,4 +129,10 @@ public class DocumentDAOImpl extends BaseDAOImpl<Document, Long> implements Docu
 		return this._searchAndCount(Document.class,search);
 	}
 
+	@Override
+	public void merge(Document doc) {
+		// TODO Auto-generated method stub
+		this.getSession().merge(doc);
+	}
+
 }

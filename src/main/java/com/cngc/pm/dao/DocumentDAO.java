@@ -27,4 +27,6 @@ public interface DocumentDAO extends GenericDAO<Document, Long> {
 	
 	SearchResult<Document> getAllWithPage(Search search);
 	
+	void merge(Document doc);
+	
 }

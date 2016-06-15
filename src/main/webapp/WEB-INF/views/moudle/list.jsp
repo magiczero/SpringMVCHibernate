@@ -233,7 +233,7 @@
                             <div class="block-fluid">
                                 <div class="row-form clearfix">
                                     <div class="col-md-3"><form:label path="name">菜单名称*：</form:label></div>
-                                    <div class="col-md-9"><form:input path="name" class="validate[required,minSize[2],maxSize[12]]"/></div>
+                                    <div class="col-md-9"><form:input path="name" class="validate[required,minSize[2],maxSize[20]]"/></div>
                                 </div>            
                                 <div class="row-form clearfix">
                                     <div class="col-md-3"><form:label path="parent.id">上级菜单：</form:label></div>

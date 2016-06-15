@@ -138,6 +138,16 @@
             		}
                 });
                 
+                $("#btnEdit").click(function(){
+                	var arr3 = checkedBox ();
+                	if(arr3.length == 1) {
+            			window.location = "${contextPath }/document/edit/"+arr3[0];
+            		} else {
+            			notify_e('Error','请选择一项');
+		    			return false;
+            		}
+                });
+                
                 $("#delBtn").click(function() {
                 		if(confirm("确定执行删除操作？")) {
         		    		//var arr = [];
@@ -191,7 +201,7 @@
 
                 <ul class="breadcrumb">
                     <li><a href="#">运维管理系统</a> <span class="divider">></span></li>
-                    <li><a href="#">文档管理</a> <span class="divider">></span></li>       
+                    <li><a href="${contextPath}/document">文档管理</a> <span class="divider">></span></li>       
                     <li class="active">${syscode.codeName }</li>
                 </ul>
 
@@ -239,6 +249,7 @@
                                     <ul class="dd-list">
                                         <li><a id="btnCreate" href="#"><span class="isw-plus"></span> 新建文档</a></li>
                                         <li><a id="btnUpdateVersion" href="#"><span class="isw-edit"></span> 更新版本</a></li>
+                                        <li><a id="btnEdit" href="#"><span class="isw-edit"></span> 修改文档</a></li>
                                         <li><a id="delBtn" href="#"><span class="isw-delete"></span> 删除文档</a></li>
                                     </ul>
                                 </li>

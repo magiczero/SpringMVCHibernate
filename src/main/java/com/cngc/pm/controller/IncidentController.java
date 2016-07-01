@@ -116,7 +116,7 @@ public class IncidentController {
 				.getResult());
 		model.addAttribute("priority", syscodeService.getAllByType(PropertyFileUtil.getStringValue("syscode.priority"))
 				.getResult());
-		model.addAttribute("users", userService.getCommonUser());
+		//model.addAttribute("users", userService.getCommonUser());
 		return "incident/add";
 	}
 

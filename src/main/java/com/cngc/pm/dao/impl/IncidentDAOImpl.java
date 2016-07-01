@@ -122,6 +122,8 @@ public class IncidentDAOImpl extends BaseDAOImpl<Incident, Long> implements Inci
 	public SearchResult<Incident> getNotFinished() {
 		Search search = new Search();
 		search.addFilterNotEqual("status", PropertyFileUtil.getStringValue("syscode.incident.status.finished"));
+		search.addSortAsc("status");
+		search.addSortDesc("applyTime");
 
 		return this.searchAndCount(search);
 	}

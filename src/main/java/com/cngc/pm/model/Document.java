@@ -87,7 +87,7 @@ public class Document implements Serializable {
 		this.id = id;
 	}
 	@NotNull
-	@Size(min = 2, max = 30)
+	@Size(min = 2, max = 200)
 	public String getName() {
 		return name;
 	}

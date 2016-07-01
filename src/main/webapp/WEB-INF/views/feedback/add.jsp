@@ -63,97 +63,14 @@
           	
             //表单验证
             $("#validation").validationEngine({promptPosition : "topRight", scroll: true});
-          	<%-- IE8+
-            //选择事件分类
-            act_dialog_category_init();
-            $("input[name='category']").bind("click",function(){
-            	act_dialog_category_select('INCIDENT_CATEGORY','category');
-            });
-            --%>
-            //------------------IE8---------------------------
-            $(".wrapper").append("<div class='dialog' id='b_popup_select' style='display: none;' title='事件分类'></div>");
-			$("#b_popup_select").html("<div class='block dialog_block messages '>"
-					+"<div>"
-					+"<ul id='treeview'></ul>"
-					+"</div></div>");
-			
-		    $("#b_popup_select").dialog({
-		        autoOpen: false,
-		        width: 400,
-		        height:500,
-		        buttons: { "确定": function () { $(this).dialog("close") } }
-		    });
-            
-		    $("input[name='category']").bind("click",function(){
-		    	$("#treeview").empty('');
-		    	
-		    	$.getJSON(ctx + '/system/syscode/getjson/INCIDENT_CATEGORY?t=' + pm_random(), function(data){
-		    		obj= $.parseJSON(data.json);
-		    		$.each(obj, function (index, element) {
-		    			var liStr = "";
-                    	if(element.nodes) {
-                    		liStr = "<li><a href=\"javascript:void(0);\">"+element.text+"</a><ul>";
-                    		$.each(element.nodes, function (j, element1) {
-                    			if(element1.nodes) {
-                    				liStr += "<li><a href=\"javascript:void(0);\">"+element1.text+"</a><ul>";
-                    				$.each(element1.nodes, function (k, element2) {
-                    					var code2 = element2.text.substring(0,element2.text.indexOf(" "));
-                        				liStr += "<li><a href=\"javascript:void(0);\" onclick=\"inputAttr('category','"+code2+"');\">"+element2.text+"</a></li>";
-                    				});
-                    				liStr += "</ul>";
-                    			} else {
-                    				var code1 = element1.text.substring(0,element1.text.indexOf(" "));
-                    				liStr += "<li><a href=\"javascript:void(0);\" onclick=\"inputAttr('category','"+code1+"');\">"+element1.text+"</a></li>";
-                    			}
-                    		})
-                    		liStr += "</ul>";
-                    	} else {
-                    		var code = element.text.substring(0,element.text.indexOf(" "));
-                    		liStr = "<li><a href=\"javascript:void(0);\" onclick=\"inputAttr('category','"+code+"');\">"+element.text+"</a>";
-                    	}
-                    	
-                    	liStr += "</li>";
-                    	$("#treeview").append(liStr);
-		    		});
-		    		$("#treeview").treeview({
-	            		collapsed: true,
-	            		unique: true
-	            	});
-		    		$("#b_popup_select").dialog('open');
-		    	});
-		    	
-            });
-		    //----------------------IE8 end--------------------
-		    
-		    $("#b_popup_group").dialog({
-		        autoOpen: false,
-		        width: 400,
-		        height:500,
-		        buttons: { "确定": function () { $(this).dialog("close") } }
-		    });
-		    
-		    $("input[name='user_name']").bind("click",function(){
-		    	$("#grouptree").empty();
-		    	$("#grouptree").treeview({
-		    		url:ctx + '/group/all-json?t=' + pm_random(),
-            		collapsed: true,
-            		unique: true
-            	});
-	    		$("#b_popup_group").dialog('open');
-            });
-            
             //输入摘要是自动补全描述字段
             $("#abs").bind("blur",function(){
             	if( $("#detail").val()=="" )
             		$("#detail").text($("#abs").val());
             });
-            //初始化表单信息
-			initForm();
-            //申请人下拉框效果
-			//$("#applyUser").select2();
             
 			$('#file_upload').uploadify({
-				'formData' : { 'type' : 2 },
+				'formData' : { 'type' : 7 },
 		        'swf'      : '${contextPath }/resources/flash/uploadify.swf',
 		      //按钮显示的文字
                 'buttonText': '选择文件……',
@@ -170,22 +87,6 @@
 		    });
 
         });
-        function initForm()
-        {
-        	$("select[name='influence'] option[value='04']").attr("selected","selected");
-        	$("select[name='critical'] option[value='04']").attr("selected","selected");
-        	$("select[name='priority'] option[value='04']").attr("selected","selected");
-        }
-        function inputAttr(name,value) {
-        	$("input[name='"+name+"']").attr("value",value);
-        }
-        
-        function inputUserinfo(userid,username,tel,room) {
-        	$("#applyUser").attr("value", userid);
-        	$("input[name='user_name']").attr("value",username);
-        	$("input[name='phoneNumber']").attr("value",tel);
-        	$("#room").attr("value", room);
-        }
     </script>
     <style type="text/css">
     	.uploadify-button-text {color:#fff !important;}
@@ -208,12 +109,12 @@
             <div class="breadLine">
                 <ul class="breadcrumb">
                     <li><a href="#">运维管理系统</a> <span class="divider">></span></li>
-                    <li><a href="${contextPath }/incident/list">事件管理</a> <span class="divider">></span></li>   
+                    <li><a href="${contextPath }/feedback/list">反馈信息</a> <span class="divider">></span></li>   
                     <c:if test="${not empty incident.id }" >     
                     	<li class="active">修改事件信息</li>
                     </c:if>
                     <c:if test="${empty incident.id }" >     
-                    	<li class="active">创建新事件</li>
+                    	<li class="active">创建反馈意见</li>
                     </c:if>
                 </ul>
                 <ul class="buttons"></ul>
@@ -228,52 +129,23 @@
 	                <div class="col-md-10">
 	                        <div class="head clearfix">
 	                            <div class="isw-empty_document"></div>
-	                            <h1>事件信息</h1>
+	                            <h1>反馈信息</h1>
 	                        </div>
-	                        <c:url var="addAction" value="/incident/save" ></c:url>
-	                        <form:form action="${addAction}" commandName="incident" method="post" id="validation">
+	                        <c:url var="addAction" value="/feedback/save" ></c:url>
+	                        <form:form action="${addAction}" commandName="feedback" method="post" id="validation">
 	                        <form:hidden path="id" />
 	                        <form:hidden path="applyUser"/>
 	                        <input id="fileids" name="fileids" type="hidden" />
 	                        <div class="block-fluid">                        
+	                            
 	                            <div class="row-form clearfix">
-	                                <div class="col-md-1"><form:label path="abs">摘要:</form:label></div>
-	                                <div class="col-md-11"><form:input path="abs" class="validate[required,maxSize[50]]"></form:input></div>
-	                             </div>
-	                            <div class="row-form clearfix">
-	                                <div class="col-md-1"><form:label path="detail">描述:</form:label></div>
-	                                <div class="col-md-11"><form:textarea path="detail" class="validate[required,maxSize[255]]"></form:textarea>
+	                                <div class="col-md-1"><form:label path="detail">反馈内容:</form:label></div>
+	                                <div class="col-md-11"><form:textarea rows="10" path="detail" class="validate[required,maxSize[255]]"></form:textarea>
 	                                </div>
 	                            </div>
+	                            
 	                            <div class="row-form clearfix">
-	                                <div class="col-md-1"><label for="user">申请人:</label></div>
-	                                <div class="col-md-3">
-	                                <input type="text" id="user_name" value="${incident.applyUserName }" readonly="readonly" name="user_name" class="validate[required]">
-	                                <!--<form:select path="applyUser" items="${users }" itemLabel="name" itemValue="username" cssStyle="width:100%"></form:select>--></div>
-	                                <div class="col-md-1"><form:label path="phoneNumber">电话:</form:label></div>
-	                                <div class="col-md-3"><form:input path="phoneNumber"></form:input></div>
-	                                <div class="col-md-1"><label>房间号:</label></div>
-	                                <div class="col-md-3"><input type="text" value="${incident.applyUserRoom }" readonly="readonly" id="room" /></div>
-	                            </div> 
-
-	                            <div class="row-form clearfix">
-	                           	 	<div class="col-md-1"><form:label path="category">分类:</form:label></div>
-	                                <div class="col-md-3"><form:input path="category" readonly="true" class="validate[required,maxSize[50]]"></form:input></div>
-	                            	<div class="col-md-1"><form:label path="type">类型:</form:label></div>
-	                            	<div class="col-md-3"><form:select path="type" items="${type }" itemLabel="codeName" itemValue="code"></form:select></div>
-	                            	<div class="col-md-1"><form:label path="source">来源:</form:label></div>
-	                                <div class="col-md-3"><form:select path="source" items="${source }" itemLabel="codeName" itemValue="code"></form:select></div>
-	                            </div>      
-	                            <div class="row-form clearfix">
-	                                <div class="col-md-1"><form:label path="influence">影响度:</form:label></div>
-	                                <div class="col-md-3"><form:select path="influence" items="${influence }" itemLabel="codeName" itemValue="code"></form:select></div>
-	                                <div class="col-md-1"><form:label path="critical">紧急度:</form:label></div>
-	                                <div class="col-md-3"><form:select path="critical" items="${critical }" itemLabel="codeName" itemValue="code"></form:select></div>
-	                                <div class="col-md-1"><form:label path="priority">优先级:</form:label></div>
-	                                <div class="col-md-3"><form:select path="priority" items="${priority }" itemLabel="codeName" itemValue="code"></form:select></div>
-	                            </div>    
-	                            <div class="row-form clearfix">
-	                            	<div class="col-md-1"><label >文件:</label></div>
+	                            	<div class="col-md-1"><label >附件:</label></div>
 	                            	<div class="col-md-11">
 										<input type="file" name="file_upload" id="file_upload" />
 									</div>
@@ -292,8 +164,5 @@
         </div>  
     </div>
     
-    <div class='dialog' id='b_popup_group' style='display: none;' title='部门列表'>
-    	<div class='block dialog_block messages '><div><ul id='grouptree'></ul></div></div>
-    </div>
 </body>
 </html>

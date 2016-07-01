@@ -117,8 +117,8 @@
 
                 <ul class="breadcrumb">
                     <li><a href="#">运维管理系统</a> <span class="divider">></span></li>
-                    <li><a href="${contextPath }/incident/list">事件管理</a> <span class="divider">></span></li>       
-                    <li class="active">事件控制台</li>
+                    <li><a href="${contextPath }/feedback/list">意见反馈</a> <span class="divider">></span></li>       
+                    <li class="active">意见反馈列表</li>
                 </ul>
 
                 <ul class="buttons"></ul>
@@ -138,16 +138,16 @@
                             <div class="isw-grid"></div>
                             <h1>
                             	<c:if test="${not empty status }">
-                            		[ ${status.codeName } ] 事件
+                            		[ ${status.codeName } ] 反馈
                             	</c:if>
                             	<c:if test="${empty status }">
-                            	待处理事件
+                            	待处理反馈
                             	</c:if>
                             </h1>  
 
                             <ul class="buttons">
                                 <li>
-                                    <a href="${contextPath }/incident/add" class="isw-plus tipb" title="创建新事件"></a>
+                                    <a href="${contextPath }/feedback/add" class="isw-plus tipb" title="新建反馈"></a>
                                 </li>                            
                                 <li>
                                     <a href="#" class="isw-settings tipl" title="操作 "></a>
@@ -166,34 +166,31 @@
                                 <thead>
                                     <tr>
                                     	<th width="70px">流水号</th>
-                                        <th>摘要</th>
-                                        <th width="70px">申请人</th>
-                                        <th width="60px">受派者</th>
+                                        <th>反馈内容</th>
+                                        <th width="70px">反馈人员</th>
                                         <th width="130px">流程步骤</th>
-                                        <th width="110px">申请时间</th>
+                                        <th width="110px">反馈时间</th>
                                         <th width="60px">状态</th> 
                                         <th width="90px">操作</th>                                    
                                     </tr>
                                 </thead>
                                 <tbody>
-                                	<c:forEach items="${list }" var="incident">
-                                	<c:if test="${not empty mytasks[incident.processInstanceId] }">
-	                                	<c:set var="task" value="${mytasks[incident.processInstanceId]}" />
+                                	<c:forEach items="${list }" var="feedback">
+                                	<c:if test="${not empty mytasks[feedback.processInstanceId] }">
+	                                	<c:set var="task" value="${mytasks[feedback.processInstanceId]}" />
 	                                    <tr>
-	                                    	<td>${incident.processInstanceId }</td>
+	                                    	<td>${feedback.processInstanceId }</td>
 	                                        <td>
-	                                        	<span class="label label-warning tipb" title="优先级:${incident.priorityName }">${incident.priorityName }</span>
-	                                        	<a href="${contextPath }/incident/view/${incident.id}" title="查看详情" class="tipr" target="_blank">${incident.abs }</a>
+	                                        	${feedback.detail}
 	                                        </td>
-	                                        <td>${incident.applyUserName }</td>
-	                                        <td>${incident.currentDelegateUserName }</td>
+	                                        <td>${feedback.currentDelegateUserName }</td>
 	                                        <td>
-												<a class="lnk_trace tipb" href="#" pid="${incident.processInstanceId }" pdid="${task.processDefinitionId }" title="点击查看流程图">
+												<a class="lnk_trace tipb" href="#" pid="${feedback.processInstanceId }" pdid="${task.processDefinitionId }" title="点击查看流程图">
 													${task.name }
 												</a>
 											</td>
-	                                        <td><fmt:formatDate value="${incident.applyTime }" pattern="yyyy-MM-dd HH:mm" /></td>
-	                                        <td>${incident.statusName }</td>
+	                                        <td><fmt:formatDate value="${feedback.createTime }" pattern="yyyy-MM-dd HH:mm" /></td>
+	                                        <td>${feedback.statusName }</td>
 	                                        <td>
 	                                        	<c:if test="${empty task.assignee }">
 													<a class="claim confirm" href="${contextPath }/workflow/task/claim/${task.id}"><span class="glyphicon glyphicon-edit"></span> 签收</a>
@@ -207,27 +204,25 @@
 	                                        </td>
 	                                    </tr>
                                     </c:if>
-                                    <c:if test="${empty mytasks[incident.processInstanceId] }">
-                                    	<c:if test="${not empty tasks[incident.processInstanceId] }">
-                                    	<c:set var="task" value="${tasks[incident.processInstanceId]}" />
+                                    <c:if test="${empty mytasks[feedback.processInstanceId] }">
+                                    	<c:if test="${not empty tasks[feedback.processInstanceId] }">
+                                    	<c:set var="task" value="${tasks[feedback.processInstanceId]}" />
                                     		<tr>
-                                    			<td>${incident.processInstanceId }</td>
+                                    			<td>${feedback.processInstanceId }</td>
 		                                        <td>
-		                                        	<span class="label label-warning tipb" title="优先级:${incident.priorityName }">${incident.priorityName }</span>
-		                                        	<a href="${contextPath }/incident/view/${incident.id}" title="查看详情"  target="_blank">${incident.abs }</a>
+		                                        	${feedback.detail }
 		                                        </td>
-		                                        <td>${incident.applyUserName }</td>
-		                                        <td>${incident.currentDelegateUserName }</td>
+		                                        <td>${feedback.currentDelegateUserName }</td>
 		                                        <td>
-													<a class="lnk_trace" href='#' pid="${incident.processInstanceId }" pdid="${task.processDefinitionId }" title="点击查看流程图">
+													<a class="lnk_trace" href='#' pid="${feedback.processInstanceId }" pdid="${task.processDefinitionId }" title="点击查看流程图">
 														${task.name }
 													</a>
 												</td>
-		                                        <td><fmt:formatDate value="${incident.applyTime }" pattern="yyyy-MM-dd HH:mm" /></td>
-		                                        <td>${incident.statusName }</td>
+		                                        <td><fmt:formatDate value="${feedback.createTime }" pattern="yyyy-MM-dd HH:mm" /></td>
+		                                        <td>${feedback.statusName }</td>
 		                                        <td>
 			                                        <c:if test="${not empty ROLE_MODIFY }">
-		                                        		<a href="${contextPath }/incident/update/${incident.id}"><span class="glyphicon glyphicon-pencil"></span> 修改</a>
+		                                        		<a href="${contextPath }/feedback/update/${feedback.id}"><span class="glyphicon glyphicon-pencil"></span> 修改</a>
 		                                        	</c:if>
 		                                        </td>
 		                                    </tr>

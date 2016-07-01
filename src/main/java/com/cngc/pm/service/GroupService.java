@@ -15,4 +15,6 @@ public interface GroupService {
 	public Group getById(Long id);
 	
 	boolean saveGroup(Group group);
+	
+	String getChildByGroup(String group);
 }

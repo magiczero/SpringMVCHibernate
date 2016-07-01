@@ -203,7 +203,7 @@
                         <div class="block-fluid">                        
                           <div class="row-form clearfix">
                                 <div class="col-md-2"><form:label path="name">文档名称*</form:label></div>
-                                <div class="col-md-4"><form:input path="name" class="validate[required,minSize[2],maxSize[30]] text-input" /><form:errors path="name" cssClass="error" />
+                                <div class="col-md-4"><form:input path="name" class="validate[required,minSize[2],maxSize[200]] text-input" /><form:errors path="name" cssClass="error" />
                                 </div>
                                 <div class="col-md-2"><form:label path="keywords">关键字*</form:label></div>
                                 <div class="col-md-4"><form:input path="keywords" class="validate[required,minSize[2],maxSize[30]] text-input" />

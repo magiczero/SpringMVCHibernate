@@ -31,7 +31,7 @@
 		<ul>
 			<li><a href="${contextPath }/workflow/task/mytask"> <span class="glyphicon glyphicon-th-large"></span><span class="text">待办任务</span>
 			</a> <a href="#" class="caption yellow link_navPopMessages">0</a></li>
-			<sec:authorize access="hasRole('WK_LEADER')"><li><a href="${contextPath }/workflow/task/board"> <span class="glyphicon glyphicon-th-large"></span><span class="text">运维控制台</span>
+			<sec:authorize url="/workflow/task/board"><li><a href="${contextPath }/workflow/task/board"> <span class="glyphicon glyphicon-th-large"></span><span class="text">运维控制台</span>
 			</a></li></sec:authorize>
 			<li><a href="${contextPath }/incident/list"> <span class="glyphicon glyphicon-th-large"></span><span class="text">事件控制台</span>
 			</a></li>

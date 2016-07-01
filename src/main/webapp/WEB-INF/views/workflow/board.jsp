@@ -132,15 +132,26 @@
 					        	<c:if test="${status.index>0 }">,</c:if>
 					        	{label:"${code.value}",data:${incidentSatisfaction.counts[code.key]==null?0:incidentSatisfaction.counts[code.key]} }
 					        	</c:forEach>];
-
-					        $.plot($("#chart-3"), data,
-						    {
-						        series: {
-						            pie: { show: true }
-						        },
-						        legend: { show: false }
-						    });
-
+					        if( ($.browser.msie&&$.browser.version=="8.0") )
+				            {
+					        	$("#chart-3").parent('div').resize(function(){
+							        $.plot($("#chart-3"), data,
+								    {
+								        series: {
+								            pie: { show: true }
+								        },
+								        legend: { show: false }
+								    });
+					        	});
+				            } else {
+				            	 $.plot($("#chart-3"), data,
+										    {
+										        series: {
+										            pie: { show: true }
+										        },
+										        legend: { show: false }
+										    });
+				            }
 						}
 						$(".breadLine .buttons").load(
 								"${contextPath}/contentbuttons?t="

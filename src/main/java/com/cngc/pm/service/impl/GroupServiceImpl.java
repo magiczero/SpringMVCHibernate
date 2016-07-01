@@ -41,6 +41,7 @@ public class GroupServiceImpl implements GroupService {
 		String childStr = ",\"child\":[";
 		String endStr2 = "},";
 		StringBuffer jsonStr = new StringBuffer("[");
+		
 		/*
 		 * 此方法可用此类org.activiti.engine.impl.util.json.JSONObject，但可能效率低
 		 */
@@ -166,5 +167,47 @@ public class GroupServiceImpl implements GroupService {
 	public boolean saveGroup(Group group) {
 		// TODO Auto-generated method stub
 		return groupDao.save(group);
+	}
+
+	@Override
+	@Transactional(readOnly=true)
+	public String getChildByGroup(String groupid) {
+		// TODO Auto-generated method stub
+		StringBuffer jsonStr = new StringBuffer("[");
+		if(groupid.equals("source")) {
+			for(Group group : groupDao.getAllTopGroup()) {
+				jsonStr.append("{\"text\":\"").append(group.getGroupName()).append("\"");
+				if(group.getChild().size()>0 || group.getUsers().size()>0) {
+					jsonStr.append(",\"id\":\"").append(group.getId()).append("\",");
+					jsonStr.append("\"hasChildren\":\"true\"");
+				}
+				jsonStr.append("},");
+			}
+			jsonStr.deleteCharAt(jsonStr.length()-1);
+		} else {
+			Group group =  groupDao.find(Long.valueOf(groupid));
+			if(group.getUsers().size()>0) {
+				for(SysUser user : group.getUsers()) {
+					jsonStr.append("{\"text\":\"<a href='javascript:void(0);' onclick='inputUserinfo(\\\""+user.getUsername()+"\\\",\\\""+user.getName()+"\\\",\\\""+user.getDepName()+"\\\",\\\""+user.getMechName()+"\\\");'>").append(user.getName()).append("</a>\"},");
+				}
+				jsonStr.deleteCharAt(jsonStr.length()-1);
+			}
+			if(group.getChild().size()>0) {
+				if(group.getUsers().size()>0)
+					jsonStr.append(",");
+				for(Group child : group.getChild()) {
+					jsonStr.append("{\"text\":\"").append(child.getGroupName()).append("\"");
+					if(group.getChild().size()>0 || child.getUsers().size()>0) {
+						jsonStr.append(",\"id\":\"").append(child.getId()).append("\",");
+						jsonStr.append("\"hasChildren\":\"true\"");
+					}
+					jsonStr.append("},");
+				}
+				jsonStr.deleteCharAt(jsonStr.length()-1);
+			}
+		}
+		
+		jsonStr.append("]");
+		return jsonStr.toString();
 	}
 }

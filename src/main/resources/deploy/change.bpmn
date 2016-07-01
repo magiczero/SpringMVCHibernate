@@ -18,8 +18,8 @@
           <activiti:value id="03" name="中等"></activiti:value>
           <activiti:value id="04" name="低"></activiti:value>
         </activiti:formProperty>
-        <activiti:formProperty id="planStartTime" name="变更开始时间" type="date" expression="${change.planStartTime}" datePattern="yyyy-MM-dd"></activiti:formProperty>
-        <activiti:formProperty id="planEndTime" name="变更结束时间" type="date" expression="${change.planEndTime}" datePattern="yyyy-MM-dd"></activiti:formProperty>
+        <activiti:formProperty id="planStartTime" name="变更开始时间" type="date" expression="${change.planStartTime}" datePattern="yyyy-MM-dd HH:mm"></activiti:formProperty>
+        <activiti:formProperty id="planEndTime" name="变更结束时间" type="date" expression="${change.planEndTime}" datePattern="yyyy-MM-dd HH:mm"></activiti:formProperty>
         <activiti:formProperty id="solution" name="变更方案" type="bigtext" expression="${change.solution}"></activiti:formProperty>
         <activiti:formProperty id="fallback" name="回退计划" type="bigtext" expression="${change.fallback}"></activiti:formProperty>
         <activiti:formProperty id="delegateUser" name="变更实施人" type="user" expression="${change.delegateUser}"></activiti:formProperty>

@@ -8,6 +8,10 @@
       http://www.springframework.org/schema/beans
       http://www.springframework.org/schema/beans/spring-beans-4.0.xsd">
 
+	<beans:bean id="customWebInvocationPrivilegeEvaluator" class="org.springframework.security.web.access.DefaultWebInvocationPrivilegeEvaluator">  
+        <beans:constructor-arg name="securityInterceptor" ref="myFilter" />  
+    </beans:bean>
+
 	<http pattern="/resources/**" security="none" />
 	<http pattern="/initLogin.html" security="none" />
 	<!-- <http pattern="/workflow/task/getmytaskcount*" security="none" /> -->
@@ -50,7 +54,7 @@
  		<beans:property name="forwardToDestination" value="false"></beans:property>
  	</beans:bean>
 	
-	<beans:bean id="myFilter" class="com.cngc.pm.security.MyFilterSecurityInterceptor">
+	<beans:bean id="myFilter" class="org.springframework.security.web.access.intercept.FilterSecurityInterceptor">
 		<beans:property name="authenticationManager" ref="authenticationManager" />
 		<beans:property name="accessDecisionManager" ref="myAccessDecisionManagerBean" />
 		<beans:property name="securityMetadataSource" ref="securityMetadataSource" />

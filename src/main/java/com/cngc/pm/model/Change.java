@@ -20,6 +20,7 @@ import javax.persistence.Transient;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Formula;
+import org.springframework.format.annotation.DateTimeFormat;
 
 @Entity
 @Table(name = "wk_change")
@@ -120,6 +121,7 @@ public class Change {
 		this.fallback = fallback;
 	}
 	@Column(name="plan_start_time")
+	@DateTimeFormat( pattern = "yyyy-MM-dd HH:mm" )
 	public Date getPlanStartTime() {
 		return planStartTime;
 	}
@@ -127,6 +129,7 @@ public class Change {
 		this.planStartTime = planStartTime;
 	}
 	@Column(name="plan_end_time")
+	@DateTimeFormat( pattern = "yyyy-MM-dd HH:mm" )
 	public Date getPlanEndTime() {
 		return planEndTime;
 	}

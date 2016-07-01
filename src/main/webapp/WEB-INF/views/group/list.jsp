@@ -108,7 +108,7 @@
             
     function department_list() {
     	$("#treeview li").remove();
-    	$.getJSON(ctx + '/group/all-json?t=' + pm_random(), function(data1){
+    	$.getJSON(ctx + '/group/all-tree?t=' + pm_random(), function(data1){
     		obj= $.parseJSON(data1.json);
     		
     		$.each(obj, function (index, element) {

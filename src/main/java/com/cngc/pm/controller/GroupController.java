@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 import org.springframework.stereotype.Controller;
@@ -59,7 +60,19 @@ public class GroupController {
 	
 	@RequestMapping(value = "/all-json", method = RequestMethod.GET)
 	@ResponseBody  
-	public Map<String, Object> getAllJson() {
+	public String getAllJson(HttpServletRequest request) {
+		String root = request.getParameter("root");
+//		Map<String, Object> map = new HashMap<>();
+//		
+//		map.put("json", groupService.getAllWithJson());
+		
+		//return "[	{\"text\": \"<a href='' onclick=''>1. Pre Lunch (120 min)</a>\",\"expanded\": true,\"classes\": \"important\",\"children\":	[{\"text\": \"1.1 The State of the Powerdome (30 min)\"	},	{\"text\": \"1.2 The Future of jQuery (30 min)\"},	{\"text\": \"1.2 jQuery UI - A step to richnessy (60 min)\"}]	},	{\"text\": \"2. Lunch  (60 min)\"},{\"text\": \"3. After Lunch  (120+ min)\",\"children\":	[{\"text\": \"3.1 jQuery Calendar Success Story (20 min)\"},	{\"text\": \"3.2 jQuery and Ruby Web Frameworks (20 min)\"},	{\"text\": \"3.3 Hey, I Can Do That! (20 min)\"},{\"text\": \"3.4 Taconite and Form (20 min)\"}, {\"text\": \"3.5 Server-side JavaScript with jQuery and AOLserver (20 min)\"}, 	{\"text\": \"3.6 The Onion: How to add features without adding features (20 min)\",\"id\": \"36\",	\"hasChildren\": true}	]}]";
+				return groupService.getChildByGroup(root);
+	}
+	
+	@RequestMapping(value = "/all-tree", method = RequestMethod.GET)
+	@ResponseBody  
+	public Map<String, Object> getAllTree() {
 		Map<String, Object> map = new HashMap<>();
 		
 		map.put("json", groupService.getAllWithJson());

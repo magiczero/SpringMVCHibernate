@@ -87,6 +87,10 @@
                 $(".menu").load("${contextPath}/menu?t="+pm_random(), function () { $("#node_${moduleId}").addClass("active"); });
                 $(".breadLine .buttons").load("${contextPath}/contentbuttons?t="+pm_random());
 				$("#btn_set_property").bind("click",getProperty);
+				
+				$("#lnk_knowledge").click( function() { 
+					window.open ('${contextPath}/knowledge/search','知识库','height=400,width=800,top=0,left=0,toolbar=no,menubar=no,scrollbars=yes,resizable=yes,location=no,status=no') 
+				});
                 
 				act_form_task(taskid,'/change/list');   
 				//pm_knowledge_initdialog("incident",changeid);

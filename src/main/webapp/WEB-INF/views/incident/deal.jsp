@@ -85,6 +85,10 @@
             pm_cms_initselectdialog('incident');
             act_history_initdialog();
             
+            $("#lnk_knowledge").click( function() { 
+				window.open ('${contextPath}/knowledge/search','知识库','height=400,width=800,top=0,left=0,toolbar=no,menubar=no,scrollbars=yes,resizable=yes,location=no,status=no') 
+			});
+            
             $(".tabs").find("li").bind("click",function(){
             	switch($(this).children("a").attr("href"))
             	{

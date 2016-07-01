@@ -273,7 +273,7 @@
 													<a class="claim confirm" href="${contextPath }/workflow/task/claim/${task.id}"><span class="glyphicon glyphicon-edit"></span> 签收</a>
 												</c:if> 
 												<c:if test="${not empty task.assignee }">
-													<c:if test="${processName=='UPDATE' || processName=='SECJOB' || processName=='KNOWLEDGE' }">
+													<c:if test="${processName=='UPDATE' || processName=='SECJOB' || processName=='KNOWLEDGE' || processName=='feedback' }">
 														<a onclick="act_form_openTaskDialog('${task.name }','${task.id}','/workflow/task/mytask')" href="#"><span class="glyphicon glyphicon-edit"></span> 办理</a>
 													</c:if>
 													<c:if test="${processName=='INCIDENT'||processName=='CHANGE' || processName=='LEADERTASK' }">

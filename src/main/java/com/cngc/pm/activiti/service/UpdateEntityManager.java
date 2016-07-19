@@ -2,33 +2,36 @@ package com.cngc.pm.activiti.service;
 
 import java.util.Date;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
 
 import org.activiti.engine.delegate.DelegateExecution;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.cngc.pm.activiti.jpa.entity.UpdateJpaEntity;
+import com.cngc.pm.dao.UpdateDAO;
+import com.cngc.pm.model.Update;
 
 @Service
 public class UpdateEntityManager {
-    @PersistenceContext
-    private EntityManager entityManager;
+//    @PersistenceContext
+//    private EntityManager entityManager;
+	@Autowired
+	private UpdateDAO updateDao;
     
     @Transactional
-    public UpdateJpaEntity newUpdate(DelegateExecution execution) {
-    	UpdateJpaEntity update = new UpdateJpaEntity();
+    public Update newUpdate(DelegateExecution execution) {
+    	Update update = new Update();
     	update.setProcessInstanceId(execution.getProcessInstanceId());
     	update.setUserId(execution.getVariable("user").toString());
     	update.setUpdateType(execution.getVariable("updateType").toString());
     	update.setCreatedTime(new Date());
-        entityManager.persist(update);
+//        entityManager.persist(update);
+    	updateDao.save(update);
         return update;
     }
     @Transactional
     public boolean setUpdateStatus(DelegateExecution execution){
-    	UpdateJpaEntity update = (UpdateJpaEntity)execution.getVariable("update");
+    	Update update = (Update)execution.getVariable("update");
 		if(execution.getCurrentActivityName()!=null)
 		{
 			// 按流程步骤运行至结束
@@ -36,7 +39,7 @@ public class UpdateEntityManager {
 				update.setEndbyuser(true);
 		}
     	update.setExecutionTime(new Date());
-    	entityManager.persist(update);
+    	updateDao.save(update);
     	return true;
     }
 }

@@ -9,4 +9,6 @@ public interface FeedbackService {
 	void save(Feedback feedback);
 
 	List<Feedback> getNotFinished();
+
+	Feedback getById(Long id);
 }

@@ -47,4 +47,15 @@ public class AttachServiceImpl implements AttachService {
 		return set;
 	}
 
+	@Override
+	@Transactional
+	public boolean delById(long attachid) {
+		// TODO Auto-generated method stub
+		Attachment attach = attachDao.find(attachid);
+		if(attach==null)
+			return false;
+		
+		return attachDao.remove(attach);
+	}
+
 }

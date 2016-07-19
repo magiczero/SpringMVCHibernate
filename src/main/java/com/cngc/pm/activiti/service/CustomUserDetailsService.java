@@ -22,7 +22,7 @@ public class CustomUserDetailsService implements UserDetailsService {
 	public UserDetails loadUserByUsername(String username)
 			throws UsernameNotFoundException {
 		// TODO Auto-generated method stub
-		com.cngc.pm.activiti.jpa.entity.User user = userRepository.findByUsername(username);
+		com.cngc.pm.model.SysUser user = userRepository.findByUsername(username);
 		
 		return new User(
 				user.getUsername(),

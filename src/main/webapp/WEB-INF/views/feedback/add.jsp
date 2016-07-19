@@ -87,6 +87,22 @@
 		    });
 
         });
+        
+        function delAttach(obj, attachid) {
+        	var msg = "您真的确定要删除吗？请确认！";  
+            if (confirm(msg)==true){  
+            	$.getJSON(ctx + '/feedback/delAttach/'+attachid+'?t=' + pm_random(), function(data){
+            		//var flag = data.flag;
+            		if(data) {
+            			$(obj).parent().remove();
+            		} else {
+            			return false;
+            		}
+            	});
+            }else{  
+                return false;  
+            }  
+        }
     </script>
     <style type="text/css">
     	.uploadify-button-text {color:#fff !important;}
@@ -147,7 +163,10 @@
 	                            <div class="row-form clearfix">
 	                            	<div class="col-md-1"><label >附件:</label></div>
 	                            	<div class="col-md-11">
-										<input type="file" name="file_upload" id="file_upload" />
+										<input type="file" name="file_upload" id="file_upload" /><br/>
+										<c:if test="${not empty feedback.id }"><ul>
+											<c:forEach items="${feedback.attachs }" var="attach"><li><a href="javascript:void(0);" onclick="delAttach(this,${attach.id})">删除</a>&nbsp;&nbsp;<a href="${contextPath }/attachment/download/${attach.id}">${attach.name }</a></li></c:forEach></ul>
+										</c:if>
 									</div>
 	                            </div>                                                   
 	                            <div class="footer">

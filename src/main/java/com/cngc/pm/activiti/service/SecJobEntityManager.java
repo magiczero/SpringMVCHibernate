@@ -4,39 +4,43 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.annotation.Resource;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
 
 import org.activiti.engine.delegate.DelegateExecution;
 import org.apache.cxf.common.util.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.cngc.pm.activiti.jpa.entity.AttachmentEntity;
-import com.cngc.pm.activiti.jpa.entity.SecJobJpaEntity;
-import com.cngc.pm.service.AttachService;
+import com.cngc.pm.dao.AttachmentDAO;
+import com.cngc.pm.dao.SecJobDAO;
+import com.cngc.pm.model.Attachment;
+import com.cngc.pm.model.SecJob;
 
 @Service
 public class SecJobEntityManager {
-	   @PersistenceContext
-	   private EntityManager entityManager;
-	   @Resource
-	   private AttachService attachService;
+//	   @PersistenceContext
+//	   private EntityManager entityManager;
+	@Autowired
+	private SecJobDAO secJobDao;
+//	   @Resource
+//	   private AttachService attachService;
+	@Autowired
+	private AttachmentDAO attachDao;
 	    
 	    @Transactional
-	    public SecJobJpaEntity newSecJob(DelegateExecution execution) {
-	    	SecJobJpaEntity job = new SecJobJpaEntity();
+	    public SecJob newSecJob(DelegateExecution execution) {
+	    	SecJob job = new SecJob();
 	    	job.setProcessInstanceId(execution.getProcessInstanceId());
 	    	job.setUserId(execution.getVariable("user").toString());
 	    	job.setType(execution.getVariable("type").toString());
 	    	job.setApplyTime(new Date());
-	        entityManager.persist(job);
+//	        entityManager.persist(job);
+	        secJobDao.save(job);
 	        return job;
 	    }
 	    @Transactional
 	    public boolean setSecJobStatus(DelegateExecution execution){
-	    	SecJobJpaEntity job = (SecJobJpaEntity)execution.getVariable("secjob");
+	    	SecJob job = (SecJob)execution.getVariable("secjob");
 			if(execution.getCurrentActivityName()!=null)
 			{
 				// 按流程步骤运行至结束
@@ -47,23 +51,23 @@ public class SecJobEntityManager {
 				}
 			}
 	    	job.setExecutionTime(new Date());
-	    	entityManager.persist(job);
+	    	secJobDao.save(job);
 	    	return true;
 	    }
 	    @Transactional
 	    public boolean saveAttach(DelegateExecution execution){
-	    	SecJobJpaEntity job = (SecJobJpaEntity)execution.getVariable("secjob");
+	    	SecJob job = (SecJob)execution.getVariable("secjob");
 			if(!StringUtils.isEmpty(job.getAttachment())) {
 				String[] ids = job.getAttachment().split(",");
 				
-				Set<AttachmentEntity> set = new HashSet<>();
+				Set<Attachment> set = new HashSet<>();
 				
 				for(String id : ids) {
-					AttachmentEntity attach = entityManager.find(AttachmentEntity.class, Long.valueOf(id));
+					Attachment attach = attachDao.find( Long.valueOf(id));
 					set.add(attach);
 				}
 				job.setAttachs(set);
-				entityManager.persist(job);
+				secJobDao.save(job);
 			}
 	    	return true;
 	    }

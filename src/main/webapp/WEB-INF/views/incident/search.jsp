@@ -132,7 +132,7 @@
 	                            <div class="toolbar nopadding-toolbar clearfix">
                                 	<h4>查询条件</h4>
                            		</div>
-                           		<!--<div class="row-form clearfix">
+                           		<div class="row-form clearfix">
                            			<div class="col-md-1">单位</div>
                            			<div class="col-md-11"><select id="unit" name="unit" style="width:100%">
 	                                	<option value="00">全部</option>
@@ -140,7 +140,7 @@
 	                                		<option value="${group.id }">${group.groupName }</option>
 	                                	</c:forEach>
 	                                	</select></div>
-                           		</div>-->
+                           		</div>
                            		<div class="row-form clearfix">
                            			<div class="col-md-1">摘要</div>
 	                                <div class="col-md-3"><input type="text" name="abstract" /></div>

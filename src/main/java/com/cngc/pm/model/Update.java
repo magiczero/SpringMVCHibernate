@@ -22,7 +22,7 @@ public class Update implements Serializable{
 	 */
 	private static final long serialVersionUID = -7160800896710808258L;
 	private Long id;
-	private String type;
+	private String updateType;
 	private String version;
 	private String userId;
 	private Date updateTime;
@@ -46,11 +46,11 @@ public class Update implements Serializable{
 		this.id = id;
 	}
 	@Column(name="type_")
-	public String getType() {
-		return type;
+	public String getUpdateType() {
+		return updateType;
 	}
-	public void setType(String type) {
-		this.type = type;
+	public void setUpdateType(String updateType) {
+		this.updateType = updateType;
 	}
 	@Column(name="version_")
 	public String getVersion() {

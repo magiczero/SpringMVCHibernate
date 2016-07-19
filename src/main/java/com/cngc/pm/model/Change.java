@@ -1,5 +1,6 @@
 package com.cngc.pm.model;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -24,8 +25,12 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 @Entity
 @Table(name = "wk_change")
-public class Change {
+public class Change implements Serializable {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 5130753607177942493L;
 	private Long id;
 	private String description;
 	private String applyUser;

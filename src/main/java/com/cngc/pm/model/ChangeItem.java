@@ -1,5 +1,6 @@
 package com.cngc.pm.model;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -12,8 +13,12 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "wk_change_item")
-public class ChangeItem {
+public class ChangeItem implements Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1056788695740478875L;
 	private Long id;
 	private Long changeId;
 	private Long ciId;

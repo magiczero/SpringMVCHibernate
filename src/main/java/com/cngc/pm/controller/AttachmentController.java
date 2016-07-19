@@ -126,6 +126,10 @@ public class AttachmentController {
 					 	case "5":
 					 		attach.setType(AttachType.secjob);
 					 		break;
+					 	case "6":
+					 		attach.setType(AttachType.uefile);
+					 	case "7":
+					 		attach.setType(AttachType.feedback);
 					 }
 					 attach = attachService.create(attach);
 					

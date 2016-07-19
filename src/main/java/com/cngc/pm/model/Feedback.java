@@ -166,9 +166,11 @@ public class Feedback implements Serializable {
 	@Transient
 	public String getStatusName() {
 		if(("03").equals(this.status))
-			return "结束";
+			this.statusName="结束";
 		else
-			return "工程师反馈";
+			this.statusName="工程师反馈";
+		
+		return this.statusName;
 	}
 	public void setStatusName(String statusName) {
 		this.statusName = statusName;

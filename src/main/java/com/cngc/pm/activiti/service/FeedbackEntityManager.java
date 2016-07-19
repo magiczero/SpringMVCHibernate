@@ -2,31 +2,32 @@ package com.cngc.pm.activiti.service;
 
 import java.util.Date;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
 
 import org.activiti.engine.delegate.DelegateExecution;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.cngc.pm.activiti.jpa.entity.FeedbackJpaEntity;
+import com.cngc.pm.dao.FeedbackDAO;
+import com.cngc.pm.model.Feedback;
 
 @Service
 public class FeedbackEntityManager {
-	@PersistenceContext
-    private EntityManager entityManager;
+	@Autowired
+	private FeedbackDAO feedbackDao;
 	
 	@Transactional
-	public FeedbackJpaEntity getIncident(DelegateExecution execution){
-		FeedbackJpaEntity feedback = entityManager.find(FeedbackJpaEntity.class, Long.valueOf(execution.getVariable("id").toString()) );
+	public Feedback getIncident(DelegateExecution execution){
+		Feedback feedback = feedbackDao.find(Long.valueOf(execution.getVariable("id").toString()) );
 		feedback.setProcessInstanceId(execution.getProcessInstanceId());
-		entityManager.persist(feedback);
+//		entityManager.persist(feedback);
+		feedbackDao.save(feedback);
 		return feedback;
 	}
 	
 	@Transactional
 	public boolean setFeedbackStatus(DelegateExecution execution,String status){
-		FeedbackJpaEntity feedback = (FeedbackJpaEntity)execution.getVariable("feedback");
+		Feedback feedback = (Feedback)execution.getVariable("feedback");
 		feedback.setStatus(status);
 		if(execution.getCurrentActivityName()!=null)
 		{
@@ -36,7 +37,8 @@ public class FeedbackEntityManager {
 		}
 		if( status.equals("03") )
 			feedback.setDoneTime(new Date());
-		entityManager.persist(feedback);
+//		entityManager.persist(feedback);
+		feedbackDao.save(feedback);
 		return true;
 	} 
 }

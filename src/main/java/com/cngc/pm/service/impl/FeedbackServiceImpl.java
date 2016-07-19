@@ -35,4 +35,11 @@ public class FeedbackServiceImpl implements FeedbackService {
 
 		return feedbackDao.search(search);
 	}
+
+	@Override
+	@Transactional(readOnly=true)
+	public Feedback getById(Long id) {
+		// TODO Auto-generated method stub
+		return feedbackDao.find(id);
+	}
 }

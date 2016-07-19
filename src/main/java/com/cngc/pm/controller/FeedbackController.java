@@ -20,8 +20,10 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.cngc.pm.common.web.common.UserUtil;
 import com.cngc.pm.model.Attachment;
@@ -54,31 +56,52 @@ public class FeedbackController {
 		return "feedback/add";
 	}
 	
+	/**
+	 * 新建&修改
+	 * @param feedback
+	 * @param request
+	 * @return
+	 */
 	@RequestMapping(value = "/save", method = RequestMethod.POST)
 	public String save(@Valid @ModelAttribute("feedback") Feedback feedback,HttpServletRequest request) {
-		if(!StringUtils.isEmpty(request.getParameter("fileids"))) {
-			String attachIds = request.getParameter("fileids");
+		if(feedback.getId()==null) {				//新建
+			if(!StringUtils.isEmpty(request.getParameter("fileids"))) {
+				String attachIds = request.getParameter("fileids");
+				
+				Set<Attachment> attachSet = attachService.getSetByIds(attachIds);
+				
+				feedback.setAttachs(attachSet);
+			}
 			
-			Set<Attachment> attachSet = attachService.getSetByIds(attachIds);
+			feedback.setState(PropertyFileUtil.getStringValue("syscode.incident.status.new"));
+			feedback.setStatus(PropertyFileUtil.getStringValue("syscode.incident.status.new"));
+			feedback.setPriority("03");
+			feedback.setCreateTime(new Date());
 			
-			feedback.setAttachs(attachSet);
-		}
-		
-		feedback.setState(PropertyFileUtil.getStringValue("syscode.incident.status.new"));
-		feedback.setStatus(PropertyFileUtil.getStringValue("syscode.incident.status.new"));
-		feedback.setPriority("03");
-		feedback.setCreateTime(new Date());
-		
-		feedbackService.save(feedback);
-		
-		// 启动流程
-		ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery()
-							.processDefinitionKey("feedback").active()
-							.latestVersion().singleResult();
-		if (processDefinition != null) {
-			Map<String, String> variables = new HashMap<String, String>();
-			variables.put("id", String.valueOf(feedback.getId()));
-			formService.submitStartFormData(processDefinition.getId(), variables);
+			feedbackService.save(feedback);
+			
+			// 启动流程
+			ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery()
+								.processDefinitionKey("feedback").active()
+								.latestVersion().singleResult();
+			if (processDefinition != null) {
+				Map<String, String> variables = new HashMap<String, String>();
+				variables.put("id", String.valueOf(feedback.getId()));
+				formService.submitStartFormData(processDefinition.getId(), variables);
+			}
+		} else {			//修改
+			Feedback newFeedback = feedbackService.getById(feedback.getId());
+			newFeedback.setDetail(feedback.getDetail());
+			if(!StringUtils.isEmpty(request.getParameter("fileids"))) {
+				String attachIds = request.getParameter("fileids");
+				
+				Set<Attachment> attachSet = attachService.getSetByIds(attachIds);
+				
+				attachSet.addAll(newFeedback.getAttachs());
+				
+				newFeedback.setAttachs(attachSet);
+			}
+			feedbackService.save(newFeedback);
 		}
 		
 		return "redirect:/feedback/list";
@@ -123,5 +146,18 @@ public class FeedbackController {
 		//model.addAttribute("group",
 		//		syscodeService.getAllByType(PropertyFileUtil.getStringValue("syscode.incident.status")).getResult());
 		return "feedback/list";
+	}
+	
+	@RequestMapping(value = "/update/{id}", method = RequestMethod.GET)
+	public String update(@PathVariable("id") Long id, Model model) {
+		model.addAttribute("feedback", feedbackService.getById(id));
+		
+		return "feedback/add";
+	}
+	
+	@RequestMapping(value="/delAttach/{attachid}")
+	@ResponseBody
+	public boolean delAttach(@PathVariable("attachid") long attachid){
+		return attachService.delById(attachid);
 	}
 }

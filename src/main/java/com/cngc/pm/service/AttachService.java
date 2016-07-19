@@ -17,4 +17,6 @@ public interface AttachService {
 	 */
 	Set<Attachment> getSetByIds(String attachIds);
 
+	boolean delById(long attachid);
+
 }

@@ -2,32 +2,36 @@ package com.cngc.pm.activiti.service;
 
 import java.util.Date;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
 
 import org.activiti.engine.delegate.DelegateExecution;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.cngc.pm.activiti.jpa.entity.IncidentJpaEntity;
+import com.cngc.pm.dao.IncidentDAO;
+import com.cngc.pm.model.Incident;
 import com.cngc.utils.PropertyFileUtil;
 
 @Service
 public class IncidentEntityManager {
-    @PersistenceContext
-    private EntityManager entityManager;
-    
+//    @PersistenceContext
+//    private EntityManager entityManager;
+	@Autowired
+	private IncidentDAO incidentDao;
+	
 	@Transactional
-	public IncidentJpaEntity getIncident(DelegateExecution execution){
-		IncidentJpaEntity incident = entityManager.find(IncidentJpaEntity.class, Long.valueOf(execution.getVariable("id").toString()) );
+	public Incident getIncident(DelegateExecution execution){
+		//Incident incident = entityManager.find(Incident.class, Long.valueOf(execution.getVariable("id").toString()) );
+		Incident incident = incidentDao.find(Long.valueOf(execution.getVariable("id").toString()));
 		incident.setProcessInstanceId(execution.getProcessInstanceId());
-		entityManager.persist(incident);
+//		entityManager.persist(incident);
+		incidentDao.save(incident);
 		return incident;
 	}
 	
 	@Transactional
 	public boolean setIncidentStatus(DelegateExecution execution,String status){
-		IncidentJpaEntity incident = (IncidentJpaEntity)execution.getVariable("incident");
+		Incident incident = (Incident)execution.getVariable("incident");
 		incident.setStatus(status);
 		if(execution.getCurrentActivityName()!=null)
 		{
@@ -37,7 +41,8 @@ public class IncidentEntityManager {
 		}
 		if( status.equals(PropertyFileUtil.getStringValue("syscode.incident.status.finished")) )
 			incident.setRecoverTime(new Date());
-		entityManager.persist(incident);
+//		entityManager.persist(incident);
+		incidentDao.save(incident);
 		return true;
 	} 
 }

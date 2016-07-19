@@ -4,38 +4,44 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
 
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.repository.ProcessDefinition;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.cngc.pm.activiti.jpa.entity.IncidentJpaEntity;
-import com.cngc.pm.activiti.jpa.entity.InspectionJpaEntity;
+import com.cngc.pm.dao.IncidentDAO;
+import com.cngc.pm.dao.InspectionDAO;
+import com.cngc.pm.model.Incident;
+import com.cngc.pm.model.Inspection;
 import com.cngc.utils.PropertyFileUtil;
 
 @Service
 public class InspectionEntityManager {
-	@PersistenceContext
-	private EntityManager entityManager;
+//	@PersistenceContext
+//	private EntityManager entityManager;
+	@Autowired
+	private InspectionDAO inspectionDao;
+	@Autowired
+	private IncidentDAO incidentDao;
 
 	@Transactional
-	public InspectionJpaEntity newInspection(DelegateExecution execution) {
-		InspectionJpaEntity inspection = new InspectionJpaEntity();
+	public Inspection newInspection(DelegateExecution execution) {
+		Inspection inspection = new Inspection();
 		inspection.setProcessInstanceId(execution.getProcessInstanceId());
 		inspection.setExecutionUser(execution.getVariable("user").toString());
 		if(execution.getVariable("template")!=null)
 			inspection.setTemplate(execution.getVariable("template").toString());
 		inspection.setCreatedTime(new Date());
-		entityManager.persist(inspection);
+//		entityManager.persist(inspection);
+		inspectionDao.save(inspection);
 		return inspection;
 	}
 
 	@Transactional
 	public boolean setInspectionStatus(DelegateExecution execution) {
-		InspectionJpaEntity inspection = (InspectionJpaEntity) execution.getVariable("inspection");
+		Inspection inspection = (Inspection) execution.getVariable("inspection");
 		if(inspection==null)
 			return true;
 		if(execution.getVariable("user")!=null)
@@ -55,7 +61,7 @@ public class InspectionEntityManager {
 		
 		if (inspection.getStatus().equals( PropertyFileUtil.getPropertyValue("syscode.inspection.abnormal") )) {
 			// 异常生成工单
-			IncidentJpaEntity incident = new IncidentJpaEntity();
+			Incident incident = new Incident();
 			incident.setAbs(execution.getVariable("abstract").toString());
 			incident.setApplyUser(execution.getVariable("user").toString());
 			incident.setInfluence(execution.getVariable("influence").toString());
@@ -65,8 +71,10 @@ public class InspectionEntityManager {
 			incident.setStatus("01");
 			incident.setType("01");
 			incident.setApplyTime(new Date());
-			entityManager.persist(incident);
-			entityManager.flush();
+//			entityManager.persist(incident);
+			incidentDao.save(incident);
+			incidentDao.flush();
+//			entityManager.flush();
 
 			// 启动流程
 			ProcessDefinition processDefinition = execution.getEngineServices().getRepositoryService()
@@ -78,7 +86,8 @@ public class InspectionEntityManager {
 			execution.getEngineServices().getFormService().submitStartFormData(processDefinition.getId(), variables);
 			inspection.setIncidentId(incident.getId());
 		}
-		entityManager.persist(inspection);
+//		entityManager.persist(inspection);
+		inspectionDao.save(inspection);
 		
 		return true;
 	}

@@ -174,7 +174,7 @@ public class GroupServiceImpl implements GroupService {
 	public String getChildByGroup(String groupid) {
 		// TODO Auto-generated method stub
 		StringBuffer jsonStr = new StringBuffer("[");
-		if(groupid.equals("source")) {
+		if(("source").equals(groupid)) {
 			for(Group group : groupDao.getAllTopGroup()) {
 				jsonStr.append("{\"text\":\"").append(group.getGroupName()).append("\"");
 				if(group.getChild().size()>0 || group.getUsers().size()>0) {

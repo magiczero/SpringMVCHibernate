@@ -11,12 +11,9 @@
 	<ul class="nav tabs-vertical" id="oaTableTitle">
 		<li class="active"><a href="#v4-step_1" data-toggle="tab">通达OA</a></li>
 		<li><a href="#v4-step_2" data-toggle="tab">通达OA测试</a></li>
-		<li><a href="#v4-step_3" data-toggle="tab">CMS</a></li>
-		<li><a href="#v4-step_4" data-toggle="tab">老OA</a></li>
-		<li><a href="#v4-step_5" data-toggle="tab">老OA数据库</a></li>
-		<li><a href="#v4-step_6" data-toggle="tab">保密管理平台</a></li>
-		<li><a href="#v4-step_7" data-toggle="tab">保密平台测试</a></li>
-		<li><a href="#v4-step_8" data-toggle="tab">FTP国军标</a></li>
+		<li><a href="#v4-step_3" data-toggle="tab">保密管理平台</a></li>
+		<li><a href="#v4-step_4" data-toggle="tab">保密平台测试</a></li>
+		<li><a href="#v4-step_5" data-toggle="tab">FTP国军标</a></li>
 	</ul>
 	<div class="tab-content" id="oaTable">
 		<div class="tab-pane" id="v4-step_i">
@@ -168,13 +165,10 @@
 <div id="tabs-2">
 <div class="tabs-vertical-env tabs-vertical-bordered">
 	<ul class="nav tabs-vertical" id="appTableTitle">
-		<li class="active"><a href="#v4-step_9" data-toggle="tab">TD-ACP</a></li>
-		<li><a href="#v4-step_10" data-toggle="tab">winchill-23</a></li>
-		<li><a href="#v4-step_11" data-toggle="tab">winchill-22</a></li>
-		<li><a href="#v4-step_12" data-toggle="tab">winchill-24</a></li>
-		<li><a href="#v4-step_13" data-toggle="tab">金算盘</a></li>
-		<li><a href="#v4-step_14" data-toggle="tab">综合报表</a></li>
-		<li><a href="#v4-step_15" data-toggle="tab">军品科研</a></li>
+		<li class="active"><a href="#v4-step_9" data-toggle="tab">老金算盘</a></li>
+		<li><a href="#v4-step_10" data-toggle="tab">新金算盘</a></li>
+		<li><a href="#v4-step_11" data-toggle="tab">综合报表</a></li>
+		<li><a href="#v4-step_12" data-toggle="tab">军品科研</a></li>
 	</ul>
 	<div class="tab-content" id="appTable">
 	</div>
@@ -191,10 +185,9 @@
 		<li><a href="#v4-step_20" data-toggle="tab">新鼎盾</a></li>
 		<li><a href="#v4-step_21" data-toggle="tab">老打印</a></li>
 		<li><a href="#v4-step_22" data-toggle="tab">UMC</a></li>
-		<li><a href="#v4-step_23" data-toggle="tab">新三合一</a></li>
-		<li><a href="#v4-step_24" data-toggle="tab">老三合一</a></li>
-		<li><a href="#v4-step_25" data-toggle="tab">防水墙</a></li>
-		<li><a href="#v4-step_26" data-toggle="tab">卫士通管控平台</a></li>
+		<li><a href="#v4-step_23" data-toggle="tab">三合一</a></li>
+		<li><a href="#v4-step_24" data-toggle="tab">防水墙</a></li>
+		<li><a href="#v4-step_25" data-toggle="tab">卫士通管控平台</a></li>
 	</ul>
 	<div class="tab-content" id="securityTable">
 	</div>
@@ -217,30 +210,29 @@ $(document).ready(function(){
 	var tmp = $("#oaTable").html();
 	$("#appTable").html("");
 	
-	for(i=1;i<=8;i++)
+	for(i=1;i<=5;i++)
 	{
 		$("#oaTable").append( tmp.replace(/_i/g,"_"+i) );
 		var tid = "#oaTableTitle a[href='#v4-step_"+i+"']";
 		$("#title_"+i).html($(tid).html());
 	}
-	for(i=9;i<=15;i++)
+	for(i=9;i<=12;i++)
 	{
 		$("#appTable").append( tmp.replace(/_i/g,"_"+i) );
 		var tid = "#appTableTitle a[href='#v4-step_"+i+"']";
 		$("#title_"+i).html($(tid).html());
 	}
-	for(i=16;i<=26;i++)
+	for(i=16;i<=25;i++)
 	{
 		$("#securityTable").append( tmp.replace(/_i/g,"_"+i) );
 		var tid = "#securityTableTitle a[href='#v4-step_"+i+"']";
 		$("#title_"+i).html($(tid).html());
 	}
-	for(i=27;i<=27;i++)
-	{
-		$("#storageTable").append( tmp.replace(/_i/g,"_"+i) );
-		var tid = "#storageTableTitle a[href='#v4-step_"+i+"']";
+	
+		$("#storageTable").append( tmp.replace(/_i/g,"_27") );
+		var tid = "#storageTableTitle a[href='#v4-step_27']";
 		$("#title_"+i).html($(tid).html());
-	}
+		
 	$("#v4-step_1").addClass("active"); 
 	$("#v4-step_9").addClass("active");
 	$("#v4-step_16").addClass("active");

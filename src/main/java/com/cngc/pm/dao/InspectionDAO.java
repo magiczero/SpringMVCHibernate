@@ -11,4 +11,5 @@ public interface InspectionDAO extends GenericDAO<Inspection,Long>{
 	Map<String,Object> getStats(String column,String row,String startTime,String endTime);
 	SearchResult<Inspection> getByProcessInstance(String processInstanceId);
 	SearchResult<Inspection> getNotFinishedTask();
+	String getTemplateData(Long inspectionId);
 }

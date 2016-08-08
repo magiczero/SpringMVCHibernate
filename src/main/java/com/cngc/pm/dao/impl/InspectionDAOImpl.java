@@ -44,4 +44,13 @@ public class InspectionDAOImpl extends BaseDAOImpl<Inspection,Long> implements I
 		
 		return this.searchAndCount(search);
 	}
+	@Override
+	public String getTemplateData(Long inspectionId) {
+		// TODO Auto-generated method stub
+		Search search = new Search();
+		search.addField("templateData");
+		search.addFilterEqual("id", inspectionId);
+		
+		return (String)this.searchUnique(search);
+	}
 }

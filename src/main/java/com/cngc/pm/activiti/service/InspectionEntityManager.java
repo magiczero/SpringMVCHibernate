@@ -51,6 +51,9 @@ public class InspectionEntityManager {
 			inspection.setStatus(execution.getVariable("status").toString());
 		else
 			inspection.setStatus( PropertyFileUtil.getStringValue("syscode.inspection.normal") );
+		
+		//查找template_data
+		inspection.setTemplateData(inspectionDao.getTemplateData(inspection.getId()));
 
 		if(execution.getCurrentActivityName()!=null)
 		{

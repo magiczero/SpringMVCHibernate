@@ -18,6 +18,7 @@ import javax.validation.Valid;
 
 import org.activiti.engine.FormService;
 import org.activiti.engine.HistoryService;
+import org.activiti.engine.IdentityService;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
@@ -64,6 +65,8 @@ public class IncidentController {
 
 	@Resource
 	private IncidentService incidentService;
+	@Resource
+	private IdentityService identityService;
 	@Resource
 	private RuntimeService runtimeService;
 	@Resource
@@ -220,7 +223,7 @@ public class IncidentController {
 	 * @return
 	 */
 	@RequestMapping(value = "/save", method = RequestMethod.POST)
-	public String save(@Valid @ModelAttribute("incident") Incident incident,HttpServletRequest request) {
+	public String save(@Valid @ModelAttribute("incident") Incident incident,HttpServletRequest request, Authentication authentication) {
 		if(incident.getId()==null)
 		{
 			if(!StringUtils.isEmpty(request.getParameter("fileids"))) {
@@ -242,6 +245,7 @@ public class IncidentController {
 			if (processDefinition != null) {
 				Map<String, String> variables = new HashMap<String, String>();
 				variables.put("id", String.valueOf(incident.getId()));
+				identityService.setAuthenticatedUserId(userUtil.getUserId(authentication));
 				formService.submitStartFormData(processDefinition.getId(), variables);
 			}
 		}

@@ -1,0 +1,179 @@
+<div class="tabs" id="inspection_div">
+	<ul>
+		<li><a href="#tabs-1">办公应用服务器</a></li>
+		<li><a href="#tabs-2">数据中心应用</a></li>
+		<li><a href="#tabs-3">安全产品服务器</a></li>
+		<li><a href="#tabs-4">数据备份服务器</a></li>
+		<li><a href="#tabs-5">网络服务器</a></li>
+	</ul>
+	
+<div id="tabs-1">
+<div class="tabs-vertical-env tabs-vertical-bordered">
+	<ul class="nav tabs-vertical" id="oaTableTitle">
+		<li class="active"><a href="#v4-step_1" data-toggle="tab">综合办公网</a></li>
+		<li><a href="#v4-step_2" data-toggle="tab">公文处理系统</a></li>
+		<li><a href="#v4-step_3" data-toggle="tab">保密管理平台</a></li>
+		<li><a href="#v4-step_4" data-toggle="tab">运维管理系统</a></li>
+		<li><a href="#v4-step_5" data-toggle="tab">网络学堂</a></li>
+		<li><a href="#v4-step_6" data-toggle="tab">自助报销系统</a></li>
+	</ul>
+	<div class="tab-content" id="oaTable">
+		<div class="tab-pane" id="v4-step_i">
+			<div id="title_i" class="label label-info" style="font-size:14px;"></div>
+			<div class="row-form clearfix">
+            	<div class="col-md-3">服务器硬盘指示灯是否正常:</div>
+                <div class="col-md-7">
+                    	<label class="checkbox checkbox-inline"><input type="radio" name="item_i_1" value="true" checked/> 是</label>
+                        <label class="checkbox checkbox-inline"><input type="radio" name="item_i_1" value="false"/> 否</label>
+                        &nbsp;&nbsp;<label style='display:none;'>异常说明</label>
+                        <label  style='display:none;'><input type="text" name="item_i_1_remark" /></label>
+            	</div>
+            	<div class="col-md-3">设备电源工作状态是否正常:</div>
+                <div class="col-md-7">
+                    	<label class="checkbox checkbox-inline"><input type="radio" name="item_i_2" value="true" checked/> 是</label>
+                        <label class="checkbox checkbox-inline"><input type="radio" name="item_i_2" value="false"/> 否</label>
+                         &nbsp;&nbsp;<label  style='display:none;'>异常说明</label>
+                        <label  style='display:none;'><input type="text" name="item_i_2_remark" /></label>
+            	</div>
+            	<div class="col-md-3">服务器网络连接是否正常:</div>
+                <div class="col-md-7">
+                    	<label class="checkbox checkbox-inline"><input type="radio" name="item_i_3" value="true" checked/> 是</label>
+                        <label class="checkbox checkbox-inline"><input type="radio" name="item_i_3" value="false"/> 否</label>
+                         &nbsp;&nbsp;<label  style='display:none;'>异常说明</label>
+                        <label  style='display:none;'><input type="text" name="item_i_3_remark" /></label>
+            	</div>
+            	<div class="col-md-3">程序运行状态是否正常:</div>
+                <div class="col-md-7">
+                    	<label class="checkbox checkbox-inline"><input type="radio" name="item_i_4" value="true" checked/> 是</label>
+                        <label class="checkbox checkbox-inline"><input type="radio" name="item_i_4" value="false"/> 否</label>
+                         &nbsp;&nbsp;<label  style='display:none;'>异常说明</label>
+                        <label  style='display:none;'><input type="text" name="item_i_4_remark" /></label>
+            	</div>
+            	<div class="col-md-3">系统无报错:</div>
+                <div class="col-md-7">
+                    	<label class="checkbox checkbox-inline"><input type="radio" name="item_i_5" value="true" checked/> 是</label>
+                        <label class="checkbox checkbox-inline"><input type="radio" name="item_i_5" value="false"/> 否</label>
+                         &nbsp;&nbsp;<label  style='display:none;'>异常说明</label>
+                        <label  style='display:none;'><input type="text" name="item_i_5_remark" /></label>
+            	</div>           		
+           	</div>
+		</div>
+		
+	</div>
+	
+</div>
+</div>
+
+
+<div id="tabs-2">
+<div class="tabs-vertical-env tabs-vertical-bordered">
+	<ul class="nav tabs-vertical" id="appTableTitle">
+		<li class="active"><a href="#v4-step_10" data-toggle="tab">科技管理系统</a></li>
+		<li><a href="#v4-step_11" data-toggle="tab">质量管理系统</a></li>
+		<li><a href="#v4-step_12" data-toggle="tab">综合报表系统</a></li>
+		<li><a href="#v4-step_13" data-toggle="tab">投资项目管理系统</a></li>
+		<li><a href="#v4-step_14" data-toggle="tab">人力资源管理系统</a></li>
+		<li><a href="#v4-step_15" data-toggle="tab">绩效运营管理系统</a></li>
+		<li><a href="#v4-step_16" data-toggle="tab">审计管理系统</a></li>
+		<li><a href="#v4-step_17" data-toggle="tab">总部人事管理系统</a></li>
+		<li><a href="#v4-step_18" data-toggle="tab">军品订货合同管理系统</a></li>
+		<li><a href="#v4-step_19" data-toggle="tab">财务报表平台</a></li>
+	</ul>
+	<div class="tab-content" id="appTable">
+	</div>
+</div>
+</div>
+
+<div id="tabs-3">
+<div class="tabs-vertical-env tabs-vertical-bordered">
+	<ul class="nav tabs-vertical" id="securityTableTitle">
+		<li class="active"><a href="#v4-step_20" data-toggle="tab">中软主机监控</a></li>
+		<li><a href="#v4-step_21" data-toggle="tab">打印管理系统</a></li>
+		<li><a href="#v4-step_22" data-toggle="tab">瑞星杀毒</a></li>
+		<li><a href="#v4-step_23" data-toggle="tab">补丁分发系统（代理前）</a></li>
+		<li><a href="#v4-step_24" data-toggle="tab">补丁分发系统（代理后）</a></li>
+		<li><a href="#v4-step_25" data-toggle="tab">运维审计系统</a></li>
+		<li><a href="#v4-step_26" data-toggle="tab">代理网关（主）</a></li>
+		<li><a href="#v4-step_27" data-toggle="tab">代理网关（备）</a></li>
+		<li><a href="#v4-step_28" data-toggle="tab">IDS</a></li>
+		<li><a href="#v4-step_29" data-toggle="tab">防火墙</a></li>
+		<li><a href="#v4-step_30" data-toggle="tab">CA</a></li>
+		<li><a href="#v4-step_31" data-toggle="tab">终端安全防护系统</a></li>
+	</ul>
+	<div class="tab-content" id="securityTable">
+	</div>
+</div>
+</div>
+
+<div id="tabs-4">
+<div class="tabs-vertical-env tabs-vertical-bordered">
+	<ul class="nav tabs-vertical" id="storageTableTitle">
+		<li class="active"><a href="#v4-step_40" data-toggle="tab">曙光存储备份服务器</a></li>
+		<li><a href="#v4-step_41" data-toggle="tab">智网科技应急响应系统</a></li>
+		<li><a href="#v4-step_42" data-toggle="tab">磁盘阵列</a></li>
+	</ul>
+	<div class="tab-content" id="storageTable">
+	</div>
+</div>
+</div>
+
+<div id="tabs-5">
+<div class="tabs-vertical-env tabs-vertical-bordered">
+	<ul class="nav tabs-vertical" id="netTableTitle">
+		<li class="active"><a href="#v4-step_50" data-toggle="tab">核心交换</a></li>
+		<li><a href="#v4-step_51" data-toggle="tab">代理后交换机</a></li>
+		<li><a href="#v4-step_52" data-toggle="tab">华为光纤交换机（上）</a></li>
+		<li><a href="#v4-step_53" data-toggle="tab">华为光纤交换机（下）</a></li>
+	</ul>
+	<div class="tab-content" id="netTable">
+	</div>
+</div>
+</div>
+	
+</div>
+<script>
+$(document).ready(function(){
+	var tmp = $("#oaTable").html();
+	$("#appTable").html("");
+	$("#securityTable").html("");
+	$("#storageTable").html("");
+	$("#netTable").html("");
+	for(i=1;i<=6;i++)
+	{
+		$("#oaTable").append( tmp.replace(/_i/g,"_"+i) );
+		var tid = "#oaTableTitle a[href='#v4-step_"+i+"']";
+		$("#title_"+i).html($(tid).html());
+	}
+	for(i=10;i<=19;i++)
+	{
+		$("#appTable").append( tmp.replace(/_i/g,"_"+i) );
+		var tid = "#appTableTitle a[href='#v4-step_"+i+"']";
+		$("#title_"+i).html($(tid).html());
+	}
+	for(i=20;i<=31;i++)
+	{
+		$("#securityTable").append( tmp.replace(/_i/g,"_"+i) );
+		var tid = "#securityTableTitle a[href='#v4-step_"+i+"']";
+		$("#title_"+i).html($(tid).html());
+	}
+	for(i=40;i<=42;i++)
+	{
+		$("#storageTable").append( tmp.replace(/_i/g,"_"+i) );
+		var tid = "#storageTableTitle a[href='#v4-step_"+i+"']";
+		$("#title_"+i).html($(tid).html());
+	}
+	for(i=50;i<=53;i++)
+	{
+		$("#netTable").append( tmp.replace(/_i/g,"_"+i) );
+		var tid = "#netTableTitle a[href='#v4-step_"+i+"']";
+		$("#title_"+i).html($(tid).html());
+	}	
+	$("#v4-step_1").addClass("active"); 
+	$("#v4-step_10").addClass("active"); 
+	$("#v4-step_20").addClass("active");
+	$("#v4-step_40").addClass("active");
+	$("#v4-step_50").addClass("active");
+	
+    $("#inspection_div").tabs();
+});
+</script>

@@ -13,9 +13,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 import org.activiti.engine.FormService;
+import org.activiti.engine.HistoryService;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
+import org.activiti.engine.history.HistoricProcessInstanceQuery;
 import org.activiti.engine.task.Task;
 import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.JsonParseException;
@@ -59,6 +61,8 @@ public class RecordController {
 	private InspectionService inspectionService;
 	@Resource
 	private TaskService taskService;
+	@Resource
+	private HistoryService historyService;
 	@Resource
 	private IncomeService incomeService;
 	@Resource
@@ -125,6 +129,10 @@ public class RecordController {
 	 */
 	@RequestMapping(value = "/inspection", method = RequestMethod.GET)
 	public String inspection(Model model, HttpServletRequest request, Authentication authentication) {
+		
+//		JSONArray jsonarray = JSONArray.fromObject(aoData);
+		HistoricProcessInstanceQuery hpq = historyService.createHistoricProcessInstanceQuery().processDefinitionKey("INSPECTION");
+		System.out.println(hpq.count());
 		String startTime = request.getParameter("startTime");
 		String endTime = request.getParameter("endTime");
 		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");

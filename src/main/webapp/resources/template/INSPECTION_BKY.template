@@ -231,7 +231,7 @@ $(document).ready(function(){
 	
 		$("#storageTable").append( tmp.replace(/_i/g,"_27") );
 		var tid = "#storageTableTitle a[href='#v4-step_27']";
-		$("#title_"+i).html($(tid).html());
+		$("#title_27").html($(tid).html());
 		
 	$("#v4-step_1").addClass("active"); 
 	$("#v4-step_9").addClass("active");

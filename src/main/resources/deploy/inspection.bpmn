@@ -16,6 +16,7 @@
           <activiti:value id="INSPECTION_XXZX_WW" name="信息中心外网--日常巡检模板"></activiti:value>
           <activiti:value id="INSPECTION_XXZX_WX" name="信息中心-鼎盾及邮箱"></activiti:value>
           <activiti:value id="INSPECTION_GGW" name="骨干网--日常巡检模板"></activiti:value>
+          <activiti:value id="INSPECTION_JT" name="集团--日常巡检"></activiti:value>
         </activiti:formProperty>
       </extensionElements>
     </startEvent>
@@ -29,6 +30,7 @@
           <activiti:value id="INSPECTION_XXZX_WW" name="信息中心外网--日常巡检模板"></activiti:value>
           <activiti:value id="INSPECTION_XXZX_WX" name="信息中心-鼎盾及邮箱"></activiti:value>
           <activiti:value id="INSPECTION_GGW" name="骨干网--日常巡检模板"></activiti:value>
+          <activiti:value id="INSPECTION_JT" name="集团--日常巡检模板"></activiti:value>
         </activiti:formProperty>
         <activiti:formProperty id="status" name="是否正常" type="enum">
           <activiti:value id="01" name="正常"></activiti:value>

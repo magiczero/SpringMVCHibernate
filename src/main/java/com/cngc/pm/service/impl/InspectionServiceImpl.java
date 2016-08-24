@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.cngc.pm.dao.InspectionDAO;
 import com.cngc.pm.model.Inspection;
 import com.cngc.pm.service.InspectionService;
+import com.googlecode.genericdao.search.Search;
 import com.googlecode.genericdao.search.SearchResult;
 
 @Service
@@ -64,5 +65,13 @@ public class InspectionServiceImpl implements InspectionService{
 	public SearchResult<Inspection> getNotFinishedTask()
 	{
 		return inspectionDao.getNotFinishedTask();
+	}
+
+	@Override
+	public Inspection getByProcessInstaceId(String processInstanceId) {
+		// TODO Auto-generated method stub
+		Search search = new Search();
+		search.addFilterEqual("processInstanceId", processInstanceId);
+		return inspectionDao.searchUnique(search);
 	}
 }

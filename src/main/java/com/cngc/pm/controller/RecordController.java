@@ -2,9 +2,11 @@ package com.cngc.pm.controller;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -17,13 +19,17 @@ import org.activiti.engine.HistoryService;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
+import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.history.HistoricProcessInstanceQuery;
+import org.activiti.engine.impl.util.json.JSONArray;
+import org.activiti.engine.impl.util.json.JSONObject;
 import org.activiti.engine.task.Task;
 import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -31,12 +37,15 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.cngc.pm.common.web.common.UserUtil;
 import com.cngc.pm.model.Income;
 import com.cngc.pm.model.Inspection;
+import com.cngc.pm.model.SysUser;
 import com.cngc.pm.model.Training;
+import com.cngc.pm.model.UserRole;
 import com.cngc.pm.service.IncidentService;
 import com.cngc.pm.service.IncomeService;
 import com.cngc.pm.service.InspectionService;
@@ -119,6 +128,113 @@ public class RecordController {
 
 		return "record/update-list";
 	}
+	
+	/**
+	 * 获取日常巡检信息（分页版）
+	 * 
+	 * @param model
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value = "/inspection1", method = RequestMethod.GET)
+	public String inspection1(Model model) {
+		return "record/inspection-list-1";
+	}
+	
+	@RequestMapping(value="/inspection-ajax-list",produces = "application/json;charset=UTF-8")
+	@ResponseBody
+	public String tableDemoAjax(@RequestParam String aoData,@RequestParam(required = false) Integer start,  
+		      @RequestParam(required = false) Integer length) {
+		//System.out.println(aoData);
+		JSONArray jsonarray = new JSONArray(aoData); 
+		
+		String sEcho = null;  
+	    int iDisplayStart = 0; // 起始索引  
+	    int iDisplayLength = 0; // 每页显示的行数  
+	   
+	    for (int i = 0; i < jsonarray.length(); i++) {  
+	        JSONObject obj = (JSONObject) jsonarray.get(i);  
+	        if (obj.get("name").equals("sEcho"))  
+	            sEcho = obj.get("value").toString();  
+	   
+	        if (obj.get("name").equals("iDisplayStart"))  
+	            iDisplayStart = obj.getInt("value");  
+	   
+	        if (obj.get("name").equals("iDisplayLength"))  
+	            iDisplayLength = obj.getInt("value");  
+	    } 
+	    
+	    String username = SecurityContextHolder.getContext().getAuthentication().getName();
+	    //判断权限
+    	SysUser sysuser = userService.getByUsername(username);
+    	boolean isLeader = false;
+    	for(UserRole ur : sysuser.getUserRoles()) {
+    		String rolename = ur.getRole().getRoleName();
+    		if(rolename.equals("WK_MANAGER") || rolename.equals("WK_LEADER") || rolename.equals("ROLE_ADMIN") ) {
+    			isLeader = true;
+    			break;
+    		}
+    	}
+	    HistoricProcessInstanceQuery hpq = historyService.createHistoricProcessInstanceQuery().processDefinitionKey("INSPECTION");
+	    if(isLeader) {
+	    	hpq = hpq.orderByProcessInstanceStartTime().desc();
+	    } else {
+	    	hpq = hpq.involvedUser(username).orderByProcessInstanceStartTime().desc();
+	    }
+	    List<HistoricProcessInstance> hpis = hpq.listPage(iDisplayStart, iDisplayLength);
+	    
+	    JSONObject getObj = new JSONObject();
+	    
+	    getObj.put("sEcho", sEcho);// 不知道这个值有什么用,有知道的请告知一下
+	    getObj.put("iTotalRecords", hpq.count());//实际的行数
+	    getObj.put("iTotalDisplayRecords",  hpq.count());//显示的行数,这个要和上面写的一样
+	    
+	    
+	    List<Map<String, String>> list = new ArrayList<>();
+	    for(HistoricProcessInstance hpi : hpis) {
+	    	String processInstanceId = hpi.getId();
+	    	Map<String, String> map = new LinkedHashMap<String, String>();
+	    	map.put("processid", processInstanceId);
+	    	Inspection ins = inspectionService.getByProcessInstaceId(processInstanceId);
+	    	Task task = taskService.createTaskQuery().processInstanceId(processInstanceId).active().singleResult();
+	    	map.put("assign", task==null?ins.getExecutionUserName():userService.getByUsername(task.getAssignee()).getName());
+	    	map.put("content", "");
+	    	SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"); 
+	    	map.put("starttime", sdf.format(hpi.getStartTime()));
+	    	map.put("endtime",hpi.getEndTime()==null?"":sdf.format(hpi.getEndTime()));
+	    	String status = "";
+	    	if(task == null) {
+	    		if(hpi.getDeleteReason()==null)
+	    			status = "已完成";
+	    		else
+	    			status = "由系统关闭";
+	    	} else {
+	    		status = "<a  href='#' onclick=\"trace('"+processInstanceId+"','"+task.getProcessDefinitionId()+"')\"  title=\"点击查看流程图\">"+task.getName()+"</a>";
+	    	}
+	    	
+	    	map.put("states", status);
+	    	
+	    	String result = "";
+	    	if(("01").equals(ins.getStatus())) {
+	    		result = "<span class=\"label label-success\">"+ins.getStatusName()+"</span>";
+	    	} else if(("02").equals(ins.getStatus()))
+	    		result = "<span class=\"label label-danger\">"+ins.getStatusName()+"</span>";
+	    	map.put("result", result);
+	    	map.put("num", ins.getIncidentId()==null?"":"<a href=\"/incident/view/"+ins.getIncidentId()+"\">"+ins.getIncidentId()+"</a>");
+	    	String op = "";
+	    	if(task ==null) {
+	    		op = "<a href=\"#\" onclick=\"javascript:viewInspection('"+ins.getTemplate()+"',"+ins.getId()+");\"><span class=\"glyphicon glyphicon-search\"></span> 查看</a>";
+	    	} else {
+	    		op = "<a href=\"/record/inspection/deal/"+ins.getId()+"/"+task.getId()+"\"><span class=\"glyphicon glyphicon-edit\"></span> 办理</a>";
+	    	}
+	    	map.put("op", op);
+	    	list.add(map);
+	    }
+	       
+	    getObj.put("aaData", list);//要以JSON格式返回
+	    
+		return getObj.toString();
+	}
 
 	/**
 	 * 获取日常巡检信息
@@ -131,8 +247,8 @@ public class RecordController {
 	public String inspection(Model model, HttpServletRequest request, Authentication authentication) {
 		
 //		JSONArray jsonarray = JSONArray.fromObject(aoData);
-		HistoricProcessInstanceQuery hpq = historyService.createHistoricProcessInstanceQuery().processDefinitionKey("INSPECTION");
-		System.out.println(hpq.count());
+//		HistoricProcessInstanceQuery hpq = historyService.createHistoricProcessInstanceQuery().processDefinitionKey("INSPECTION");
+//		System.out.println(hpq.count());
 		String startTime = request.getParameter("startTime");
 		String endTime = request.getParameter("endTime");
 		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");

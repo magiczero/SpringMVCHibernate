@@ -25,3 +25,10 @@ function pm_workflow_inittracedialog(nwidth,nheight)
 	   $("#b_popup_trace").dialog('open');
    });
 }
+
+function trace (pid,pdid) {
+	   var src= ctx+ '/diagram-viewer/index.html?processDefinitionId=' 
+	   	+ pdid + '&processInstanceId=' + pid;
+	   $("#trace_content").html("<iframe src='"+ src +"' width='100%' height='265'/>");
+	   $("#b_popup_trace").dialog('open');
+}

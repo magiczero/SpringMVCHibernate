@@ -20,8 +20,8 @@
 		<li><a href="#v4-step_12" data-toggle="tab">K205(2)</a></li>
 		<li><a href="#v4-step_13" data-toggle="tab">K204(1)</a></li>
 		<li><a href="#v4-step_14" data-toggle="tab">K204(2)</a></li>
-		<li><a href="#v4-step_15" data-toggle="tab">K203X-RG(1)</a></li>
-		<li><a href="#v4-step_16" data-toggle="tab">K203X-RG(2)</a></li>
+		<!--<li><a href="#v4-step_15" data-toggle="tab">K203X-RG(1)</a></li>
+		<li><a href="#v4-step_16" data-toggle="tab">K203X-RG(2)</a></li>-->
 		<li><a href="#v4-step_17" data-toggle="tab">K203X-H3C</a></li>
 		<li><a href="#v4-step_18" data-toggle="tab">K202X</a></li>
 
@@ -81,7 +81,9 @@ $(document).ready(function(){
 	{
 		$("#netTable").append( tmp.replace(/_i/g,"_"+i) );
 		var tid = "#netTableTitle a[href='#v4-step_"+i+"']";
+		if(tid) {
 		$("#title_"+i).html($(tid).html());
+		}
 	}
 	
 	$("#v4-step_1").addClass("active");

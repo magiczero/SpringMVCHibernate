@@ -16,7 +16,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.cngc.pm.dao.ChangeDAO;
-import com.cngc.pm.dao.ChangeItemDAO;
 import com.cngc.pm.dao.cms.CiDAO;
 import com.cngc.pm.dao.cms.PropertyDAO;
 import com.cngc.pm.model.Change;
@@ -32,8 +31,6 @@ public class ChangeServiceImpl implements ChangeService{
 	
 	@Autowired
 	private ChangeDAO changeDao;
-	@Autowired
-	private ChangeItemDAO changeitemDao;
 	@Autowired
 	private CiDAO ciDao;
 	@Autowired

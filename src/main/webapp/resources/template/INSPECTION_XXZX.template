@@ -9,8 +9,8 @@
 <div class="tabs-vertical-env tabs-vertical-bordered">
 	<ul class="nav tabs-vertical" id="serverTableTitle">
 		<li class="active"><a href="#v4-step_1" data-toggle="tab">瑞星</a></li>
-		<li><a href="#v4-step_2" data-toggle="tab">运维管理平台</a></li>
-		<li><a href="#v4-step_3" data-toggle="tab">锐捷安管平台</a></li>
+		<li><a href="#v4-step_2" data-toggle="tab">IDS漏洞扫描系统</a></li>
+		<li><a href="#v4-step_3" data-toggle="tab">锐捷运维监控系统</a></li>
 		<li><a href="#v4-step_4" data-toggle="tab">北信源安管平台</a></li>
 		<li><a href="#v4-step_5" data-toggle="tab">北信源三合一</a></li>
 		<li><a href="#v4-step_6" data-toggle="tab">CA RA</a></li>

@@ -62,7 +62,7 @@
     	var ctx = "${contextPath}";
     
         $(document).ready(function () {
-            $("#myTable").dataTable({
+            var table = $("#myTable").dataTable({
             	"oTableTools": {
                     "sSwfPath": "${contextPath }/resources/js/plugins/dataTables/extras/swf/copy_csv_xls_pdf.swf",
                     "aButtons" : [
@@ -79,6 +79,12 @@
 			    "bServerSide": true,//这个用来指明是通过服务端来取数据
 	            "sAjaxSource": "${contextPath}/record/inspection-ajax-list",//这个是请求的地址
 	            "fnServerData": retrieveData, // 获取数据的处理函数
+	            "fnServerParams": function (aoData) {  //查询条件
+                    aoData.push(
+                        { "name": "starttime", "value": $("#startTime").val() },
+                        { "name": "endtime", "value": $("#endTime").val() }
+                        );
+                },
 	            "aoColumns" : [
 	                           { "mData" : 'processid' }, 
 	                           { "mData" : 'assign' }, 
@@ -92,6 +98,12 @@
 	                                  { "mData" : 'op' }
 	                             ]
  			});
+            
+            $("button[name='btnSearch']").bind("click", function () { //按钮 触发table重新请求服务器
+                table.fnDraw();
+                $("#myModal").modal('hide');
+            });
+            
             $(".header").load("${contextPath}/header?t="+pm_random());
             $(".menu").load("${contextPath}/menu?t="+pm_random(), function () { $("#node_${moduleId}").addClass("active"); });
             $(".breadLine .buttons").load("${contextPath}/contentbuttons?t="+pm_random());
@@ -242,13 +254,12 @@
                         <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>                        
                         <h4>查询</h4>
                     </div>
-                    <form action="${contextPath }/record/inspection">
                     <div class="modal-body modal-body-np">
                         <div class="row">
                             <div class="block-fluid">
                                 <div class="row-form clearfix">
                                     <div class="col-md-3">开始时间:</div>
-                                    <div class="col-md-9"><input type="text" name="startTime" class="dateISO"/></div>
+                                    <div class="col-md-9"><input type="text" id="startTime" class="dateISO"/></div>
                                 </div>                                                           
                             </div>                
                         </div>
@@ -256,16 +267,15 @@
                             <div class="block-fluid">
                                 <div class="row-form clearfix">
                                     <div class="col-md-3">结束时间:</div>
-                                    <div class="col-md-9"><input type="text" name="endTime" class="dateISO"/></div>
+                                    <div class="col-md-9"><input type="text" id="endTime" class="dateISO"/></div>
                                 </div>                                                           
                             </div>                
                         </div>
                     </div>   
                     <div class="modal-footer">
-                        <button class="btn btn-primary" id="btn_set_role"> 查询 </button> 
+                        <button class="btn btn-primary" name="btnSearch"> 查询 </button> 
                         <button class="btn btn-default" data-dismiss="modal" aria-hidden="true">关闭</button>            
                     </div>
-                    </form>
                 </div>
             </div>
         </div>

@@ -1,6 +1,7 @@
 package com.cngc.pm.controller;
 
 import java.io.IOException;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -144,13 +145,15 @@ public class RecordController {
 	@RequestMapping(value="/inspection-ajax-list",produces = "application/json;charset=UTF-8")
 	@ResponseBody
 	public String tableDemoAjax(@RequestParam String aoData,@RequestParam(required = false) Integer start,  
-		      @RequestParam(required = false) Integer length) {
+		      @RequestParam(required = false) Integer length) throws ParseException {
 		//System.out.println(aoData);
 		JSONArray jsonarray = new JSONArray(aoData); 
 		
 		String sEcho = null;  
 	    int iDisplayStart = 0; // 起始索引  
 	    int iDisplayLength = 0; // 每页显示的行数  
+	    String startTime = "";
+	    String endTime = "";
 	   
 	    for (int i = 0; i < jsonarray.length(); i++) {  
 	        JSONObject obj = (JSONObject) jsonarray.get(i);  
@@ -162,6 +165,12 @@ public class RecordController {
 	   
 	        if (obj.get("name").equals("iDisplayLength"))  
 	            iDisplayLength = obj.getInt("value");  
+	        
+	        if (obj.get("name").equals("starttime"))  
+	            startTime = obj.getString("value");  
+	        
+	        if (obj.get("name").equals("endtime"))  
+	            endTime = obj.getString("value");  
 	    } 
 	    
 	    String username = SecurityContextHolder.getContext().getAuthentication().getName();
@@ -176,11 +185,18 @@ public class RecordController {
     		}
     	}
 	    HistoricProcessInstanceQuery hpq = historyService.createHistoricProcessInstanceQuery().processDefinitionKey("INSPECTION");
-	    if(isLeader) {
-	    	hpq = hpq.orderByProcessInstanceStartTime().desc();
-	    } else {
-	    	hpq = hpq.involvedUser(username).orderByProcessInstanceStartTime().desc();
+	    if(!isLeader) {
+//	    	hpq = hpq.orderByProcessInstanceStartTime().desc();
+//	    } else {
+	    	hpq = hpq.involvedUser(username);
 	    }
+	    if(!("").equals(startTime)) {
+	    	hpq.startedAfter(new SimpleDateFormat("yyyy-MM-dd").parse(startTime));
+	    }
+	    if(!("").equals(endTime)) {
+	    	hpq.startedBefore(new SimpleDateFormat("yyyy-MM-dd").parse(endTime));
+	    }
+	    hpq = hpq.orderByProcessInstanceStartTime().desc();
 	    List<HistoricProcessInstance> hpis = hpq.listPage(iDisplayStart, iDisplayLength);
 	    
 	    JSONObject getObj = new JSONObject();

@@ -137,15 +137,14 @@ public class RecordController {
 	 * @param request
 	 * @return
 	 */
-	@RequestMapping(value = "/inspection1", method = RequestMethod.GET)
+	@RequestMapping(value = "/inspection", method = RequestMethod.GET)
 	public String inspection1(Model model) {
 		return "record/inspection-list-1";
 	}
 	
 	@RequestMapping(value="/inspection-ajax-list",produces = "application/json;charset=UTF-8")
 	@ResponseBody
-	public String tableDemoAjax(@RequestParam String aoData,@RequestParam(required = false) Integer start,  
-		      @RequestParam(required = false) Integer length) throws ParseException {
+	public String tableDemoAjax(@RequestParam String aoData) throws ParseException {
 		//System.out.println(aoData);
 		JSONArray jsonarray = new JSONArray(aoData); 
 		
@@ -259,7 +258,7 @@ public class RecordController {
 	 * @param request
 	 * @return
 	 */
-	@RequestMapping(value = "/inspection", method = RequestMethod.GET)
+	@RequestMapping(value = "/inspection1", method = RequestMethod.GET)
 	public String inspection(Model model, HttpServletRequest request, Authentication authentication) {
 		
 //		JSONArray jsonarray = JSONArray.fromObject(aoData);

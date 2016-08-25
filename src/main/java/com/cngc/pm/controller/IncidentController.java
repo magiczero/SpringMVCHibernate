@@ -23,6 +23,8 @@ import org.activiti.engine.RepositoryService;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
 import org.activiti.engine.history.HistoricTaskInstance;
+import org.activiti.engine.impl.util.json.JSONArray;
+import org.activiti.engine.impl.util.json.JSONObject;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.task.Task;
 import org.apache.cxf.common.util.StringUtils;
@@ -37,6 +39,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.cngc.pm.common.web.common.UserUtil;
@@ -581,6 +584,115 @@ public class IncidentController {
 
 		return "incident/mystats";
 	}
+	
+	/**
+	 * 跳转到搜索页
+	 * @param model
+	 * @return
+	 */
+	@RequestMapping(value = "/search", method = RequestMethod.GET)
+	public String searchIndex(Model model) {
+		
+		model.addAttribute("units", groupService.getAllTop());
+		model.addAttribute("engineers", userService.getEngineer());
+		model.addAttribute("satisfaction", syscodeService.getAllByType("INCIDENT_SATISFACTION").getResult());				//满意度
+		
+		return "incident/search-index";
+	}
+	
+	@RequestMapping(value="/table-page-ajax-list",produces = "application/json;charset=UTF-8")
+	@ResponseBody
+	public String tablePageAjax(@RequestParam String aoData) throws ParseException {
+		JSONArray jsonarray = new JSONArray(aoData); 
+		
+		String sEcho = null;  
+	    int iDisplayStart = 0; // 起始索引  
+	    int iDisplayLength = 0; // 每页显示的行数  
+		//搜索条件
+		String abs = "";
+		String applyUser = "";
+		String engineer = "";
+		String satisfaction = "";
+		String unit = "";
+		String startTime = "";
+		String endTime = "";
+		
+		for (int i = 0; i < jsonarray.length(); i++) {  
+	        JSONObject obj = (JSONObject) jsonarray.get(i);  
+	        if (obj.get("name").equals("sEcho"))  
+	            sEcho = obj.get("value").toString();  
+	   
+	        if (obj.get("name").equals("iDisplayStart"))  
+	            iDisplayStart = obj.getInt("value");  
+	   
+	        if (obj.get("name").equals("iDisplayLength"))  
+	            iDisplayLength = obj.getInt("value");  
+	        
+	        if (obj.get("name").equals("starttime"))  
+	            startTime = obj.getString("value");  
+	        
+	        if (obj.get("name").equals("endtime"))  
+	            endTime = obj.getString("value");  
+	        
+	        if (obj.get("name").equals("abs"))  
+	            abs = obj.getString("value");  
+	        
+	        if (obj.get("name").equals("applyUser"))  
+	        	applyUser = obj.getString("value");  
+	        
+	        if (obj.get("name").equals("engineer"))  
+	        	engineer = obj.getString("value");  
+	        
+	        if (obj.get("name").equals("satisfaction"))  
+	        	satisfaction = obj.getString("value");  
+	        
+	        if (obj.get("name").equals("unit"))  
+	            unit = obj.getString("value");  
+	    } 
+		
+		Date startDate = null; Date endDate = null;
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd"); 
+		if(!("").equals(startTime))
+			startDate = sdf.parse(startTime);
+		if(!("").equals(endTime))
+			endDate = sdf.parse(endTime);
+		
+		if (engineer.equals("00")) // 查看全部
+			engineer = null;
+		
+		if (satisfaction.equals("00")) // 查看全部
+			satisfaction = null;
+		
+		List<Incident> list = new LinkedList<>();
+		int count = 0;
+		if(unit.equals("00")) {
+			SearchResult<Incident> result = incidentService.search(abs, applyUser, engineer, satisfaction, startDate, endDate,iDisplayStart,iDisplayLength);
+			list = result.getResult();
+			count = result.getTotalCount();
+		} else {
+			List<Incident> listAll = incidentService.search(abs, applyUser, engineer, satisfaction, startDate, endDate);
+			Group group = groupService.getById(Long.valueOf(unit));
+				
+			for(Incident in : listAll) {
+				Group group1 = userService.getTopGroupByUser(userService.getByUsername(in.getApplyUser()));
+				if(group1 == group) {
+					list.add(in);
+				}
+			}
+			count = list.size();
+			list = list.subList(iDisplayStart, iDisplayStart+iDisplayLength>list.size()?list.size():iDisplayStart+iDisplayLength);
+			
+		}
+		
+		JSONObject getObj = new JSONObject();
+	    
+	    getObj.put("sEcho", sEcho);// 不知道这个值有什么用,有知道的请告知一下
+	    getObj.put("iTotalRecords", count);//实际的行数
+	    getObj.put("iTotalDisplayRecords",  count);//显示的行数,这个要和上面写的一样
+	    getObj.put("aaData", list);
+		
+		return getObj.toString();
+	}
 
 	/**
 	 * 查询
@@ -589,7 +701,7 @@ public class IncidentController {
 	 * @param request
 	 * @return
 	 */
-	@RequestMapping(value = "/search", method = RequestMethod.GET)
+	@RequestMapping(value = "/search/index", method = RequestMethod.GET)
 	public String search(Model model,Integer offset,Integer maxResults, HttpServletRequest request) {
 
 		String startTime = request.getParameter("startTime");
@@ -652,7 +764,7 @@ public class IncidentController {
 				count = list.size();
 			}
 		}
-		model.addAttribute("satisfaction", syscodeService.getAllByType("INCIDENT_SATISFACTION").getResult());
+		model.addAttribute("satisfaction", syscodeService.getAllByType("INCIDENT_SATISFACTION").getResult());				//满意度
 		model.addAttribute("list", list);
 		model.addAttribute("units", groupService.getAllTop());
 		model.addAttribute("engineers", userService.getEngineer());

@@ -63,6 +63,9 @@
     
         $(document).ready(function () {
             var table = $("#myTable").dataTable({
+            	"bFilter" : false,
+            	//关闭过滤功能替换为文件导出按钮
+                "sDom" : 'T<"clear">lfrtip' ,
             	"oTableTools": {
                     "sSwfPath": "${contextPath }/resources/js/plugins/dataTables/extras/swf/copy_csv_xls_pdf.swf",
                     "aButtons" : [
@@ -74,7 +77,6 @@
                                   ]
                 },
             	"oLanguage": {"sUrl": "${contextPath}/resources/json/Chinese.json"},
-            	"bFilter" : false,
             	"bProcessing": false, // 是否显示取数据时的那个等待提示
 			    "bServerSide": true,//这个用来指明是通过服务端来取数据
 	            "sAjaxSource": "${contextPath}/record/inspection-ajax-list",//这个是请求的地址
@@ -246,7 +248,7 @@
     	<div class="dialog" id="b_popup_inspection" style="display: none;" title="查看巡检结果">
 	    	<div class="block dialog_block" id="form_template"></div>
     	</div>
-    	<!-- 查询 modal form -->
+    	<!-- 查询 modal div -->
     	<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
@@ -279,7 +281,7 @@
                 </div>
             </div>
         </div>
-    	<!-- 查询 end from -->
+    	<!-- 查询 end div -->
     </div>
 </body>
 

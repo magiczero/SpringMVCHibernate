@@ -13,6 +13,7 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
 import org.activiti.engine.FormService;
@@ -144,7 +145,7 @@ public class RecordController {
 	
 	@RequestMapping(value="/inspection-ajax-list",produces = "application/json;charset=UTF-8")
 	@ResponseBody
-	public String tableDemoAjax(@RequestParam String aoData) throws ParseException {
+	public String tableDemoAjax(@RequestParam String aoData,HttpSession httpSession) throws ParseException {
 		//System.out.println(aoData);
 		JSONArray jsonarray = new JSONArray(aoData); 
 		
@@ -237,10 +238,11 @@ public class RecordController {
 	    	map.put("result", result);
 	    	map.put("num", ins.getIncidentId()==null?"":"<a href=\"/incident/view/"+ins.getIncidentId()+"\">"+ins.getIncidentId()+"</a>");
 	    	String op = "";
+	    	String path = httpSession.getServletContext().getContextPath();
 	    	if(task ==null) {
 	    		op = "<a href=\"#\" onclick=\"javascript:viewInspection('"+ins.getTemplate()+"',"+ins.getId()+");\"><span class=\"glyphicon glyphicon-search\"></span> 查看</a>";
 	    	} else {
-	    		op = "<a href=\"/record/inspection/deal/"+ins.getId()+"/"+task.getId()+"\"><span class=\"glyphicon glyphicon-edit\"></span> 办理</a>";
+	    		op = "<a href=\""+path+"/record/inspection/deal/"+ins.getId()+"/"+task.getId()+"\"><span class=\"glyphicon glyphicon-edit\"></span> 办理</a>";
 	    	}
 	    	map.put("op", op);
 	    	list.add(map);

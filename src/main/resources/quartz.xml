@@ -65,7 +65,7 @@
 		</property>
 		<!-- cron表达式 -->
 		<property name="cronExpression">
-			<value>0 15 8 ? * 2,3,4,5,6 *</value>
+			<value>0 22 10 ? * 2,3,4,5,6 *</value>
 		</property>
 	</bean>
 	<bean id="virusUpdateTime" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">

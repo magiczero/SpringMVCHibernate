@@ -102,6 +102,7 @@
                 	
                 	
                 	$("#treeview").treeview({
+                		collapsed: true,
                 		unique: true,
                 		url : ctx + '/cms/category/getjson?t=' + pm_random()
 	            	});
@@ -110,6 +111,9 @@
                 	
                 });
                 $("#userInMaintenance").select2();
+                $("#securityLevel").select2();
+                $("#system").select2();
+                $("#status").select2();
                 init();
                 
                 $('#file_upload').uploadify({

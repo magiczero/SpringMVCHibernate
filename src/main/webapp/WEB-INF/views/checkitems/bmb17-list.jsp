@@ -351,60 +351,6 @@
             <!--workplace end-->
         </div>
     </div>
-     <%--<div class="modal fade" id="fModal2" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>                        
-                        <h4>添加子项</h4>
-                    </div>
-                    <div class="modal-body modal-body-np">
-                    <div class="row">&nbsp;</div>
-                        <div class="row">
-                        <div class="col-md-12">
-						<c:url var="addAction" value="/checkitems/saveitems" ></c:url>
-						<form:form action="${addAction}" commandName="style">
-						<form:hidden path="code" value="NON"/>
-						<form:hidden path="style.id" class="validate[required,digits]"/>
-                        <div class="block-fluid">
-                          <div class="row-form clearfix">
-                                <div class="col-md-2"><form:label path="name">名称*</form:label></div>
-                                <div class="col-md-10"><form:input path="name" class="validate[required,minSize[2],maxSize[30]] text-input" /><form:errors path="name" cssClass="error" /></div>
-                            </div>
-                            <div class="row-form clearfix">
-                                <div class="col-md-2">
-                                <label>所属项</label>
-                                </div>
-                                <div id="itemParent" class="col-md-10">
-                                </div>
-                            </div>
-                            <div class="row-form clearfix">
-                                <div class="col-md-2">
-                                	<label for="order">排序</label>
-                                </div>
-                                <div class="col-md-10">
-                                	<form:input path="order" class="validate[digits]"/>
-                                </div>
-                            </div>
-							<div class="row-form clearfix">
-                                <div class="col-md-2">
-                                <label for="link">说明</label>
-                                </div>
-                                <div class="col-md-10">
-                                <form:textarea path="desc" class="validate[maxSize[30]]"/>
-                                </div>
-                            </div>
-                            <div class="footer tar">
-                               <input type="submit" class="btn btn-primary center-block" value="提 交" />
-                            </div>
-                        </div>
-                        </form:form>
-						</div>
-                        </div>
-                    </div>
-                    </div>
-                    </div>
-                    </div> --%>
        <div class="modal fade" id="fModal3" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">

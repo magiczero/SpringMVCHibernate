@@ -8,7 +8,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.cngc.pm.dao.StatsDAO;
+import com.cngc.pm.dao.cms.CategoryDAO;
 import com.cngc.pm.dao.cms.CiDAO;
+import com.cngc.pm.model.cms.Category;
 import com.cngc.pm.model.cms.Ci;
 import com.cngc.pm.service.cms.CiService;
 import com.googlecode.genericdao.search.Search;
@@ -21,7 +23,8 @@ public class CiServiceImpl implements CiService{
 	private CiDAO ciDao;
 	@Autowired
 	private StatsDAO statsDao;
-	
+	@Autowired
+	private CategoryDAO categoryDao;
 
 	@Override
 	@Transactional
@@ -93,5 +96,39 @@ public class CiServiceImpl implements CiService{
 	public SearchResult<Ci> getByUser(String user)
 	{
 		return ciDao.getByUser(user);
+	}
+
+	@Override
+	@Transactional(readOnly=true)
+	public SearchResult<Ci> getDocumentAllByCategory(Category category, int iDisplayStart, int iDisplayLength) {
+		// TODO Auto-generated method stub
+		Search search = new Search();
+		search.addFilterLike("categoryCode", category.getCategoryCode()+"%");
+		search.addField("categoryCode");
+		search.addSortAsc("categoryCode");
+		List<String> list = categoryDao.search(search);
+		
+		Search search2 = new Search();
+		search2.addFilterIn("categoryCode", list);
+		search2.setFirstResult(iDisplayStart);
+		search2.setMaxResults(iDisplayLength);
+		
+		return ciDao.searchAndCount(search2);
+	}
+
+	@Override
+	@Transactional(readOnly=true)
+	public List<Ci> getDocumentAllByCategory(Category category) {
+		// TODO Auto-generated method stub
+		Search search = new Search();
+		search.addFilterLike("categoryCode", category.getCategoryCode()+"%");
+		search.addField("categoryCode");
+		search.addSortAsc("categoryCode");
+		List<String> list = categoryDao.search(search);
+		
+		Search search2 = new Search();
+		search2.addFilterIn("categoryCode", list);
+		
+		return ciDao.search(search2);
 	}
 }

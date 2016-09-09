@@ -45,8 +45,8 @@
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/select2/select2.min.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/datetimepicker/datetimepicker.min.js' charset="UTF-8"></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/datetimepicker/datetimepicker.zh-CN.js'></script>
-    <!-- <script type='text/javascript' src='${contextPath }/resources/js/plugins/jtree/jtree.js'></script>-->
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/jstree/jquery.treeview.js'></script>
+    <script type='text/javascript' src='${contextPath }/resources/js/plugins/jstree/jquery.treeview.edit.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/jstree/jquery.treeview.async.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/uploadify/jquery.uploadify.min.js'></script>
     
@@ -194,9 +194,9 @@
                             </div>
                             <div class="row-form clearfix">
                             	<div class="col-md-1"><form:label path="securityLevel">密级:</form:label></div>
-	                            <div class="col-md-3"><form:select path="securityLevel" items="${securityLevel }" itemLabel="codeName" itemValue="code"></form:select></div>
+	                            <div class="col-md-3"><form:select path="securityLevel" items="${securityLevel }" itemLabel="codeName" style="width:100%" itemValue="code"></form:select></div>
                             	<div class="col-md-1"><form:label path="system">归属系统:</form:label></div>
-	                            <div class="col-md-3"><form:select path="system" items="${system }" itemLabel="codeName" itemValue="code"></form:select></div>
+	                            <div class="col-md-3"><form:select path="system" items="${system }" itemLabel="codeName" style="width:100%" itemValue="code"></form:select></div>
                             </div>
                             <div class="row-form clearfix">
                                 <div class="col-md-1"><form:label path="securityNo">保密编号:</form:label></div>
@@ -238,7 +238,7 @@
 								<form:hidden path="serviceEndTime"></form:hidden>
 				            	</div>
                                 <div class="col-md-1"><form:label path="status">状态:</form:label></div>
-	                            <div class="col-md-3"><form:select path="status" items="${status }" itemLabel="codeName" itemValue="code"></form:select></div>
+	                            <div class="col-md-3"><form:select path="status" items="${status }" style="width:100%" itemLabel="codeName" itemValue="code"></form:select></div>
                             </div>                              
                             <div class="row-form clearfix">
                                 <div class="col-md-1"><form:label path="serviceProvider">服务提供商:</form:label></div>

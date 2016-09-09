@@ -23,6 +23,8 @@ import org.springframework.transaction.annotation.Transactional;
 import com.cngc.pm.model.Group;
 import com.cngc.pm.model.SysCode;
 import com.cngc.pm.model.SysUser;
+import com.cngc.pm.model.cms.Category;
+import com.cngc.pm.service.cms.CategoryService;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath:servlet-context.xml"})
@@ -37,9 +39,9 @@ public class ServiceTest {
 	@Autowired
 	private GroupService groupService;
 	@Autowired
-	private CheckItemsService itemsService;
-	@Autowired
 	private DocumentService docService;
+	@Autowired
+	private CategoryService categoryService;
 	
 	Logger LOGGER = LoggerFactory.getLogger(ServiceTest.class);
 	
@@ -141,6 +143,16 @@ public class ServiceTest {
     	//String str = itemsService.getJSonByCode("CI");
     	
     	System.out.println("document size is "+code.getId());
+    	
+Category category = categoryService.getByCodeName("文档");
+		
+		List<Category> list = categoryService.getListByParent(category,true);
+		
+		System.out.println(list.size());
+		
+		for(Category c: list) {
+			System.out.println(c.getCategoryCode());
+		}
     	
     	//assertNotNull(str);
 //    	List<Person> persons = personService.testPersons();

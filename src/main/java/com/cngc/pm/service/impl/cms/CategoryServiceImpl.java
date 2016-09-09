@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.cngc.pm.dao.cms.CategoryDAO;
 import com.cngc.pm.model.cms.Category;
 import com.cngc.pm.service.cms.CategoryService;
+import com.googlecode.genericdao.search.Search;
 
 @Service
 public class CategoryServiceImpl implements CategoryService {
@@ -86,6 +87,31 @@ public class CategoryServiceImpl implements CategoryService {
 		sjson = "[" + sjson + "]";
 
 		return sjson;
+	}
+
+	@Override
+	@Transactional(readOnly=true)
+	public Category getByCodeName(String categoryName) {
+		// TODO Auto-generated method stub
+		Search search = new Search();
+		search.addFilterEqual("categoryName", categoryName);
+		
+		return categoryDao.searchUnique(search);
+	}
+
+	@Override
+	@Transactional(readOnly=true)
+	public List<Category> getListByParent(Category parent, boolean all) {
+		// TODO Auto-generated method stub
+		Search search = new Search();
+		if(all)
+			search.addFilterLike("categoryCode", parent.getCategoryCode()+"%");
+		else
+			search.addFilterLike("categoryCode", parent.getCategoryCode()+"__");
+		
+		search.addSortAsc("categoryCode");
+		
+		return categoryDao.search(search);
 	}
 
 }

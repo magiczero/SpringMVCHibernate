@@ -20,10 +20,12 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
+
+import com.cngc.pm.model.cms.Ci;
 
 @Entity
 @DynamicUpdate(true)  
@@ -46,7 +48,7 @@ public class CheckItems implements Serializable {
 	private Boolean base;
 	private String record;				//相关记录
 	
-	private Set<Document> docSet = new HashSet<>();
+	private Set<Ci> docSet = new HashSet<>();
 
 	@Column(name="name_")
 	public String getName() {
@@ -88,16 +90,6 @@ public class CheckItems implements Serializable {
 		this.item = item;
 	}
 
-//	@ManyToOne(targetEntity=Style.class)
-//	@JoinColumn(name="style_id", referencedColumnName="id")
-//	public Style getStyle() {
-//		return style;
-//	}
-//
-//	public void setStyle(Style style) {
-//		this.style = style;
-//	}
-
 	public String getDemand() {
 		return demand;
 	}
@@ -123,19 +115,16 @@ public class CheckItems implements Serializable {
 		this.base = base;
 	}
 
-	@ManyToMany(targetEntity=Document.class)
+	@ManyToMany(targetEntity=Ci.class)
 	@JoinTable(name = "doc_style", joinColumns = { @JoinColumn(name = "style_id") }, inverseJoinColumns = { @JoinColumn(name = "doc_id") })  
-//	@OneToMany(targetEntity=Document.class)
-//	@JoinTable(name = "doc_style", joinColumns = { @JoinColumn(name = "style_id", referencedColumnName="id") }, inverseJoinColumns = { @JoinColumn(name = "doc_id", referencedColumnName="id", unique=true) })
-//	@Cascade(CascadeType.ALL)
 	@Fetch(FetchMode.SUBSELECT)
 	@OrderBy("id")  
 	@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-	public Set<Document> getDocSet() {
+	public Set<Ci> getDocSet() {
 		return docSet;
 	}
 
-	public void setDocSet(Set<Document> docSet) {
+	public void setDocSet(Set<Ci> docSet) {
 		this.docSet = docSet;
 	}
 	

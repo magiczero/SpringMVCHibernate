@@ -3,6 +3,7 @@ package com.cngc.pm.service.cms;
 import java.util.List;
 import java.util.Map;
 
+import com.cngc.pm.model.cms.Category;
 import com.cngc.pm.model.cms.Ci;
 import com.googlecode.genericdao.search.SearchResult;
 
@@ -29,4 +30,8 @@ public interface CiService {
 	Map<String,Object> getStats(String column,String row,String status);
 	
 	SearchResult<Ci> getByUser(String user);
+	
+	SearchResult<Ci> getDocumentAllByCategory(Category category, int iDisplayStart,int iDisplayLength);
+	
+	List<Ci> getDocumentAllByCategory(Category category);
 }

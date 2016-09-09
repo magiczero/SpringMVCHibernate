@@ -22,10 +22,12 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.cngc.pm.model.CheckItems;
-import com.cngc.pm.model.Document;
 import com.cngc.pm.model.Style;
+import com.cngc.pm.model.cms.Ci;
 import com.cngc.pm.service.CheckItemsService;
 import com.cngc.pm.service.StyleService;
+import com.cngc.pm.service.cms.CategoryService;
+import com.cngc.pm.service.cms.CiService;
 import com.googlecode.genericdao.search.SearchResult;
 
 @Controller
@@ -38,12 +40,18 @@ public class CheckItemsController {
 	@Resource
 	private StyleService styleService;
 	
+	@Resource
+	private CiService ciService;
+	
+	@Resource
+	private CategoryService categoryService;
+	
 	@InitBinder
     protected void initBinder(WebDataBinder binder) {
         binder.registerCustomEditor(Set.class, "docSet", new CustomCollectionEditor(Set.class)
           {
             @Override
-            protected Document convertElement(Object element)
+            protected Ci convertElement(Object element)
             {
                 Long id = null;
 
@@ -62,7 +70,7 @@ public class CheckItemsController {
                     id = (Long) element;
                 }
 
-                return id != null ? itemsService.loadDocById(id) : null;
+                return id == null ? null : ciService.getById(id);
             }
           });
      // String类型转换，将所有传递进来的String进行HTML编码，防止XSS攻击
@@ -107,7 +115,7 @@ public class CheckItemsController {
 //		model.addAttribute("style", new Style());
 		
 		model.addAttribute("checkitems", new CheckItems());
-		model.addAttribute("docList", itemsService.getAllDoc());
+		model.addAttribute("docList", ciService.getDocumentAllByCategory(categoryService.getByCodeName("文档")));
 		
 		return "/checkitems/"+returnStr;
 	}
@@ -152,7 +160,7 @@ public class CheckItemsController {
 		
 		model.addAttribute("style", new Style());
 		model.addAttribute("checkitems", new CheckItems());
-		model.addAttribute("docList", itemsService.getAllDoc());
+		model.addAttribute("docList", ciService.getDocumentAllByCategory(categoryService.getByCodeName("文档")));
 		
 		return "/checkitems/"+returnStr;
 	}
@@ -179,7 +187,7 @@ public class CheckItemsController {
 		
 		model.addAttribute("checkitems", ci);
 		//model.addAttribute("styleList", itemsService.getSytleListByCode("CI"));
-		model.addAttribute("docList", itemsService.getAllDoc());
+		model.addAttribute("docList", ciService.getDocumentAllByCategory(categoryService.getByCodeName("文档")));
 		
 		return "checkitems/add";
 	}

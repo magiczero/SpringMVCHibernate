@@ -14,6 +14,10 @@ public interface CategoryService {
 
 	List<Category> getAll();
 	
+	List<Category> getListByParent(Category parent,boolean all);
+	
 	String getJSON();
+
+	Category getByCodeName(String categoryName);
 
 }

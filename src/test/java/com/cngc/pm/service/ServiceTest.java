@@ -135,6 +135,7 @@ public class ServiceTest {
     }
 
     @Test
+	@Ignore
     public void testCollegeFind() {
     	//List<Document> list = docService.getListByUserAndNum("admin", 0);
     	SysCode code = docService.getCode(docService.getById(107l));

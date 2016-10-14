@@ -26,6 +26,7 @@
     <link href="${contextPath }/resources/css/styling.css" rel="stylesheet" type="text/css" />
     <link href="${contextPath }/resources/css/mycss.css" rel="stylesheet" type="text/css" />
     <link href="${contextPath }/resources/css/validation.css" rel="stylesheet" type="text/css" />
+    <link href="${contextPath }/resources/js/plugins/datetimepicker/datetimepicker.min.css" rel="stylesheet" type="text/css" />
     <link href="${contextPath }/resources/js/plugins/select2/select2.css" rel="stylesheet" type="text/css" />
     <!--[if lt IE 8]>
         <link href="${contextPath }/resources/css/ie7.css" rel="stylesheet" type="text/css" />
@@ -45,6 +46,8 @@
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/pnotify/jquery.pnotify.min.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/ibutton/jquery.ibutton.min.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/scrollup/jquery.scrollUp.min.js'></script>
+    <script type='text/javascript' src='${contextPath }/resources/js/plugins/datetimepicker/datetimepicker.min.js' charset="UTF-8"></script>
+    <script type='text/javascript' src='${contextPath }/resources/js/plugins/datetimepicker/datetimepicker.zh-CN.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/select2/select2.min.js'></script>
     
     <script type='text/javascript' src='${contextPath }/resources/js/pm-common.js'></script>
@@ -71,6 +74,47 @@
                		return false;
             });
             
+            $("#lnk_start_overtime").bind("click",function(){
+               	act_form_openStartDialog("发起领导交办任务","OVERTIME","/overtime");
+            });
+            <%--
+            function act_form_openStartDialog(processName,processDefinitionKey,redirectAddress) {
+            	// 对话框打开时执行
+            	$('#dynamicForm').html(
+            			"<div class='modal-dialog'>"
+            			+"<div class='modal-content'>"
+            			+"<div class='modal-header'>"
+            			+"<button type='button' class='close' data-dismiss='modal'>"
+            			+"<span aria-hidden='true'>&times;</span><span class='sr-only'>Close</span></button>"                        
+                        +"<h4>"+processName+"</h4>"
+                        +"</div>"
+                        +"<div class='dynamic-form-dialog'></div>"
+            			+"</div>"
+            			+"</div>"
+            	);
+            	$('#dynamicForm').unbind('shown.bs.modal');
+            	$('#dynamicForm').on('shown.bs.modal', function() {
+            		// 获取json格式的表单数据，就是流程定义中的所有field
+            		act_form_getStartDialog(processDefinitionKey,redirectAddress);
+            	});
+            	
+            	// 打开动态表单对话框
+            	$("#dynamicForm").modal();
+            }
+            
+            function act_form_getStartDialog(processDefinitionKey,redirectAddress) {
+            	// 清空对话框内容
+            	$('.dynamic-form-dialog').html("<form class='dynamic-form' method='post'><div id='dynamic-form-table' class='modal-body modal-body-np'></div></form>");
+            	var $form = $('.dynamic-form');
+            	// 设置表单提交id
+            	$form.attr('action', ctx + '/workflow/dynamicform/startprocessbykey/' + processDefinitionKey);
+
+            	// 读取启动时的表单
+            	$.getJSON(ctx + '/workflow/dynamicform/getformbykey/start/' + processDefinitionKey + '?t=' + pm_random(),function(data) {
+            		act_form_getDialogFields(data,redirectAddress);
+            	});
+            }
+            --%>
             $(".dateISO").datepicker(); 
             
             var starttime,endtime;
@@ -116,7 +160,7 @@
                 <ul class="breadcrumb">
                     <li><a href="#">运维管理系统</a> <span class="divider">></span></li>
                     <li><a href="#">运维工作管理</a> <span class="divider">></span></li>       
-                    <li class="active">领导交办</li>
+                    <li class="active">加班</li>
                 </ul>
 
                 <ul class="buttons"></ul>
@@ -133,7 +177,7 @@
                     <div class="col-md-12">                    
                         <div class="head clearfix">
                             <div class="isw-grid"></div>
-                            <h1>领导交办</h1>  
+                            <h1>加班列表</h1>  
 							<ul class="buttons">
                                 <li>
                                     <a href="#" class="isw-zoom tipb" data-toggle="modal" data-target="#myModal" title="查询"></a>
@@ -141,7 +185,7 @@
                                 <li>
                                     <a href="#" class="isw-settings tipl" title="操作 "></a>
                                     <ul class="dd-list">
-                                    	<li><a href="#" id="lnk_start_leadertask"><span class="isw-plus"></span> 发起领导交办任务</a></li>
+                                    	<li><a href="#" id="lnk_start_overtime"><span class="isw-plus"></span> 发起加班申请</a></li>
                                         <li><a href="#" data-toggle="modal" data-target="#myModal"><span class="isw-zoom"></span> 任务查询</a></li>
                                         <li><a href="#" onclick="pm_refresh()"><span class="isw-refresh"></span> 刷新</a></li>
                                     </ul>

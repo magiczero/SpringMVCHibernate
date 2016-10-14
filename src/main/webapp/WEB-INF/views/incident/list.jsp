@@ -182,7 +182,13 @@
 	                                    <tr>
 	                                    	<td>${incident.processInstanceId }</td>
 	                                        <td>
+	                                        	<c:if test="${incident.priority == '02' || incident.priority == '01' }">
+	                                        	<span class="label label-danger tipb" title="优先级:${incident.priorityName }">${incident.priorityName }</span>
+	                                        	</c:if>
+	                                        	<c:if test="${incident.priority == '04' || incident.priority == '03' }">
 	                                        	<span class="label label-warning tipb" title="优先级:${incident.priorityName }">${incident.priorityName }</span>
+	                                        	</c:if>
+	                                        	
 	                                        	<a href="${contextPath }/incident/view/${incident.id}" title="查看详情" class="tipr" target="_blank">${incident.abs }</a>
 	                                        </td>
 	                                        <td>${incident.applyUserName }</td>
@@ -213,7 +219,12 @@
                                     		<tr>
                                     			<td>${incident.processInstanceId }</td>
 		                                        <td>
-		                                        	<span class="label label-warning tipb" title="优先级:${incident.priorityName }">${incident.priorityName }</span>
+		                                        	<c:if test="${incident.priority == '02' || incident.priority == '01' }">
+	                                        	<span class="label label-danger tipb" title="优先级:${incident.priorityName }">${incident.priorityName }</span>
+	                                        	</c:if>
+	                                        	<c:if test="${incident.priority == '04' || incident.priority == '03'}">
+	                                        	<span class="label label-warning tipb" title="优先级:${incident.priorityName }">${incident.priorityName }</span>
+	                                        	</c:if>
 		                                        	<a href="${contextPath }/incident/view/${incident.id}" title="查看详情"  target="_blank">${incident.abs }</a>
 		                                        </td>
 		                                        <td>${incident.applyUserName }</td>

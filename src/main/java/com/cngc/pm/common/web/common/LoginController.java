@@ -3,6 +3,9 @@ package com.cngc.pm.common.web.common;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpSession;
 
+import org.springframework.security.authentication.RememberMeAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -17,7 +20,15 @@ public class LoginController {
 	
 	@RequestMapping(value = "/initLogin.html", method = RequestMethod.GET)
 	public String init() {
-		return "login";
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		if (authentication == null) {
+			return "login";
+		}
+				 
+		if(RememberMeAuthenticationToken.class.isAssignableFrom(authentication.getClass()))
+			return "redirect:/workflow/task/mytask";
+		else
+			return "login";
 	}
 //	
 //	@RequestMapping(value = "/login-after", method = RequestMethod.POST)

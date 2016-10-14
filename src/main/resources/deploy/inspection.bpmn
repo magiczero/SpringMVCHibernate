@@ -17,6 +17,7 @@
           <activiti:value id="INSPECTION_XXZX_WX" name="信息中心--邮箱"></activiti:value>
           <activiti:value id="INSPECTION_GGW" name="骨干网--日常巡检模板"></activiti:value>
           <activiti:value id="INSPECTION_JT" name="集团--日常巡检"></activiti:value>
+          <activiti:value id="INSPECTION_SHIPIN" name="视频会议--日常巡检模板"></activiti:value>
         </activiti:formProperty>
       </extensionElements>
     </startEvent>
@@ -24,6 +25,7 @@
       <extensionElements>
         <activiti:formProperty id="template" name="巡检模板" type="enum" expression="${inspection.template}">
           <activiti:value id="INSPECTION_BKY" name="兵科院--日常巡检模板"></activiti:value>
+          <activiti:value id="INSPECTION_SHIPIN" name="视频会议--日常巡检模板"></activiti:value>
           <activiti:value id="INSPECTION_BKY_WW" name="兵科院外网--日常巡检模板"></activiti:value>
           <activiti:value id="INSPECTION_BKY_RD" name="兵科院弱电间--日常巡检模板"></activiti:value>
           <activiti:value id="INSPECTION_XXZX" name="信息中心--日常巡检模板"></activiti:value>

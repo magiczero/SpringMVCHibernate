@@ -51,6 +51,7 @@
         		<bean class="com.cngc.pm.activiti.formtype.UserFormType" />
         		<bean class="com.cngc.pm.activiti.formtype.LeaderFormType" />
         		<bean class="com.cngc.pm.activiti.formtype.FileFormType" />
+        		<bean class="com.cngc.pm.activiti.formtype.DatetimeFormType" />
         	</list>
         </property>
         <!-- 开启日志 -->

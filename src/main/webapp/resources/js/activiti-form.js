@@ -278,6 +278,8 @@ function act_form_getDialogFields(data,redirectAddress) {
 	}
 	// 初始化日期组件
 	$form.find('.dateISO').datepicker();
+	//初始化日期时间组件
+	$form.find('.dateISOTime').datetimepicker({autoclose: true,language: 'zh-CN',minuteStep: 5,todayBtn: true});
 	
 	if($form.find('.actFileType').length>0)
 	{
@@ -345,6 +347,17 @@ var act_form_fieldcreator = {
 		var result = "<div class='col-md-3'>" + prop.name + "：</div>";
 		if (prop.writable === true) {
 			result += "<div class='col-md-8'><input type='text' id='" + prop.id + "' name='fp_" + prop.id + "' class='dateISO " + className 
+			+ "' value='"+(prop.value==null?"":prop.value)+"' /></div>";
+		} else {
+			//console.log(prop.value);
+			result += "<div class='col-md-3'>" + prop.value + "</div>";
+		}
+		return result;
+	},
+	'datetime': function(prop, datas, className) {
+		var result = "<div class='col-md-3'>" + prop.name + "：</div>";
+		if (prop.writable === true) {
+			result += "<div class='col-md-8'><input type='text' id='" + prop.id + "' name='fp_" + prop.id + "' class='dateISOTime " + className 
 			+ "' value='"+(prop.value==null?"":prop.value)+"' /></div>";
 		} else {
 			//console.log(prop.value);

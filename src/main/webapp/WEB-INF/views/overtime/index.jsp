@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>    
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %> 
 <%@ page import="java.util.*"%>
 <%@ page import="java.text.*"%>
 <c:set var="contextPath" value="${pageContext.request.contextPath}"></c:set>
@@ -77,44 +78,7 @@
             $("#lnk_start_overtime").bind("click",function(){
                	act_form_openStartDialog("发起领导交办任务","OVERTIME","/overtime");
             });
-            <%--
-            function act_form_openStartDialog(processName,processDefinitionKey,redirectAddress) {
-            	// 对话框打开时执行
-            	$('#dynamicForm').html(
-            			"<div class='modal-dialog'>"
-            			+"<div class='modal-content'>"
-            			+"<div class='modal-header'>"
-            			+"<button type='button' class='close' data-dismiss='modal'>"
-            			+"<span aria-hidden='true'>&times;</span><span class='sr-only'>Close</span></button>"                        
-                        +"<h4>"+processName+"</h4>"
-                        +"</div>"
-                        +"<div class='dynamic-form-dialog'></div>"
-            			+"</div>"
-            			+"</div>"
-            	);
-            	$('#dynamicForm').unbind('shown.bs.modal');
-            	$('#dynamicForm').on('shown.bs.modal', function() {
-            		// 获取json格式的表单数据，就是流程定义中的所有field
-            		act_form_getStartDialog(processDefinitionKey,redirectAddress);
-            	});
-            	
-            	// 打开动态表单对话框
-            	$("#dynamicForm").modal();
-            }
             
-            function act_form_getStartDialog(processDefinitionKey,redirectAddress) {
-            	// 清空对话框内容
-            	$('.dynamic-form-dialog').html("<form class='dynamic-form' method='post'><div id='dynamic-form-table' class='modal-body modal-body-np'></div></form>");
-            	var $form = $('.dynamic-form');
-            	// 设置表单提交id
-            	$form.attr('action', ctx + '/workflow/dynamicform/startprocessbykey/' + processDefinitionKey);
-
-            	// 读取启动时的表单
-            	$.getJSON(ctx + '/workflow/dynamicform/getformbykey/start/' + processDefinitionKey + '?t=' + pm_random(),function(data) {
-            		act_form_getDialogFields(data,redirectAddress);
-            	});
-            }
-            --%>
             $(".dateISO").datepicker(); 
             
             var starttime,endtime;
@@ -196,68 +160,32 @@
                             <table class="table" id="eventTable">
                                 <thead>
                                 	<tr>
-                                		<th width="90px">流程号</th>
-                                		<th width="105px">交办领导</th>
-										<th >任务标题</th>
-										<th width="100px">受派人</th>
-										<th width="110px">提交时间</th>
-										<th width="110px">到期时间</th>
+                                		<th width="90px">请假者</th>
+                                		<th width="140px">开始时间</th>
+                                		<th width="140px">结束时间</th>
+                                		<th width="120px">加班时长</th>
+										<th >加班原因</th>
 										<th width="130px">状态</th>
 										<th width="150px">操作</th>
 									</tr>
                                 </thead>
                                 <tbody>
-                                	<c:set var="currentTime">
-                                		<%=new java.text.SimpleDateFormat("yyyy-MM-dd").format(Calendar.getInstance().getTime())%>
-                                	</c:set>
-                                	<c:forEach items="${list}" var="leaderTask">
-									<c:set var="task" value="${tasks[leaderTask.processInstanceId]}" />
-									<c:set var="mytask" value="${mytasks[leaderTask.processInstanceId]}" />
+                                	<c:forEach items="${list}" var="task">
 									<tr>
-										<td>${leaderTask.processInstanceId }</td>
-										<td>${leaderTask.fromUserName }</td>
-										<td>${leaderTask.taskTitle }</td>
-										<td>${leaderTask.toUserName }</td>
-										<td><fmt:formatDate value="${leaderTask.applyTime }" pattern="yyyy-MM-dd"></fmt:formatDate></td>
-										<td><fmt:formatDate value="${leaderTask.dueTime }" pattern="yyyy-MM-dd"></fmt:formatDate></td>
+										<td>${task.applicant }</td>
+										<td>${task.overtimeStart }</td>
+										<td>${task.overtimeEnd }</td>
+										<td>${task.hour }</td>
+										<td>${task.reason }</td>
 										<td>
-											<c:if test="${not empty mytask }">
-												<a class="lnk_trace" href='#' pid="${leaderTask.processInstanceId }" pdid="${mytask.processDefinitionId }" title="点击查看流程图">
-													${mytask.name }
-												</a>
-											</c:if>
-											<c:if test="${empty mytask && not empty task }">
-												<a class="lnk_trace" href='#' pid="${leaderTask.processInstanceId }" pdid="${task.processDefinitionId }" title="点击查看流程图">
-													${task.name }
-												</a>
-											</c:if>
-											<c:if test="${empty task && empty mytask }">
-												<c:if test="${leaderTask.endbyuser }">已完成</c:if>
-												<c:if test="${!leaderTask.endbyuser }">由系统关闭</c:if>
-											</c:if>
-											<c:if test="${leaderTask.dueTime < currentTime }">
-											<span class="label label-danger">已超时</span>
-											</c:if>
+										<c:if test="${task.status_=='finished' }">审批通过</c:if>
+										<c:if test="${task.status_==null }">未审批</c:if>
 										</td>
 										<td>
-											<c:if test="${empty task && empty mytask }">
-												<a href="javascript:void(0);" onclick="act_comment_open('${leaderTask.processInstanceId}',true)"><span class="glyphicon glyphicon-edit"></span> 意见</a>
-											</c:if>
-											<c:if test="${not empty task || not empty mytask }">
-												<a href="javascript:void(0);" onclick="act_comment_open('${leaderTask.processInstanceId}',false)"><span class="glyphicon glyphicon-edit"></span> 意见</a>
-											</c:if>
-											<a href="javascript:void(0);" onclick="act_history_open('${leaderTask.processInstanceId}')"><span class="glyphicon glyphicon-list-alt"></span> 历史</a>
-											<c:if test="${not empty mytask }">
-												<c:if test="${empty mytask.assignee }">
-													<a class="claim confirm" href="${contextPath }/workflow/task/claim/${mytask.id}"><span class="glyphicon glyphicon-edit"></span> 签收</a>
-												</c:if>
-												<c:if test="${not empty mytask.assignee }">
-													<a href="${contextPath }/leadertask/deal/${leaderTask.id}/${mytask.id}"><span class="glyphicon glyphicon-edit"></span> 办理</a>
-												</c:if>
-											</c:if>
-											<c:if test="${empty mytask }">
-												<a href="${contextPath }/leadertask/view/${leaderTask.id}"  target="_blank"><span class="glyphicon glyphicon-search"></span> 详情</a>
-											</c:if>
+										<c:if test="${task.status_==null }"><sec:authorize access="hasRole('WK_LEADER')"><form class="dynamic-form" method="post" action="/PmSys/workflow/task/complete/${task.tid }">
+                                <div class="title"><input name="redirectAddress" value="/overtime" type="hidden"></div>
+                                <div class="text"><button class="btn btn-primary" aria-hidden="true">审批</button></div>
+                                </form></sec:authorize><sec:authorize access="!hasRole('WK_LEADER')">修改</sec:authorize></c:if>
 										</td>
 									</tr>
 								</c:forEach>   

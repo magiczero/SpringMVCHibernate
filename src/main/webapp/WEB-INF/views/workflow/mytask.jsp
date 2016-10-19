@@ -276,7 +276,7 @@
 													<c:if test="${processName=='UPDATE' || processName=='SECJOB' || processName=='KNOWLEDGE' || processName=='feedback' }">
 														<a onclick="act_form_openTaskDialog('${task.name }','${task.id}','/workflow/task/mytask')" href="#"><span class="glyphicon glyphicon-edit"></span> 办理</a>
 													</c:if>
-													<c:if test="${processName=='INCIDENT'||processName=='CHANGE' || processName=='LEADERTASK' }">
+													<c:if test="${processName=='INCIDENT'||processName=='CHANGE' || processName=='LEADERTASK' || processName=='OVERTIME' }">
 														<a href="${contextPath }/${processName.toLowerCase() }/dealbyprocess/${task.processInstanceId }/${task.id}"><span class="glyphicon glyphicon-edit"></span> 办理</a>
 													</c:if>
 													<c:if test="${processName=='INSPECTION' }">

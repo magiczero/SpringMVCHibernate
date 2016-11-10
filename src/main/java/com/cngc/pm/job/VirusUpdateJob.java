@@ -28,9 +28,14 @@ public class VirusUpdateJob {
 				.processDefinitionKey( processKey ).latestVersion().singleResult();
 		
 		Map<String,String> variables = new HashMap<String,String>();
-		variables.put("user", PropertyFileUtil.getStringValue("job.update.user"));
-		variables.put("updateType",PropertyFileUtil.getStringValue("syscode.update.virus"));
-		
-		formService.submitStartFormData(processDefinition.getId(), variables);
+		String struser = PropertyFileUtil.getStringValue("job.update.user");
+		String[] users = struser.split(",");
+		for(int i=0;i<users.length;i++)
+		{
+			variables.put("user", users[i]);
+			variables.put("updateType",PropertyFileUtil.getStringValue("syscode.update.virus"));
+			
+			formService.submitStartFormData(processDefinition.getId(), variables);
+		}
 	}
 }

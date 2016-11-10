@@ -73,6 +73,7 @@
                                       ]
                     },
                     "bSort": false, //排序功能
+                    "aLengthMenu":[[10,25,50,-1],[10,25,50,"All"]],
                 	"oLanguage": {"sUrl": "${contextPath}/resources/json/Chinese.json"},
                 	"bProcessing": false, // 是否显示取数据时的那个等待提示
     			    "bServerSide": true,//这个用来指明是通过服务端来取数据

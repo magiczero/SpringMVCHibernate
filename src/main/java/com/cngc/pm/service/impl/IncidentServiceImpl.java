@@ -109,8 +109,10 @@ public class IncidentServiceImpl implements IncidentService {
 		}
 
 		search.addFilterEqual("status", PropertyFileUtil.getStringValue("syscode.incident.status.finished"));
-		search.setFirstResult(offset == null ? 0 : offset);
-		search.setMaxResults(maxResults == null ? 10 : maxResults);
+		if(maxResults>-1) {
+			search.setFirstResult(offset == null ? 0 : offset);
+			search.setMaxResults(maxResults == null ? 10 : maxResults);
+		}
 		search.addSort("applyTime", true);
 
 		return incidentDao.searchAndCount(search);

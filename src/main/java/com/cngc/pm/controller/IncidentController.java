@@ -680,7 +680,8 @@ public class IncidentController {
 				}
 			}
 			count = list.size();
-			list = list.subList(iDisplayStart, iDisplayStart+iDisplayLength>list.size()?list.size():iDisplayStart+iDisplayLength);
+			if(iDisplayLength>-1)
+				list = list.subList(iDisplayStart, iDisplayStart+iDisplayLength>list.size()?list.size():iDisplayStart+iDisplayLength);
 			
 		}
 		

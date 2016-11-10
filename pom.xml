@@ -16,6 +16,7 @@
 		<hibernate.version>4.3.5.Final</hibernate.version>
 		<activiti.version>5.16</activiti.version>
         <activiti.engine.version>5.16</activiti.engine.version>
+        <spring.security.oauth.version>1.0.0.RELEASE</spring.security.oauth.version>
         <!-- <spring-data-jpa.version>1.0.1.RELEASE</spring-data-jpa.version> -->
 	</properties>
 
@@ -82,6 +83,13 @@
 			<artifactId>spring-security-taglibs</artifactId>
 			<version>${org.springframework.security-version}</version>
 		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.springframework.security.oauth/spring-security-oauth2 -->
+		<dependency>
+		    <groupId>org.springframework.security.oauth</groupId>
+		    <artifactId>spring-security-oauth2</artifactId>
+		    <version>${spring.security.oauth.version}</version>
+		</dependency>
+		
 		 <!-- Spring Data JPA 
 		<dependency>
 			<groupId>org.springframework.data</groupId>

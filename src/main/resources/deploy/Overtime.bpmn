@@ -3,9 +3,9 @@
   <process id="OVERTIME" name="加班申请" isExecutable="true">
     <startEvent id="startevent1" name="Start">
       <extensionElements>
-        <activiti:formProperty id="startWhile" name="开始时间" type="datetime" datePattern="yyyy-MM-dd HH:mm" required="true"></activiti:formProperty>
-        <activiti:formProperty id="endWhile" name="截止时间" type="datetime" datePattern="yyyy-MM-dd HH:mm" required="true"></activiti:formProperty>
-        <activiti:formProperty id="reason" name="理由" type="string" required="true"></activiti:formProperty>
+        <activiti:formProperty id="startWhile" name="开始时间" type="date" datePattern="yyyy-MM-dd HH:mm" required="true"></activiti:formProperty>
+        <activiti:formProperty id="endWhile" name="截止时间" type="date" datePattern="yyyy-MM-dd HH:mm" required="true"></activiti:formProperty>
+        <activiti:formProperty id="reason" name="原因" type="bigtext" required="true"></activiti:formProperty>
       </extensionElements>
     </startEvent>
     <userTask id="approve" name="加班审批" activiti:candidateGroups="WK_LEADER"></userTask>

@@ -26,6 +26,7 @@
     <link href="${contextPath }/resources/css/validation.css" rel="stylesheet" type="text/css" />
     <link href="${contextPath }/resources/css/mycss.css" rel="stylesheet" type="text/css" />
     <link href='${contextPath }/resources/js/plugins/jstree/jquery.treeview.css' rel="stylesheet" type="text/css" />
+    <link href="${contextPath }/resources/css/uploadify.css" rel="stylesheet" type="text/css" />
     <!--[if lt IE 8]>
         <link href="${contextPath }/resources/css/ie7.css" rel="stylesheet" type="text/css" />
     <![endif]-->    
@@ -41,6 +42,8 @@
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/highlight/jquery.highlight-4.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/pnotify/jquery.pnotify.min.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/scrollup/jquery.scrollUp.min.js'></script>
+    
+    <script type='text/javascript' src='${contextPath }/resources/js/plugins/uploadify/jquery.uploadify.min.js'></script>
     
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/jstree/jquery.treeview.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/jstree/jquery.treeview.edit.js'></script>
@@ -63,52 +66,29 @@
                 	if(!confirm("确定要执行该操作?"))
                 		return false;
                 });
-                <%--$('#treeview').treeview({
-                    levels: 1, 
-                    data: jsonData,
-                    color: "#666666",
-                    nodeIcon: 'glyphicon glyphicon-list',
-                    onNodeSelected: function(event, node) {
-                      initTable(node.text.substring(0,node.text.indexOf(" ")));
-                    }
-                  });
-                  $.each(jsonData, function (i, field) {
-                  	var code = field.text.substring(0,field.text.indexOf(" "));
-                  	var liStr = "<li><a href=\"#\" onclick=\"initTable("+code+");\">"+field.text+"</a>";
-                  	if(field.nodes) {
-                  		liStr += "<ul>";
-                  		$.each(field.nodes, function(j, node){
-                  			var code1 = node.text.substring(0,node.text.indexOf(" "));
-                  			liStr+="<li><a href=\"#\" onclick=\"initTable("+code1+");\">"+node.text+"</a>";
-                  			if(node.nodes) {
-                  				liStr += "<ul>";
-                  				$.each(node.nodes, function(k, last){
-                  					var code2 = last.text.substring(0,last.text.indexOf(" "));
-                  					liStr+="<li><a href=\"#\" onclick=\"initTable("+code2+");\">"+last.text+"</a></li>";
-                  				});
-                  				liStr += "</ul>";
-                  			}
-                  			liStr+="</li>"
-                  		});
-                  		liStr += "</ul>";
-                  	}
-                  	liStr += "</li>";
-                    $("#treeview").append(liStr);
-                  }); --%>
-                  $("#treeview").treeview({
+                $("#treeview").treeview({
                 	unique: true,
             		url : ctx + '/cms/category/getjson?t=' + pm_random()
             	});
-
+                $('#file_upload').uploadify({
+    				'formData' : { 'type' : 1 },
+    		        'swf'      : '${contextPath }/resources/flash/uploadify.swf',
+    		        'fileTypeExts': '*.xls;*.xlsx',//允许上传的文件类型，限制弹出文件选择框里能选择的文件
+    		      //按钮显示的文字
+                    'buttonText': '选择文件……',
+    		        'uploader' : '${contextPath}/attachment/upload',
+    		        'removeCompleted' : false,
+    		        'multi': true,
+    		        // Put your options here
+    		        'onUploadSuccess': function (file, data, response) {
+    		        	
+    	                $('#' + file.id).find('.data').html(' 上传完毕');
+    	                var fileids = document.getElementById("fileids").value + '';
+    	                document.getElementById("fileids").value = fileids + data;
+    		        }
+    		    });
                 
                 initTable("0");
-                /*
-                $("#ciTable").dataTable({
-                	paging:true,
-                	"oLanguage": {
-             			"sUrl": "${contextPath}/resources/json/Chinese.json"
-         			},
-               	"bSort":false});*/
             });
             function initTable(code)
             {
@@ -121,8 +101,7 @@
             		{
             			trs += "<tr>"
 						+"<td><a href='"+ctx+"/cms/ci/detail/"+data.list[i]["id"]+"'>"+data.list[i]["name"]+"</a>"
-						if(data.list[i]["model"]!="")
-							trs += " -"+data.list[i]["model"];
+						
 						trs += "</td>";
 						trs += "<td>"+data.list[i]["systemName"]+"</td>"
 						+"<td>"+data.list[i]["categoryName"]+"</td>"
@@ -145,24 +124,6 @@
 						
             		}
             		$("#ciTable tbody").append(trs);
-            		/*
-            		if ( $.fn.dataTable.isDataTable( '#ciTable' ) ) {
-            		    table = $('#ciTable').DataTable({
-            		    	paging:true,
-                        	"oLanguage": {
-                     			"sUrl": "${contextPath}/resources/json/Chinese.json"
-                 			},
-                       	"bSort":false});
-            		}
-            		else {
-            		    table = $('#ciTable').DataTable( {
-            		    	paging:true,
-                        	"oLanguage": {
-                     			"sUrl": "${contextPath}/resources/json/Chinese.json"
-                 			},
-                       	"bSort":false} );
-            		}
-            		*/
             		
                     $(".confirm").bind("click",function(){
                     	if(!confirm("确定要执行该操作?"))
@@ -171,6 +132,10 @@
             	});
             }
     </script>
+    <style type="text/css">
+    	.uploadify-button-text {color:#fff !important;}
+    	
+    </style>
 </head>
 <body>
     <div class="wrapper"> 
@@ -228,6 +193,7 @@
                                 <li>
                                     <a href="#" class="isw-settings tipl" title="操作 "></a>
                                     <ul class="dd-list">
+                                    	<li><a href="#fModal" data-toggle="modal"><span class="isw-up"></span> 导入数据</a></li>
                                         <li><a href="#" onclick="pm_refresh()"><span class="isw-refresh"></span> 刷新</a></li>
                                     </ul>
                                 </li>
@@ -261,7 +227,36 @@
                 <div class="dr"><span></span></div>
             </div>
             <!--workplace end-->
-        </div>   
+        </div> 
+        <div class="modal fade" id="fModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                        <h4>导入Excel文件</h4>
+                    </div>
+                    <form method="post" action="${contextPath}/cms/ci/importData">
+                    <input id="fileids" name="fileids" type="hidden" />
+                    <div class="modal-body modal-body-np">
+                        <div class="row">
+                            <div class="block-fluid">
+                                <div class="row-form clearfix">
+                                    <div class="col-md-3">文件:</div>
+                                    <div class="col-md-9"><input type="file" name="file_upload" id="file_upload" /></div>
+                                </div>
+                                
+                            </div>
+                            
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                    <input type="submit" value="导入" class="btn btn-warning" />
+                        <button class="btn btn-default" data-dismiss="modal" aria-hidden="true">关闭</button>
+                    </div>
+                    </form>
+                </div>
+            </div>
+        </div>  
     </div>
 </body>
 

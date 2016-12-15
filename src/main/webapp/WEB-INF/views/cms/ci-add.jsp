@@ -114,6 +114,8 @@
                 $("#securityLevel").select2();
                 $("#system").select2();
                 $("#status").select2();
+                $("#use").select2();
+                $("#importance").select2();
                 init();
                 
                 $('#file_upload').uploadify({
@@ -187,16 +189,18 @@
                             <div class="row-form clearfix">
                                 <div class="col-md-1"><form:label path="name">名称:</form:label></div>
                                 <div class="col-md-3"><form:input path="name" class="validate[required,maxSize[50]]"></form:input></div>
-                                <div class="col-md-1"><form:label path="model">型号:</form:label></div>
-                                <div class="col-md-3"><form:input path="model"></form:input></div>
+                                <div class="col-md-1"><form:label path="use">是否启用:</form:label></div>
+                                <div class="col-md-3"><form:select path="use" cssStyle="width:100%"><form:option value="启用">启用</form:option><form:option value="未启用">未启用</form:option></form:select></div>
                                 <div class="col-md-1"><form:label path="categoryCode">分类:</form:label></div>
                                 <div class="col-md-3"><form:input path="categoryCode" readonly="true" class="validate[required,maxSize[50]]"></form:input></div>
                             </div>
                             <div class="row-form clearfix">
                             	<div class="col-md-1"><form:label path="securityLevel">密级:</form:label></div>
-	                            <div class="col-md-3"><form:select path="securityLevel" items="${securityLevel }" itemLabel="codeName" itemValue="code"></form:select></div>
+	                            <div class="col-md-3"><form:select path="securityLevel" items="${securityLevel }" itemLabel="codeName" itemValue="code" cssStyle="width:100%"></form:select></div>
                             	<div class="col-md-1"><form:label path="system">归属系统:</form:label></div>
-	                            <div class="col-md-3"><form:select path="system" items="${system }" itemLabel="codeName" itemValue="code"></form:select></div>
+	                            <div class="col-md-3"><form:select path="system" items="${system }" itemLabel="codeName" itemValue="code" cssStyle="width:100%"></form:select></div>
+	                            <div class="col-md-1"><form:label path="importance">重要度:</form:label></div>
+	                            <div class="col-md-3"><form:select path="importance" cssStyle="width:100%"><form:option value="极高">极高</form:option><form:option value="高">高</form:option><form:option value="中">中</form:option><form:option value="低">低</form:option></form:select></div>
                             </div>
                             <div class="row-form clearfix">
                                 <div class="col-md-1"><form:label path="securityNo">保密编号:</form:label></div>
@@ -216,7 +220,7 @@
                             </div> 
                             <div class="row-form clearfix">
                           		<div class="col-md-1">
-				                	<label for="serviceStartTime">服务开始时间</label>
+				                	<label for="serviceStartTime">启用时间</label>
 				                </div>
 				                <div class="col-md-3">
 				                <div class="input-group date form_date " data-date="" data-date-format="yyyy-mm-dd" data-link-field="serviceStartTime" data-link-format="yyyy-mm-dd">
@@ -227,7 +231,7 @@
 								<form:hidden path="serviceStartTime"></form:hidden>
 								</div>
 				           		<div class="col-md-1">
-				                <label for="serviceEndTime">服务结束时间</label>
+				                <label for="serviceEndTime">废止时间</label>
 				                </div>
 				                <div class="col-md-3">
 				                <div class="input-group date form_date " data-date="" data-date-format="yyyy-mm-dd" data-link-field="serviceEndTime" data-link-format="yyyy-mm-dd">
@@ -238,13 +242,15 @@
 								<form:hidden path="serviceEndTime"></form:hidden>
 				            	</div>
                                 <div class="col-md-1"><form:label path="status">状态:</form:label></div>
-	                            <div class="col-md-3"><form:select path="status" items="${status }" itemLabel="codeName" itemValue="code"></form:select></div>
+	                            <div class="col-md-3"><form:select path="status" items="${status }" itemLabel="codeName" itemValue="code" cssStyle="width:100%"></form:select></div>
                             </div>                              
                             <div class="row-form clearfix">
                                 <div class="col-md-1"><form:label path="serviceProvider">服务提供商:</form:label></div>
                                 <div class="col-md-3"><form:input path="serviceProvider"></form:input></div>
-                                <div class="col-md-1"><form:label path="serviceProviderContact">联系方式:</form:label></div>
+                                <div class="col-md-1"><form:label path="serviceProviderContact">联系电话:</form:label></div>
                                 <div class="col-md-3"><form:input path="serviceProviderContact"></form:input></div>
+                                <div class="col-md-1"><form:label path="desc">描述:</form:label></div>
+                                <div class="col-md-3"><form:input path="desc"></form:input></div>
                             </div>
                             <div class="row-form clearfix">
                                 <div class="col-md-1"><form:label path="producer">厂商:</form:label></div>

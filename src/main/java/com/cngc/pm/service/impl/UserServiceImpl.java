@@ -300,4 +300,10 @@ public class UserServiceImpl implements UserService {
 		else
 			return getTopGroup(groupParent);
 	}
+	@Override
+	public SysUser getByName(String name) {
+		// TODO Auto-generated method stub
+		
+		return userDao.getUserByName(name);
+	}
 }

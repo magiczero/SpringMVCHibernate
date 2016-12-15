@@ -1,6 +1,7 @@
 package com.cngc.pm.controller.cms;
 
 import java.io.IOException;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -157,6 +158,27 @@ public class CiController {
 		
 		return "redirect:list";
 	}
+	
+	@RequestMapping(value="/importData",method=RequestMethod.POST)
+	public String importExcelData(HttpServletRequest request) {
+		if(StringUtils.isEmpty(request.getParameter("fileids"))) {
+			return "redirect:/cms/ci/list";
+		}
+		String attachIds = request.getParameter("fileids");
+		
+		Set<Attachment> setAttach = attachService.getSetByIds(attachIds);
+		try {
+			ciService.importData(setAttach);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return "redirect:/cms/ci/list";
+	}
+	
 	@SuppressWarnings("unchecked")
 	@RequestMapping(value="/saveproperty/{id}",method=RequestMethod.POST)
 	public String saveProperty(@PathVariable("id") long id,HttpServletRequest request){	

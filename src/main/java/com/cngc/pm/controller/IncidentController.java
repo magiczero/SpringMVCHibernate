@@ -296,7 +296,7 @@ public class IncidentController {
 
 		// 所有为未关闭的事件信息
 		incidents = incidentService.getNotFinished().getResult();
-		if (userUtil.IsWorkflowManager(authentication)) // 流程管理者可查看所有事件任务信息
+		if (userUtil.IsLeader(authentication) || userUtil.IsServiceDesk(authentication) || userUtil.IsWorkflowManager(authentication) || userUtil.IsManager(authentication)) // 服务台、领导、流程管理者可查看所有事件任务信息
 		{
 			// 所有任务
 			tasks = taskService.createTaskQuery()
@@ -336,7 +336,7 @@ public class IncidentController {
 
 		// 所有指定状态的事件信息
 		incidents = incidentService.getByStatus(status).getResult();
-		if (userUtil.IsWorkflowManager(authentication)) // 流程管理者可查看所有事件任务信息
+		if (userUtil.IsLeader(authentication) || userUtil.IsServiceDesk(authentication) || userUtil.IsWorkflowManager(authentication) || userUtil.IsManager(authentication)) // 服务台、领导、流程管理者可查看所有事件任务信息
 		{
 			// 所有任务
 			tasks = taskService.createTaskQuery()
@@ -345,11 +345,14 @@ public class IncidentController {
 			taskmap = new HashMap<String, Task>();
 			for (Task task : tasks)
 				taskmap.put(task.getProcessInstanceId(), task);
+			
 		}
+		
 		if (userUtil.IsServiceDesk(authentication)) {
 			// 服务台用户拥有修改权限
 			model.addAttribute("ROLE_MODIFY", true);
 		}
+		
 		model.addAttribute("tasks", taskmap);
 		model.addAttribute("mytasks", mytaskmap);
 		model.addAttribute("list", incidents);

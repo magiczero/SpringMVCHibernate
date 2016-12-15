@@ -34,6 +34,36 @@ public class Ci {
 	private Long id;
 	private String name;
 	private String model;
+	private String use;
+	@Column(name="is_use")
+	public String getUse() {
+		return use;
+	}
+
+	public void setUse(String use) {
+		this.use = use;
+	}
+
+	private String importance;
+	@Column(name="importance")
+	public String getImportance() {
+		return importance;
+	}
+
+	public void setImportance(String importance) {
+		this.importance = importance;
+	}
+	
+	private String desc;
+	@Column(name="desc_")
+	public String getDesc() {
+		return desc;
+	}
+
+	public void setDesc(String desc) {
+		this.desc = desc;
+	}
+
 	private String securityNo;
 	private String securityLevel;
 	private String system;

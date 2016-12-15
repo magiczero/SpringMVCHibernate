@@ -261,9 +261,9 @@ function act_form_getDialogFields(data,redirectAddress) {
 			$form.find('.user').select2();
 		});
 		// 初始化日期组件
-		$form.find('.dateISO').datepicker();
+		//$form.find('.dateISO').datepicker();
 	} 
-	else if($form.find('.leader').length>0)// 初始化领导选择下拉框
+	if($form.find('.leader').length>0)// 初始化领导选择下拉框
 	{
 		$.getJSON(ctx + '/user/getleader?t=' + pm_random(),function(result){
 			$.each(result.users,function(key,value){
@@ -277,11 +277,14 @@ function act_form_getDialogFields(data,redirectAddress) {
 			$form.find('.leader').select2();
 		});
 		// 初始化日期组件
+		
+	} 
+	if($form.find('.dateISO').length>0)//初始化日期时间组件
 		$form.find('.dateISO').datepicker();
-	} else {
-		if($form.find('.dateISO').length>0)//初始化日期时间组件
-			$form.find('.dateISO').datetimepicker({autoclose: true,language: 'zh-CN',minuteStep: 5,todayBtn: true});
-	}
+	//else {
+	//	if($form.find('.dateISO').length>0)//初始化日期时间组件
+	//		$form.find('.dateISO').datetimepicker({autoclose: true,language: 'zh-CN',minuteStep: 5,todayBtn: true});
+	//}
 	
 	if($form.find('.actFileType').length>0)
 	{

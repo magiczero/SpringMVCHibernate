@@ -45,9 +45,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.cngc.pm.common.web.common.UserUtil;
 import com.cngc.pm.model.Income;
 import com.cngc.pm.model.Inspection;
-import com.cngc.pm.model.SysUser;
 import com.cngc.pm.model.Training;
-import com.cngc.pm.model.UserRole;
 import com.cngc.pm.service.IncidentService;
 import com.cngc.pm.service.IncomeService;
 import com.cngc.pm.service.InspectionService;
@@ -145,7 +143,7 @@ public class RecordController {
 	
 	@RequestMapping(value="/inspection-ajax-list",produces = "application/json;charset=UTF-8")
 	@ResponseBody
-	public String tableDemoAjax(@RequestParam String aoData,HttpSession httpSession) throws ParseException {
+	public String tableDemoAjax(@RequestParam String aoData, HttpSession httpSession, Authentication authentication) throws ParseException {
 		//System.out.println(aoData);
 		JSONArray jsonarray = new JSONArray(aoData); 
 		
@@ -173,22 +171,25 @@ public class RecordController {
 	            endTime = obj.getString("value");  
 	    } 
 	    
-	    String username = SecurityContextHolder.getContext().getAuthentication().getName();
-	    //判断权限
-    	SysUser sysuser = userService.getByUsername(username);
+//	    String username = SecurityContextHolder.getContext().getAuthentication().getName();
+//	    //判断权限
+//    	SysUser sysuser = userService.getByUsername(username);
     	boolean isLeader = false;
-    	for(UserRole ur : sysuser.getUserRoles()) {
-    		String rolename = ur.getRole().getRoleName();
-    		if(rolename.equals("WK_MANAGER") || rolename.equals("WK_LEADER") || rolename.equals("ROLE_ADMIN") ) {
-    			isLeader = true;
-    			break;
-    		}
-    	}
+    	 if (userUtil.IsLeader(authentication) || userUtil.IsAdmin(authentication) || userUtil.IsWorkflowManager(authentication) || userUtil.IsManager(authentication)) {// 服务台、领导、流程管理者可查看所有事件任务信息
+    		 isLeader = true;
+    	 }
+//    	for(UserRole ur : sysuser.getUserRoles()) {
+//    		String rolename = ur.getRole().getRoleName();
+//    		if(rolename.equals("WK_MANAGER") || rolename.equals("WK_LEADER") || rolename.equals("ROLE_ADMIN") ) {
+//    			isLeader = true;
+//    			break;
+//    		}
+//    	}
 	    HistoricProcessInstanceQuery hpq = historyService.createHistoricProcessInstanceQuery().processDefinitionKey("INSPECTION");
-	    if(!isLeader) {
+	    if (!isLeader) {// 服务台、领导、流程管理者可查看所有事件任务信息
 //	    	hpq = hpq.orderByProcessInstanceStartTime().desc();
 //	    } else {
-	    	hpq = hpq.involvedUser(username);
+	    	hpq = hpq.involvedUser(SecurityContextHolder.getContext().getAuthentication().getName());
 	    }
 	    if(!("").equals(startTime)) {
 	    	hpq.startedAfter(new SimpleDateFormat("yyyy-MM-dd").parse(startTime));
@@ -214,7 +215,7 @@ public class RecordController {
 	    	Inspection ins = inspectionService.getByProcessInstaceId(processInstanceId);
 	    	Task task = taskService.createTaskQuery().processInstanceId(processInstanceId).active().singleResult();
 	    	map.put("assign", task==null?ins.getExecutionUserName():userService.getByUsername(task.getAssignee()).getName());
-	    	map.put("content", "");
+	    	map.put("content", ins.getTemplateName());
 	    	SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"); 
 	    	map.put("starttime", sdf.format(hpi.getStartTime()));
 	    	map.put("endtime",hpi.getEndTime()==null?"":sdf.format(hpi.getEndTime()));

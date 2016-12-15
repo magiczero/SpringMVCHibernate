@@ -93,6 +93,24 @@ public class UserUtil {
 //		}
 		return QueryUser(authentication,PropertyFileUtil.getStringValue("system.user.role.workflowmanager"));
 	}
+	
+	/**
+	 * 判断用户是否为领导
+	 * @param authentication
+	 * @return
+	 */
+	public Boolean IsLeader(Authentication authentication) {
+		return QueryUser(authentication,PropertyFileUtil.getStringValue("system.user.leader"));
+	}
+	
+	/**
+	 * 判断用户是否为经理
+	 * @param authentication
+	 * @return
+	 */
+	public Boolean IsManager(Authentication authentication) {
+		return QueryUser(authentication,PropertyFileUtil.getStringValue("system.user.manager"));
+	}
 
 	/**
 	 * 当前用户是否为服务台
@@ -184,5 +202,10 @@ public class UserUtil {
 			}
 			return bresult;
 		}
+	}
+
+	public boolean IsAdmin(Authentication authentication) {
+		// TODO Auto-generated method stub
+		return QueryUser(authentication,PropertyFileUtil.getStringValue("system.user.admin"));
 	}
 }

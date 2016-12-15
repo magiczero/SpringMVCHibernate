@@ -84,12 +84,9 @@
 	var mylabels = [<c:forEach items="${incidentStat.column }" var="code" varStatus="status"><c:if test="${status.index>0}">,</c:if>'${code.value}'</c:forEach>];
 	var mydata=[<c:forEach items="${incidentStat.column }" var="code" varStatus="status"><c:if test="${status.index>0 }">,</c:if>${incidentStat.counts[code.key]==null?0:incidentStat.counts[code.key]}</c:forEach>];
    
-	$(document)
-			.ready(
-					function() {
+	$(document).ready(function() {
 
-						$("#eventTable")
-								.dataTable(
+						$("#eventTable").dataTable(
 										{
 											"oLanguage" : {
 												"sUrl" : "${contextPath}/resources/json/Chinese.json"
@@ -104,6 +101,9 @@
 									$("#node_${moduleId}").addClass(
 											"active");
 								});
+						$(".breadLine .buttons").load(
+								"${contextPath}/contentbuttons?t="
+										+ pm_random());
 						if( ($.browser.msie&&$.browser.version=="8.0") )
 			            {
 			            	if($("#barChart").length > 0){       
@@ -153,9 +153,7 @@
 										    });
 				            }
 						}
-						$(".breadLine .buttons").load(
-								"${contextPath}/contentbuttons?t="
-										+ pm_random());
+						
 
 						$(".confirm").bind("click", function() {
 							if (!confirm("确定要执行该操作?"))
@@ -260,9 +258,9 @@
 								</span>
 							</div>
 							<div class="rSpace">
-								<span>${incidentCount['01']==null?"0":incidentCount['01'] } <b>未指派</b></span> 
-								<span>${incidentCount['02']==null?"0":incidentCount['02'] } <b>已指派</b></span> 
-								<span><%=incident2%> <b>进行中</b></span>
+								<span><a title="点击查看" style="color:white" href="${contextPath }/incident/list/01">${incidentCount['01']==null?"0":incidentCount['01'] } <b>未指派</b></a></span> 
+								<span><a title="点击查看" style="color:white" href="${contextPath }/incident/list/02">${incidentCount['02']==null?"0":incidentCount['02'] } <b>已指派</b></a></span> 
+								<span><a title="点击查看" style="color:white" href="${contextPath }/incident/list/03"><%=incident2%> <b>进行中</b></a></span>
 							</div>
 						</div>
 						<div class="wBlock yellow clearfix">
@@ -287,9 +285,9 @@
 								</span>
 							</div>
 							<div class="rSpace">
-								<span>${changeCount['01']==null?"0":changeCount['01'] } <b>未指派</b></span> 
-								<span>${changeCount['03']==null?"0":changeCount['03'] } <b>方案构建中</b></span> 
-								<span><%=change2 %> <b>实施中</b></span>
+								<span><a title="点击查看" style="color:white" href="${contextPath }/change/list/01">${changeCount['01']==null?"0":changeCount['01'] } <b>未指派</b></a></span> 
+								<span><a title="点击查看" style="color:white" href="${contextPath }/change/list/03">${changeCount['03']==null?"0":changeCount['03'] } <b>方案构建中</b></a></span> 
+								<span><a title="点击查看" style="color:white" href="${contextPath }/change/list/06"><%=change2 %> <b>实施中</b></a></span>
 							</div>
 						</div>
 						<div class="wBlock blue clearfix">
@@ -297,13 +295,14 @@
 								<h3>领导交办</h3>
 								<span class="mChartBar" sparkType="bar" sparkBarColor="white">
 									<!--5,10,15,20,23,21,25,20,15,10,25,20,10-->
-								</span> <span class="number">
+								</span> 
+								<span class="number">
 								${leadertaskCount==null?"0":leadertaskCount }
 								</span>
 							</div>
 							<div class="rSpace">
-								<span>${leadertaskOut } <b>已超时</b></span>
-								<span>${leadertaskFeed } <b>今日未反馈</b></span>
+								<span><a title="点击查看" style="color:white" href="${contextPath }/leadertask/list">${leadertaskOut } <b>已超时</b></a></span>
+								<span><a title="点击查看" style="color:white" href="${contextPath }/leadertask/list">${leadertaskFeed } <b>今日未反馈</b></a></span>
 							</div>
 						</div>
 						<div class="wBlock green clearfix">
@@ -325,9 +324,9 @@
 								</span>
 							</div>
 							<div class="rSpace">
-								<span>${inspectionCount==null?"0":inspectionCount } <b>日常巡检</b></span> 
-								<span>${secjobCount==null?"0":secjobCount } <b>三员工作</b></span>
-								<span>${updateCount==null?"0":updateCount } <b>下载升级</b></span> 
+								<span><a title="点击查看" style="color:white" href="${contextPath }/record/inspection">${inspectionCount==null?"0":inspectionCount } <b>日常巡检</b></a></span> 
+								<span><a title="点击查看" style="color:white" href="${contextPath }/record/secjob">${secjobCount==null?"0":secjobCount } <b>三员工作</b></a></span>
+								<span><a title="点击查看" style="color:white" href="${contextPath }/record/update">${updateCount==null?"0":updateCount } <b>下载升级</b></a></span> 
 							</div>
 						</div>
 					</div>
@@ -366,7 +365,7 @@
 									<tbody>
 										<c:forEach items="${leadertasks }" var="leadertask">
 										<tr>
-											<td>${leadertask.taskTitle }</td>
+											<td><a target="_blank" href="${contextPath }/leadertask/view/${leadertask.id }">${leadertask.taskTitle }</a></td>
 											<td><fmt:formatDate value="${leadertask.applyTime }" pattern="yyyy-MM-dd" /></td>
 											<td>${leadertask.toUserName }</td>
 										</tr>
@@ -389,7 +388,7 @@
 									<tbody>
 										<c:forEach items="${secjobs }" var="secjob">
 										<tr>
-											<td>${secjob.typeName }</td>
+											<td><a href="${contextPath }/record/secjob">${secjob.typeName }</a></td>
 											<td><fmt:formatDate value="${secjob.applyTime }" pattern="yyyy-MM-dd" /></td>
 											<td>${secjob.userName }</td>
 										</tr>
@@ -413,7 +412,7 @@
 									<tbody>
 										<c:forEach items="${inspections }" var="inspection">
 										<tr>
-											<td>${inspection.templateName }</td>
+											<td><a href="${contextPath }/record/inspection">${inspection.templateName }</a></td>
 											<td><fmt:formatDate value="${inspection.createdTime }" pattern="yyyy-MM-dd" /></td>
 											<td>${inspection.executionUserName }</td>
 										</tr>
@@ -436,7 +435,7 @@
 									<tbody>
 										<c:forEach items="${updates }" var="update">
 										<tr>
-											<td>${update.typeName }</td>
+											<td><a href="${contextPath }/record/update">${update.typeName }</a></td>
 											<td><fmt:formatDate value="${update.createdTime }" pattern="yyyy-MM-dd" /></td>
 											<td>${update.userName }</td>
 										</tr>

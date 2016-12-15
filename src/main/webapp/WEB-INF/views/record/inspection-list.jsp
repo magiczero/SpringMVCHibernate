@@ -161,8 +161,8 @@
                                 <thead>
                                 	<tr>
                                 		<th width="80px">流水号</th>
-										<th>执行人</th>
-										<th width="160px">巡检内容</th>
+										<th  width="100px">执行人</th>
+										<th>巡检内容</th>
 										<th width="120px">发起时间</th>
 										<th width="120px">完成时间</th>
 										<th width="90px">状态</th>

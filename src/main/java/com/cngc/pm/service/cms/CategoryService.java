@@ -11,6 +11,8 @@ public interface CategoryService {
 	boolean delByCode(String code);
 
 	Category getByCode(String code);
+	
+	Category getByName(String categoryName);
 
 	List<Category> getAll();
 	

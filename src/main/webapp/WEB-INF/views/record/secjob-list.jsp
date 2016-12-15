@@ -1,3 +1,5 @@
+<%@page import="com.cngc.pm.service.UserService"%>
+<%@page import="org.springframework.web.context.support.WebApplicationContextUtils,org.springframework.web.context.WebApplicationContext"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>    
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
@@ -173,9 +175,13 @@
 										<th width="130px">完成时间</th>
 										<th width="120px">流程步骤</th>
 										<th width="100px">操作</th>
-										<th width="80px">附件</th>
+										<th width="200px">附件</th>
 									</tr>
                                 </thead>
+                                <%
+                                	WebApplicationContext wac =  WebApplicationContextUtils.getWebApplicationContext(this.getServletContext());
+                                	UserService  userService = (UserService)wac.getBean("userServiceImpl");
+                                %>
                                 <tbody>
                                 	<c:forEach items="${list}" var="job">
 									<c:set var="task" value="${tasks[job.processInstanceId]}" />
@@ -185,7 +191,8 @@
 										<td>${job.typeName }</td>
 										<td>
 											<c:if test="${not empty task }">
-											${task.assignee }
+											<c:set var="user" value="${task.assignee }"/>
+												<%=userService.getUserName(pageContext.getAttribute("user").toString()) %>
 											</c:if>
 											<c:if test="${empty task }">
 											${job.userName }

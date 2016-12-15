@@ -18,6 +18,8 @@ public interface UserService {
 	
 	SysUser getById(Long id);
 	
+	SysUser getByName(String name);
+	
 	boolean delByIds(String username, String ids);
 	
 	boolean delById(Long id, String username);

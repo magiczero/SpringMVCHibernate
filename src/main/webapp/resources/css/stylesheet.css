@@ -907,8 +907,8 @@ li{line-height: 20px;}
                             ul.rows li:first-child{border-top: 0px;}                        
                             ul.rows li:nth-child(2n){background-color: #F2F2F2;}
                                 ul.rows li.heading{background: url("../img/styles/default/backgrounds/menu-item.jpg") repeat-x scroll left top transparent; color: #FFF; padding-left: 10px; -moz-text-shadow: 0 1px 0 #333; -webkit-text-shadow: 0 1px 0 #333; text-shadow: 0 1px 0 #333;}
-                                ul.rows li .title{width: 120px; position: absolute; left: 10px; top: 8px; color: #999;}
-                                ul.rows li .text{margin-left: 120px;}
+                                ul.rows li .title{width: 150px; position: absolute; left: 10px; top: 8px; color: #999;}
+                                ul.rows li .text{margin-left: 150px;}
                                 ul.rows li span[class^='glyphicon']{margin-top: -1px;}
             /* ~User profile~ */
             

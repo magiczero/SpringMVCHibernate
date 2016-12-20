@@ -23,7 +23,15 @@ public class Account {
 	private String properties;
 	private String createdUser;
 	private Date createdTime;
+	private String views;
 	
+	@Column(name="views_")
+	public String getViews() {
+		return views;
+	}
+	public void setViews(String views) {
+		this.views = views;
+	}
 	@Transient
 	private String createdUserName;
 	

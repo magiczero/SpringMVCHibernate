@@ -125,37 +125,23 @@
                         </div>
                     </div> 
                     <div class="col-md-9">
-                        <div class="head clearfix">
+                        <!-- <div class="head clearfix">
                             <div class="isw-grid"></div>
-                            <h1>台账</h1> 
-                            <ul class="buttons">
-                            	<li>
-                                    <a title="导出为Excel" class="isw-download" href="${contextPath }/stats/account/dcExcel?id=${id}"></a>                            
-                                </li>
-                            </ul>                           
+                            <h1>${accountName }</h1>                            
                         </div>
                         <div class="block-fluid">
-                            <table class="table">
-                                <thead>
-                                    <tr>                                    
-                                        <th width="60px">序号</th>
-                                        <c:forEach items="${columns }" var="column">
-                                        	<th>${column }</th>
-                                        </c:forEach>
-                                        <th>操作</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-									<c:forEach items="${rows }" var="row" varStatus="status">
-										<tr>
-											<td>${status.index+1 }</td>
-											<c:forEach items="${row }" var="value">
-												<td>${value }</td>
-											</c:forEach>
-										</tr>
-									</c:forEach>
-                                </tbody>
-                            </table>
+                            ${body }
+                        </div> -->
+                        <div class="block-fluid ucard">
+                        	<ul class="rows">
+                        		<li class="heading">${accountName }</li>
+                        		<c:forEach items="${ciMap }" var="m">
+                        			<li>
+                                                    <div class="title">${m.key }</div>
+                                                    <div class="text">${m.value }</div>
+                                                </li>
+                        		</c:forEach>
+                        	</ul>
                         </div>
                     </div>
                 </div>

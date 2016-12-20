@@ -130,7 +130,7 @@ public class ChangeController {
 	 * 保存变更信息
 	 * 
 	 * @param change
-	 * @param request
+	 * @param authentication
 	 * @return
 	 */
 	@RequestMapping(value = "/save", method = RequestMethod.POST)

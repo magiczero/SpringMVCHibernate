@@ -1,0 +1,4 @@
+12.9 将巡检内容输入到sys_code表中，比如：
+ 232 ：：INSPECTION_BKY ：：兵科院日常巡检 ：：INSPECTION_TYPE
+ 
+12.16 wk_account表增加views_字段

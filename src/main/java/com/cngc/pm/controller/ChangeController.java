@@ -132,9 +132,10 @@ public class ChangeController {
 	 * @param change
 	 * @param authentication
 	 * @return
+	 * @throws Exception 
 	 */
 	@RequestMapping(value = "/save", method = RequestMethod.POST)
-	public String save(@Valid @ModelAttribute("change") Change change, Authentication authentication) {
+	public String save(@Valid @ModelAttribute("change") Change change, Authentication authentication) throws Exception {
 		if(change.getId()==null)
 		{
 			change.setStatus("01");
@@ -172,9 +173,10 @@ public class ChangeController {
 	 * 
 	 * @param model
 	 * @return
+	 * @throws Exception 
 	 */
 	@RequestMapping(value = "/list", method = RequestMethod.GET)
-	public String list(Model model, Authentication authentication) {
+	public String list(Model model, Authentication authentication) throws Exception {
 		List<Task> tasks = null;
 		List<Task> mytasks = null;
 		List<Change> changes = null;
@@ -215,7 +217,7 @@ public class ChangeController {
 	}
 	
 	@RequestMapping(value = "/list/{status}", method = RequestMethod.GET)
-	public String list(@PathVariable("status") String status, Model model, Authentication authentication) {
+	public String list(@PathVariable("status") String status, Model model, Authentication authentication) throws Exception {
 		List<Task> tasks = null;
 		List<Task> mytasks = null;
 		List<Change> changes = null;
@@ -258,7 +260,7 @@ public class ChangeController {
 	}
 
 	@RequestMapping(value = "/mydealedlist", method = RequestMethod.GET)
-	public String myDealedList(Model model, Authentication authentication) {
+	public String myDealedList(Model model, Authentication authentication) throws Exception {
 
 		List<Task> tasks = null;
 		Map<String, Task> taskmap = null;

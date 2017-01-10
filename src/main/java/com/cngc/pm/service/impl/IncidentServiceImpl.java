@@ -4,9 +4,16 @@ import static com.cngc.utils.Common.isNumeric;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.Resource;
+
+import org.activiti.engine.FormService;
+import org.activiti.engine.IdentityService;
+import org.activiti.engine.RepositoryService;
+import org.activiti.engine.repository.ProcessDefinition;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,11 +30,27 @@ public class IncidentServiceImpl implements IncidentService {
 
 	@Autowired
 	private IncidentDAO incidentDao;
+	@Resource
+	private IdentityService identityService;
+	@Resource
+	private FormService formService;
+	@Resource
+	private RepositoryService repositoryService;
 
 	@Override
 	@Transactional
-	public void save(Incident incident) {
+	public void save(Incident incident, String userid) throws Exception {
 		incidentDao.save(incident);
+		// 启动流程
+					ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery()
+							.processDefinitionKey(PropertyFileUtil.getStringValue("workflow.processkey.incident")).active()
+							.latestVersion().singleResult();
+					if (processDefinition == null) throw new Exception("未找到相应的事件流程");
+						Map<String, String> variables = new HashMap<String, String>();
+						variables.put("id", String.valueOf(incident.getId()));
+						identityService.setAuthenticatedUserId(userid);
+						formService.submitStartFormData(processDefinition.getId(), variables);
+					
 	}
 
 	@Override
@@ -172,6 +195,7 @@ public class IncidentServiceImpl implements IncidentService {
 	}
 
 	@Override
+	@Transactional
 	public List<Incident> search(String abs, String applyUser,
 			String engineer, String satisfaction, Date startTime, Date endTime) {
 		// TODO Auto-generated method stub
@@ -198,6 +222,13 @@ public class IncidentServiceImpl implements IncidentService {
 		search.addFilterEqual("status", PropertyFileUtil.getStringValue("syscode.incident.status.finished"));
 		search.addSort("applyTime", true);
 		return incidentDao.search(search);
+	}
+
+	@Override
+	@Transactional
+	public void update(Incident newincident) {
+		// TODO Auto-generated method stub
+		incidentDao.save(newincident);
 	}
 
 }

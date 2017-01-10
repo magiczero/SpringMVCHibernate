@@ -17,8 +17,8 @@
 	<!-- <http pattern="/workflow/task/getmytaskcount*" security="none" /> -->
 	
 	<http  use-expressions="true">
-		<!-- <intercept-url pattern="/login" access="permitAll"/>
-		<intercept-url pattern="/logout" access="permitAll"/>
+		<intercept-url pattern="/workflow/task/mytask" access="hasAnyRole('WK_SERVICE_DESK','WK_ENGINEER','WK_MANAGER','WK_LEADER')"/>
+		<!-- <intercept-url pattern="/logout" access="permitAll"/>
 		<intercept-url pattern="/denied" access="hasRole('ROLE_USER')"/>
 		<intercept-url pattern="/**" access="hasRole('ROLE_USER')"/>
 		<intercept-url pattern="/user" access="hasRole('ROLE_USER')"/>

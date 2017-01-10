@@ -71,8 +71,6 @@
                 $(".menu").load("${contextPath}/menu?t="+pm_random(), function () { $("#node_${moduleId}").addClass("active"); });
                 $(".breadLine .buttons").load("${contextPath}/contentbuttons?t="+pm_random());
   
-                act_form_task(taskId,'/leadertask/list');
-                act_comment_getlist(processInstanceId,taskId);
             });
     </script>
 </head>
@@ -125,7 +123,11 @@
                                 <div class="title">加班人:</div>
                                 <div class="text">${task.applicant}</div>
                             </li>
-                             <li>
+                            <li>
+                                <div class="title">服务对象:</div>
+                                <div class="text">${task.company } </div>
+                            </li>
+                            <li>
                                 <div class="title">加班开始时间:</div>
                                 <div class="text">${task.overtimeStart } </div>
                             </li>
@@ -142,7 +144,7 @@
                                 <div class="title">加班原因:</div>
                                 <div class="text">${task.reason }</div>
                             </li>  
-                            <li><form class="dynamic-form" method="post" action="/PmSys/workflow/task/complete/${task.tid }">
+                            <li><form class="dynamic-form" method="post" action="${ctx }/workflow/task/complete/${task.tid }">
                                 <div class="title"><input name="redirectAddress" value="/overtime" type="hidden"></div>
                                 <div class="text"><button class="btn btn-primary" aria-hidden="true">确认</button></div>
                                 </form>

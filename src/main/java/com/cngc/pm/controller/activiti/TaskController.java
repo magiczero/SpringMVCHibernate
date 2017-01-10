@@ -98,9 +98,10 @@ public class TaskController {
 	 * 
 	 * @param model
 	 * @return
+	 * @throws Exception 
 	 */
 	@RequestMapping(value = "/mytask", method = RequestMethod.GET)
-	public String myTaskList(Model model, HttpSession session, Authentication authentication) {
+	public String myTaskList(Model model,  Authentication authentication) throws Exception {
 		// User user = UserUtil.getUserFromSession(request.getSession());
 
 		List<Task> tasks = new ArrayList<Task>();
@@ -232,7 +233,7 @@ public class TaskController {
 
 	@RequestMapping(value = "/getmytask", method = RequestMethod.GET)
 	@ResponseBody
-	public Map<String, Object> getMyTaskList(Model model, HttpSession session, Authentication authentication) {
+	public Map<String, Object> getMyTaskList(Model model, Authentication authentication) throws Exception {
 		Map<String, Object> map = new HashMap<String, Object>();
 		List<Task> tasks = new ArrayList<Task>();
 		String s = "";
@@ -280,10 +281,11 @@ public class TaskController {
 	 * @param session
 	 * @param authentication
 	 * @return
+	 * @throws Exception 
 	 */
 	@RequestMapping(value = "/getmytaskcount", method = RequestMethod.GET)
 	@ResponseBody
-	public Map<String, Object> getMyTaskCount(Model model, HttpSession session, Authentication authentication) {
+	public Map<String, Object> getMyTaskCount(Model model, Authentication authentication) throws Exception {
 		Map<String, Object> map = new HashMap<String, Object>();
 		int myjob = 0, claim = 0;
 
@@ -357,9 +359,10 @@ public class TaskController {
 	 * @param request
 	 * @param redirectAttributes
 	 * @return
+	 * @throws Exception 
 	 */
 	@RequestMapping(value = "/claim/{id}")
-	public String claim(@PathVariable("id") String taskId, Authentication authentication) {
+	public String claim(@PathVariable("id") String taskId, Authentication authentication) throws Exception {
 
 		String re = "/workflow/task/mytask";
 		Task task = taskService.createTaskQuery().taskId(taskId).singleResult();
@@ -422,13 +425,15 @@ public class TaskController {
 	 * @param redirectAttributes
 	 * @param request
 	 * @return
+	 * @throws Exception 
 	 */
 	@RequestMapping(value = "/complete/{taskId}")
 	@SuppressWarnings("unchecked")
 	public String completeTask(@PathVariable("taskId") String taskId, RedirectAttributes redirectAttributes,
-			HttpServletRequest request, HttpSession session, Authentication authentication) {
+			HttpServletRequest request,  Authentication authentication) throws Exception {
 		Map<String, String> formProperties = new HashMap<String, String>();
 
+		//Task task = taskService.createTaskQuery().taskId(taskId).singleResult();
 		// 从request中读取参数然后转换
 		Map<String, String[]> parameterMap = request.getParameterMap();
 		Set<Entry<String, String[]>> entrySet = parameterMap.entrySet();
@@ -438,6 +443,7 @@ public class TaskController {
 			// fp_的意思是form paremeter
 			if (StringUtils.defaultString(key).startsWith("fp_")) {
 				formProperties.put(key.split("_")[1], entry.getValue()[0]);
+				taskService.setVariable(taskId, key.split("_")[1], entry.getValue()[0]);  
 			}
 		}
 		try {
@@ -458,7 +464,7 @@ public class TaskController {
 	@RequestMapping(value = "/comment/save", method = RequestMethod.POST)
 	public String commentSave(@RequestParam("fp_taskId") String taskId,
 			@RequestParam("fp_processInstanceId") String processInstanceId, @RequestParam("fp_message") String message,
-			HttpServletRequest request, Model model, Authentication authentication) {
+			HttpServletRequest request, Model model, Authentication authentication) throws Exception {
 
 		// 设置当前人为意见的所属人
 		identityService.setAuthenticatedUserId(userUtil.getUserId(authentication));
@@ -499,7 +505,7 @@ public class TaskController {
 	@RequestMapping(value = "/comment/list")
 	@ResponseBody
 	public Map<String, Object> getCommentList(@RequestParam("processInstanceId") String processInstanceId,
-			@RequestParam("taskId") String taskId, Model model, Authentication authentication) {
+			@RequestParam("taskId") String taskId, Model model, Authentication authentication) throws Exception {
 		Map<String, Object> result = new HashMap<String, Object>();
 		Map<String, Object> commentAndEventsMap = new LinkedHashMap<String, Object>();
 		Map<String, String> username = new HashMap<String, String>();

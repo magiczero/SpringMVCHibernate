@@ -1,5 +1,6 @@
 package com.cngc.pm.controller;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -54,9 +55,10 @@ public class LeaderTaskController {
 	 * @param request
 	 * @param authentication
 	 * @return
+	 * @throws ParseException 
 	 */
 	@RequestMapping(value = "/list", method = RequestMethod.GET)
-	public String list(Model model, HttpServletRequest request, Authentication authentication) {
+	public String list(Model model, HttpServletRequest request, Authentication authentication) throws ParseException, Exception {
 		String startTime = request.getParameter("startTime");
 		String endTime = request.getParameter("endTime");
 		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
@@ -66,13 +68,106 @@ public class LeaderTaskController {
 		if (endTime == null || endTime.isEmpty()) {
 			endTime = formatter.format(now.getTime());
 		}
+		
+//		SimpleDateFormat sdf =  new SimpleDateFormat( "yyyy-MM-dd" );
+//		Date start = sdf.parse(startTime);
+//		Date end = sdf.parse(endTime);
 
 		List<LeaderTask> list = null;
 		List<Task> tasks = null;
 		List<Task> mytasks = null;
-		Map<String, Task> taskmap = null;
-		Map<String, Task> mytaskmap = new HashMap<String, Task>();
+		Map<String, Task> taskmap = null;																		//所有任务
+		Map<String, Task> mytaskmap = new HashMap<String, Task>();					//我的任务
 		List<String> processInstanceIds = new ArrayList<String>();
+		
+//		String leaderTaskProcessId = PropertyFileUtil.getStringValue("workflow.processkey.leadertask");
+//		
+//		HistoricProcessInstanceQuery hpq = historyService.createHistoricProcessInstanceQuery().processDefinitionKey(leaderTaskProcessId);
+//		
+//		if (userUtil.IsEngineer(authentication) || userUtil.IsServiceDesk(authentication)) // 工程师只能看自己的任务
+//			hpq = hpq.involvedUser(userUtil.getUserId(authentication));		//用户参与
+//		
+//		List<HistoricProcessInstance> historys = hpq.startedAfter(start).startedBefore(end).list();
+//		
+//		List<LinkedHashMap<String, Object>> list1 = new LinkedList<LinkedHashMap<String, Object>>();
+//		
+//		for(HistoricProcessInstance hpi : historys) {
+//			LinkedHashMap<String, Object> map = new LinkedHashMap<String, Object>();
+//			
+//			List<HistoricVariableInstance> list2 = historyService.createHistoricVariableInstanceQuery().processInstanceId(hpi.getId()).list();  
+//	        for (HistoricVariableInstance variableInstance : list2) {  
+//	          System.out.println("variable: " + variableInstance.getVariableName() + " = " + variableInstance.getValue());  
+//	        } 
+//			
+//			 Task task1 = taskService.createTaskQuery()  
+//	                    .processInstanceId(hpi.getId()).singleResult();  
+//			TaskFormData formData = formService.getTaskFormData(task1.getId());
+//			
+//			List<HistoricTaskInstance> historyTasks = historyService.createHistoricTaskInstanceQuery().processInstanceId(hpi.getId()).list();
+//			
+//			for(HistoricTaskInstance historyTask : historyTasks) {
+//				
+//			}
+//			
+//			map.put("processInstanceId", hpi.getId());
+//			Date dueTime = new Date();
+//			for(FormProperty fp : formData.getFormProperties()) {
+//				switch(fp.getName()) {
+//					case "fromUser" :
+//						map.put("fromUserName", userUtil.getNameByUsername(fp.getValue()));
+//						break;
+//					case "toUser" :
+//						map.put("toUserName", userUtil.getNameByUsername(fp.getValue()));
+//						break;
+//					case "taskTitle" :
+//						break;
+//					case "dueTime" :
+//						dueTime = sdf.parse(fp.getValue());
+//						map.put("dueTime", dueTime);
+//						break;
+//				}
+//			}
+//			
+//			map.put("startTime", hpi.getStartTime());
+//			 
+//			String  status = "";
+//			String operation = "";
+//			//正在运行中的任务
+//			if(hpi.getEndTime() == null) {
+//				Task mytask = taskService.createTaskQuery().processInstanceId(hpi.getId()).taskAssignee(userUtil.getUserId(authentication)).active().singleResult();
+//				
+//				if(mytask == null) {
+//					Task task = taskService.createTaskQuery().processInstanceId(hpi.getId()).active().singleResult();
+//					status = "<a class=\"lnk_trace\" href='#' pid=\""+hpi.getId()+"\" pdid=\""+hpi.getProcessDefinitionId()+"\" title=\"点击查看流程图\">"+task.getName()+"</a>";
+//					
+//					operation = "<a href=\"javascript:void(0);\" onclick=\"act_comment_open('"+hpi.getId()+"',true)\"><span class=\"glyphicon glyphicon-edit\"></span> 意见</a> <a href=\"${contextPath }/leadertask/view/${leaderTask.id}\"  target=\"_blank\"><span class=\"glyphicon glyphicon-search\"></span> 详情</a>";
+//				} else {
+//					status ="<a class=\"lnk_trace\" href='#' pid=\""+hpi.getId()+"\" pdid=\""+hpi.getProcessDefinitionId()+"\" title=\"点击查看流程图\">"+mytask.getName()+"</a>";
+//					
+//					operation = "<a href=\"javascript:void(0);\" onclick=\"act_comment_open('"+hpi.getId()+"',false)\"><span class=\"glyphicon glyphicon-edit\"></span> 意见</a> ";
+//					
+//					if(mytask.getAssignee() == null) {
+//						operation += "<a class=\"claim confirm\" href=\"${contextPath }/workflow/task/claim/"+mytask.getId()+"\"><span class=\"glyphicon glyphicon-edit\"></span> 签收</a>";
+//					} else {
+//						operation += "<a href=\"${contextPath }/leadertask/deal/${leaderTask.id}/${mytask.id}\"><span class=\"glyphicon glyphicon-edit\"></span> 办理</a>";
+//					}
+//				}
+//			} else {
+//				status = "已完成";
+//			}
+//
+//			if(dueTime !=null && dueTime.before(new Date())) {
+//				status += " <span class=\"label label-danger\">已超时</span>";
+//			}
+//			
+//			operation += "<a href=\"javascript:void(0);\" onclick=\"act_history_open('"+hpi.getId()+"')\"><span class=\"glyphicon glyphicon-list-alt\"></span> 历史</a>";
+//			//状态
+//			map.put("status", status);
+//			//操作
+//			map.put("operation", operation);
+//			
+//			list1.add(map);
+//		}
 		
 		// 我的任务
 		mytasks = taskService.createTaskQuery()
@@ -107,6 +202,7 @@ public class LeaderTaskController {
 		model.addAttribute("tasks", taskmap);
 		model.addAttribute("mytasks", mytaskmap);
 		model.addAttribute("list", list);
+//		model.addAttribute("list1", list1);
 
 		return "leadertask/list";
 	}

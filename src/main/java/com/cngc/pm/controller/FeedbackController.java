@@ -108,7 +108,7 @@ public class FeedbackController {
 	}
 	
 	@RequestMapping(value = "/list", method = RequestMethod.GET)
-	public String list(Model model, Authentication authentication) {
+	public String list(Model model, Authentication authentication) throws Exception {
 
 		List<Task> tasks = null;
 		List<Task> mytasks = null;

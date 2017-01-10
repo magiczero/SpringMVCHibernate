@@ -131,6 +131,7 @@
                                  	<li><a href="${contextPath }/stats/incident/count">事件总量统计</a></li>
                                  	<li><a href="${contextPath }/stats/incident/category">事件分类统计</a></li>
                                     <li><a href="${contextPath }/stats/incident/performance">工程师绩效统计</a></li>
+                                    <li><a href="${contextPath }/stats/incident/support">支持类型统计</a></li>
                                     <li><a href="${contextPath }/stats/incident/satisfaction">满意度统计</a></li>
                                     <li><a href="${contextPath }/stats/incident/ci">故障率统计</a></li>
                                 </ul>                                               

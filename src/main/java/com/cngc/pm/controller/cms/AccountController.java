@@ -72,9 +72,10 @@ public class AccountController {
 	 * @param category
 	 * @param request
 	 * @return
+	 * @throws Exception 
 	 */
 	@RequestMapping(value="/save",method = RequestMethod.POST)
-	public String save(HttpServletRequest request,Authentication authentication){
+	public String save(HttpServletRequest request,Authentication authentication) throws Exception{
 		
 		String code = request.getParameter("category");
 		String fields = request.getParameter("fm_fields");

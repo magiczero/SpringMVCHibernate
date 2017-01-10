@@ -1,0 +1,110 @@
+<div class="tabs" id="inspection_div">
+	<ul>
+		<li><a href="#tabs-1">任子行</a></li>
+	</ul>
+	
+<div id="tabs-1">
+<div class="tabs-vertical-env tabs-vertical-bordered">
+	<ul class="nav tabs-vertical" id="oaTableTitle">
+		<li class="active"><a href="#v4-step_1" data-toggle="tab">任子行主机</a></li>
+		<li><a href="#v4-step_2" data-toggle="tab">任子行日志服务器</a></li>
+	</ul>
+	<div class="tab-content" id="oaTable">
+		<div class="tab-pane" id="v4-step_1">
+			<div id="title_i" class="label label-info" style="font-size:14px;"></div>
+			<div class="row-form clearfix">
+            	<div class="col-md-3">主机连接网络情况是否正常:</div>
+                <div class="col-md-7">
+                    	<label class="checkbox checkbox-inline"><input type="radio" name="item_1_1" value="true" checked/> 是</label>
+                        <label class="checkbox checkbox-inline"><input type="radio" name="item_1_1" value="false"/> 否</label>
+                        &nbsp;&nbsp;<label style='display:none;'>异常说明</label>
+                        <label  style='display:none;'><input type="text" name="item_1_1_remark" /></label>
+            	</div>
+            	<div class="col-md-3">主机网络配置是否正常:</div>
+                <div class="col-md-7">
+                    	<label class="checkbox checkbox-inline"><input type="radio" name="item_1_2" value="true" checked/> 是</label>
+                        <label class="checkbox checkbox-inline"><input type="radio" name="item_1_2" value="false"/> 否</label>
+                         &nbsp;&nbsp;<label  style='display:none;'>异常说明</label>
+                        <label  style='display:none;'><input type="text" name="item_i_2_remark" /></label>
+            	</div>
+            	<div class="col-md-3">系统账户登录情况是否正常:</div>
+                <div class="col-md-7">
+                    	<label class="checkbox checkbox-inline"><input type="radio" name="item_1_3" value="true" checked/> 是</label>
+                        <label class="checkbox checkbox-inline"><input type="radio" name="item_1_3" value="false"/> 否</label>
+                         &nbsp;&nbsp;<label  style='display:none;'>异常说明</label>
+                        <label  style='display:none;'><input type="text" name="item_1_3_remark" /></label>
+            	</div>
+            	
+            	
+           	</div>
+           	<div class="row-form clearfix">
+           		<div class="col-md-3">审计日志查询结果是否正常:</div>
+                <div class="col-md-7">
+                    	<label class="checkbox checkbox-inline"><input type="radio" name="item_1_4" value="true" checked/> 是</label>
+                        <label class="checkbox checkbox-inline"><input type="radio" name="item_1_4" value="false"/> 否</label>
+                         &nbsp;&nbsp;<label  style='display:none;'>异常说明</label>
+                        <label  style='display:none;'><input type="text" name="item_1_4_remark" /></label>
+            	</div>
+            	<div class="col-md-3">FTP自动下载配置是否正常:</div>
+                <div class="col-md-7">
+                    	<label class="checkbox checkbox-inline"><input type="radio" name="item_1_5" value="true" checked/> 是</label>
+                        <label class="checkbox checkbox-inline"><input type="radio" name="item_1_5" value="false"/> 否</label>
+                         &nbsp;&nbsp;<label  style='display:none;'>异常说明</label>
+                        <label  style='display:none;'><input type="text" name="item_1_5_remark" /></label>
+            	</div>
+           	</div>
+		</div>
+		<div class="tab-pane" id="v4-step_2">
+			<div id="title_i" class="label label-info" style="font-size:14px;"></div>
+			<div class="row-form clearfix">
+            	<div class="col-md-3">主机连接网络情况是否正常:</div>
+                <div class="col-md-7">
+                    	<label class="checkbox checkbox-inline"><input type="radio" name="item_2_1" value="true" checked/> 是</label>
+                        <label class="checkbox checkbox-inline"><input type="radio" name="item_2_1" value="false"/> 否</label>
+                        &nbsp;&nbsp;<label style='display:none;'>异常说明</label>
+                        <label  style='display:none;'><input type="text" name="item_2_1_remark" /></label>
+            	</div>
+            	<div class="col-md-3">主机网络配置是否正常:</div>
+                <div class="col-md-7">
+                    	<label class="checkbox checkbox-inline"><input type="radio" name="item_2_2" value="true" checked/> 是</label>
+                        <label class="checkbox checkbox-inline"><input type="radio" name="item_2_2" value="false"/> 否</label>
+                         &nbsp;&nbsp;<label  style='display:none;'>异常说明</label>
+                        <label  style='display:none;'><input type="text" name="item_2_2_remark" /></label>
+            	</div>
+            	<div class="col-md-3">系统账户登录情况是否正常:</div>
+                <div class="col-md-7">
+                    	<label class="checkbox checkbox-inline"><input type="radio" name="item_2_3" value="true" checked/> 是</label>
+                        <label class="checkbox checkbox-inline"><input type="radio" name="item_2_3" value="false"/> 否</label>
+                         &nbsp;&nbsp;<label  style='display:none;'>异常说明</label>
+                        <label  style='display:none;'><input type="text" name="item_2_3_remark" /></label>
+            	</div>
+            	
+            	
+           	</div>
+           	<div class="row-form clearfix">
+           		<div class="col-md-3">日志数据文件备份情况是否正常:</div>
+                <div class="col-md-7">
+                    	<label class="checkbox checkbox-inline"><input type="radio" name="item_2_4" value="true" checked/> 是</label>
+                        <label class="checkbox checkbox-inline"><input type="radio" name="item_2_4" value="false"/> 否</label>
+                         &nbsp;&nbsp;<label  style='display:none;'>异常说明</label>
+                        <label  style='display:none;'><input type="text" name="item_2_4_remark" /></label>
+            	</div>
+            	
+           	</div>
+		</div>
+	</div>
+	
+</div>
+</div>
+
+
+
+	
+</div>
+<script>
+$(document).ready(function(){
+	$("#v4-step_1").addClass("active"); 
+    $("#inspection_div").tabs();
+});
+</script>
+                        	

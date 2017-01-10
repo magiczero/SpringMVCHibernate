@@ -143,6 +143,24 @@ public class StatsController {
 
 		return "stats/incident-performance";
 	}
+	
+	//根据支持类型统计
+	@RequestMapping(value = "/incident/support", method = RequestMethod.GET)
+	public String incidentSupportType(Model model, HttpServletRequest request) {
+
+		String startTime, endTime;
+		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+		Calendar now = Calendar.getInstance();
+		startTime = String.valueOf(now.get(Calendar.YEAR)) + "-01-01";
+		endTime = formatter.format(now.getTime());
+
+		model.addAttribute(
+				"stat",
+				incidentService.getStats("DATE_MONTH", "CODE_SUPPORT_TYPE", startTime, endTime,
+						PropertyFileUtil.getStringValue("syscode.incident.status.finished")));
+
+		return "stats/incident-support";
+	}
 
 	@RequestMapping(value = "/incident/satisfaction", method = RequestMethod.GET)
 	public String incidentSatisfaction(Model model, HttpServletRequest request) {

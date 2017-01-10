@@ -140,7 +140,7 @@ public class CiController {
 	}
 
 	@RequestMapping(value="/save",method = RequestMethod.POST)
-	public String save(@Valid @ModelAttribute("ci") Ci ci, HttpServletRequest request,Authentication authentication){
+	public String save(@Valid @ModelAttribute("ci") Ci ci, HttpServletRequest request,Authentication authentication) throws Exception{
 		if(!StringUtils.isEmpty(request.getParameter("fileids"))) {
 			String attachIds = request.getParameter("fileids");
 			Set<Attachment> attachSet = attachService.getSetByIds(attachIds);

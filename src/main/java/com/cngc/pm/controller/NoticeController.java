@@ -42,7 +42,7 @@ public class NoticeController {
 		return "notice/add";
 	}
 	@RequestMapping(value = "/save", method = RequestMethod.POST)
-	public String save(@Valid @ModelAttribute("notice") Notice notice,HttpServletRequest request,Authentication authentication){
+	public String save(@Valid @ModelAttribute("notice") Notice notice,Authentication authentication) throws Exception{
 		
 		if(notice.getId()==null)
 		{
@@ -63,7 +63,7 @@ public class NoticeController {
 	}
 	@RequestMapping(value = "/savedialog", method = RequestMethod.POST)
 	public String saveDialog(@RequestParam("fp_notice_title") String title,
-			@RequestParam("fp_notice_content") String content, HttpServletRequest request, Model model, Authentication authentication) {
+			@RequestParam("fp_notice_content") String content, HttpServletRequest request, Model model, Authentication authentication) throws Exception {
 
 
 		Notice notice = new Notice();

@@ -12,6 +12,7 @@
           <activiti:value id="INSPECTION_BKY" name="兵科院--日常巡检模板"></activiti:value>
           <activiti:value id="INSPECTION_BKY_WW" name="兵科院外网--日常巡检模板"></activiti:value>
           <activiti:value id="INSPECTION_BKY_RD" name="兵科院弱电间--日常巡检模板"></activiti:value>
+          <activiti:value id="INSPECTION_BKY_WWSJ" name="兵科院外网审计日志--日常巡检模板"></activiti:value>
           <activiti:value id="INSPECTION_XXZX" name="信息中心--日常巡检模板"></activiti:value>
           <activiti:value id="INSPECTION_XXZX_WW" name="信息中心外网--日常巡检模板"></activiti:value>
           <activiti:value id="INSPECTION_XXZX_WX" name="信息中心--邮箱"></activiti:value>
@@ -28,6 +29,7 @@
           <activiti:value id="INSPECTION_SHIPIN" name="视频会议--日常巡检模板"></activiti:value>
           <activiti:value id="INSPECTION_BKY_WW" name="兵科院外网--日常巡检模板"></activiti:value>
           <activiti:value id="INSPECTION_BKY_RD" name="兵科院弱电间--日常巡检模板"></activiti:value>
+          <activiti:value id="INSPECTION_BKY_WWSJ" name="兵科院外网审计日志巡检"></activiti:value>
           <activiti:value id="INSPECTION_XXZX" name="信息中心--日常巡检模板"></activiti:value>
           <activiti:value id="INSPECTION_XXZX_WW" name="信息中心外网--日常巡检模板"></activiti:value>
           <activiti:value id="INSPECTION_XXZX_WX" name="信息中心--邮箱"></activiti:value>

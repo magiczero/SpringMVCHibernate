@@ -5,6 +5,7 @@
       <extensionElements>
         <activiti:formProperty id="startWhile" name="开始时间" type="date" datePattern="yyyy-MM-dd HH:mm" required="true"></activiti:formProperty>
         <activiti:formProperty id="endWhile" name="截止时间" type="date" datePattern="yyyy-MM-dd HH:mm" required="true"></activiti:formProperty>
+        <activiti:formProperty id="serviceCompany" name="服务部门" type="company" required="true"></activiti:formProperty>
         <activiti:formProperty id="reason" name="原因" type="bigtext" required="true"></activiti:formProperty>
       </extensionElements>
     </startEvent>

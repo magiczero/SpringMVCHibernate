@@ -214,7 +214,8 @@ public class UserServiceImpl implements UserService {
 	@Transactional
 	public List<SysUser> getCommonUser()
 	{
-		return getByRole("system.user.common");
+		//system.user.common
+		return getByRole("system.user.role.user");
 	}
 	private List<SysUser> getByRole(String roleMagic)
 	{

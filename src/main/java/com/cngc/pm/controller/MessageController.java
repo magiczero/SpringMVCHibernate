@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.annotation.Resource;
-import javax.servlet.http.HttpSession;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
@@ -27,7 +26,7 @@ public class MessageController {
 	private UserUtil userUtil;
 	
 	@RequestMapping(value="/list",method = RequestMethod.GET)
-	public String list(Model model,HttpSession session,Authentication authentication){
+	public String list(Model model,Authentication authentication) throws Exception{
 		
 		model.addAttribute("messages", messageService.getByUserId(userUtil.getUserId(authentication)).getResult() );
 		
@@ -44,7 +43,7 @@ public class MessageController {
 	
 	@RequestMapping(value="/getnotreadcount")
 	@ResponseBody
-	public Map<String,Object> getNotReadMessageCount(HttpSession session,Model model,Authentication authentication)
+	public Map<String,Object> getNotReadMessageCount(Model model,Authentication authentication) throws Exception
 	{
 		Map<String,Object> map = new HashMap<String,Object>();
 		map.put("count", messageService.getNotReadMessageCountByUserId(userUtil.getUserId(authentication)));
@@ -54,7 +53,7 @@ public class MessageController {
 	
 	@RequestMapping(value="/getnotreadlist")
 	@ResponseBody
-	public Map<String,Object> getNotReadMessageList(HttpSession session,Model model,Authentication authentication)
+	public Map<String,Object> getNotReadMessageList(Model model,Authentication authentication) throws Exception
 	{
 		Map<String,Object> map = new HashMap<String,Object>();
 		map.put("messages", messageService.getNotReadMessageByUserId(userUtil.getUserId(authentication)).getResult());
@@ -63,7 +62,7 @@ public class MessageController {
 	}
 	@RequestMapping(value="/getlist")
 	@ResponseBody
-	public Map<String,Object> getMessageList(HttpSession session,Model model,Authentication authentication)
+	public Map<String,Object> getMessageList(Model model,Authentication authentication) throws Exception
 	{
 		Map<String,Object> map = new HashMap<String,Object>();
 		map.put("messages", messageService.getByUserId(userUtil.getUserId(authentication)).getResult());

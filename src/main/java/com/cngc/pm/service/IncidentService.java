@@ -9,7 +9,7 @@ import com.googlecode.genericdao.search.SearchResult;
 
 public interface IncidentService {
 
-	void save(Incident event);
+	void save(Incident event, String userid) throws Exception;
 	boolean delByIds(String ids);
 	boolean delById(Long id);
 	Incident getById(Long id);
@@ -27,4 +27,5 @@ public interface IncidentService {
 	SearchResult<Incident> getByProcessInstance(List<String> processInstanceIds);
 	Long getIdByProcessInstance(String processInstanceId);
 	List<Incident> search(String abs,String applyUser,String engineer,String satisfaction,Date startTime,Date endTime);
+	void update(Incident newincident);
 }

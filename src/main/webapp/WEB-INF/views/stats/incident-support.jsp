@@ -53,15 +53,14 @@
       <script src="${contextPath }/resources/js/html5shiv.js"></script>
       <script src="${contextPath }/resources/js/respond.min.js"></script>
     <![endif]-->
-        <script type="text/javascript">
+    <script type="text/javascript">
     	var ctx = "${contextPath}";
     	var mylabels = [<c:forEach items="${stat.column }" var="code" varStatus="status"><c:if test="${status.index>0}">,</c:if>'${code.value}'</c:forEach>];
-    	var mydata=[<c:forEach items="${stat.column }" var="code" varStatus="status"><c:if test="${status.index>0 }">,</c:if>${stat.counts[code.key]==null?0:stat.counts[code.key]}</c:forEach>];
+    	var mydatasets=[<c:forEach items="${stat.row }" var="rowcode" varStatus="s"><c:if test="${s.index>0}">,</c:if>{fillColor : "rgba(151,187,205,0.5)",strokeColor : "rgba(151,187,205,1)",data:[<c:forEach items="${stat.column }" var="columncode" varStatus="status"><c:if test="${status.index>0}">,</c:if>${stat[rowcode.key][columncode.key]==null?0:stat[rowcode.key][columncode.key]}</c:forEach>]}</c:forEach>];
         $(document).ready(function () {
         	$(".header").load("${contextPath}/header?t="+pm_random());
             $(".menu").load("${contextPath}/menu?t="+pm_random(), function () { $("#node_${moduleId}").addClass("active"); });
             $(".breadLine .buttons").load("${contextPath}/contentbuttons?t="+pm_random());
-
             if( ($.browser.msie&&$.browser.version=="8.0") )
             {
             	if($("#barChart").length > 0){       
@@ -70,8 +69,7 @@
     		            $("#barChart").attr('width',$("#barChart").parent('div').width()).attr('height',300);
     		            var barChart = new Chart(bctx).Bar({
     		            	labels : mylabels,
-    		                datasets : [{fillColor : "rgba(151,187,205,0.5)",strokeColor : "rgba(151,187,205,1)",data : mydata}]
-    		            }, {animation : Modernizr.canvas});
+    		                datasets : mydatasets}, {animation : Modernizr.canvas});
                 	});
                 }
             }else{
@@ -80,37 +78,12 @@
     		        $("#barChart").attr('width',$("#barChart").parent('div').width()).attr('height',300);
     		        var barChart = new Chart(bctx).Bar({
     		          	labels : mylabels,
-    		            datasets : [{fillColor : "rgba(151,187,205,0.5)",strokeColor : "rgba(151,187,205,1)",data : mydata}]
+    		            datasets : mydatasets
     		        });
                 }
             }
-
-            /*
-			if($("#chart-2").length > 0){
-				var vData = [[1, 103], [2, 28], [3, 135], [4, 130], [5, 145], [6, 155], [7, 155], [8, 155], [9, 155], [10, 155], [11, 155], [12, 155]]; 
-				//var vData = [];
-				//for(var i=0; i<mylabels.length; i++) {
-				//	vData.push([mylabels[i], mydata[i]]);
-				//}
-
-				$.plot($("#chart-2"), [{ label: "", data: vData}],
-						{
-						    series: { lines: { show: true }, points: { radius: 3,show: true} },
-						    xaxis: { ticks: [[1, "1月"], [3, "3月"], [5, "5月"], [7, "7月"], [9, "9月"], [11, "11月"]], min: 1, max: 12 },  //指定固定的显示内容
-						    yaxis: { ticks: 5, min: 0 }  //在y轴方向显示5个刻度，此时显示内容由 flot 根据所给的数据自动判断
-						}
-				);
-				<style type="text/css">
-		    	#chart-2{
-		        width:100%;
-		        height:300px;
-		    }
-		    </style>
-                
-            }*/
         });
     </script>
-    
 </head>
 <body>
     <div class="wrapper"> 
@@ -130,7 +103,7 @@
                 <ul class="breadcrumb">
                     <li><a href="#">运维管理系统</a> <span class="divider">></span></li>
                     <li><a href="#">报表与统计管理</a> <span class="divider">></span></li>       
-                    <li class="active">事件总量统计</li>
+                    <li class="active">支持类型统计</li>
                 </ul>
 
                 <ul class="buttons"></ul>
@@ -175,34 +148,36 @@
                     <div class="col-md-9">
                         <div class="head clearfix">
                             <div class="isw-grid"></div>
-                            <h1>本年度按月统计事件</h1>                            
+                            <h1>本年度支持类型按月统计</h1>                            
                         </div>
-                        
                         <div class="block-fluid">
-                        	<div class="toolbar clearfix">统计说明：按月统计本年度已关闭的事件。</div>
+                        	<div class="toolbar clearfix">统计说明：统计本年度已关闭的事件。</div>
                             <table class="table">
                                 <thead>
                                     <tr>                                    
-                                        <th class="tac">月份</th>
-										<c:forEach items="${stat.column }" var="code">
-											<th class="tac">${code.value }</th>
-										</c:forEach>
+                                        <th width="150px">支持类型</th>
+                                        <c:forEach items="${stat.column }" var="code">
+                                        	<th>${code.value }</th>
+                                        </c:forEach>
                                     </tr>
                                 </thead>
                                 <tbody>
+                                	<c:forEach items="${stat.row }" var="rowcode">
                                 	<tr>
-                                		<td class="tac">总数</td>
-                                    	<c:forEach items="${stat.column }" var="code">
-                                      	<td class="tac">
-                                      		<c:if test="${ empty stat.counts[code.key] }">
+                                    	<td>${rowcode.value }</td>
+                                    	
+                                    	<c:forEach items="${stat.column }" var="columncode">
+                                        	<td>
+                                        	<c:if test="${ empty stat[rowcode.key][columncode.key] }">
                                         		<span style="color:#a0a0a0;">0</span>
                                         	</c:if>
-                                        	<c:if test="${ not empty stat.counts[code.key] }">
-                                        		<strong><span class="text-info">${stat.counts[code.key] }</span></strong>
+                                        	<c:if test="${ not empty stat[rowcode.key][columncode.key] }">
+                                        		<strong><span class="text-info">${stat[rowcode.key][columncode.key] }</span></strong>
                                         	</c:if>
-                                      	</td>
-                                    	</c:forEach>
-                                    </tr>
+                                        	</td>
+                                        </c:forEach>
+                                	</tr>
+                                	</c:forEach>
                                 </tbody>
                             </table>
                         </div>

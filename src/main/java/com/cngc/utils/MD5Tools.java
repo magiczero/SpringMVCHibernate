@@ -16,6 +16,19 @@ public class MD5Tools {
                 StringUtils.lastIndexOf("abc.txt	", "."));
 		
 		System.out.println(isExtension(ext, "doc", "xls",".txt"));
+		
+		System.out.println(StringUtils.containsOnly("CMS_FIELD_SECURITYNO", "FIELD"));
+		
+		String[][] strs= new String[2][5];
+		
+		for(int i=0; i<2; i++) {
+			for(int j = 0; j<5; j++) {
+				strs[i][j] = "wo " + i + " " + j;
+				System.out.println(strs[i][j]);
+			}
+		}
+		
+		
 	}
 	
 	private static boolean isExtension(String ext, String... exts) {

@@ -68,7 +68,7 @@ public class KnowledgeController {
 
 	@RequestMapping(value = "/save", method = RequestMethod.POST)
 	public String save(@Valid @ModelAttribute("knowledge") Knowledge knowledge, BindingResult result,
-			HttpServletRequest request, Authentication authentication) {
+			HttpServletRequest request, Authentication authentication) throws Exception {
 
 		if(knowledge.getId()==null)
 		{
@@ -107,9 +107,10 @@ public class KnowledgeController {
 	 * 
 	 * @param model
 	 * @return
+	 * @throws Exception 
 	 */
 	@RequestMapping(value = "/list", method = RequestMethod.GET)
-	public String list(Model model, Authentication authentication) {
+	public String list(Model model, Authentication authentication) throws Exception {
 		List<Task> tasks = null;
 		List<Task> mytasks = null;
 		Map<String, Task> taskmap = null;
@@ -187,9 +188,10 @@ public class KnowledgeController {
 	 * @param model
 	 * @param authentication
 	 * @return
+	 * @throws Exception 
 	 */
 	@RequestMapping(value = "/list/{status}", method = RequestMethod.GET)
-	public String list(@PathVariable("status") String status, Model model, Authentication authentication) {
+	public String list(@PathVariable("status") String status, Model model, Authentication authentication) throws Exception {
 		List<Task> tasks = null;
 		List<Task> mytasks = null;
 		Map<String, Task> taskmap = null;

@@ -1,6 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>    
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<%@page import="com.cngc.pm.service.UserService"%>
+<%@page import="org.springframework.web.context.support.WebApplicationContextUtils,org.springframework.web.context.WebApplicationContext"%>
 <c:set var="contextPath" value="${pageContext.request.contextPath}"></c:set>
 <!DOCTYPE html>
 <html lang="en">
@@ -71,6 +73,7 @@
     <![endif]-->
     <script type="text/javascript">
     	var ctx = "${contextPath}";
+    	
         $(document).ready(function () {
             $("#myTable").dataTable({
             	"oLanguage": {
@@ -91,6 +94,13 @@
                 height: 400,
                 buttons: { "关闭": function () { $(this).dialog("close") } }
             });
+         // 巡检结果对话框初始化
+            $("#b_popup_incident").dialog({
+                autoOpen: false,
+                width: 1150,
+                height: 700,
+                buttons: { "关闭": function () { $(this).dialog("close") } }
+            });
             $(".lnk_trace").click(function () {
             	var src= ctx+ '/diagram-viewer/index.html?processDefinitionId=' 
     			+ $(this).attr('pdid') + '&processInstanceId=' + $(this).attr('pid');
@@ -98,6 +108,14 @@
             	$("#b_popup_trace").dialog('open');
             });    
         });
+        
+        function view(id) {
+        	var src= ctx+ '/incident/view/'+id;
+        	$("#incident_content").html("<iframe src='"+ src +"' width='100%' height='550'/>");
+        	 
+        	$("#b_popup_incident").dialog('open');
+        	return false;
+        }
     </script>
 </head>
 <body>
@@ -167,16 +185,23 @@
                                     <tr>
                                     	<th width="70px">流水号</th>
                                         <th>摘要</th>
+                                        <th>服务部门</th>
                                         <th width="70px">申请人</th>
                                         <th width="60px">受派者</th>
-                                        <th width="130px">流程步骤</th>
+                                        <th width="100px">流程步骤</th>
                                         <th width="110px">申请时间</th>
-                                        <th width="60px">状态</th> 
+                                        <th width="110px">要求完成时间</th>
+                                        <th width="50px">状态</th> 
                                         <th width="90px">操作</th>                                    
                                     </tr>
                                 </thead>
+                                <%
+                                	WebApplicationContext wac =  WebApplicationContextUtils.getWebApplicationContext(this.getServletContext());
+                                	UserService  userService = (UserService)wac.getBean("userServiceImpl");
+                                %>
                                 <tbody>
                                 	<c:forEach items="${list }" var="incident">
+                                	<c:set var="username" value="${incident.applyUser }"></c:set>
                                 	<c:if test="${not empty mytasks[incident.processInstanceId] }">
 	                                	<c:set var="task" value="${mytasks[incident.processInstanceId]}" />
 	                                    <tr>
@@ -189,8 +214,9 @@
 	                                        	<span class="label label-warning tipb" title="优先级:${incident.priorityName }">${incident.priorityName }</span>
 	                                        	</c:if>
 	                                        	
-	                                        	<a href="${contextPath }/incident/view/${incident.id}" title="查看详情" class="tipr" target="_blank">${incident.abs }</a>
+	                                        	<a href="#" title="查看详情" class="tipr" onclick="javascript:view(${incident.id});">${incident.abs }</a>
 	                                        </td>
+	                                        <td><%=(userService.getTopGroupByUser(userService.getByUsername(pageContext.getAttribute("username").toString()))).getGroupName() %></td>
 	                                        <td>${incident.applyUserName }</td>
 	                                        <td>${incident.currentDelegateUserName }</td>
 	                                        <td>
@@ -199,6 +225,7 @@
 												</a>
 											</td>
 	                                        <td><fmt:formatDate value="${incident.applyTime }" pattern="yyyy-MM-dd HH:mm" /></td>
+	                                        <td><fmt:formatDate value="${incident.finishTime }" pattern="yyyy-MM-dd HH:mm" /></td>
 	                                        <td>${incident.statusName }</td>
 	                                        <td>
 	                                        	<c:if test="${empty task.assignee }">
@@ -225,8 +252,9 @@
 	                                        	<c:if test="${incident.priority == '04' || incident.priority == '03'}">
 	                                        	<span class="label label-warning tipb" title="优先级:${incident.priorityName }">${incident.priorityName }</span>
 	                                        	</c:if>
-		                                        	<a href="${contextPath }/incident/view/${incident.id}" title="查看详情"  target="_blank">${incident.abs }</a>
+		                                        	<a href="#" title="查看详情" class="tipr" onclick="javascript:view(${incident.id});">${incident.abs }</a>
 		                                        </td>
+		                                        <td><%=(userService.getTopGroupByUser(userService.getByUsername(pageContext.getAttribute("username").toString()))).getGroupName() %></td>
 		                                        <td>${incident.applyUserName }</td>
 		                                        <td>${incident.currentDelegateUserName }</td>
 		                                        <td>
@@ -235,11 +263,13 @@
 													</a>
 												</td>
 		                                        <td><fmt:formatDate value="${incident.applyTime }" pattern="yyyy-MM-dd HH:mm" /></td>
+		                                       <td><fmt:formatDate value="${incident.finishTime }" pattern="yyyy-MM-dd HH:mm" /></td>
 		                                        <td>${incident.statusName }</td>
 		                                        <td>
 			                                        <c:if test="${not empty ROLE_MODIFY }">
 		                                        		<a href="${contextPath }/incident/update/${incident.id}"><span class="glyphicon glyphicon-pencil"></span> 修改</a>
 		                                        	</c:if>
+		                                        	<a class="claim confirm" href="${contextPath }/incident/end-process/${task.id}" title="中止"><span class="glyphicon glyphicon-pencil"></span> 中止</a>
 		                                        </td>
 		                                    </tr>
                                     	</c:if>
@@ -295,6 +325,10 @@
     	<div class="block dialog_block  uploads" id="trace_content">
 		</div>
    	</div>
+   	<!-- 查看详细信息 -->
+    <div class="dialog" id="b_popup_incident" style="display: none;" title="查看事件详细信息">
+	    <div class="block dialog_block" id="incident_content"></div>
+    </div>
 </body>
 
 </html>

@@ -899,6 +899,9 @@ public class StatsDAOImpl extends BaseDAOImpl<Object, Long> implements StatsDAO 
 			case "SATISFACTION":
 				list = syscodeDao.getCodeByType("INCIDENT_SATISFACTION").getResult();
 				break;
+			case "SUPPORT_TYPE":
+				list = syscodeDao.getCodeByType("INCIDENT_SUPPORT_TYPE").getResult();
+				break;	
 			case "CHANGE_STATUS":
 				list = syscodeDao.getCodeByType("CHANGE_STATUS").getResult();
 				break;

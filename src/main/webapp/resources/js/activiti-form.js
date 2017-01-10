@@ -206,8 +206,59 @@ function act_form_getStartDialog(processDefinitionKey,redirectAddress) {
 
 	// 读取启动时的表单
 	$.getJSON(ctx + '/workflow/dynamicform/getformbykey/start/' + processDefinitionKey + '?t=' + pm_random(),function(data) {
-		act_form_getDialogFields(data,redirectAddress);
+		act_form_getDialogFieldsByProcessDefinitionKey(processDefinitionKey, data,redirectAddress);
+		//act_form_getDialogFields(data,redirectAddress);
 	});
+}
+function act_form_getDialogFieldsByProcessDefinitionKey(processDefinitionKey, data,redirectAddress) {
+	if(processDefinitionKey == 'OVERTIME') {
+
+		var divs = "";
+		var $form = $('.dynamic-form');
+		$.each(data.form.formProperties,function() {
+			var className = this.required === true ? "required" : "";
+			divs += "<div class='row'><div class='block-fluid'><div class='row-form clearfix'>" + act_form_createfield(this, data,className)
+			if (this.required === true) {
+				divs += "<div class='col-md-1' style='color:red;'>*</div>";
+			}
+			divs += "</div></div></div>";
+		});
+		divs += "<div class='modal-footer'>"
+				+ "<input type=hidden name='redirectAddress' value='" + redirectAddress + "' />"
+				+ "<button class='btn btn-primary' aria-hidden='true'>提 交</button>"
+				+ "<button class='btn btn-default' data-dismiss='modal' aria-hidden='true'>关 闭</button>"
+				+ "</div>";
+		// 添加表单内容
+		$('#dynamic-form-table').html(divs);
+		
+		//初始化日期时间组件
+		$form.find('.dateISO').datetimepicker({autoclose: true,language: 'zh-CN',minuteStep: 5,todayBtn: true});
+		
+		if($form.find('.company').length>0)// 初始化单位选择下拉框
+		{
+			$.getJSON(ctx + '/group/all-top-groups?t=' + pm_random(),function(result){
+				//console.log(result);
+				for(var i=0; i<result.length; i++) {
+					//console.log(result[i].groupid);
+					$form.find('.company').append("<option value='"+result[i].groupid+"'>"+result[i].groupname+"</option>");
+				}
+				//$.each(eval(result),function(key,value){
+				//	$form.find('.company').append("<option value='"+key+"'>"+value+"</option>");
+				//});
+				for(i=0;i<$form.find('.company').length;i++)
+				{
+					if( $($form.find('.company')[i]).attr('data')!=null )
+						$($form.find('.company')[i]).find("option[value='"+$($form.find('.company')[i]).attr('data')+"']").attr("selected",true);
+				}
+				$form.find('.company').select2();
+			});
+			// 初始化日期组件
+			
+		}
+		
+	} else {
+		act_form_getDialogFields(data,redirectAddress);
+	}
 }
 function act_form_getTaskDialog(taskId,redirectAddress) {
 	// 清空对话框内容
@@ -275,6 +326,23 @@ function act_form_getDialogFields(data,redirectAddress) {
 					$($form.find('.leader')[i]).find("option[value='"+$($form.find('.leader')[i]).attr('data')+"']").attr("selected",true);
 			}
 			$form.find('.leader').select2();
+		});
+		// 初始化日期组件
+		
+	} 
+	
+	if($form.find('.company').length>0)// 初始化领导选择下拉框
+	{
+		$.getJSON(ctx + '/group/all-top-groups?t=' + pm_random(),function(result){
+			$.each(result,function(key,value){
+				$form.find('.company').append("<option value='"+key+"'>"+value+"</option>");
+			});
+			for(i=0;i<$form.find('.company').length;i++)
+			{
+				if( $($form.find('.company')[i]).attr('data')!=null )
+					$($form.find('.company')[i]).find("option[value='"+$($form.find('.company')[i]).attr('data')+"']").attr("selected",true);
+			}
+			$form.find('.company').select2();
 		});
 		// 初始化日期组件
 		
@@ -398,6 +466,16 @@ var act_form_fieldcreator = {
 		var result = "<div class='col-md-3'>" + prop.name + "：</div>";
 		if (prop.writable === true) {
 			result += "<div class='col-md-8'><select id='" + prop.id + "' name='fp_" + prop.id + "' class='leader' style='width:100%' data='"
+				+ (prop.value==null?"":prop.value) + "'></select></div>";
+		} else {
+			result += "<div class='col-md-8'>" + prop.value + "</div>";
+		}
+		return result;
+	},
+	'company': function(prop, datas, className) {
+		var result = "<div class='col-md-3'>" + prop.name + "：</div>";
+		if (prop.writable === true) {
+			result += "<div class='col-md-8'><select id='" + prop.id + "' name='fp_" + prop.id + "' class='company' style='width:100%' data='"
 				+ (prop.value==null?"":prop.value) + "'></select></div>";
 		} else {
 			result += "<div class='col-md-8'>" + prop.value + "</div>";

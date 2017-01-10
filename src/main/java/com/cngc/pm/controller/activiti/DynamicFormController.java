@@ -147,12 +147,13 @@ public class DynamicFormController {
 	 * @param redirectAttributes
 	 * @param request
 	 * @return
+	 * @throws Exception 
 	 */
 	@RequestMapping(value = "start-process/{processDefinitionId}")
 	@SuppressWarnings("unchecked")
 	public String submitStartFormAndStartProcessInstance(
 			@PathVariable("processDefinitionId") String processDefinitionId, RedirectAttributes redirectAttributes,
-			HttpServletRequest request,Authentication authentication) {
+			HttpServletRequest request,Authentication authentication) throws Exception {
 		Map<String, String> formProperties = new HashMap<String, String>();
 
 		// 从request中读取参数然后转换
@@ -192,7 +193,7 @@ public class DynamicFormController {
 	@SuppressWarnings("unchecked")
 	public String submitStartFormAndStartProcessInstanceByKey(
 			@PathVariable("processDefinitionKey") String processDefinitionKey, RedirectAttributes redirectAttributes,
-			HttpServletRequest request,Authentication authentication) {
+			HttpServletRequest request,Authentication authentication) throws Exception {
 		Map<String, String> formProperties = new HashMap<String, String>();
 		ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery()
 				.processDefinitionKey(processDefinitionKey).latestVersion().singleResult();

@@ -24,6 +24,7 @@
     <link href="${contextPath }/resources/js/plugins/select2/select2.css" rel="stylesheet" type="text/css" />
     <link href="${contextPath }/resources/css/uploadify.css" rel="stylesheet" type="text/css" />
     <link href="${contextPath }/resources/css/validation.css" rel="stylesheet" type="text/css" />
+    <link href="${contextPath }/resources/js/plugins/datetimepicker/datetimepicker.min.css" rel="stylesheet" type="text/css" />
     <link href='${contextPath }/resources/js/plugins/jstree/jquery.treeview.css' rel="stylesheet" type="text/css" />
     <!--[if lt IE 8]>
         <link href="${contextPath }/resources/css/ie7.css" rel="stylesheet" type="text/css" />
@@ -43,6 +44,8 @@
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/ibutton/jquery.ibutton.min.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/scrollup/jquery.scrollUp.min.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/uploadify/jquery.uploadify.min.js'></script>
+    <script type='text/javascript' src='${contextPath }/resources/js/plugins/datetimepicker/datetimepicker.min.js' charset="UTF-8"></script>
+    <script type='text/javascript' src='${contextPath }/resources/js/plugins/datetimepicker/datetimepicker.zh-CN.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/jstree/jquery.treeview.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/jstree/jquery.treeview.edit.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/jstree/jquery.treeview.async.js'></script>
@@ -70,6 +73,7 @@
             	act_dialog_category_select('INCIDENT_CATEGORY','category');
             });
             --%>
+            $(".dateISO").datetimepicker({autoclose: true,language: 'zh-CN',minuteStep: 5,todayBtn: true});
             //------------------IE8---------------------------
             $(".wrapper").append("<div class='dialog' id='b_popup_select' style='display: none;' title='事件分类'></div>");
 			$("#b_popup_select").html("<div class='block dialog_block messages '>"
@@ -83,6 +87,9 @@
 		        height:500,
 		        buttons: { "确定": function () { $(this).dialog("close") } }
 		    });
+		    
+		    if($("#id").val()=="")
+		    $("#finishTime").val(gettodayfinishedtime());
             
 		    $("input[name='category']").bind("click",function(){
 		    	$("#treeview").empty('');
@@ -186,6 +193,20 @@
         	$("input[name='phoneNumber']").attr("value",tel);
         	$("#room").attr("value", room);
         }
+
+      //获取当前时间,格式 2015-09-05 10:00:00.000
+              function gettodayfinishedtime() {
+                  var nowtime = new Date();
+                  var year = nowtime.getFullYear();
+                  var month = padleft0(nowtime.getMonth() + 1);
+                  var day = padleft0(nowtime.getDate());
+                  return year + "-" + month + "-" + day + " 17:00";
+              }
+              //补齐两位数
+              function padleft0(obj) {
+                  return obj.toString().replace(/^[0-9]{1}$/, "0" + obj);
+              }
+
     </script>
     <style type="text/css">
     	.uploadify-button-text {color:#fff !important;}
@@ -264,6 +285,12 @@
 	                            	<div class="col-md-1"><form:label path="source">来源:</form:label></div>
 	                                <div class="col-md-3"><form:select path="source" items="${source }" itemLabel="codeName" itemValue="code"></form:select></div>
 	                            </div>      
+	                            <div class="row-form clearfix">
+	                                <div class="col-md-2"><form:label path="supportType">支持类型:</form:label></div>
+	                                <div class="col-md-3"><form:select path="supportType" items="${supporttype }" itemLabel="codeName" itemValue="code"></form:select></div>
+	                                <div class="col-md-2"><form:label path="finishTime">要求完成时间:</form:label></div>
+	                                <div class="col-md-3"><form:input path="finishTime" cssClass="dateISO" readonly="true"/></div>
+	                            </div>   
 	                            <div class="row-form clearfix">
 	                                <div class="col-md-1"><form:label path="influence">影响度:</form:label></div>
 	                                <div class="col-md-3"><form:select path="influence" items="${influence }" itemLabel="codeName" itemValue="code"></form:select></div>

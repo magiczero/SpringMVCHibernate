@@ -23,9 +23,15 @@ import org.activiti.engine.RepositoryService;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
 import org.activiti.engine.history.HistoricTaskInstance;
+import org.activiti.engine.impl.RepositoryServiceImpl;
+import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
+import org.activiti.engine.impl.persistence.entity.TaskEntity;
+import org.activiti.engine.impl.pvm.PvmTransition;
+import org.activiti.engine.impl.pvm.process.ActivityImpl;
+import org.activiti.engine.impl.pvm.process.ProcessDefinitionImpl;
+import org.activiti.engine.impl.pvm.process.TransitionImpl;
 import org.activiti.engine.impl.util.json.JSONArray;
 import org.activiti.engine.impl.util.json.JSONObject;
-import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.task.Task;
 import org.apache.cxf.common.util.StringUtils;
 import org.codehaus.jackson.JsonGenerationException;
@@ -114,6 +120,8 @@ public class IncidentController {
 				syscodeService.getAllByType(PropertyFileUtil.getStringValue("syscode.incident.source")).getResult());
 		model.addAttribute("category",
 				syscodeService.getAllByType(PropertyFileUtil.getStringValue("syscode.incident.category")).getResult());
+		model.addAttribute("supporttype",
+				syscodeService.getAllByType(PropertyFileUtil.getStringValue("syscode.incident.support.type")).getResult());
 		model.addAttribute("type", syscodeService
 				.getAllByType(PropertyFileUtil.getStringValue("syscode.incident.type")).getResult());
 		model.addAttribute("influence",
@@ -124,6 +132,15 @@ public class IncidentController {
 				.getResult());
 		//model.addAttribute("users", userService.getCommonUser());
 		return "incident/add";
+	}
+	
+	@RequestMapping(value = "/end-process/{taskid}", method = RequestMethod.GET)
+	public String endProcess(@PathVariable("taskid") String taskId, Model model) throws Exception {
+		
+		ActivityImpl endActivity = findActivitiImpl(taskId, "end");  
+        commitProcess(taskId, null, endActivity.getId());  
+        
+        return "redirect:/incident/list";
 	}
 
 	/**
@@ -140,6 +157,8 @@ public class IncidentController {
 				syscodeService.getAllByType(PropertyFileUtil.getStringValue("syscode.incident.source")).getResult());
 		model.addAttribute("category",
 				syscodeService.getAllByType(PropertyFileUtil.getStringValue("syscode.incident.category")).getResult());
+		model.addAttribute("supporttype",
+				syscodeService.getAllByType(PropertyFileUtil.getStringValue("syscode.incident.support.type")).getResult());
 		model.addAttribute("type", syscodeService
 				.getAllByType(PropertyFileUtil.getStringValue("syscode.incident.type")).getResult());
 		model.addAttribute("influence",
@@ -148,7 +167,7 @@ public class IncidentController {
 				.getResult());
 		model.addAttribute("priority", syscodeService.getAllByType(PropertyFileUtil.getStringValue("syscode.priority"))
 				.getResult());
-		model.addAttribute("users", userService.getCommonUser());
+		//model.addAttribute("users", userService.getCommonUser());
 
 		return "incident/add";
 	}
@@ -172,9 +191,10 @@ public class IncidentController {
 	 * @param request
 	 * @param authentication
 	 * @return
+	 * @throws Exception 
 	 */
 	@RequestMapping(value = "/savebyuser", method = RequestMethod.POST)
-	public String savebyuser(Model model, HttpServletRequest request, Authentication authentication) {
+	public String savebyuser(Model model, HttpServletRequest request, Authentication authentication) throws Exception {
 		String abs = request.getParameter("fm_abs");
 		String detail = request.getParameter("fm_description");
 		
@@ -203,17 +223,17 @@ public class IncidentController {
 		}
 		
 
-		incidentService.save(incident);
+		incidentService.save(incident, user.getUsername());
 
 		// 启动流程
-		ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery()
-				.processDefinitionKey(PropertyFileUtil.getStringValue("workflow.processkey.incident")).active()
-				.latestVersion().singleResult();
-		if (processDefinition != null) {
-			Map<String, String> variables = new HashMap<String, String>();
-			variables.put("id", String.valueOf(incident.getId()));
-			formService.submitStartFormData(processDefinition.getId(), variables);
-		}
+//		ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery()
+//				.processDefinitionKey(PropertyFileUtil.getStringValue("workflow.processkey.incident")).active()
+//				.latestVersion().singleResult();
+//		if (processDefinition != null) {
+//			Map<String, String> variables = new HashMap<String, String>();
+//			variables.put("id", String.valueOf(incident.getId()));
+//			formService.submitStartFormData(processDefinition.getId(), variables);
+//		}
 
 		return "redirect:/incident/mylist";
 	}
@@ -224,9 +244,10 @@ public class IncidentController {
 	 * @param incident
 	 * @param request
 	 * @return
+	 * @throws Exception 
 	 */
 	@RequestMapping(value = "/save", method = RequestMethod.POST)
-	public String save(@Valid @ModelAttribute("incident") Incident incident,HttpServletRequest request, Authentication authentication) {
+	public String save(@Valid @ModelAttribute("incident") Incident incident,HttpServletRequest request, Authentication authentication) throws Exception {
 		if(incident.getId()==null)
 		{
 			if(!StringUtils.isEmpty(request.getParameter("fileids"))) {
@@ -239,18 +260,18 @@ public class IncidentController {
 			
 			incident.setStatus(PropertyFileUtil.getStringValue("syscode.incident.status.new"));
 			incident.setApplyTime(new Date());
-			incidentService.save(incident);
+			incidentService.save(incident,userUtil.getUserId(authentication));
 
 			// 启动流程
-			ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery()
-					.processDefinitionKey(PropertyFileUtil.getStringValue("workflow.processkey.incident")).active()
-					.latestVersion().singleResult();
-			if (processDefinition != null) {
-				Map<String, String> variables = new HashMap<String, String>();
-				variables.put("id", String.valueOf(incident.getId()));
-				identityService.setAuthenticatedUserId(userUtil.getUserId(authentication));
-				formService.submitStartFormData(processDefinition.getId(), variables);
-			}
+//			ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery()
+//					.processDefinitionKey(PropertyFileUtil.getStringValue("workflow.processkey.incident")).active()
+//					.latestVersion().singleResult();
+//			if (processDefinition != null) {
+//				Map<String, String> variables = new HashMap<String, String>();
+//				variables.put("id", String.valueOf(incident.getId()));
+//				identityService.setAuthenticatedUserId(userUtil.getUserId(authentication));
+//				formService.submitStartFormData(processDefinition.getId(), variables);
+//			}
 		}
 		else
 		{
@@ -265,8 +286,10 @@ public class IncidentController {
 			newincident.setSource(incident.getSource());
 			newincident.setInfluence(incident.getInfluence());
 			newincident.setCritical(incident.getCritical());
+			newincident.setFinishTime(incident.getFinishTime());
+			newincident.setSupportType(incident.getSupportType());
 			newincident.setPriority(incident.getPriority());
-			incidentService.save(newincident);
+			incidentService.update(newincident);
 		}
 
 		return "redirect:/incident/list";
@@ -277,9 +300,10 @@ public class IncidentController {
 	 * 
 	 * @param model
 	 * @return
+	 * @throws Exception 
 	 */
 	@RequestMapping(value = "/list", method = RequestMethod.GET)
-	public String list(Model model, Authentication authentication) {
+	public String list(Model model, Authentication authentication) throws Exception {
 
 		List<Task> tasks = null;
 		List<Task> mytasks = null;
@@ -320,7 +344,7 @@ public class IncidentController {
 	}
 	
 	@RequestMapping(value = "/list/{status}", method = RequestMethod.GET)
-	public String list(@PathVariable("status") String status, Model model,Authentication authentication) {
+	public String list(@PathVariable("status") String status, Model model,Authentication authentication) throws Exception {
 		List<Task> tasks = null;
 		List<Task> mytasks = null;
 		List<Incident> incidents = null;
@@ -365,7 +389,7 @@ public class IncidentController {
 	}
 
 	@RequestMapping(value = "/mydealedlist", method = RequestMethod.GET)
-	public String myDealedList(Model model, Authentication authentication) {
+	public String myDealedList(Model model, Authentication authentication) throws Exception {
 
 		List<Task> tasks = null;
 		Map<String, Task> taskmap = null;
@@ -396,9 +420,10 @@ public class IncidentController {
 	 * 
 	 * @param model
 	 * @return
+	 * @throws Exception 
 	 */
 	@RequestMapping(value = "/mylist", method = RequestMethod.GET)
-	public String mylist(Model model, Authentication authentication) {
+	public String mylist(Model model, Authentication authentication) throws Exception {
 		List<Task> tasks = null;
 		List<Task> mytasks = null;
 		Map<String, Task> mytaskmap = new HashMap<String, Task>();
@@ -521,7 +546,7 @@ public class IncidentController {
 
 	@RequestMapping(value = "/{id}/template/save", method = RequestMethod.POST)
 	@ResponseBody
-	public Map<String, Object> saveTemplate(@PathVariable("id") long id, HttpServletRequest request) {
+	public Map<String, Object> saveTemplate(@PathVariable("id") long id, HttpServletRequest request,Authentication authentication) throws Exception {
 		Map<String, Object> result = new HashMap<String, Object>();
 
 		ObjectMapper mapper = new ObjectMapper();
@@ -536,7 +561,7 @@ public class IncidentController {
 		} catch (IOException e) {
 
 		}
-		incidentService.save(incident);
+		incidentService.save(incident,userUtil.getUserId(authentication));
 
 		result.put("result", "true");
 
@@ -786,9 +811,10 @@ public class IncidentController {
 	 * @param model
 	 * @param request
 	 * @return
+	 * @throws Exception 
 	 */
 	@RequestMapping(value = "/mysearch", method = RequestMethod.GET)
-	public String mysearch(Model model, Integer offset,Integer maxResults, HttpServletRequest request, Authentication authentication) {
+	public String mysearch(Model model, Integer offset,Integer maxResults, HttpServletRequest request, Authentication authentication) throws Exception {
 
 		String startTime = request.getParameter("startTime");
 		String endTime = request.getParameter("endTime");
@@ -836,4 +862,180 @@ public class IncidentController {
 
 		return map;
 	}
+	
+	/** 
+     * 根据任务ID获得任务实例 
+     *  
+     * @param taskId 
+     *            任务ID 
+     * @return 
+     * @throws Exception 
+     */  
+    private TaskEntity findTaskById(String taskId) throws Exception {  
+        TaskEntity task = (TaskEntity) taskService.createTaskQuery().taskId(taskId).singleResult();  
+        if (task == null) {  
+            throw new Exception("任务实例未找到!");  
+        }  
+        return task;  
+    } 
+	
+	 /** 
+     * 根据任务ID获取流程定义 
+     *  
+     * @param taskId 
+     *            任务ID 
+     * @return 
+     * @throws Exception 
+     */  
+    private ProcessDefinitionEntity findProcessDefinitionEntityByTaskId(  
+            String taskId) throws Exception {  
+        // 取得流程定义  
+        ProcessDefinitionEntity processDefinition = (ProcessDefinitionEntity) ((RepositoryServiceImpl) repositoryService) .getDeployedProcessDefinition(findTaskById(taskId)  
+                        .getProcessDefinitionId());  
+  
+        if (processDefinition == null) {  
+            throw new Exception("流程定义未找到!");  
+        }  
+  
+        return processDefinition;  
+    } 
+    
+    /** 
+     * 根据任务ID和节点ID获取活动节点 <br> 
+     *  
+     * @param taskId 
+     *            任务ID 
+     * @param activityId 
+     *            活动节点ID <br> 
+     *            如果为null或""，则默认查询当前活动节点 <br> 
+     *            如果为"end"，则查询结束节点 <br> 
+     *  
+     * @return 
+     * @throws Exception 
+     */  
+    private ActivityImpl findActivitiImpl(String taskId, String activityId)  
+            throws Exception {  
+        // 取得流程定义  
+        ProcessDefinitionEntity processDefinition = findProcessDefinitionEntityByTaskId(taskId);  
+  
+        // 获取当前活动节点ID  
+        if (StringUtils.isEmpty(activityId)) {  
+            activityId = findTaskById(taskId).getTaskDefinitionKey();  
+        }  
+  
+        // 根据流程定义，获取该流程实例的结束节点  
+        if (activityId.toUpperCase().equals("END")) {  
+            for (ActivityImpl activityImpl : processDefinition.getActivities()) {  
+                List<PvmTransition> pvmTransitionList = activityImpl  
+                        .getOutgoingTransitions();  
+                if (pvmTransitionList.isEmpty()) {  
+                    return activityImpl;  
+                }  
+            }  
+        }  
+  
+        // 根据节点ID，获取对应的活动节点  
+        ActivityImpl activityImpl = ((ProcessDefinitionImpl) processDefinition)  
+                .findActivity(activityId);  
+  
+        return activityImpl;  
+    } 
+    
+    /** 
+     * @param taskId 
+     *            当前任务ID 
+     * @param variables 
+     *            流程变量 
+     * @param activityId 
+     *            流程转向执行任务节点ID<br> 
+     *            此参数为空，默认为提交操作 
+     * @throws Exception 
+     */  
+    private void commitProcess(String taskId, Map<String, Object> variables,  
+            String activityId) throws Exception {  
+        if (variables == null) {  
+            variables = new HashMap<String, Object>();  
+        }  
+        // 跳转节点为空，默认提交操作  
+        if (StringUtils.isEmpty(activityId)) {  
+            taskService.complete(taskId, variables);  
+        } else {// 流程转向操作  
+            turnTransition(taskId, activityId, variables);  
+        }  
+    }  
+    
+    /** 
+     * 流程转向操作 
+     *  
+     * @param taskId 
+     *            当前任务ID 
+     * @param activityId 
+     *            目标节点任务ID 
+     * @param variables 
+     *            流程变量 
+     * @throws Exception 
+     */  
+    private void turnTransition(String taskId, String activityId,  
+            Map<String, Object> variables) throws Exception {  
+        // 当前节点  
+        ActivityImpl currActivity = findActivitiImpl(taskId, null);  
+        // 清空当前流向  
+        List<PvmTransition> oriPvmTransitionList = clearTransition(currActivity);  
+  
+        // 创建新流向  
+        TransitionImpl newTransition = currActivity.createOutgoingTransition();  
+        // 目标节点  
+        ActivityImpl pointActivity = findActivitiImpl(taskId, activityId);  
+        // 设置新流向的目标节点  
+        newTransition.setDestination(pointActivity);  
+  
+        // 执行转向任务  
+        taskService.complete(taskId, variables);  
+        // 删除目标节点新流入  
+        pointActivity.getIncomingTransitions().remove(newTransition);  
+  
+        // 还原以前流向  
+        restoreTransition(currActivity, oriPvmTransitionList);  
+    }  
+    
+    /** 
+     * 清空指定活动节点流向 
+     *  
+     * @param activityImpl 
+     *            活动节点 
+     * @return 节点流向集合 
+     */  
+    private List<PvmTransition> clearTransition(ActivityImpl activityImpl) {  
+        // 存储当前节点所有流向临时变量  
+        List<PvmTransition> oriPvmTransitionList = new ArrayList<PvmTransition>();  
+        // 获取当前节点所有流向，存储到临时变量，然后清空  
+        List<PvmTransition> pvmTransitionList = activityImpl  
+                .getOutgoingTransitions();  
+        for (PvmTransition pvmTransition : pvmTransitionList) {  
+            oriPvmTransitionList.add(pvmTransition);  
+        }  
+        pvmTransitionList.clear();  
+  
+        return oriPvmTransitionList;  
+    }  
+    
+    /** 
+     * 还原指定活动节点流向 
+     *  
+     * @param activityImpl 
+     *            活动节点 
+     * @param oriPvmTransitionList 
+     *            原有节点流向集合 
+     */  
+    private void restoreTransition(ActivityImpl activityImpl,  
+            List<PvmTransition> oriPvmTransitionList) {  
+        // 清空现有流向  
+        List<PvmTransition> pvmTransitionList = activityImpl  
+                .getOutgoingTransitions();  
+        pvmTransitionList.clear();  
+        // 还原以前流向  
+        for (PvmTransition pvmTransition : oriPvmTransitionList) {  
+            pvmTransitionList.add(pvmTransition);  
+        }  
+    }  
 }

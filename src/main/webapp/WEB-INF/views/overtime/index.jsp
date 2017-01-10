@@ -31,7 +31,7 @@
     <!--[if lt IE 8]>
         <link href="${contextPath }/resources/css/ie7.css" rel="stylesheet" type="text/css" />
     <![endif]-->    
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/jquery/jquery-1.10.2.min.js'></script>
+    <script type="text/javascript" src="${contextPath }/resources/js/plugins/jquery/jquery-1.10.2.min.js"></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/jquery/jquery-ui-1.10.1.custom.min.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/jquery/jquery-migrate-1.2.1.min.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/jquery/jquery.mousewheel.min.js'></script>
@@ -97,6 +97,7 @@
 	                           { "mData" : 'overtimeStart' }, 
 	                           { "mData" : 'overtimeEnd' },
 	                                 { "mData" : 'hour' },
+	                                 { "mData" : 'company' },
 	                                 { "mData" : 'reason' },
 	                                 { "mData" : 'status_' },
 	                                   //mData 表示发请求时候本列的列名，返回的数据中相同下标名字的数据会填充到这一列
@@ -219,10 +220,11 @@
                             <table class="table" id="eventTable">
                                 <thead>
                                 	<tr>
-                                		<th width="90px">请假者</th>
+                                		<th width="90px">加班者</th>
                                 		<th width="140px">开始时间</th>
                                 		<th width="140px">结束时间</th>
                                 		<th width="120px">加班时长</th>
+                                		<th width="100px">服务对象</th>
 										<th >加班原因</th>
 										<th width="130px">状态</th>
 										<th width="150px">操作</th>

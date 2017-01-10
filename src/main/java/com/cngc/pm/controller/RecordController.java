@@ -91,9 +91,10 @@ public class RecordController {
 	 * @param model
 	 * @param request
 	 * @return
+	 * @throws Exception 
 	 */
 	@RequestMapping(value = "/update", method = RequestMethod.GET)
-	public String list(Model model, HttpServletRequest request, Authentication authentication) {
+	public String list(Model model, HttpServletRequest request, Authentication authentication) throws Exception {
 		String startTime = request.getParameter("startTime");
 		String endTime = request.getParameter("endTime");
 		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
@@ -237,9 +238,10 @@ public class RecordController {
 	    	} else if(("02").equals(ins.getStatus()))
 	    		result = "<span class=\"label label-danger\">"+ins.getStatusName()+"</span>";
 	    	map.put("result", result);
-	    	map.put("num", ins.getIncidentId()==null?"":"<a href=\"/incident/view/"+ins.getIncidentId()+"\">"+ins.getIncidentId()+"</a>");
+	    	
 	    	String op = "";
-	    	String path = httpSession.getServletContext().getContextPath();
+	    	String path = userUtil.getContextPath(httpSession);
+	    	map.put("num", ins.getIncidentId()==null?"":"<a target=\"_blank\" href=\""+path+"/incident/view/"+ins.getIncidentId()+"\">"+ins.getIncidentId()+"</a>");
 	    	if(task ==null) {
 	    		op = "<a href=\"#\" onclick=\"javascript:viewInspection('"+ins.getTemplate()+"',"+ins.getId()+");\"><span class=\"glyphicon glyphicon-search\"></span> 查看</a>";
 	    	} else {
@@ -260,9 +262,10 @@ public class RecordController {
 	 * @param model
 	 * @param request
 	 * @return
+	 * @throws Exception 
 	 */
 	@RequestMapping(value = "/inspection1", method = RequestMethod.GET)
-	public String inspection(Model model, HttpServletRequest request, Authentication authentication) {
+	public String inspection(Model model, HttpServletRequest request, Authentication authentication) throws Exception {
 		
 //		JSONArray jsonarray = JSONArray.fromObject(aoData);
 //		HistoricProcessInstanceQuery hpq = historyService.createHistoricProcessInstanceQuery().processDefinitionKey("INSPECTION");
@@ -349,8 +352,8 @@ public class RecordController {
 	}
 
 	@RequestMapping(value = "/income/save", method = RequestMethod.POST)
-	public String save(@Valid @ModelAttribute("income") Income income, BindingResult result, HttpServletRequest request,
-			Authentication authentication) {
+	public String save(@Valid @ModelAttribute("income") Income income, BindingResult result, 
+			Authentication authentication) throws Exception {
 
 		income.setCreatedTime(new Date());
 		income.setCreatedUser(userUtil.getUserId(authentication));
@@ -425,8 +428,8 @@ public class RecordController {
 	}
 
 	@RequestMapping(value = "/training/save", method = RequestMethod.POST)
-	public String trainingSave(@Valid @ModelAttribute("training") Training training, HttpServletRequest request,
-			Authentication authentication) {
+	public String trainingSave(@Valid @ModelAttribute("training") Training training, 
+			Authentication authentication) throws Exception {
 
 		training.setCreatedTime(new Date());
 		training.setCreatedUser(userUtil.getUserId(authentication));
@@ -442,9 +445,10 @@ public class RecordController {
 	 * @param request
 	 * @param authentication
 	 * @return
+	 * @throws Exception 
 	 */
 	@RequestMapping(value = "/secjob", method = RequestMethod.GET)
-	public String secjob(Model model, HttpServletRequest request, Authentication authentication) {
+	public String secjob(Model model, HttpServletRequest request, Authentication authentication) throws Exception {
 		String startTime = request.getParameter("startTime");
 		String endTime = request.getParameter("endTime");
 		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");

@@ -63,6 +63,7 @@
             $("#eventTable").dataTable({"oLanguage": {
      			"sUrl": "${contextPath}/resources/json/Chinese.json"
  			},"aaSorting":[[6,'asc']]});
+            
             $(".header").load("${contextPath}/header?t="+pm_random());
             $(".menu").load("${contextPath}/menu?t="+pm_random(), function () { $("#node_${moduleId}").addClass("active");  });
             $(".breadLine .buttons").load("${contextPath}/contentbuttons?t="+pm_random());
@@ -152,14 +153,14 @@
                             <table class="table" id="eventTable">
                                 <thead>
                                 	<tr>
-                                		<th width="90px">流程号</th>
-                                		<th width="105px">交办领导</th>
+                                		<th width="60px">流程号</th>
+                                		<th width="60px">交办领导</th>
 										<th >任务标题</th>
-										<th width="100px">受派人</th>
-										<th width="110px">提交时间</th>
-										<th width="110px">到期时间</th>
-										<th width="130px">状态</th>
-										<th width="150px">操作</th>
+										<th width="60px">受派人</th>
+										<th width="70px">提交时间</th>
+										<th width="70px">到期时间</th>
+										<th width="110px">状态</th>
+										<th width="130px">操作</th>
 									</tr>
                                 </thead>
                                 <tbody>
@@ -221,6 +222,47 @@
                             </table>
                         </div>
                     </div>  
+                    <%--
+                    <div class="col-md-12">                    
+                        <div class="head clearfix">
+                            <div class="isw-grid"></div>
+                            <h1>领导交办</h1>  
+                        </div>
+                        <div class="block-fluid table-sorting clearfix">
+                            <table class="table" id="eventTable1">
+                                <thead>
+                                	<tr>
+                                		<th width="60px">流程号</th>
+                                		<th width="60px">交办领导</th>
+										<th >任务标题</th>
+										<th width="60px">受派人</th>
+										<th width="70px">提交时间</th>
+										<th width="70px">到期时间</th>
+										<th width="110px">状态</th>
+										<th width="130px">操作</th>
+									</tr>
+                                </thead>
+                                <tbody>
+                                	<c:forEach items="${list1}" var="map">
+									<tr>
+										<td>${map.processInstanceId }</td>
+										<td>${map.fromUserName }</td>
+										<td>${map.taskTitle }</td>
+										<td>${map.toUserName }</td>
+										<td><fmt:formatDate value="${map.startTime }" pattern="yyyy-MM-dd"></fmt:formatDate></td>
+										<td><fmt:formatDate value="${map.dueTime }" pattern="yyyy-MM-dd"></fmt:formatDate></td>
+										<td>
+											${map.status }
+										</td>
+										<td>
+											${map.operation }
+										</td>
+									</tr>
+								</c:forEach>   
+                                </tbody>
+                            </table>
+                        </div>
+                        </div>--%>
                 </div>
                 <div class="dr"><span></span></div>
    

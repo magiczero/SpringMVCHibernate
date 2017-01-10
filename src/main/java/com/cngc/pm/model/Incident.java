@@ -18,6 +18,7 @@ import javax.persistence.Transient;
 
 import org.hibernate.annotations.Formula;
 import org.hibernate.annotations.Where;
+import org.springframework.format.annotation.DateTimeFormat;
 
 @Entity
 @Table(name = "wk_incident")
@@ -38,6 +39,8 @@ public class Incident implements Serializable{
 	private String critical;
 	private String priority;
 	private String type;
+	private String supportType;
+	private Date finishTime;
 	private String category;
 	private String currentDelegateGroup;
 	private String currentDelegateUser;
@@ -56,6 +59,9 @@ public class Incident implements Serializable{
 	private String categoryName;
 	@Transient
 	private String typeName;
+	@Transient
+	private String supportTypeName;
+	
 	@Transient
 	private String influenceName;
 	@Transient
@@ -334,5 +340,29 @@ public class Incident implements Serializable{
 	public void setEndbyuser(boolean endbyuser) {
 		this.endbyuser = endbyuser;
 	}
-	
+	@Column(name="support_type")
+	public String getSupportType() {
+		return supportType;
+	}
+
+	public void setSupportType(String supportType) {
+		this.supportType = supportType;
+	}
+	@Column(name="finish_time")
+	@DateTimeFormat( pattern = "yyyy-MM-dd HH:mm" )
+	public Date getFinishTime() {
+		return finishTime;
+	}
+
+	public void setFinishTime(Date finishTime) {
+		this.finishTime = finishTime;
+	}
+	@Formula(value="(SELECT a.code_name FROM sys_code a WHERE a.type_='INCIDENT_SUPPORT_TYPE' AND a.code_= support_type)")
+	public String getSupportTypeName() {
+		return supportTypeName;
+	}
+
+	public void setSupportTypeName(String supportTypeName) {
+		this.supportTypeName = supportTypeName;
+	}
 }

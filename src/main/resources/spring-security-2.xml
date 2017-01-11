@@ -16,7 +16,7 @@
 	<http pattern="/initLogin.html" security="none" />
 	<!-- <http pattern="/workflow/task/getmytaskcount*" security="none" /> -->
 	
-	<http  use-expressions="true">
+	<http  use-expressions="true" entry-point-ref="authenticationEntryPoint">
 		<intercept-url pattern="/workflow/task/mytask" access="hasAnyRole('WK_SERVICE_DESK','WK_ENGINEER','WK_MANAGER','WK_LEADER')"/>
 		<!-- <intercept-url pattern="/logout" access="permitAll"/>
 		<intercept-url pattern="/denied" access="hasRole('ROLE_USER')"/>
@@ -24,29 +24,66 @@
 		<intercept-url pattern="/user" access="hasRole('ROLE_USER')"/>
 		<intercept-url pattern="/admin" access="hasRole('ROLE_ADMIN')"/>
 		 -->
-		<!-- <form-login login-page="/login.jsp"
-	  			  default-target-url="/admin.jsp"/> -->
-	  	<form-login login-page="/initLogin.html"
-	  			 login-processing-url="/login" 
-	  			 username-parameter="username" 
-	  			 password-parameter="password" 
-	  			 authentication-failure-url="/initLogin.html"
-	  			 authentication-success-handler-ref="authenticationSuccessHandler"
-	  			 />
 	  	
+	  	<!-- 把usernamePasswordAuthenticationFilter加入FilterChain -->
+      	<custom-filter ref="usernamePasswordAuthenticationFilter" before="FORM_LOGIN_FILTER"/>
+      	<custom-filter ref="rememberMeFilter" position="REMEMBER_ME_FILTER"/>
 		<!-- <security:custom-filter ref="loginFilter" position="FORM_LOGIN_FILTER"  /> -->
         <custom-filter ref="myFilter" before="FILTER_SECURITY_INTERCEPTOR"/>
-        <custom-filter ref="logoutFilter" position="LOGOUT_FILTER" />
+        <!-- <custom-filter ref="logoutFilter" position="LOGOUT_FILTER" /> -->
 		<access-denied-handler error-page="/403"/>
 		<!-- 实现免登陆验证 -->
-        <remember-me remember-me-parameter="remember-me" user-service-ref="customUserDetailsService" token-validity-seconds="123456789"/>
+        <!-- <remember-me remember-me-parameter="remember-me" user-service-ref="customUserDetailsService" token-validity-seconds="123456789"/> -->
         <session-management invalid-session-url="/initLogin.html">
         	<concurrency-control max-sessions="1" error-if-maximum-exceeded="false" expired-url="/initLogin.html" />
         </session-management>
-		<!-- <logout invalidate-session="true" 
-			logout-success-url="/logout/success" 
-			logout-url="/logout"/> -->
+		<logout invalidate-session="true" 
+			logout-url="/logout"
+			delete-cookies="JSESSIONID"  
+        success-handler-ref="customLogoutSuccessHandler"/>
 	</http>
+	
+	 <beans:bean id="usernamePasswordAuthenticationFilter" class="org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter">
+      <beans:property name="rememberMeServices" ref="rememberMeServices"/>
+      <beans:property name="authenticationManager" ref="authenticationManager"/>
+      <!-- 指定request中包含的用户名对应的参数名 -->
+      <beans:property name="usernameParameter" value="username"/>
+      <beans:property name="passwordParameter" value="password"/>
+      
+      <beans:property name="authenticationSuccessHandler" ref="authenticationSuccessHandler" />
+      <beans:property name="authenticationFailureHandler" ref="simpleUrlAuthenticationFailureHandler" /> 
+      <beans:property name="requiresAuthenticationRequestMatcher" ref="filterProcessUrlRequestMatcher" />  
+      <beans:property name="allowSessionCreation" value="true"/>
+   </beans:bean>
+   
+   <!-- Remember-Me对应的Filter -->
+   <beans:bean id="rememberMeFilter" class="org.springframework.security.web.authentication.rememberme.RememberMeAuthenticationFilter">
+      <beans:property name="rememberMeServices" ref="rememberMeServices" />
+      <beans:property name="authenticationManager" ref="authenticationManager" />
+   </beans:bean>
+   
+   <!-- RememberMeServices的实现 -->
+   <beans:bean id="rememberMeServices" class="org.springframework.security.web.authentication.rememberme.PersistentTokenBasedRememberMeServices">
+      <beans:property name="userDetailsService" ref="customUserDetailsService" />
+      <beans:property name="key" value="_cngc" />
+      <!-- 指定request中包含的用户是否选择了记住我的参数名 -->
+      <beans:property name="parameter" value="remember-me"/>
+      <!-- 指定PersistentTokenRepository -->
+      <beans:property name="tokenRepository">
+         <beans:bean class="org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl">
+            <!-- 数据源 -->
+            <beans:property name="dataSource" ref="dataSource"/>
+            <!-- 是否在系统启动时创建持久化token的数据库表 -->
+            <beans:property name="createTableOnStartup" value="false"/>
+         </beans:bean>
+      </beans:property>
+   </beans:bean>
+   
+   <!-- key值需与对应的RememberMeServices保持一致 -->
+   <beans:bean id="rememberMeAuthenticationProvider"
+   class="org.springframework.security.authentication.RememberMeAuthenticationProvider">
+      <beans:property name="key" value="_cngc" />
+   </beans:bean>
 	
 	<!-- 认证成功后的处理类 -->
  	<beans:bean id="authenticationSuccessHandler" class="com.cngc.pm.security.AuthenticationSuccessHandlerImpl">
@@ -63,8 +100,9 @@
  	<beans:bean id="customUserDetailsService" class="com.cngc.pm.security.impl.CustomUserDetailsService" />
  		<!-- <beans:property name="sessionFactory" ref="hibernate4AnnotatedSessionFactory" />
  	</beans:bean> -->
- 	<authentication-manager alias="authenticationManager" erase-credentials="false">
+ 	<authentication-manager alias="authenticationManager">
 	    <authentication-provider ref="authenticationProvider">  </authentication-provider>
+	    <authentication-provider ref="rememberMeAuthenticationProvider"/>
 	 </authentication-manager>
     
 	<beans:bean id="authenticationProvider" class="org.springframework.security.authentication.dao.DaoAuthenticationProvider">  
@@ -87,21 +125,38 @@
 	<!-- 资源源数据定义，即定义某一资源可以被哪些角色访问 -->
 	<beans:bean id="securityMetadataSource" class="com.cngc.pm.security.MyInvocationSecurityMetadataSource" />	
 	
-	<!-- 退出系统 -->
+	<beans:bean id="customLogoutSuccessHandler" class="com.cngc.pm.security.LogoutSuccessHandlerImpl" />
+	
+	 <beans:bean id="filterProcessUrlRequestMatcher" class="org.springframework.security.web.authentication.logout.LogoutFilter$FilterProcessUrlRequestMatcher">  
+        <beans:constructor-arg value="/login" />  
+    </beans:bean> 
+    
+    <beans:bean id="simpleUrlAuthenticationFailureHandler"  
+          class="org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler">  
+        <beans:constructor-arg value="/initLogin.html"/>  
+        <beans:property name="allowSessionCreation" value="true" />  
+    </beans:bean> 
+    
+    <beans:bean id="authenticationEntryPoint"  
+        class="org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint">  
+        <beans:property name="loginFormUrl" value="/initLogin.html" />  
+    </beans:bean>
+	
+	<!-- 退出系统
 	<beans:bean id="logoutFilter" class="com.cngc.pm.security.CustomLogoutFilter">
-		<!-- 处理退出的虚拟url -->
+		 处理退出的虚拟url
         <beans:property name="filterProcessesUrl" value="/logout" />
-        <!-- 退出处理成功后的默认显示url -->
+         退出处理成功后的默认显示url
         <beans:constructor-arg index="0" value="/initLogin.html" />
         <beans:constructor-arg index="1">
-            <!-- 退出成功后的handler列表 -->
+            退出成功后的handler列表
             <beans:array>
                 <beans:bean id="securityContextLogoutHandler"
                     class="org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler" />
-                <!-- 加入了开发人员自定义的退出成功处理 -->
-                <beans:bean id="customLogoutSuccessHandler" class="com.cngc.pm.security.LogoutHandlerImpl" />
+                加入了开发人员自定义的退出成功处理
+                <beans:bean id="customLogoutHandler" class="com.cngc.pm.security.LogoutHandlerImpl" />
             </beans:array>
         </beans:constructor-arg>
         
-	</beans:bean>
+	</beans:bean> -->
 </beans:beans>

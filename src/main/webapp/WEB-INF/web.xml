@@ -18,9 +18,7 @@
     <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
   </listener>
   <listener>  
-    <listener-class>  
-        org.springframework.security.web.session.HttpSessionEventPublisher  
-    </listener-class>  
+    <listener-class>org.springframework.security.web.session.HttpSessionEventPublisher</listener-class>  
 </listener> 
   <servlet>
     <servlet-name>appServlet</servlet-name>
@@ -108,6 +106,6 @@
        <session-timeout>30</session-timeout>
     </session-config>
 	<welcome-file-list>
-		<welcome-file>initLogin.html</welcome-file>
+		<welcome-file>welcome.html</welcome-file>
 	</welcome-file-list>
 </web-app>

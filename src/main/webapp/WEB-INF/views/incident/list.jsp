@@ -189,8 +189,8 @@
                                         <th width="70px">申请人</th>
                                         <th width="60px">受派者</th>
                                         <th width="100px">流程步骤</th>
-                                        <th width="110px">申请时间</th>
-                                        <th width="110px">要求完成时间</th>
+                                        <th width="70px">申请时间</th>
+                                        <th width="70px">要求完成时间</th>
                                         <th width="50px">状态</th> 
                                         <th width="90px">操作</th>                                    
                                     </tr>

@@ -74,6 +74,7 @@
             });
             --%>
             $(".dateISO").datetimepicker({autoclose: true,language: 'zh-CN',minuteStep: 5,todayBtn: true});
+            $("#module.id").select2();
             //------------------IE8---------------------------
             $(".wrapper").append("<div class='dialog' id='b_popup_select' style='display: none;' title='事件分类'></div>");
 			$("#b_popup_select").html("<div class='block dialog_block messages '>"

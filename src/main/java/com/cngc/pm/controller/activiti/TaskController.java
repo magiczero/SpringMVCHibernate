@@ -115,6 +115,7 @@ public class TaskController {
 		Date current = new Date();
 		String sdate = fmt.format(current);
 		for (Task task : tasks) {
+			System.out.println(task.getProcessDefinitionId());
 			if (task.getProcessDefinitionId()
 					.indexOf(PropertyFileUtil.getStringValue("workflow.processkey.leadertask")) >= 0) {
 				// 领导交办

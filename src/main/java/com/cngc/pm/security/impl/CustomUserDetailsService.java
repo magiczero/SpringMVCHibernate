@@ -8,7 +8,6 @@ import javax.annotation.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.support.MessageSourceAccessor;
-import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.SpringSecurityMessageSource;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -27,19 +26,10 @@ public class CustomUserDetailsService implements UserDetailsService {
 	
 	protected MessageSourceAccessor messages = SpringSecurityMessageSource
             .getAccessor();
-//	private SessionFactory sessionFactory;
 	
 	@Resource
 	private UserService userService;
 	
-//	public SessionFactory getSessionFactory() {
-//		return sessionFactory;
-//	}
-//
-//
-//	public void setSessionFactory(SessionFactory sessionFactory) {
-//		this.sessionFactory = sessionFactory;
-//	}
 	
 	@Override
 	public UserDetails loadUserByUsername(String username)
@@ -59,29 +49,16 @@ public class CustomUserDetailsService implements UserDetailsService {
                     "用户名 {0} 不存在"));
 		}
 		
-		if(!user.isEnabled())
-			throw new DisabledException("此用户未启用，请联系安全保密管理人员");
-//		Session session = sessionFactory.getCurrentSession();
-//		String hql="select r from SysUser r where  r.username=?";
-//		Query query = session.createQuery(hql);
-//		query.setParameter(0, username);
-//		
-//		SysUser user = (SysUser)query.uniqueResult();
 		Collection<GrantedAuthority> auths = new ArrayList<GrantedAuthority>();
-		//for(Role r : user.getRoles()) {
+		
 		for(Role r : userService.getRolesByUser(user.getId())) {
 			auths.add(new SimpleGrantedAuthority(r.getRoleName()));
 		}
-//		auths.add(new SimpleGrantedAuthority("ROLE_USER"));
 		
-//		for(Role role : user.getRoles()) {
-//			for(Authority authority : role.getAuths()) {
-//				//auths.add(new GrantedAuthorityImpl(authority.getAuthorityName()));
-//				auths.add(new SimpleGrantedAuthority(authority.getAuthorityName()));
-//			}
-//		}
-		
-		User userdetail = new User(user.getUsername(), user.getPassword(), true, true, true, true, auths);
+		//accountLocked  定义账号是否已经锁定
+		//accountExpired  定义账号是否已经过期
+		//credentialsExpired  定义凭证是否已经过期
+		User userdetail = new User(user.getUsername(), user.getPassword(), user.isEnabled(), true, true, true, auths);
 		return userdetail;
 	}
 

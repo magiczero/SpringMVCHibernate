@@ -18,6 +18,7 @@
 	
 	<http  use-expressions="true" entry-point-ref="authenticationEntryPoint">
 		<intercept-url pattern="/workflow/task/mytask" access="hasAnyRole('WK_SERVICE_DESK','WK_ENGINEER','WK_MANAGER','WK_LEADER')"/>
+		<intercept-url pattern="/**" access="hasAnyAuthority('IS_AUTHENTICATED_REMEMBERED','IS_AUTHENTICATED_FULLY')"/>
 		<!-- <intercept-url pattern="/logout" access="permitAll"/>
 		<intercept-url pattern="/denied" access="hasRole('ROLE_USER')"/>
 		<intercept-url pattern="/**" access="hasRole('ROLE_USER')"/>

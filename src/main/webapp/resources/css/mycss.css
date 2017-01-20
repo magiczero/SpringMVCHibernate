@@ -69,4 +69,28 @@
   border-left-color: #fff;
   border-right-color: #dddddd;
 }
+.treeviewbootstrap {
+	float: left;
+    list-style: outside none none;
+    margin: 0;
+    padding: 0;
+    position: relative;
+    width:219px;
+}
+.list-group-item {
+	cursor: pointer;
+}
+
+/*.list-group-item:hover {
+  background-color: #f5f5f5;
+}*/
+
+span.indent {
+	margin-left: 10px;
+	margin-right: 10px;
+}
+
+span.icon {
+	margin-right: 5px;
+}
 

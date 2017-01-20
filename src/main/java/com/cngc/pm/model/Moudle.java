@@ -36,7 +36,7 @@ import org.hibernate.annotations.DynamicUpdate;
 @DynamicInsert(true)
 @Table(name = "sys_modules",uniqueConstraints = @UniqueConstraint(columnNames = { "MODULE_NAME", "PARENT" }))  
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region="moudle")  
-public class Moudle implements Serializable {				//module故意写错，怕与关键字冲突
+public class Moudle implements Serializable, Comparable<Moudle> {				//module故意写错，怕与关键字冲突
 
 	/**
 	 * 
@@ -177,5 +177,15 @@ public class Moudle implements Serializable {				//module故意写错，怕与�
 			return loopReaches(reaches+1, moudle.getParent());
 		}
 		return reaches;
+	}
+	@Override
+	public int compareTo(Moudle o) {
+		// TODO Auto-generated method stub
+		if(o.priority < this.priority) {
+			return 1;
+		} else if(o.priority > this.priority) {
+			return -1;
+		} else
+			return 0;
 	}
 }

@@ -45,13 +45,9 @@ public class RoleController {
 	public String list(Model model) {
 		model.addAttribute("list", roleService.getAll());
 		model.addAttribute("authList", authService.getAll());
-		List<Moudle> menuAll = moudleService.getAllMenu();
-		List<Moudle> menuAllLevelTop = new ArrayList<>();
-		for(Moudle m : menuAll) {
-			if(m.reaches() == 0)
-				menuAllLevelTop.add(m);
-		}
-		model.addAttribute("menuList", menuAllLevelTop);
+		List<Moudle> menuAll = moudleService.getAllTopMenu();
+
+		model.addAttribute("menuList", menuAll);
 		
 		return "sysmanage/role-list";
 	}

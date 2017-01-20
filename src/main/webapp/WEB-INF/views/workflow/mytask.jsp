@@ -6,11 +6,12 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
-<!--[if gt IE 8]>
+<meta charset="utf-8">
+        <!--[if gt IE 8]>
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <![endif]-->
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
 
 <title>待办任务--运维管理系统</title>
 
@@ -90,8 +91,7 @@
 						$(".menu").load(
 								"${contextPath}/menu?t=" + pm_random(),
 								function() {
-									$(".navigation > li:eq(0)").addClass(
-											"active");
+									$(".navigation > li:eq(0)").addClass("active");
 								});
 						$(".breadLine .buttons").load(
 								"${contextPath}/contentbuttons?t="
@@ -112,6 +112,7 @@
 								}
 							}
 						});
+						
 						$(".lnk_trace")
 								.click(
 										function() {
@@ -128,6 +129,8 @@
 											$("#b_popup_trace").dialog('open');
 										});
 					});
+	
+	
 </script>
 </head>
 <body>

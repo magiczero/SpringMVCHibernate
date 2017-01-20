@@ -1,13 +1,16 @@
 package com.cngc.pm.controller;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +26,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.cngc.pm.common.web.common.UserUtil;
 import com.cngc.pm.model.Moudle;
 import com.cngc.pm.model.Role;
 import com.cngc.pm.model.SysUser;
@@ -35,6 +39,10 @@ public class SystemController {
 	private UserService userService;
 	@Autowired
 	SessionRegistry sessionRegistry;
+	@Autowired
+	private UserUtil userUtil;
+	
+	Set<Moudle> moudleSet0 = new LinkedHashSet<>();
 	
 	@ModelAttribute("currentUsers")  
 	public List<String> getCurrentUsers() {
@@ -70,37 +78,99 @@ public class SystemController {
 		return "public/header";
 	}
 	
-	@RequestMapping(value = "/menu", method = RequestMethod.GET)
-	public String menu(Model model) {
+	@RequestMapping(value = "/menu-json", method = RequestMethod.GET, produces="application/json;charset=UTF-8")
+	@ResponseBody  
+	//public String menuJson(@RequestParam String reqUrl,Authentication authentication, HttpSession session, HttpServletRequest request) {
+	public String menuJson(Authentication authentication, HttpSession session, HttpServletRequest request) {	
+		SysUser user = userService.getByUsername(((UserDetails)authentication.getPrincipal()).getUsername());
+		String contextPath = userUtil.getContextPath(session);
+		StringBuffer sb = new StringBuffer("[");
+		Set<Moudle> moudleSet = new HashSet<>();
+		for(Role role : userService.getRolesByUser(user.getId())) {
+			//取出所有拥有角色的菜单
+			moudleSet.addAll(role.getModules());
+		}
 		
+		//set -> array
+		List<Moudle> list = new ArrayList<Moudle>(moudleSet);
+		
+		Collections.sort(list);
+		
+		if(!userUtil.IsCommonUser(authentication)) {
+			sb.append("{\"text\":\"快速链接\",\"state\":{\"expanded\":false},\"id\":\"0\",\"nodeId\":\"0\",\"nodes\":[{\"text\":\"待办任务\",\"icon\":\"glyphicon glyphicon-th-list\",\"id\":\"00\", \"nodeId\":\"00\",\"href\":\""+contextPath+"/workflow/task/mytask\"},");
+			if(userUtil.IsLeader(authentication) || userUtil.IsAdmin(authentication)) {
+				sb.append("{\"text\":\"运维控制台\",\"icon\":\"glyphicon glyphicon-star\",\"id\":\"000\",\"href\":\""+contextPath+"/workflow/task/board\"},");
+			}
+			sb.append("{\"text\":\"领导交办\",\"icon\":\"glyphicon glyphicon-user\",\"id\":\"0000\",\"href\":\""+contextPath+"/leadertask/list\"},{\"text\":\"日常巡检\",\"icon\":\"glyphicon glyphicon-calendar\",\"id\":\"000000\",\"href\":\""+contextPath+"/record/inspection\"}]},");
+		}
+		for(Moudle mod : list) {
+			
+			if(mod.getParent() == null) {	//顶级目录
+				if(!moudleSet0.contains(mod)) {			//如果有相同的菜单，则不处理
+					sb.append("{\"text\":\""+mod.getName()+"\",\"state\":{\"expanded\":false},\"id\":\""+mod.getId()+"\", \"nodeId\":\""+mod.getId()+"\",");
+					
+					sb = getSubmenu(sb, mod, list, contextPath);
+					
+					sb.append("},");
+					
+					moudleSet.add(mod);
+				}
+				
+				
+			}
+		}
+		sb = sb.deleteCharAt( sb.length()-1);
+		sb.append("]");
+		//
+		return sb.toString();
+	}
+	
+	/**
+	 * @param sb
+	 * @param mod
+	 * @return
+	 */
+	private StringBuffer getSubmenu(StringBuffer sb, Moudle mod, List<Moudle> moudles ,String contextPath) {
+		// TODO Auto-generated method stub
+			
+			sb.append("\"nodes\":[");
+			for(Moudle mo1 : mod.getChild()) {
+				
+				for(Moudle mo2 : moudles) {
+					if(mo1 == mo2) {
+						if(!moudleSet0.contains(mo1)) {
+							if(mo1.getChild().size()>0) {
+								sb .append("{\"text\":\""+mo1.getName()+"\",\"href\":\""+contextPath+mo1.getUrl()+"\", \"id\":\""+mo1.getId()+"\", \"nodeId\":\""+mo1.getId()+"\",");
+							
+							
+								sb = getSubmenu(sb, mo1, moudles, contextPath);
+							} else {
+								sb .append("{\"text\":\""+mo1.getName()+"\",\"href\":\""+contextPath+mo1.getUrl()+"\",\"icon\":\""+mo1.getStyleClass()+"\", \"id\":\""+mo1.getId()+"\", \"nodeId\":\""+mo1.getId()+"\"");
+							}
+							
+							moudleSet0.add(mo1);
+							sb.append("},");
+						}
+					}
+				}
+				
+			}
+			sb = sb.deleteCharAt( sb.length()-1);
+			sb.append("]");
+		
+		return sb;
+	}
+	
+	@RequestMapping(value = "/menu", method = RequestMethod.GET)
+	//public String menu(@RequestParam String reqUrl, Model model) {		//菜单准确性需要
+	public String menu(Model model) {	
 		UserDetails user1 = (UserDetails)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		SysUser user = userService.getByUsername(user1.getUsername());
 
-		//List<Moudle> menu1 = new ArrayList<>();
-		Set<Moudle> menu1 = new LinkedHashSet<>();
-		//List<Moudle> menu2 = new ArrayList<>();
-		Set<Moudle> menu2 =  new LinkedHashSet<>();
-		//for(Role role : user.getRoles()) {
-		for(Role role : userService.getRolesByUser(user.getId())) {
-			for(Moudle mod : role.getModules()) {
-				if(mod.isEnable()) {
-					//int level = mod.getLevel();
-					int level = mod.reaches();
-					if(level == 0) {
-						menu1.add(mod);
-					} else if(level == 1) {
-						menu2.add(mod);
-					}
-				}
-			}
-		}
-		
-		model.addAttribute("menu1", menu1);
-		model.addAttribute("menu2", menu2);
 		model.addAttribute("user", user);
-
-		//model.addAttribute("lastLogin", user.getLastWhile());
 		
+		//model.addAttribute("reqestUrl", reqUrl);
+
 		return "public/menu";
 	}
 	

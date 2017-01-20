@@ -8,10 +8,12 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.cngc.pm.dao.MoudleDAO;
 import com.cngc.pm.dao.RecordsDAO;
+import com.cngc.pm.model.ModuleType;
 import com.cngc.pm.model.Moudle;
 import com.cngc.pm.model.Records;
 import com.cngc.pm.model.RecordsType;
 import com.cngc.pm.service.MoudleService;
+import com.googlecode.genericdao.search.Search;
 
 @Service
 public class MoudleServiceImpl implements MoudleService {
@@ -23,9 +25,16 @@ public class MoudleServiceImpl implements MoudleService {
 
 	@Override
 	@Transactional(readOnly=true)
-	public List<Moudle> getAllMenu() {
+	public List<Moudle> getAllTopMenu() {
 		// TODO Auto-generated method stub
-		return moudleDao.getAllMenus();
+		Search search = new Search();
+		
+		search.addFilterEqual("type", ModuleType.menu);
+		search.addFilterEmpty("parent");
+		
+		search.addSortAsc("priority");
+		
+		return moudleDao.search(search);
 	}
 
 	@Override
@@ -68,5 +77,20 @@ public class MoudleServiceImpl implements MoudleService {
 		recordsDao.save(record);
 		
 		return true;
+	}
+
+	@Override
+	@Transactional
+	public List<Moudle> getAll() {
+		// TODO Auto-generated method stub
+		
+		return moudleDao.findAll();
+	}
+
+	@Override
+	@Transactional
+	public Moudle getById(Long id) {
+		// TODO Auto-generated method stub
+		return moudleDao.find(id);
 	}
 }

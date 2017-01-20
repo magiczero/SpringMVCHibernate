@@ -245,12 +245,42 @@
 										<td>
 										<ul class="tree">
 										<c:forEach items="${role.modules }" var="menu">
-											<c:if test="${menu.level == 1 }">
+											<c:if test="${empty menu.parent}">
 											<li>${menu.name }
 												<ul>
 												<c:forEach items="${role.modules }" var="menuson">
 												<c:if test="${menuson.parent.id == menu.id }">
-												<li>${menuson.name }</li>
+												<li>${menuson.name }
+													<c:if test="${menuson.child.size()>0 }">
+													<ul>
+													<c:forEach items="${menuson.child }" var="menu1">
+													<c:if test="${menu1.parent.id == menuson.id }">
+													<li>${menu1.name }
+														<c:if test="${menu1.child.size()>0 }">
+														<ul>
+														<c:forEach items="${menu1.child }" var="menu2">
+														<c:if test="${menu2.parent.id == menu1.id }">
+														<li>${menu2.name }
+															<c:if test="${menu2.child.size()>0 }">
+															<ul>
+															<c:forEach items="${menu2.child }" var="menu3">
+															<c:if test="${menu3.parent.id == menu2.id }">
+															<li>${menu3.name }</li>
+															</c:if>
+															</c:forEach>
+															</ul>
+															</c:if>
+														</li>
+														</c:if>
+														</c:forEach>
+														</ul>
+														</c:if>
+													</li>
+													</c:if>
+													</c:forEach>
+													</ul>
+													</c:if>
+												</li>
 												</c:if>
 												</c:forEach>
 												</ul>
@@ -367,7 +397,19 @@
                                     <c:forEach items="${menuList }" var="menu">   
 	                                    <option value="${menu.id}">${menu.name}</option>
 	                                    <c:forEach items="${menu.child }" var="child">
-	                                    <option value="${child.id}">${menu.name}---${child.name}</option>
+	                                    <option value="${child.id}">${menu.name}--${child.name}</option>
+	                                    <c:forEach items="${child.child }" var="child1">
+	                                    <option value="${child1.id}">${menu.name}--${child.name}--${child1.name}</option>
+	                                    <c:forEach items="${child1.child }" var="child2">
+	                                    <option value="${child2.id}">${menu.name}--${child.name}--${child1.name}--${child2.name}</option>
+	                                    <c:forEach items="${child2.child }" var="child3">
+	                                    <option value="${child3.id}">${menu.name}--${child.name}--${child1.name}--${child2.name}--${child3.name}</option>
+	                                    <c:forEach items="${child3.child }" var="child4">
+	                                    <option value="${child4.id}">${menu.name}--${child.name}--${child1.name}--${child2.name}--${child3.name}--${child3.name}</option>
+	                                    </c:forEach>
+	                                    </c:forEach>
+	                                    </c:forEach>
+	                                    </c:forEach>
 	                                    </c:forEach>
                                     </c:forEach>
                                     </select>

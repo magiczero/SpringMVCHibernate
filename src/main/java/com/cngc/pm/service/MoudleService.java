@@ -6,10 +6,14 @@ import com.cngc.pm.model.Moudle;
 
 public interface MoudleService {
 
-	List<Moudle> getAllMenu();
+	List<Moudle> getAllTopMenu();
 
 	void save(Moudle moudle, String username);
 
 	boolean enableStatus(long id, String username);
+	
+	List<Moudle> getAll();
+	
+	Moudle getById(Long id);
 
 }

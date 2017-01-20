@@ -34,6 +34,7 @@
     <link href="${contextPath }/resources/css/styling.css" rel="stylesheet" type="text/css" />
     <link href="${contextPath }/resources/css/mycss.css" rel="stylesheet" type="text/css" />
 	<link href="${contextPath }/resources/css/stylesheets2.css" rel="stylesheet" type="text/css" />
+	<link href="${contextPath }/resources/js/plugins/select2/select2.css" rel="stylesheet" type="text/css" />
     <!--[if lt IE 8]>
         <link href="${contextPath }/resources/css/ie7.css" rel="stylesheet" type="text/css" />
     <![endif]-->    
@@ -70,7 +71,7 @@
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/qtip/jquery.qtip-1.0.0-rc3.min.js'></script>
     
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/cleditor/jquery.cleditor.js'></script>
-    
+    <script type='text/javascript' src='${contextPath }/resources/js/plugins/select2/select2.min.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/dataTables/jquery.dataTables.min.js'></script>    
     
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/fancybox/jquery.fancybox.pack.js'></script>
@@ -108,6 +109,8 @@
                 $(".breadLine .buttons").load("${contextPath }/contentbuttons?t="+pm_random());
                 
                 $("#moudle").validationEngine({promptPosition : "topRight", scroll: true});
+                
+                $("#parent\\.id").select2();
             });
             
             function changeStatus(obj,id) {
@@ -238,11 +241,10 @@
                                 <div class="row-form clearfix">
                                     <div class="col-md-3"><form:label path="parent.id">上级菜单：</form:label></div>
                                     <div class="col-md-9">
-                                    	<form:select path="parent.id">
+                                    	<form:select path="parent.id" style="width:100%;">
                                     		<form:option value=""></form:option>
                                     		<c:forEach items="${listmoudle}" var="moudle2">
-                                    		<c:if test="${moudle2.level == 1 }">
-                                    		<form:option value="${moudle2.id }">${moudle2.name }</form:option></c:if>
+                                    		<form:option value="${moudle2.id }">${moudle2.name }</form:option>
                                     		</c:forEach>
                                     	</form:select>
                                     </div>                    

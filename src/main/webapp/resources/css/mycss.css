@@ -69,28 +69,58 @@
   border-left-color: #fff;
   border-right-color: #dddddd;
 }
-.treeviewbootstrap {
-	float: left;
+ .tree-ul-first {  
+    	float: left;
     list-style: outside none none;
     margin: 0;
     padding: 0;
     position: relative;
-    width:219px;
-}
-.list-group-item {
-	cursor: pointer;
-}
-
-/*.list-group-item:hover {
-  background-color: #f5f5f5;
-}*/
-
-span.indent {
-	margin-left: 10px;
-	margin-right: 10px;
-}
-
-span.icon {
-	margin-right: 5px;
-}
+    width:218px;
+    }  
+    
+    .tree-span-left {  
+        padding-left: 10px;  
+        padding-right: 10px;  
+    }  
+      
+    .tree-span-right {  
+        right: 15px;  
+        position: absolute;  
+        top: auto;  
+    }  
+      
+    .tree-ul-childs {  
+  /*      background-color: #262222;*/  
+        display: none;  
+        height: auto;  
+    }  
+      
+    .tree-ul-childs li,  
+    .tree-ul-first li {  
+        width: 100%;  
+        border-top:1px solid #ddd;
+        border-bottom:1px solid #ddd;
+        margin-bottom:-1px;
+   /*     background-color: #262222;*/  
+    }  
+      
+    .tree-ul-childs li a,  
+    .tree-ul-first li a {  
+        width: auto;  
+        position: relative;  
+        color: #315680;  
+        text-decoration: none;  
+    }  
+      
+    .defuat-left {  
+        padding-left: 8%;  
+    }  
+      
+    .tree-ul-first > li > a:hover,  
+    .tree-ul-childs > li > a:hover,  
+    .tree-ul-first > li > a:focus,  
+    .tree-ul-childs > li > a:focus {  
+      text-decoration: none;  
+      background-color: #777;  
+    }  
 

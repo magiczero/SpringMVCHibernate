@@ -97,17 +97,16 @@ public class SystemController {
 		Collections.sort(list);
 		
 		if(!userUtil.IsCommonUser(authentication)) {
-			sb.append("{\"text\":\"快速链接\",\"state\":{\"expanded\":false},\"id\":\"0\",\"nodeId\":\"0\",\"nodes\":[{\"text\":\"待办任务\",\"icon\":\"glyphicon glyphicon-th-list\",\"id\":\"00\", \"nodeId\":\"00\",\"href\":\""+contextPath+"/workflow/task/mytask\"},");
+			sb.append("{\"menuName\":\"快速链接\",\"menuUrl\":\"#\",\"menuLeftIcon\":\"glyphicon glyphicon-arrow-right\",\"menuChildData\":[{\"menuName\":\"待办任务\",\"menuUrl\":\""+contextPath+"/workflow/task/mytask\",\"menuLeftIcon\":\"glyphicon glyphicon-th-list\"},");
 			if(userUtil.IsLeader(authentication) || userUtil.IsAdmin(authentication)) {
-				sb.append("{\"text\":\"运维控制台\",\"icon\":\"glyphicon glyphicon-star\",\"id\":\"000\",\"href\":\""+contextPath+"/workflow/task/board\"},");
+				sb.append("{\"menuName\":\"运维控制台\",\"menuLeftIcon\":\"glyphicon glyphicon-star\",\"menuUrl\":\""+contextPath+"/workflow/task/board\"},");
 			}
-			sb.append("{\"text\":\"领导交办\",\"icon\":\"glyphicon glyphicon-user\",\"id\":\"0000\",\"href\":\""+contextPath+"/leadertask/list\"},{\"text\":\"日常巡检\",\"icon\":\"glyphicon glyphicon-calendar\",\"id\":\"000000\",\"href\":\""+contextPath+"/record/inspection\"}]},");
+			sb.append("{\"menuName\":\"领导交办\",\"menuLeftIcon\":\"glyphicon glyphicon-user\",\"menuUrl\":\""+contextPath+"/leadertask/list\"},{\"menuName\":\"日常巡检\",\"menuLeftIcon\":\"glyphicon glyphicon-calendar\",\"menuUrl\":\""+contextPath+"/record/inspection\"}]},");
 		}
 		for(Moudle mod : list) {
-			
 			if(mod.getParent() == null) {	//顶级目录
 				if(!moudleSet0.contains(mod)) {			//如果有相同的菜单，则不处理
-					sb.append("{\"text\":\""+mod.getName()+"\",\"state\":{\"expanded\":false},\"id\":\""+mod.getId()+"\", \"nodeId\":\""+mod.getId()+"\",");
+					sb.append("{\"menuName\":\""+mod.getName()+"\",\"menuUrl\":\""+contextPath+mod.getUrl()+"\",\"menuLeftIcon\":\""+mod.getStyleClass()+"\",\"id\":\""+mod.getId()+"\",");
 					
 					sb = getSubmenu(sb, mod, list, contextPath);
 					
@@ -115,7 +114,6 @@ public class SystemController {
 					
 					moudleSet.add(mod);
 				}
-				
 				
 			}
 		}
@@ -133,19 +131,19 @@ public class SystemController {
 	private StringBuffer getSubmenu(StringBuffer sb, Moudle mod, List<Moudle> moudles ,String contextPath) {
 		// TODO Auto-generated method stub
 			
-			sb.append("\"nodes\":[");
+			sb.append("\"menuChildData\":[");
 			for(Moudle mo1 : mod.getChild()) {
 				
 				for(Moudle mo2 : moudles) {
 					if(mo1 == mo2) {
 						if(!moudleSet0.contains(mo1)) {
 							if(mo1.getChild().size()>0) {
-								sb .append("{\"text\":\""+mo1.getName()+"\",\"href\":\""+contextPath+mo1.getUrl()+"\", \"id\":\""+mo1.getId()+"\", \"nodeId\":\""+mo1.getId()+"\",");
+								sb .append("{\"menuName\":\""+mo1.getName()+"\",\"menuUrl\":\""+contextPath+mo1.getUrl()+"\",\"menuLeftIcon\":\""+mo1.getStyleClass()+"\",\"id\":\""+mo1.getId()+"\",");
 							
 							
 								sb = getSubmenu(sb, mo1, moudles, contextPath);
 							} else {
-								sb .append("{\"text\":\""+mo1.getName()+"\",\"href\":\""+contextPath+mo1.getUrl()+"\",\"icon\":\""+mo1.getStyleClass()+"\", \"id\":\""+mo1.getId()+"\", \"nodeId\":\""+mo1.getId()+"\"");
+								sb .append("{\"menuName\":\""+mo1.getName()+"\",\"menuUrl\":\""+contextPath+mo1.getUrl()+"\",\"menuLeftIcon\":\""+mo1.getStyleClass()+"\", \"id\":\""+mo1.getId()+"\"");
 							}
 							
 							moudleSet0.add(mo1);

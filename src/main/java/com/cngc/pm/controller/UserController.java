@@ -2,9 +2,11 @@ package com.cngc.pm.controller;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -395,7 +397,12 @@ public class UserController extends BaseController  {
 		Map<String,Object> map = new HashMap<String,Object>();
 		Map<String,String> usermap = new LinkedHashMap<String,String>();
 		
-		List<SysUser> users = userService.getEngineer();
+		Set<SysUser> enginerSet = new HashSet<>();
+		
+		enginerSet.addAll(userService.getEngineer());
+		enginerSet.addAll(userService.getLeader());
+		
+		List<SysUser> users = new ArrayList<SysUser>(enginerSet);
 		for(SysUser user:users)
 		{
 			usermap.put(user.getUsername(), user.getName());

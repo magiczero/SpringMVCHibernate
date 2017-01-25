@@ -22,7 +22,7 @@
 	</div>
 	
 </div>
-<div id="tree"></div>
+<div id="tree1"></div>
 <div class="modal fade" id="pwdModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 	<div class="modal-dialog">
 		<div class="modal-content">
@@ -98,9 +98,10 @@
 	</div>
 </div>
 <script type='text/javascript' src='${contextPath }/resources/js/mymenu.js'></script>
-<script type='text/javascript' src='${contextPath }/resources/js/plugins/treeview/bootstrap-treeview.min.js'></script>
+<script type='text/javascript' src='${contextPath }/resources/js/plugins/menutree/tree.js'></script>
 <script>
 	var ctx1 = "${contextPath }";
+	
 	$(document).ready(function() {
 		pm_getcount();
 		//表单验证
@@ -109,6 +110,7 @@
 			scroll : true
 		});
 		
+		
 		 $.ajax({
              type: 'Get',
              url: ctx1+'/menu-json',
@@ -116,17 +118,14 @@
              dataType: 'json',
              async: false,
              success: function (data) {
-                 var defaultData = eval(data);
+                 var treeData = eval(data);
                  
-                 $('#tree').treeviewbootstrap({
-                     //color: "#428bca",
-                     color: "#369",
-                     enableLinks:true,
-                     data: defaultData
-                 });
-                 
-                 //$('#tree').treeviewbootstrap('expandNode',7);
-                 //$('#tree').treeviewbootstrap('selectNode',9);
+                 var tree = {  
+                         'data': treeData,  
+                         'clickIconBefore': 'glyphicon glyphicon-chevron-down',  
+                         'clickIconAfter': 'glyphicon glyphicon-chevron-up'  
+                     }  
+                     getTree($("#tree1"), tree); 
              },
              error: function (err) {
             	 //console.log(err);

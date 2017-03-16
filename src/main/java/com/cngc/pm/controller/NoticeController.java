@@ -47,7 +47,7 @@ public class NoticeController {
 		if(notice.getId()==null)
 		{
 			notice.setCreatedTime(new Date());
-			notice.setCreatedUser(userUtil.getUserId(authentication));
+			notice.setCreatedUser(userUtil.getUsernameByAuth(authentication));
 			notice.setStatus("01");
 		}
 		else
@@ -70,7 +70,7 @@ public class NoticeController {
 		notice.setTitle(title);
 		notice.setContent(content);
 		notice.setCreatedTime(new Date());
-		notice.setCreatedUser(userUtil.getUserId(authentication));
+		notice.setCreatedUser(userUtil.getUsernameByAuth(authentication));
 		notice.setStatus("01");
 		
 		noticeService.save(notice);

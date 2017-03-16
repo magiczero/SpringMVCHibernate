@@ -91,22 +91,6 @@
             });
             
             pm_workflow_inittracedialog(400,250);
-            
-    		$('#file_upload').uploadify({
-    			'formData' : { 'type' : 5 },
-    	        'swf'      : '${contextPath }/resources/flash/uploadify.swf',
-    	      //按钮显示的文字
-    	        'buttonText': '选择文件……',
-    	        'uploader' : '${contextPath}/attachment/upload',
-    	        'removeCompleted' : false,
-    	        // Put your options here
-    	        'onUploadSuccess': function (file, data, response) {
-    	        	//console.log(data);
-    	            $('#' + file.id).find('.data').html(' 上传完毕');
-    	            var fileids = document.getElementById("fileids").value + '';
-    	            document.getElementById("fileids").value = fileids + data;
-    	        }
-    	    });
         });
     </script>
     <style type="text/css">

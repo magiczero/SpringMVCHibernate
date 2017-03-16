@@ -91,12 +91,23 @@
             $("#lnk_start_leadertask").bind("click",function(){
                	act_form_openStartDialog("发起领导交办任务","LEADERTASK","/leadertask/list");
             });
-            
+         // 巡检结果对话框初始化
+            $("#b_popup_leadertask").dialog({
+                autoOpen: false,
+                width: 1150,
+                height: 600,
+                buttons: { "关闭": function () { $(this).dialog("close") } }
+            });
             pm_workflow_inittracedialog();
             act_commont_initdialog();
             act_history_initdialog();
         });
-
+        function viewLeadertask(address){
+        	$("#form_template").html("<iframe src='"+ address +"' width='100%' height='500'/>");
+        		
+        	$("#b_popup_leadertask").dialog('open');
+        	return false;
+        }
     </script>
 </head>
 <body>
@@ -213,7 +224,7 @@
 												</c:if>
 											</c:if>
 											<c:if test="${empty mytask }">
-												<a href="${contextPath }/leadertask/view/${leaderTask.id}"  target="_blank"><span class="glyphicon glyphicon-search"></span> 详情</a>
+												<a onclick="viewLeadertask('${contextPath }/leadertask/view/${leaderTask.id}');"  href="#"><span class="glyphicon glyphicon-search"></span> 详情</a>
 											</c:if>
 										</td>
 									</tr>
@@ -222,47 +233,6 @@
                             </table>
                         </div>
                     </div>  
-                    <%--
-                    <div class="col-md-12">                    
-                        <div class="head clearfix">
-                            <div class="isw-grid"></div>
-                            <h1>领导交办</h1>  
-                        </div>
-                        <div class="block-fluid table-sorting clearfix">
-                            <table class="table" id="eventTable1">
-                                <thead>
-                                	<tr>
-                                		<th width="60px">流程号</th>
-                                		<th width="60px">交办领导</th>
-										<th >任务标题</th>
-										<th width="60px">受派人</th>
-										<th width="70px">提交时间</th>
-										<th width="70px">到期时间</th>
-										<th width="110px">状态</th>
-										<th width="130px">操作</th>
-									</tr>
-                                </thead>
-                                <tbody>
-                                	<c:forEach items="${list1}" var="map">
-									<tr>
-										<td>${map.processInstanceId }</td>
-										<td>${map.fromUserName }</td>
-										<td>${map.taskTitle }</td>
-										<td>${map.toUserName }</td>
-										<td><fmt:formatDate value="${map.startTime }" pattern="yyyy-MM-dd"></fmt:formatDate></td>
-										<td><fmt:formatDate value="${map.dueTime }" pattern="yyyy-MM-dd"></fmt:formatDate></td>
-										<td>
-											${map.status }
-										</td>
-										<td>
-											${map.operation }
-										</td>
-									</tr>
-								</c:forEach>   
-                                </tbody>
-                            </table>
-                        </div>
-                        </div>--%>
                 </div>
                 <div class="dr"><span></span></div>
    
@@ -308,6 +278,9 @@
             </div>
         </div>
     	<!-- 查询 end from -->
+    	<div class="dialog" id="b_popup_leadertask" style="display: none;" title="查看领导交办">
+	    	<div class="block dialog_block" id="form_template"></div>
+    	</div>
     </div>
 </body>
 

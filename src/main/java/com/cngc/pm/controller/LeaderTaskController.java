@@ -172,7 +172,7 @@ public class LeaderTaskController {
 		// 我的任务
 		mytasks = taskService.createTaskQuery()
 				.processDefinitionKey(PropertyFileUtil.getStringValue("workflow.processkey.leadertask"))
-				.taskCandidateOrAssigned(userUtil.getUserId(authentication)).active().list();
+				.taskCandidateOrAssigned(userUtil.getUsernameByAuth(authentication)).active().list();
 		for (Task task : mytasks)
 		{
 			mytaskmap.put(task.getProcessInstanceId(), task);
@@ -189,7 +189,7 @@ public class LeaderTaskController {
 		// 我参与过的任务
 		List<HistoricTaskInstance> myhistory = historyService.createHistoricTaskInstanceQuery()
 				.processDefinitionKey(PropertyFileUtil.getStringValue("workflow.processkey.leadertask"))
-				.taskAssignee(userUtil.getUserId(authentication)).list();
+				.taskAssignee(userUtil.getUsernameByAuth(authentication)).list();
 		for (HistoricTaskInstance task : myhistory)
 			processInstanceIds.add(task.getProcessInstanceId());
 		if (userUtil.IsWorkflowManager(authentication)) // 流程管理者可查看所有领导交办任务信息

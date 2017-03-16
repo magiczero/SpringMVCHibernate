@@ -94,6 +94,11 @@ function act_form_getTaskFields(taskId,redirectAddress) {
 			}
 			divs += "</div>";
 		});
+		if(datas.preassignee) {
+			divs += "<div class='row-form clearfix'><div class='col-md-3'>\u6267\u884c\u4eba：</div><div class='col-md-8'>";
+			divs += datas.preassignee;
+			divs += "</div></div>";
+		}
 		divs += "<div class='footer'>"
 				+ "<input type=hidden name='redirectAddress' value='" + redirectAddress + "' />"
                 +"<button class='btn btn-primary center-block'> 提 交 </button>"
@@ -314,6 +319,23 @@ function act_form_getDialogFields(data,redirectAddress) {
 		// 初始化日期组件
 		//$form.find('.dateISO').datepicker();
 	} 
+	// 初始化三员管理员选择下拉框
+	if($form.find('.threemember').length>0)
+	{
+		$.getJSON(ctx + '/user/get-threemembers?t=' + pm_random(),function(result){
+			$.each(result.users,function(key,value){
+				$form.find('.threemember').append("<option value='"+key+"'>"+value+"</option>");
+			});
+			for(i=0;i<$form.find('.threemember').length;i++)
+			{
+				if( $($form.find('.threemember')[i]).attr('data')!=null )
+					$($form.find('.threemember')[i]).find("option[value='"+$($form.find('.threemember')[i]).attr('data')+"']").attr("selected",true);
+			}
+			$form.find('.threemember').select2();
+		});
+		// 初始化日期组件
+		//$form.find('.dateISO').datepicker();
+	} 
 	if($form.find('.leader').length>0)// 初始化领导选择下拉框
 	{
 		$.getJSON(ctx + '/user/getleader?t=' + pm_random(),function(result){
@@ -456,6 +478,16 @@ var act_form_fieldcreator = {
 		var result = "<div class='col-md-3'>" + prop.name + "：</div>";
 		if (prop.writable === true) {
 			result += "<div class='col-md-8'><select id='" + prop.id + "' name='fp_" + prop.id + "' class='user' style='width:100%' data='" 
+				+ (prop.value==null?"":prop.value) + "'></select></div>";
+		} else {
+			result += "<div class='col-md-8'>" + prop.value + "</div>";
+		}
+		return result;
+	},
+	'threemember': function(prop, datas, className) {
+		var result = "<div class='col-md-3'>" + prop.name + "：</div>";
+		if (prop.writable === true) {
+			result += "<div class='col-md-8'><select id='" + prop.id + "' name='fp_" + prop.id + "' class='threemember' style='width:100%' data='" 
 				+ (prop.value==null?"":prop.value) + "'></select></div>";
 		} else {
 			result += "<div class='col-md-8'>" + prop.value + "</div>";

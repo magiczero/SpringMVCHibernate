@@ -479,20 +479,12 @@
                                 <div class="col-md-10" id="itemName">
                                 </div>
                             </div>
-                            <%--<div class="row-form clearfix">
-                                <div class="col-md-2">
-                                <form:label path="base">基本测评项</form:label>
-                                </div>
-                                <div class="col-md-10">
-                                <form:radiobutton path="base" value="true" label="是"/>&nbsp;&nbsp;&nbsp;&nbsp;<form:radiobutton path="base" value="false" label="否"/>
-                                </div>
-                            </div> --%>
                             <div class="row-form clearfix">
                                 <div class="col-md-2">
                                 <form:label path="name">名称</form:label>
                                 </div>
                                 <div class="col-md-10">
-                                <form:input path="name" class="validate[required,minSize[2],maxSize[30]] text-input"/>
+                                <form:input path="name" class="validate[required,minSize[2],maxSize[200]] text-input"/>
                                 </div>
                             </div>
                             <div class="row-form clearfix">
@@ -516,7 +508,7 @@
                                 <label for="record">相关记录</label>
                                 </div>
                                 <div class="col-md-10">
-                                <form:input path="record" class="validate[maxSize[50]]"/>
+                                <form:input path="record" class="validate[maxSize[200]]"/>
                                 </div>
                             </div>
 							<div class="row-form clearfix">

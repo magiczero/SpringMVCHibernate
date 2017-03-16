@@ -113,7 +113,7 @@ public class RecordController {
 		// 我的任务
 		mytasks = taskService.createTaskQuery()
 				.processDefinitionKey(PropertyFileUtil.getStringValue("workflow.processkey.update"))
-				.taskCandidateOrAssigned(userUtil.getUserId(authentication)).active().list();
+				.taskCandidateOrAssigned(userUtil.getUsernameByAuth(authentication)).active().list();
 		for (Task task : mytasks)
 			mytaskmap.put(task.getProcessInstanceId(), task);
 		// 所有任务
@@ -288,7 +288,7 @@ public class RecordController {
 		// 我的任务
 		mytasks = taskService.createTaskQuery()
 				.processDefinitionKey(PropertyFileUtil.getStringValue("workflow.processkey.inspection"))
-				.taskCandidateOrAssigned(userUtil.getUserId(authentication)).active().list();
+				.taskCandidateOrAssigned(userUtil.getUsernameByAuth(authentication)).active().list();
 		for (Task task : mytasks)
 			mytaskmap.put(task.getProcessInstanceId(), task);
 		// 所有任务
@@ -356,7 +356,7 @@ public class RecordController {
 			Authentication authentication) throws Exception {
 
 		income.setCreatedTime(new Date());
-		income.setCreatedUser(userUtil.getUserId(authentication));
+		income.setCreatedUser(userUtil.getUsernameByAuth(authentication));
 		incomeService.save(income);
 
 		return "redirect:/record/income";
@@ -432,7 +432,7 @@ public class RecordController {
 			Authentication authentication) throws Exception {
 
 		training.setCreatedTime(new Date());
-		training.setCreatedUser(userUtil.getUserId(authentication));
+		training.setCreatedUser(userUtil.getUsernameByAuth(authentication));
 		trainingService.save(training);
 
 		return "redirect:/record/training";
@@ -466,7 +466,7 @@ public class RecordController {
 		// 我的任务
 		mytasks = taskService.createTaskQuery()
 				.processDefinitionKey(PropertyFileUtil.getStringValue("workflow.processkey.secjob"))
-				.taskCandidateOrAssigned(userUtil.getUserId(authentication)).active().list();
+				.taskCandidateOrAssigned(userUtil.getUsernameByAuth(authentication)).active().list();
 		for (Task task : mytasks)
 			mytaskmap.put(task.getProcessInstanceId(), task);
 		// 所有任务

@@ -286,6 +286,7 @@ public class UserServiceImpl implements UserService {
 			return user.getName();
 	}
 	@Override
+	@Transactional
 	public Group getTopGroupByUser(SysUser user) {
 		// TODO Auto-generated method stub
 		Group group = user.getGroup();
@@ -302,9 +303,16 @@ public class UserServiceImpl implements UserService {
 			return getTopGroup(groupParent);
 	}
 	@Override
+	@Transactional
 	public SysUser getByName(String name) {
 		// TODO Auto-generated method stub
 		
 		return userDao.getUserByName(name);
+	}
+	@Override
+	@Transactional
+	public List<SysUser> getThreemembers() {
+		// TODO Auto-generated method stub
+		return getByRole("system.user.threemember");
 	}
 }

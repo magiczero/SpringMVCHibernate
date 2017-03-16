@@ -1,5 +1,8 @@
 package com.cngc.pm.service;
 
+import static org.junit.Assert.assertNotNull;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -21,8 +24,10 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.cngc.pm.model.Group;
-import com.cngc.pm.model.SysCode;
 import com.cngc.pm.model.SysUser;
+import com.cngc.pm.model.manage.ManageType;
+import com.cngc.pm.model.manage.Relations;
+import com.cngc.pm.threemember.template.DocumentHandler;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath:servlet-context.xml"})
@@ -40,6 +45,8 @@ public class ServiceTest {
 	private CheckItemsService itemsService;
 	@Autowired
 	private DocumentService docService;
+	@Autowired
+	private ThreeMemberService threeService;
 	
 	Logger LOGGER = LoggerFactory.getLogger(ServiceTest.class);
 	
@@ -135,13 +142,26 @@ public class ServiceTest {
     }
 
     @Test
-	@Ignore
     public void testCollegeFind() {
+    	DocumentHandler dh = new DocumentHandler();
+    	
+    	try {
+			dh.createDoc();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    	
+    	List<Relations> list= threeService.getRelationItemListByType(ManageType.SystemManager);
+    	
+    	System.out.println(list.size());
+    	
+    	assertNotNull(list);
     	//List<Document> list = docService.getListByUserAndNum("admin", 0);
-    	SysCode code = docService.getCode(docService.getById(107l));
+    	//SysCode code = docService.getCode(docService.getById(107l));
     	//String str = itemsService.getJSonByCode("CI");
     	
-    	System.out.println("document size is "+code.getId());
+    	//System.out.println("document size is "+code.getId());
     	
     	//assertNotNull(str);
 //    	List<Person> persons = personService.testPersons();

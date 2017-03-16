@@ -260,7 +260,7 @@
                             <h1>${task.name }</h1>
                         </div>             
                         <div class="block-fluid clearfix" > 
-                    		<div id="workflow_task_form"><span><img src="img/loaders/loader.gif" title="loader.gif"/></span></div>
+                    		<div id="workflow_task_form"><span><img src="${contextPath }/resources/img/loaders/loader.gif" title="loader.gif"/></span></div>
                   	</div>
                   	
                    	<div class="head clearfix">

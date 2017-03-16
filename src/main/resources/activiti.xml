@@ -52,6 +52,7 @@
         		<bean class="com.cngc.pm.activiti.formtype.LeaderFormType" />
         		<bean class="com.cngc.pm.activiti.formtype.FileFormType" />
         		<bean class="com.cngc.pm.activiti.formtype.CompanyFormType" />
+        		<bean class="com.cngc.pm.activiti.formtype.ThreememberFormType" />
         	</list>
         </property>
         <!-- 开启日志 -->

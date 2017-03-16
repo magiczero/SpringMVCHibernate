@@ -43,11 +43,11 @@ public class UserUtil {
 	/**
 	 * 获取session中保存的用户id
 	 * 
-	 * @param session
+	 * @param auth
 	 * @return
 	 * @throws Exception 
 	 */
-	public String getUserId(Authentication auth) throws Exception {
+	public String getUsernameByAuth(Authentication auth) throws Exception {
 		//Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		
 		if (auth == null) {
@@ -68,7 +68,7 @@ public class UserUtil {
 	 * @param session
 	 * @return
 	 */
-	public String getUserName(Authentication auth) {
+	public SysUser getUserByAuth(Authentication auth) {
 		//Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		
 		if (auth == null)
@@ -79,8 +79,7 @@ public class UserUtil {
 			return null;
 		else
 		{
-			SysUser sysuser = userService.getByUsername(user.getUsername());
-			return sysuser.getUsername();
+			return userService.getByUsername(user.getUsername());
 		}
 		
 	}

@@ -88,7 +88,7 @@ public class AccountController {
 		account.setFields(fields);
 		account.setProperties(properties);
 		account.setCreatedTime(new Date());
-		account.setCreatedUser(userUtil.getUserId(authentication));
+		account.setCreatedUser(userUtil.getUsernameByAuth(authentication));
 		
 		accountService.save(account);
 		

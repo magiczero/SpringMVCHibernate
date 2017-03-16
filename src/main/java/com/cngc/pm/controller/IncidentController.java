@@ -208,7 +208,7 @@ public class IncidentController {
 		incident.setPriority("04");
 		incident.setType("01");
 		incident.setStatus("01");
-		SysUser user = userService.getByUsername(userUtil.getUserId(authentication));
+		SysUser user = userUtil.getUserByAuth(authentication);
 		incident.setApplyUser(user.getUsername());
 		//incident.setApplyUserRoom(user.getMechName());
 		incident.setPhoneNumber(user.getDepName());
@@ -260,7 +260,7 @@ public class IncidentController {
 			
 			incident.setStatus(PropertyFileUtil.getStringValue("syscode.incident.status.new"));
 			incident.setApplyTime(new Date());
-			incidentService.save(incident,userUtil.getUserId(authentication));
+			incidentService.save(incident,userUtil.getUsernameByAuth(authentication));
 
 			// 启动流程
 //			ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery()
@@ -314,7 +314,7 @@ public class IncidentController {
 		// 我的任务
 		mytasks = taskService.createTaskQuery()
 				.processDefinitionKey(PropertyFileUtil.getStringValue("workflow.processkey.incident"))
-				.taskCandidateOrAssigned(userUtil.getUserId(authentication)).active().list();
+				.taskCandidateOrAssigned(userUtil.getUsernameByAuth(authentication)).active().list();
 		for (Task task : mytasks)
 			mytaskmap.put(task.getProcessInstanceId(), task);
 
@@ -354,7 +354,7 @@ public class IncidentController {
 		// 我的任务
 		mytasks = taskService.createTaskQuery()
 				.processDefinitionKey(PropertyFileUtil.getStringValue("workflow.processkey.incident"))
-				.taskCandidateOrAssigned(userUtil.getUserId(authentication)).active().list();
+				.taskCandidateOrAssigned(userUtil.getUsernameByAuth(authentication)).active().list();
 		for (Task task : mytasks)
 			mytaskmap.put(task.getProcessInstanceId(), task);
 
@@ -405,7 +405,7 @@ public class IncidentController {
 		List<String> processInstanceIds = new ArrayList<String>();
 		List<HistoricTaskInstance> mytasks = historyService.createHistoricTaskInstanceQuery()
 				.processDefinitionKey(PropertyFileUtil.getStringValue("workflow.processkey.incident"))
-				.taskAssignee(userUtil.getUserId(authentication)).list();
+				.taskAssignee(userUtil.getUsernameByAuth(authentication)).list();
 		for (HistoricTaskInstance task : mytasks)
 			processInstanceIds.add(task.getProcessInstanceId());
 
@@ -432,7 +432,7 @@ public class IncidentController {
 		// 我的任务
 		mytasks = taskService.createTaskQuery()
 				.processDefinitionKey(PropertyFileUtil.getStringValue("workflow.processkey.incident"))
-				.taskCandidateOrAssigned(userUtil.getUserId(authentication)).active().list();
+				.taskCandidateOrAssigned(userUtil.getUsernameByAuth(authentication)).active().list();
 		for (Task task : mytasks)
 			mytaskmap.put(task.getProcessInstanceId(), task);
 
@@ -445,7 +445,7 @@ public class IncidentController {
 
 		model.addAttribute("tasks", taskmap);
 		model.addAttribute("mytasks", mytaskmap);
-		model.addAttribute("list", incidentService.getByApplyUser(userUtil.getUserId(authentication), false)
+		model.addAttribute("list", incidentService.getByApplyUser(userUtil.getUsernameByAuth(authentication), false)
 				.getResult());
 
 		return "incident/mylist";
@@ -561,7 +561,7 @@ public class IncidentController {
 		} catch (IOException e) {
 
 		}
-		incidentService.save(incident,userUtil.getUserId(authentication));
+		incidentService.save(incident,userUtil.getUsernameByAuth(authentication));
 
 		result.put("result", "true");
 
@@ -838,7 +838,7 @@ public class IncidentController {
 		} catch (ParseException e) {
 			e.printStackTrace();
 		}
-		SearchResult<Incident> result = incidentService.search(null, userUtil.getUserId(authentication), null, null, startDate, endDate,offset,maxResults);
+		SearchResult<Incident> result = incidentService.search(null, userUtil.getUsernameByAuth(authentication), null, null, startDate, endDate,offset,maxResults);
 		model.addAttribute("list",result.getResult());
 		model.addAttribute("offset", offset);
 		model.addAttribute("count", result.getTotalCount());

@@ -28,7 +28,7 @@ public class MessageController {
 	@RequestMapping(value="/list",method = RequestMethod.GET)
 	public String list(Model model,Authentication authentication) throws Exception{
 		
-		model.addAttribute("messages", messageService.getByUserId(userUtil.getUserId(authentication)).getResult() );
+		model.addAttribute("messages", messageService.getByUserId(userUtil.getUsernameByAuth(authentication)).getResult() );
 		
 		return "/sysmanage/message-list";
 	}
@@ -46,7 +46,7 @@ public class MessageController {
 	public Map<String,Object> getNotReadMessageCount(Model model,Authentication authentication) throws Exception
 	{
 		Map<String,Object> map = new HashMap<String,Object>();
-		map.put("count", messageService.getNotReadMessageCountByUserId(userUtil.getUserId(authentication)));
+		map.put("count", messageService.getNotReadMessageCountByUserId(userUtil.getUsernameByAuth(authentication)));
 		
 		return map;
 	}
@@ -56,7 +56,7 @@ public class MessageController {
 	public Map<String,Object> getNotReadMessageList(Model model,Authentication authentication) throws Exception
 	{
 		Map<String,Object> map = new HashMap<String,Object>();
-		map.put("messages", messageService.getNotReadMessageByUserId(userUtil.getUserId(authentication)).getResult());
+		map.put("messages", messageService.getNotReadMessageByUserId(userUtil.getUsernameByAuth(authentication)).getResult());
 		
 		return map;
 	}
@@ -65,7 +65,7 @@ public class MessageController {
 	public Map<String,Object> getMessageList(Model model,Authentication authentication) throws Exception
 	{
 		Map<String,Object> map = new HashMap<String,Object>();
-		map.put("messages", messageService.getByUserId(userUtil.getUserId(authentication)).getResult());
+		map.put("messages", messageService.getByUserId(userUtil.getUsernameByAuth(authentication)).getResult());
 		
 		return map;
 	}

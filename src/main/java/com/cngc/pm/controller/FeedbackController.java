@@ -119,7 +119,7 @@ public class FeedbackController {
 		// 我的任务
 		mytasks = taskService.createTaskQuery()
 				.processDefinitionKey("feedback")
-				.taskCandidateOrAssigned(userUtil.getUserId(authentication)).active().list();
+				.taskCandidateOrAssigned(userUtil.getUsernameByAuth(authentication)).active().list();
 		for (Task task : mytasks)
 			mytaskmap.put(task.getProcessInstanceId(), task);
 

@@ -80,7 +80,7 @@ public class KnowledgeController {
 				knowledge.setAttachs(attachSet);
 			}
 			
-			knowledge.setApplyUser(userUtil.getUserId(authentication));
+			knowledge.setApplyUser(userUtil.getUsernameByAuth(authentication));
 			knowledge.setApplyTime(new Date());
 			knowledge.setStatus(PropertyFileUtil.getStringValue("syscode.knowledge.status.new"));
 			
@@ -119,7 +119,7 @@ public class KnowledgeController {
 		// 我的任务
 		mytasks = taskService.createTaskQuery()
 				.processDefinitionKey(PropertyFileUtil.getStringValue("workflow.processkey.knowledge"))
-				.taskCandidateOrAssigned(userUtil.getUserId(authentication)).active().list();
+				.taskCandidateOrAssigned(userUtil.getUsernameByAuth(authentication)).active().list();
 		for (Task task : mytasks)
 			mytaskmap.put(task.getProcessInstanceId(), task);
 
@@ -200,7 +200,7 @@ public class KnowledgeController {
 		// 我的任务
 		mytasks = taskService.createTaskQuery()
 				.processDefinitionKey(PropertyFileUtil.getStringValue("workflow.processkey.knowledge"))
-				.taskCandidateOrAssigned(userUtil.getUserId(authentication)).active().list();
+				.taskCandidateOrAssigned(userUtil.getUsernameByAuth(authentication)).active().list();
 		for (Task task : mytasks)
 			mytaskmap.put(task.getProcessInstanceId(), task);
 

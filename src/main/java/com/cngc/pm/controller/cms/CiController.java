@@ -151,7 +151,7 @@ public class CiController {
 		ci.setDeleteStatus("01");
 		ci.setCreatedTime(new Date());
 		ci.setLastUpdateTime(new Date());
-		ci.setLastUpdateUser(userUtil.getUserId(authentication));
+		ci.setLastUpdateUser(userUtil.getUsernameByAuth(authentication));
 		
 		
 		ciService.save(ci);

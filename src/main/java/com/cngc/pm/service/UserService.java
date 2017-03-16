@@ -47,4 +47,6 @@ public interface UserService {
 	String getUserName(String userid);
 	
 	Group getTopGroupByUser(SysUser user);
+
+	List<SysUser> getThreemembers();
 }

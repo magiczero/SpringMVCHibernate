@@ -14,7 +14,30 @@
 
 
 <title>待办任务--运维管理系统</title>
+<!-- 
 
+
+                   _ooOoo_
+                  o8888888o
+                  88" . "88
+                  (| -_- |)
+                  O\  =  /O
+               ____/`---'\____
+             .'  \\|     |//  `.
+            /  \\|||  :  |||//  \
+           /  _||||| -:- |||||-  \
+           |   | \\\  -  /// |   |
+           | \_|  ''\---/''  |   |
+           \  .-\__  `-`  ___/-. /
+         ___`. .'  /--.--\  `. . __
+      ."" '<  `.___\_<|>_/___.'  >'"".
+     | | :  ` - `.;`\ _ /`;.`/ - ` : | |
+     \  \ `-.   \_ __\ /__ _/   .-` /  /
+======`-.____`-.___\_____/___.-`____.-'======
+                   `=---='
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+            佛祖保佑       永无BUG  
+ -->
 <link href="${contextPath }/resources/css/icons.css" rel="stylesheet" type="text/css" />
 <link href="${contextPath }/resources/css/bootstrap.css" rel="stylesheet" type="text/css" />
 <link href="${contextPath }/resources/css/fullcalendar.css" rel="stylesheet" type="text/css" />
@@ -35,6 +58,7 @@
 <link href="${contextPath }/resources/css/stylesheet.css" rel="stylesheet" type="text/css" />
 <link href="${contextPath }/resources/css/styling.css" rel="stylesheet" type="text/css" />
 <link href="${contextPath }/resources/css/mycss.css" rel="stylesheet" type="text/css" />
+<link href="${contextPath }/resources/css/uploadify.css" rel="stylesheet" type="text/css" />
 <link href="${contextPath }/resources/css/stylesheets2.css" rel="stylesheet" type="text/css" />
 <!--[if lt IE 8]>
         <link href="${contextPath }/resources/css/ie7.css" rel="stylesheet" type="text/css" />
@@ -62,6 +86,7 @@
 <script type='text/javascript' src='${contextPath }/resources/js/plugins/pnotify/jquery.pnotify.min.js'></script>
 <script type='text/javascript' src='${contextPath }/resources/js/plugins/ibutton/jquery.ibutton.min.js'></script>
 <script type='text/javascript' src='${contextPath }/resources/js/plugins/scrollup/jquery.scrollUp.min.js'></script>
+<script type='text/javascript' src='${contextPath }/resources/js/plugins/uploadify/jquery.uploadify.min.js'></script>
 
 <script type='text/javascript' src='${contextPath }/resources/js/pm-common.js'></script>
 <script type='text/javascript' src='${contextPath }/resources/js/activiti-form.js'></script>
@@ -74,30 +99,20 @@
     <![endif]-->
 <script type="text/javascript">
 	var ctx = "${contextPath}";
-	$(document)
-			.ready(
-					function() {
-
-						$("#eventTable")
-								.dataTable(
-										{
+	$(document).ready(function() {
+		$("#eventTable").dataTable({
 											"oLanguage" : {
 												"sUrl" : "${contextPath}/resources/json/Chinese.json"
 											},
 											"aaSorting" : [ [ 5, 'desc' ] ]
 										});
-						$(".header").load(
-								"${contextPath}/header?t=" + pm_random());
-						$(".menu").load(
-								"${contextPath}/menu?t=" + pm_random(),
+		$(".header").load("${contextPath}/header?t=" + pm_random());
+		$(".menu").load("${contextPath}/menu?t=" + pm_random(),
 								function() {
 									$(".navigation > li:eq(0)").addClass("active");
 								});
-						$(".breadLine .buttons").load(
-								"${contextPath}/contentbuttons?t="
-										+ pm_random());
-
-						$(".confirm").bind("click", function() {
+		$(".breadLine .buttons").load("${contextPath}/contentbuttons?t="+ pm_random());
+		$(".confirm").bind("click", function() {
 							if (!confirm("确定要执行该操作?"))
 								return false;
 						});
@@ -113,9 +128,7 @@
 							}
 						});
 						
-						$(".lnk_trace")
-								.click(
-										function() {
+		$(".lnk_trace").click(function() {
 											var src = ctx
 													+ '/diagram-viewer/index.html?processDefinitionId='
 													+ $(this).attr('pdid')
@@ -128,10 +141,15 @@
 																	+ "' width='100%' height='265'/>");
 											$("#b_popup_trace").dialog('open');
 										});
+		
 					});
 	
 	
 </script>
+<style type="text/css">
+    	.uploadify-button-text {color:#fff !important;}
+    	
+    </style>
 </head>
 <body>
 	<div class="wrapper">
@@ -281,6 +299,9 @@
 													</c:if>
 													<c:if test="${processName=='INCIDENT'||processName=='CHANGE' || processName=='LEADERTASK' || processName=='OVERTIME' }">
 														<a href="${contextPath }/${processName.toLowerCase() }/dealbyprocess/${task.processInstanceId }/${task.id}"><span class="glyphicon glyphicon-edit"></span> 办理</a>
+													</c:if>
+													<c:if test="${processName=='threeMember' }">
+														<a href="${contextPath }/three-member/deal/${task.id}"><span class="glyphicon glyphicon-edit"></span> 办理</a>
 													</c:if>
 													<c:if test="${processName=='INSPECTION' }">
 														<a href="${contextPath }/record/${processName.toLowerCase() }/dealbyprocess/${task.processInstanceId }/${task.id}"><span class="glyphicon glyphicon-edit"></span> 办理</a>

@@ -140,7 +140,7 @@ public class ChangeController {
 		{
 			change.setStatus("01");
 			change.setApplyTime(new Date());
-			change.setApplyUser(userUtil.getUserId(authentication));
+			change.setApplyUser(userUtil.getUsernameByAuth(authentication));
 			changeService.save(change);
 	
 			// 启动流程
@@ -186,7 +186,7 @@ public class ChangeController {
 		// 我的任务
 		mytasks = taskService.createTaskQuery()
 				.processDefinitionKey(PropertyFileUtil.getStringValue("workflow.processkey.change"))
-				.taskCandidateOrAssigned(userUtil.getUserId(authentication)).active().list();
+				.taskCandidateOrAssigned(userUtil.getUsernameByAuth(authentication)).active().list();
 		for (Task task : mytasks)
 			mytaskmap.put(task.getProcessInstanceId(), task);
 
@@ -227,7 +227,7 @@ public class ChangeController {
 		// 我的任务
 		mytasks = taskService.createTaskQuery()
 				.processDefinitionKey(PropertyFileUtil.getStringValue("workflow.processkey.change"))
-				.taskCandidateOrAssigned(userUtil.getUserId(authentication)).active().list();
+				.taskCandidateOrAssigned(userUtil.getUsernameByAuth(authentication)).active().list();
 		for (Task task : mytasks)
 			mytaskmap.put(task.getProcessInstanceId(), task);
 
@@ -276,7 +276,7 @@ public class ChangeController {
 		List<String> processInstanceIds = new ArrayList<String>();
 		List<HistoricTaskInstance> mytasks = historyService.createHistoricTaskInstanceQuery()
 				.processDefinitionKey(PropertyFileUtil.getStringValue("workflow.processkey.change"))
-				.taskAssignee(userUtil.getUserId(authentication)).list();
+				.taskAssignee(userUtil.getUsernameByAuth(authentication)).list();
 		for (HistoricTaskInstance task : mytasks)
 			processInstanceIds.add(task.getProcessInstanceId());
 

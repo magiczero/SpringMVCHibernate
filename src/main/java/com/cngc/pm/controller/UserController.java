@@ -390,6 +390,27 @@ public class UserController extends BaseController  {
 		
 		return map;
 	}
+
+	@RequestMapping(value="/get-threemembers")
+	@ResponseBody
+	public Map<String,Object> getThreemembers(Model model){
+		Map<String,Object> map = new HashMap<String,Object>();
+		Map<String,String> usermap = new LinkedHashMap<String,String>();
+		
+		Set<SysUser> enginerSet = new HashSet<>();
+		
+		enginerSet.addAll(userService.getThreemembers());
+		//enginerSet.addAll(userService.getLeader());
+		
+		List<SysUser> users = new ArrayList<SysUser>(enginerSet);
+		for(SysUser user:users)
+		{
+			usermap.put(user.getUsername(), user.getName());
+		}
+		map.put("users",usermap);
+		
+		return map;
+	}
 	
 	@RequestMapping(value="/getengineer")
 	@ResponseBody

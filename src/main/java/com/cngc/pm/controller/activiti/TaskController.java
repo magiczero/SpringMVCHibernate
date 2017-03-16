@@ -107,7 +107,7 @@ public class TaskController {
 		List<Task> tasks = new ArrayList<Task>();
 		int nLeaderTask = 0;
 
-		tasks = taskService.createTaskQuery().taskCandidateOrAssigned(userUtil.getUserId(authentication)).active()
+		tasks = taskService.createTaskQuery().taskCandidateOrAssigned(userUtil.getUsernameByAuth(authentication)).active()
 				.list();
 		Map<String, String> startusers = new HashMap<String, String>();
 		// 未填报领导交办
@@ -238,7 +238,7 @@ public class TaskController {
 		Map<String, Object> map = new HashMap<String, Object>();
 		List<Task> tasks = new ArrayList<Task>();
 		String s = "";
-		tasks = taskService.createTaskQuery().taskCandidateOrAssigned(userUtil.getUserId(authentication)).active()
+		tasks = taskService.createTaskQuery().taskCandidateOrAssigned(userUtil.getUsernameByAuth(authentication)).active()
 				.list();
 
 		s = "[";
@@ -297,10 +297,10 @@ public class TaskController {
 		 * auth.getPrincipal()).getUsername();
 		 */
 
-		myjob = taskService.createTaskQuery().taskCandidateOrAssigned(userUtil.getUserId(authentication)).active()
+		myjob = taskService.createTaskQuery().taskCandidateOrAssigned(userUtil.getUsernameByAuth(authentication)).active()
 				.list().size();
 
-		claim = taskService.createTaskQuery().taskAssignee(userUtil.getUserId(authentication)).active().list().size();
+		claim = taskService.createTaskQuery().taskAssignee(userUtil.getUsernameByAuth(authentication)).active().list().size();
 
 		map.put("count", myjob);
 		map.put("claim", claim);
@@ -368,7 +368,7 @@ public class TaskController {
 		String re = "/workflow/task/mytask";
 		Task task = taskService.createTaskQuery().taskId(taskId).singleResult();
 
-		taskService.claim(taskId, userUtil.getUserId(authentication));
+		taskService.claim(taskId, userUtil.getUsernameByAuth(authentication));
 		// redirectAttributes.addFlashAttribute("message", "任务已签收");
 		if (task == null)
 			return "redirect:/workflow/task/mytask";
@@ -448,7 +448,7 @@ public class TaskController {
 			}
 		}
 		try {
-			identityService.setAuthenticatedUserId(userUtil.getUserId(authentication));
+			identityService.setAuthenticatedUserId(userUtil.getUsernameByAuth(authentication));
 			formService.submitTaskFormData(taskId, formProperties);
 		} finally {
 			// identityService.setAuthenticatedUserId(null);
@@ -468,7 +468,7 @@ public class TaskController {
 			HttpServletRequest request, Model model, Authentication authentication) throws Exception {
 
 		// 设置当前人为意见的所属人
-		identityService.setAuthenticatedUserId(userUtil.getUserId(authentication));
+		identityService.setAuthenticatedUserId(userUtil.getUsernameByAuth(authentication));
 		Task task;
 		if (taskId == null || taskId.equals("") || taskId.equals("0")) {
 			task = taskService.createTaskQuery().processInstanceId(processInstanceId).singleResult();
@@ -482,7 +482,7 @@ public class TaskController {
 		if (isnotify != null) {
 			if (isnotify.equals("true")) {
 				String s = message;
-				s = userService.getUserName(userUtil.getUserId(authentication)) + " 对 [" + task.getName() + "] 任务"
+				s = userService.getUserName(userUtil.getUsernameByAuth(authentication)) + " 对 [" + task.getName() + "] 任务"
 						+ "发表了意见:" + message;
 				messageService.sendMessage("系统提示", task.getAssignee(), s, "#");
 			}
@@ -511,7 +511,7 @@ public class TaskController {
 		Map<String, Object> commentAndEventsMap = new LinkedHashMap<String, Object>();
 		Map<String, String> username = new HashMap<String, String>();
 		Map<String, String> enables = new HashMap<String, String>();
-		String currentuser = userUtil.getUserId(authentication);
+		String currentuser = userUtil.getUsernameByAuth(authentication);
 		/*
 		 * 根据不同情况使用不同方式查询
 		 */

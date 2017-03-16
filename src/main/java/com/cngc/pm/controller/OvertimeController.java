@@ -273,7 +273,7 @@ public class OvertimeController {
 	@RequestMapping
 	public String list(Model model,  Authentication authentication) throws Exception {
 
-		String candidateUser=userUtil.getUserId(authentication);
+		String candidateUser=userUtil.getUsernameByAuth(authentication);
 
 		//权限判断
 		SysUser currentUser = userService.getByUsername(candidateUser);

@@ -68,29 +68,7 @@
 <body>
     <div class="wrapper"> 
 
-        <!--header-->
-        <div class="header"></div>
-        <!--header end-->
-        
-        <!--menu-->
-        <div class="menu"></div>
-        <!--menu end-->
-
         <div class="content wide">
-            <!--breadline-->
-            <div class="breadLine">
-
-                <ul class="breadcrumb">
-                    <li><a href="#">运维管理系统</a> <span class="divider">></span></li>
-                    <li><a href="#">运维工作管理</a> <span class="divider">></span></li>    
-                    <li><a href="${contextPath }/leadertask/list">领导交办</a> <span class="divider">></span></li>       
-                    <li class="active">交办信息</li>
-                </ul>
-
-                <ul class="buttons"></ul>
-
-            </div>
-            <!--breadline end-->
 
             <!--workplace-->
             <div class="workplace">             

@@ -59,7 +59,7 @@ function act_comment_getlist(processInstanceId,taskId) {
 					+"<div class='info'>"
 					+" <a href='#' class='name'>"+user+"</a>";
 				}
-				var msg = v.message || v.fullMessage;
+				var msg = v.fullMessage || v.message;
 				var comment = act_comment_eventHandler[v.action](v, msg);
 				var taskName = datas.taskNames ? datas.taskNames[v.taskId] : '';
 	

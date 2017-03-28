@@ -9,13 +9,11 @@
 
 	<!-- DispatcherServlet Context: defines this servlet's request-processing 
 		infrastructure -->
-	<context:component-scan base-package="com.cngc.pm.activiti" />
-	<context:component-scan base-package="com.cngc.pm.annotation" />
+	<context:component-scan base-package="com.cngc.pm.activiti.listener" />
 	<context:component-scan base-package="com.cngc.pm.dao" />
 	<context:component-scan base-package="com.cngc.pm.service" />
 	<context:component-scan base-package="com.cngc.pm.annotation" />
 	<context:component-scan base-package="com.cngc.pm.model" />
-	<context:component-scan base-package="com.cngc.pm.security" />
 	<!-- Enables the Spring MVC @Controller programming model -->
 	<!-- <annotation-driven /> -->
 	<!-- <annotation-driven conversion-service="conversionService" /> -->

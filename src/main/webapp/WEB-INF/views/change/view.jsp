@@ -161,7 +161,7 @@
                             <h1>变更处理信息</h1>
                         </div>             
                         <div class="block-fluid clearfix" > 
-                        	<table cellpadding="0" cellspacing="0" width="100%" class="table">
+                        	<table style="cellpadding:0;cellspacing:0;width:100%;" class="table">
                         		<tr>
 									<td width="100px">状态：</td>
 									<td>${change.statusName }</td>

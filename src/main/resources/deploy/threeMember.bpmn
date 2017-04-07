@@ -8,7 +8,14 @@
           <activiti:value id="1" name="系统管理员"></activiti:value>
           <activiti:value id="2" name="安全保密管理员"></activiti:value>
           <activiti:value id="3" name="安全审计员"></activiti:value>
+          <activiti:value id="4" name="保密平台系统管理员"></activiti:value>
+          <activiti:value id="5" name="保密平台安全管理员"></activiti:value>
+          <activiti:value id="6" name="保密平台安全审计员"></activiti:value>
+          <activiti:value id="7" name="oa系统管理员"></activiti:value>
+          <activiti:value id="8" name="oa安全管理员"></activiti:value>
+          <activiti:value id="9" name="oa安全审计员"></activiti:value>
         </activiti:formProperty>
+        <activiti:formProperty id="inTime" name="填写时间" type="date" datePattern="yyyy-MM-dd" required="true"></activiti:formProperty>
       </extensionElements>
     </startEvent>
     <userTask id="usertask2" name="填写记录">

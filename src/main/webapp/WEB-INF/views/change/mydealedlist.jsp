@@ -95,7 +95,7 @@
                             <h1>跟踪处理过的变更</h1>                              
                         </div>
                         <div class="block-fluid table-sorting clearfix">
-                            <table cellpadding="0" cellspacing="0" width="100%" class="table" id="myTable">
+                            <table style="cellpadding:0;cellspacing:0;width:100%;" class="table" id="myTable">
                                 <thead>
                                     <tr>
                                     	<th width="60px">流水号</th>

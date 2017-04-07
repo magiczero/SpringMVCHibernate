@@ -72,27 +72,40 @@ public class ThreeMemberController {
 	
 	@RequestMapping(value = "/list/{manageType}",method=RequestMethod.GET)
 	public String list(@PathVariable("manageType") String mt, Model model) {
-		model.addAttribute("engineers", userService.getEngineer());
+		model.addAttribute("engineers", userService.getThreemembers());
 		
-		if("system-manager".equals(mt)) {
-			model.addAttribute("type", 1);
-		} else if("security-manager".equals(mt)) {
-			model.addAttribute("type", 2);
-		} else if("security-comptroller".equals(mt)) {
-			model.addAttribute("type", 3);
-		} else if("bm-system-manager".equals(mt)) {
-			model.addAttribute("type", 4);
-		} else if("bm-security-manager".equals(mt)) {
-			model.addAttribute("type", 5);
-		} else if("bm-security-comptroller".equals(mt)) {
-			model.addAttribute("type", 6);
-		} else if("oa-system-manager".equals(mt)) {
-			model.addAttribute("type", 7);
-		} else if("oa-security-manager".equals(mt)) {
-			model.addAttribute("type", 8);
-		} else if("oa-security-comptroller".equals(mt)) {
-			model.addAttribute("type", 9);
+		int type = 0;
+		switch(mt) { 
+		case "system-manager":
+			type = 1;
+			break;
+		case "security-manager" :
+			type = 2;
+			break;
+		case "security-comptroller":
+			type = 3;
+			break;
+		case "bm-system-manager":
+			type = 4;
+			break;
+		case "bm-security-manager":
+			type = 5;
+			break;
+		case "bm-security-comptroller":
+			type = 6;
+			break;
+		case "oa-system-manager":
+			type = 7;
+			break;
+		case "oa-security-manager":
+			type = 8;
+			break;
+		case "oa-security-comptroller":
+			type = 9;
+			break;
 		}
+		
+		model.addAttribute("type", type);
 		
 		return "threemember/list";
 	}
@@ -109,6 +122,7 @@ public class ThreeMemberController {
 	    String endTime = "";
 	    String findUsername = "";
 	    String isSearch = "0";
+	    String type_ = "";
 	   
 	    for (int i = 0; i < jsonarray.length(); i++) {  
 	        JSONObject obj = (JSONObject) jsonarray.get(i);  
@@ -124,6 +138,10 @@ public class ThreeMemberController {
 	            endTime = obj.getString("value");  
 	        } else if (obj.get("name").equals("username")) {  
 	        	findUsername = obj.getString("value");  
+	        } else if (obj.get("name").equals("type_")) {  
+	        	type_ = obj.getString("value");  
+	        } else if (obj.get("name").equals("search")) {  
+	        	isSearch = obj.getString("value");  
 	        } 
 	    } 
 	    
@@ -135,26 +153,38 @@ public class ThreeMemberController {
 	    	isLeader = true;
 	    
 	    HistoricProcessInstanceQuery hpq = historyService.createHistoricProcessInstanceQuery().processDefinitionKey("threeMember");
-    	if(isSearch.equals("1") ) hpq = hpq.finished();
-    	//需要查找的人员
-    	if(findUsername.equals("00")) {
-		    if(!isLeader) {
-		    	hpq = hpq.involvedUser(currentUsername);
-		    }
-	    } else {
-	    	hpq = hpq.involvedUser(findUsername);
-	    }
-    	
-    	hpq = hpq.variableValueEquals("type", type);
-    	
-    	SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd HH:mm");  
+	    
+		SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd HH:mm");  
+		
+    	if(isSearch.equals("1") ) {//hpq = hpq.finished();  //如果是搜索
+    		//需要查找的人员
+        	if(isLeader) {
+        		if(!findUsername.equals("00")) {
+        	    	hpq = hpq.involvedUser(findUsername);
+        	    }
+        		if(!type_.equals("0")) {
+        			hpq = hpq.variableValueEquals("type", type_);
+        		}
+        	} else {
+        		hpq = hpq.involvedUser(currentUsername);
+        		hpq = hpq.variableValueEquals("type", type);
+        	}
+        	
+        	
+    	} else {
+    		hpq = hpq.involvedUser(currentUsername);			//设置用户
+    		hpq = hpq.variableValueEquals("type", type);		//设置类别
+    	}
     	
     	if(!("").equals(startTime)) {
-  	    	hpq.startedAfter(sdf.parse(startTime + " 00:00"));
+  	    	//hpq.startedAfter(sdf.parse(startTime + " 00:00"));
+  	    	hpq.variableValueGreaterThanOrEqual("inTime", sdf.parse(startTime + " 00:00"));
   	    }
   	    if(!("").equals(endTime)) {
-  	    	hpq.startedBefore(sdf.parse(endTime + " 23:59"));
+  	    	//hpq.startedBefore(sdf.parse(endTime + " 23:59"));
+  	    	hpq.variableValueLessThanOrEqual("inTime", sdf.parse(endTime + " 23:59"));
   	    }
+    	
   	    hpq = hpq.orderByProcessInstanceStartTime().desc();
   	    List<HistoricProcessInstance> hpis = hpq.listPage(iDisplayStart, iDisplayLength);
   	    
@@ -176,15 +206,19 @@ public class ThreeMemberController {
 	    	List<HistoricDetail> formProperties = historyService.createHistoricDetailQuery().processInstanceId(processInstanceId).formProperties().list();
 	    	
 	    	String username = "";
+	    	String inTime = "";
 	    	for(HistoricDetail historicDetail : formProperties) {
 	   			 HistoricFormProperty	 field = (HistoricFormProperty) historicDetail;
-	   			 if(field.getPropertyId().equals("user")) {
+	   			 if(field.getPropertyId().equals("threemember")) {
 	   				username = field.getPropertyValue();
-	   				break;
+	   				
+	   			 } else if(field.getPropertyId().equals("inTime")) {
+	   				inTime = field.getPropertyValue(); 
 	   			 }
 	    	}
 	    	
 	    	map.put("username", userUtil.getNameByUsername(username));
+	    	map.put("in_time", inTime);
 	    	
 	    	//完成时间
 	    	if(hpi.getEndTime()==null) {

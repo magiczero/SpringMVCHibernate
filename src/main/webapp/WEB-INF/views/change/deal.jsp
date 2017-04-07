@@ -252,7 +252,7 @@
 	                            <div class="toolbar nopadding-toolbar clearfix">
 	                                <h4>变更排程</h4>
 	                            </div>                         
-	                            <table cellpadding="0" cellspacing="0" width="100%" class="table images" id="itemTable">
+	                            <table style="cellpadding:0;cellspacing:0;width:100%;" class="table images" id="itemTable">
 	                                <thead>
 	                                    <tr>
 	                                        <th width="50px">序号</th>

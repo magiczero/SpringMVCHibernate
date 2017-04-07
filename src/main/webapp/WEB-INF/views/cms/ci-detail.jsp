@@ -242,7 +242,7 @@
 	            			</script>
                             <div id="tabs-${relation.relationId }">
                             	<div style="height:300px;">
-                                <table cellpadding="0" cellspacing="0" width="100%" class="table" id="table_${relation.relationId}">
+                                <table style="cellpadding:0;cellspacing:0;width:100%;" class="table" id="table_${relation.relationId}">
 	                                <thead>
 	                                    <tr>
 	                                        <th>名称</th>

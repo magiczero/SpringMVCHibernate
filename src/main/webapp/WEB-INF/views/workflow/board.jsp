@@ -354,7 +354,7 @@
 							<h3>领导交办 ${leadertasks.size() }项</h3>
 							<div class="block-withoutborder news scrollBox">
 								<div class="scroll" style="height: 160px;">
-								<table cellpadding="0" cellspacing="0" width="100%" class="sOrders">
+								<table style="cellpadding:0;cellspacing:0;width:100%;" class="sOrders">
 									<thead>
 										<tr>
 											<th>任务</th>
@@ -377,7 +377,7 @@
 							<h3>三员工作 ${secjobs.size()}项</h3>
 							<div class="block-withoutborder news scrollBox">
 								<div class="scroll" style="height: 160px;">
-								<table cellpadding="0" cellspacing="0" width="100%" class="sOrders">
+								<table style="width:100%;" class="sOrders">
 									<thead>
 										<tr>
 											<th>工作名称</th>
@@ -401,7 +401,7 @@
 							<h3>日常巡检 ${inspections.size()}项</h3>
 							<div class="block-withoutborder news scrollBox">
 								<div class="scroll" style="height: 160px;">
-								<table cellpadding="0" cellspacing="0" width="100%" class="sOrders">
+								<table style="width:100%" class="sOrders">
 									<thead>
 										<tr>
 											<th>巡检内容</th>
@@ -424,7 +424,7 @@
 							<h3>下载升级 ${updates.size()}项</h3>
 							<div class="block-withoutborder news scrollBox">
 								<div class="scroll" style="height: 160px;">
-								<table cellpadding="0" cellspacing="0" width="100%" class="sOrders">
+								<table style="width:100%" class="sOrders">
 									<thead>
 										<tr>
 											<th>升级名称</th>

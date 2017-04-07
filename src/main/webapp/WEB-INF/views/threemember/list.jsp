@@ -60,7 +60,7 @@
     <script type="text/javascript">
     	var ctx = "${contextPath}";
         $(document).ready(function () {
-            $("#eventTable").dataTable({"oLanguage": {
+        	var table = $("#eventTable").dataTable({"oLanguage": {
      			"sUrl": "${contextPath}/resources/json/Chinese.json"
  			},"aaSorting":[[6,'asc']],
         	"bProcessing": false, // 是否显示取数据时的那个等待提示
@@ -70,13 +70,15 @@
             "fnServerParams": function (aoData) {  //查询条件
                 aoData.push(
                 		{ "name": "username", "value": $("#engineer").val() },
+                		{ "name": "type_", "value": $("#type_").val() },
+                		{ "name": "search", "value": $("#search_").val() },
                     { "name": "starttime", "value": $("input[name='startTime']").val() },
                     { "name": "endtime", "value": $("input[name='endTime']").val() }
                     );
             },
             "aoColumns" : [
                            { "mData" : 'pid' }, 
-                           { "mData" : 'time' }, 
+                           { "mData" : 'in_time' }, 
                            { "mData" : 'username' }, 
                            { "mData" : 'finishTime' }, 
                            { "mData" : 'op' }
@@ -107,7 +109,13 @@
             	$("input[name='endTime']").attr("value",new Date().format("yyyy-MM-dd"));
             
             $("#lnk_start_threemember").bind("click",function(){
-               	act_form_openStartDialog("发起三员管理工作","threeMember","/three-member/list");
+               	act_form_openStartDialog("发起三员管理工作","threeMember","/three-member/list/<c:choose><c:when test="${type==1}">system-manager</c:when><c:when test="${type==2}">security-manager</c:when><c:when test="${type==3}">security-comptroller</c:when><c:when test="${type==4}">bm-system-manager</c:when><c:when test="${type==5}">bm-security-manager</c:when><c:when test="${type==6}">bm-security-comptroller</c:when><c:when test="${type==7}">oa-system-manager</c:when><c:when test="${type==8}">oa-security-manager</c:when><c:when test="${type==9}">oa-security-comptroller</c:when></c:choose>");
+            });
+            
+            $("#btn_find_threemember").bind("click", function () { //按钮 触发table重新请求服务器
+            	$("#search_").val("1");
+                table.fnDraw();
+                $("#myModal").modal('hide');
             });
             
             pm_workflow_inittracedialog();
@@ -166,7 +174,7 @@
                     <div class="col-md-12">                    
                         <div class="head clearfix">
                             <div class="isw-grid"></div>
-                            <h1><c:choose><c:when test="${type==1}">系统管理员</c:when><c:when test="${type==2}">安全管理员</c:when><c:when test="${type==1}">安全审计员</c:when></c:choose></h1>  
+                            <h1><c:choose><c:when test="${type==1}">系统管理员</c:when><c:when test="${type==2}">安全管理员</c:when><c:when test="${type==3}">安全审计员</c:when><c:when test="${type==4}">保密管理平台系统管理员</c:when><c:when test="${type==5}">保密管理平台安全管理员</c:when><c:when test="${type==6}">保密管理平台安全审计员</c:when><c:when test="${type==7}">oa系统管理员</c:when><c:when test="${type==8}">oa安全管理员</c:when><c:when test="${type==9}">oa安全审计员</c:when></c:choose></h1>  
 							<ul class="buttons">
                                 <li>
                                     <a href="#" class="isw-zoom tipb" data-toggle="modal" data-target="#myModal" title="查询"></a>
@@ -175,7 +183,7 @@
                                     <a href="#" class="isw-settings tipl" title="操作 "></a>
                                     <ul class="dd-list">
                                     	<li><a href="#" id="lnk_start_threemember"><span class="isw-plus"></span> 发起三员任务</a></li>
-                                        <li><a href="#" data-toggle="modal" data-target="#myModal"><span class="isw-zoom"></span> 任务查询</a></li>
+                                        <li><a href="#" data-toggle="modal" data-target="#myModal"><span class="isw-zoom"></span> 三员查询统计</a></li>
                                         <li><a href="#" onclick="pm_refresh()"><span class="isw-refresh"></span> 刷新</a></li>
                                     </ul>
                                 </li>
@@ -214,12 +222,11 @@
                         <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>                        
                         <h4>查询</h4>
                     </div>
-                    <form action="${contextPath }/three-member/list">
                     <div class="modal-body modal-body-np">
                         <div class="row">
                             <div class="block-fluid">
                              <div class="row-form clearfix">
-                                    <div class="col-md-3">请假者:</div>
+                                    <div class="col-md-3">选择三员:</div>
                                     <div class="col-md-9"><select id="engineer" name="username" style="width:100%">
 	                                	<option value="00">全部</option>
 	                                	<c:forEach items="${engineers }" var="user">
@@ -227,11 +234,35 @@
 	                                	</c:forEach>
 	                                	</select></div>
                                 </div>
-                                <div class="row-form clearfix">
+                                                                                          
+                            </div>                
+                        </div>
+                        <div class="row">
+                            <div class="block-fluid">
+                            <div class="row-form clearfix">
+                                    <div class="col-md-3">选择三员类别:</div>
+                                    <div class="col-md-9"><select id="type_" name="type_" style="width:100%">
+                                    	<option value="0">全部</option>
+	                                	<option value="1">系统管理员</option>
+	                                	<option value="2">安全管理员</option>
+	                                	<option value="3">安全审计员</option>
+	                                	<option value="4">保密平台系统管理员</option>
+	                                	<option value="5">保密平台安全管理员</option>
+	                                	<option value="6">保密平台安全审计员</option>
+	                                	<option value="7">oa系统管理员</option>
+	                                	<option value="8">oa安全管理员</option>
+	                                	<option value="9">oa安全审计员</option>
+	                                	</select></div>
+                                </div> 
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="block-fluid">
+                            <div class="row-form clearfix">
                                     <div class="col-md-3">开始时间:</div>
                                     <div class="col-md-9"><input type="text" name="startTime" class="dateISO"/></div>
-                                </div>                                                           
-                            </div>                
+                                </div> 
+                            </div>
                         </div>
                         <div class="row">
                             <div class="block-fluid">
@@ -243,10 +274,10 @@
                         </div>
                     </div>   
                     <div class="modal-footer">
-                        <button class="btn btn-primary" id="btn_set_role"> 查询 </button> 
+                    	<input id="search_" type="hidden" value="0" />
+                        <button class="btn btn-primary" id="btn_find_threemember"> 查询 </button> 
                         <button class="btn btn-default" data-dismiss="modal" aria-hidden="true">关闭</button>            
                     </div>
-                    </form>
                 </div>
             </div>
         </div>

@@ -113,7 +113,7 @@
 		<beans:property name="maxUploadSize" value="25474565" />
 	</beans:bean>
 	<beans:bean
-		class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter">
+		class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter">
 		<beans:property name="messageConverters">
 			<beans:list>
 				<beans:bean class="org.springframework.http.converter.ByteArrayHttpMessageConverter"/> 
@@ -122,7 +122,7 @@
 		</beans:property>
 	</beans:bean>
 	<beans:bean id="mappingJacksonHttpMessageConverter"
-		class="org.springframework.http.converter.json.MappingJacksonHttpMessageConverter">
+		class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">
 		<beans:property name="supportedMediaTypes">
 			<beans:list>
 				<beans:value>text/plain;charset=UTF-8</beans:value>

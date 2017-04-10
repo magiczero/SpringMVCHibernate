@@ -42,10 +42,6 @@ public class ServiceTest {
 	@Autowired
 	private GroupService groupService;
 	@Autowired
-	private CheckItemsService itemsService;
-	@Autowired
-	private DocumentService docService;
-	@Autowired
 	private ThreeMemberService threeService;
 	
 	Logger LOGGER = LoggerFactory.getLogger(ServiceTest.class);

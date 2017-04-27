@@ -149,7 +149,7 @@ public class CiController {
 		
 		ci.setReviewStatus("02");
 		ci.setDeleteStatus("01");
-		ci.setCreatedTime(new Date());
+		//ci.setCreatedTime(new Date());
 		ci.setLastUpdateTime(new Date());
 		ci.setLastUpdateUser(userUtil.getUsernameByAuth(authentication));
 		

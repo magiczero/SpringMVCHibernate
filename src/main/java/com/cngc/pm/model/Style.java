@@ -4,9 +4,9 @@ import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -76,7 +76,7 @@ public class Style implements Serializable {
 		this.desc = desc;
 	}
 
-	@ManyToOne(cascade = { CascadeType.REFRESH},optional=true)
+	@ManyToOne(targetEntity = Style.class,optional=true)
 	@NotFound(action = NotFoundAction.IGNORE)
 	@JoinColumn(name = "parent_id")
 	public Style getStyle() {
@@ -87,7 +87,7 @@ public class Style implements Serializable {
 		this.style = style;
 	}
 
-	@OneToMany(cascade={CascadeType.REFRESH,CascadeType.PERSIST,CascadeType.REMOVE,CascadeType.MERGE}, mappedBy = "style")
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "style")
 	@OrderBy(value="order")
 	public Set<Style> getChild() {
 		return child;

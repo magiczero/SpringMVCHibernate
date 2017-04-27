@@ -43,8 +43,6 @@
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/pnotify/jquery.pnotify.min.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/scrollup/jquery.scrollUp.min.js'></script>
     
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/uploadify/jquery.uploadify.min.js'></script>
-    
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/jstree/jquery.treeview.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/jstree/jquery.treeview.edit.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/jstree/jquery.treeview.async.js'></script>
@@ -70,23 +68,6 @@
                 	unique: true,
             		url : ctx + '/cms/category/getjson?t=' + pm_random()
             	});
-                $('#file_upload').uploadify({
-    				'formData' : { 'type' : 1 },
-    		        'swf'      : '${contextPath }/resources/flash/uploadify.swf',
-    		        'fileTypeExts': '*.xls;*.xlsx',//允许上传的文件类型，限制弹出文件选择框里能选择的文件
-    		      //按钮显示的文字
-                    'buttonText': '选择文件……',
-    		        'uploader' : '${contextPath}/attachment/upload',
-    		        'removeCompleted' : false,
-    		        'multi': true,
-    		        // Put your options here
-    		        'onUploadSuccess': function (file, data, response) {
-    		        	
-    	                $('#' + file.id).find('.data').html(' 上传完毕');
-    	                var fileids = document.getElementById("fileids").value + '';
-    	                document.getElementById("fileids").value = fileids + data;
-    		        }
-    		    });
                 
                 initTable("0");
             });
@@ -103,18 +84,22 @@
 						+"<td><a href='"+ctx+"/cms/ci/detail/"+data.list[i]["id"]+"'>"+data.list[i]["name"]+"</a>"
 						
 						trs += "</td>";
-						trs += "<td>"+data.list[i]["systemName"]+"</td>"
+						trs += "<td>"+data.list[i]["num"]+"</td>"
 						+"<td>"+data.list[i]["categoryName"]+"</td>"
-						+"<td>"+data.list[i]["securityLevelName"]+"</td>"
-						+"<td>"+data.list[i]["securityNo"]+"</td>"
+						+"<td>"+data.list[i]["producer"]+"</td>"
+						+"<td>"+data.list[i]["model"]+"</td>"
 						+"<td>"+data.list[i]["departmentInUse"]+"</td>"
 						+"<td>"+data.list[i]["userInMaintenanceName"]+"</td>"
-						+"<td>"+data.list[i]["statusName"]+"</td>"
-						+"<td>"+data.list[i]["reviewStatusName"]+"</td>";
-						if(data.list[i]["deleteStatus"]=='01')
-							trs += "<td><span class='label label-success'>"+data.list[i]["deleteStatusName"]+"</span></td>";
-						else
-							trs += "<td><span class='label label-danger'>"+data.list[i]["deleteStatusName"]+"</span></td>";
+						+"<td>"+data.list[i]["serial"]+"</td>"
+						+"<td>"+transDate(data.list[i]["createdTime"])+"</td>"
+						+"<td>"+transDate(data.list[i]["expirationTime"])+"</td>"
+						+"<td>"+transDate(data.list[i]["serviceStartTime"])+"</td>"
+						+"<td>"+data.list[i]["purpose"]+"</td>"
+						+"<td>"+data.list[i]["statusName"]+"</td>";
+						//if(data.list[i]["deleteStatus"]=='01')
+						//	trs += "<td><span class='label label-success'>"+data.list[i]["deleteStatusName"]+"</span></td>";
+						//else
+						//	trs += "<td><span class='label label-danger'>"+data.list[i]["deleteStatusName"]+"</span></td>";
 						//+"<td>"+new Date(data.list[i]["lastUpdateTime"]).format('yyyy-MM-dd HH:mm:ss')+"</td>"
 						trs += "<td>"
 						+"<a href='"+ctx+"/cms/ci/addproperty/"+data.list[i]["id"]+"' >属性</a> "
@@ -130,6 +115,13 @@
                     		return false;
                     }); 
             	});
+            }
+            
+            function transDate(time_) {
+            	if(time_==null) return "";
+            	var dt = new Date(time_);
+            	
+            	return dt.toLocaleDateString();
             }
     </script>
     <style type="text/css">
@@ -169,19 +161,16 @@
                     <h4>错误!</h4>请至少选择一项
                 </div> 
                 <div class="row">
-                	<div class="col-md-3">
+                	<div class="col-md-2">
                 	<div class="head clearfix">
                         <div class="isw-donw_circle"></div>
                         <h1>配置项类别</h1>
-                           	<ul class="buttons">
-                        		<li><a href="${contextPath }/cms/ci/list" class="isw-list tipl" title="查看全部 "></a>   </li>
-                            </ul>
                     </div>
                 		<div class="block-fluid">
                 		<ul id="treeview" style="margin-left:10px;"></ul>
                 		</div>
                 	</div>
-                    <div class="col-md-9">                    
+                    <div class="col-md-10">                    
                         <div class="head clearfix">
                             <div class="isw-grid"></div>
                             <h1>配置项管理</h1>  
@@ -203,16 +192,19 @@
                             <table class="table" id="ciTable">
                                 <thead>
                                 	<tr>
-										<th>名称</th>
-										<th width="100px">所属系统</th>
+										<th>设备名称</th>
+										<th width="100px">设备编号</th>
 										<th width="80px">分类</th>
-										<th width="60px">密级</th>
-										<th width="80px">保密编号</th>
-										<th width="100px">使用部门</th>
-										<th width="70px">维护人</th>
-										<th width="80px">状态</th>
-										<th width="65px">审核</th>
-										<th width="60px">删除</th>
+										<th width="60px">生产厂商/品牌</th>
+										<th width="80px">型号/版本号</th>
+										<th width="100px">所属部门</th>
+										<th width="70px">责任人</th>
+										<th width="80px">出厂编号/序列号</th>
+										<th width="65px">购置时间</th>
+										<th width="60px">维保截止时间</th>
+										<th width="60px">启用时间</th>
+										<th width="60px">设备用途</th>
+										<th width="60px">使用情况</th>
 										<th width="80px">操作</th>
 									</tr>
                                 </thead>

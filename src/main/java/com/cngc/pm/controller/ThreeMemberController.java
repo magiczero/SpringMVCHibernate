@@ -42,6 +42,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.cngc.pm.common.web.common.UserUtil;
+import com.cngc.pm.model.Style;
 import com.cngc.pm.model.manage.Item;
 import com.cngc.pm.model.manage.ManageType;
 import com.cngc.pm.model.manage.ManagerForm;
@@ -69,6 +70,46 @@ public class ThreeMemberController {
 	private FormService formService;
 	@Resource
 	private UserUtil userUtil;
+	
+	@RequestMapping(value="/save-record")
+	@ResponseBody
+	public String save(HttpServletRequest request) {
+		
+		return "";
+	}
+	
+	@RequestMapping(value = "/my",method=RequestMethod.GET)
+	public String myList() {
+		//根据自己的权限进入相应的页面
+		
+		return "threemember/my-list";
+	}
+	
+	@RequestMapping(value="/get-system-tree")
+	@ResponseBody
+	public String getSystemTree()
+	{
+		Style styleRoot = tmService.getSystem();
+		
+		String strJson = "[{";
+		
+		strJson += "\"text\":\""+styleRoot.getName()+"\"";
+		
+		if(styleRoot.getChild().size()>0) {
+			strJson+=", \"collapsed\":true,\"children\":[";
+			
+			for(Style style : styleRoot.getChild()) {
+				strJson += "{\"text\":\""+style.getName()+"\"},";
+			}
+			
+			strJson = strJson.substring(0, strJson.length()-1);
+			strJson +="]";
+		}
+		
+		strJson += "}]";
+		
+		return strJson;
+	}
 	
 	@RequestMapping(value = "/list/{manageType}",method=RequestMethod.GET)
 	public String list(@PathVariable("manageType") String mt, Model model) {

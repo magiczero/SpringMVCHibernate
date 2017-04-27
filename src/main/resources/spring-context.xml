@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:jee="http://www.springframework.org/schema/jee"
+	xmlns:context="http://www.springframework.org/schema/context" xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
+
+	<!-- DispatcherServlet Context: defines this servlet's request-processing 
+		infrastructure -->
+	<context:component-scan base-package="com.cngc.pm.activiti.listener" />
+	<context:component-scan base-package="com.cngc.pm.activiti.service" />
+	<context:component-scan base-package="com.cngc.pm.dao" />
+	<context:component-scan base-package="com.cngc.pm.service" />
+	<context:component-scan base-package="com.cngc.pm.annotation" />
+	<context:component-scan base-package="com.cngc.pm.model" />
+	<!-- Enables the Spring MVC @Controller programming model -->
+	<!-- <annotation-driven /> -->
+	<!-- <annotation-driven conversion-service="conversionService" /> -->
+	
+	<!-- <beans:bean id="exceptionHandler" class="com.cngc.exception.MyExceptionHandler" /> -->
+	
+
+	<bean id="messageSource" class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
+		<property name="basename" value="classpath:messages"></property>		
+	</bean>
+	
+	<!-- <beans:bean id="conversionService" class="org.springframework.format.support.FormattingConversionServiceFactoryBean">
+		<beans:property name="converters">
+			<beans:set>
+				<beans:bean class="com.cngc.pm.service.impl.String2LevelConvertor"/>
+			</beans:set>
+		</beans:property>
+	</beans:bean>
+	<beans:bean id="conversionService"
+      class="org.springframework.context.support.ConversionServiceFactoryBean">
+        <beans:property name="converters">
+            <beans:list>
+                <beans:bean class="com.cngc.pm.service.impl.StringToEnumConverterFactory"/>
+            </beans:list>
+        </beans:property>
+    </beans:bean> -->
+	<!-- <default-servlet-handler/> -->
+
+	<!-- Hibernate 4 SessionFactory Bean definition -->
+	<bean id="hibernate4AnnotatedSessionFactory"
+		class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
+		<property name="dataSource" ref="dataSource" />
+		<!-- <beans:property name="annotatedClasses">
+			<beans:list>
+				<beans:value>com.cngc.pm.model.Person</beans:value>
+			</beans:list> 
+		</beans:property>-->
+		<property name="packagesToScan" value="com.cngc.pm.model" />
+		<!-- <beans:property name="namingStrategy">
+			<beans:bean class="org.hibernate.cfg.ImprovedNamingStrategy" />
+		</beans:property> -->
+		<property name="hibernateProperties">
+			<props>
+				<prop key="hibernate.dialect">org.hibernate.dialect.MySQLDialect</prop>
+				<prop key="hibernate.show_sql">true</prop>
+				<!-- <beans:prop key="cache.provider_configuration_file_resource_path">WEB-INF/classes/ehcache.xml</beans:prop>
+				<beans:prop key="hibernate.cache.region.factory_class">org.hibernate.cache.ehcache.EhCacheRegionFactory</beans:prop>
+				<prop key="hibernate.current_session_context_class">org.springframework.orm.hibernate4.SpringSessionContext</prop> -->
+				<!-- 开启查询缓存 -->
+				<prop key="hibernate.cache.use_query_cache">true</prop>
+				<!-- 开启二级缓存 -->
+				<prop key="hibernate.cache.use_second_level_cache">true</prop>
+				<!-- 高速缓存提供程序 -->
+				<!-- 由于spring也使用了Ehcache, 保证双方都使用同一个缓存管理器 -->
+				<prop key="hibernate.cache.region.factory_class">
+				     org.hibernate.cache.ehcache.SingletonEhCacheRegionFactory
+				</prop>
+			</props>
+		</property>
+	</bean>
+	<!-- cacheManager, 指定ehcache.xml的位置 -->
+    <bean id="cacheManagerEhcache" class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean">
+        <property name="configLocation">
+            <value>classpath:ehcache.xml</value>
+        </property>
+        <!-- 由于hibernate也使用了Ehcache, 保证双方都使用同一个缓存管理器 -->
+        <property name="shared" value="true"/>
+    </bean>
+	
+	<tx:annotation-driven transaction-manager="transactionManager" proxy-target-class="true" />
+	
+	<bean id="transactionManager" class="org.springframework.orm.hibernate4.HibernateTransactionManager">
+		<property name="sessionFactory" ref="hibernate4AnnotatedSessionFactory" />
+	</bean>
+	
+	<!-- <bean class="org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor" /> -->
+	
+	<import resource="spring-datasource.xml" />
+	<import resource="activiti.xml" />
+	<import resource="quartz.xml" />
+</beans>

@@ -8,6 +8,7 @@ import org.activiti.engine.task.Task;
 import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.map.JsonMappingException;
 
+import com.cngc.pm.model.Style;
 import com.cngc.pm.model.manage.ManageType;
 import com.cngc.pm.model.manage.ManagerForm;
 import com.cngc.pm.model.manage.Relations;
@@ -28,4 +29,6 @@ public interface ThreeMemberService {
 	ManagerForm getFormByPid(String pid);
 	
 	Map<String, Object> getDocumentData(ManagerForm mf) throws JsonParseException, JsonMappingException, IOException;
+	
+	Style getSystem();
 }

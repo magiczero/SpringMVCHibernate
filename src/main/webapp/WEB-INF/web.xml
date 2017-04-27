@@ -9,7 +9,7 @@
   <context-param>
     <param-name>contextConfigLocation</param-name>
     <param-value>
-    classpath:servlet-context.xml
+    classpath:spring-context.xml
     classpath:spring-security-2.xml
     <!-- /WEB-INF/spring/root-context.xml -->
     </param-value>
@@ -27,7 +27,7 @@
       <param-name>contextConfigLocation</param-name>
       <param-value>
       <!-- /WEB-INF/spring/appServlet/servlet-context.xml -->
-      classpath:root-context.xml
+      classpath:servlet-context.xml
       </param-value>
     </init-param> 
     <load-on-startup>1</load-on-startup>

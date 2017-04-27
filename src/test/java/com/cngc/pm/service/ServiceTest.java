@@ -4,6 +4,7 @@ import static org.junit.Assert.assertNotNull;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -24,13 +25,14 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.cngc.pm.model.Group;
+import com.cngc.pm.model.Incident;
 import com.cngc.pm.model.SysUser;
 import com.cngc.pm.model.manage.ManageType;
 import com.cngc.pm.model.manage.Relations;
 import com.cngc.pm.threemember.template.DocumentHandler;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = {"classpath:servlet-context.xml"})
+@ContextConfiguration(locations = {"classpath:spring-context.xml"})
 public class ServiceTest {
 
 //	static ApplicationContext context;
@@ -43,6 +45,8 @@ public class ServiceTest {
 	private GroupService groupService;
 	@Autowired
 	private ThreeMemberService threeService;
+	@Autowired
+	private IncidentService incidentService;
 	
 	Logger LOGGER = LoggerFactory.getLogger(ServiceTest.class);
 	
@@ -138,7 +142,25 @@ public class ServiceTest {
     }
 
     @Test
-    public void testCollegeFind() {
+    public void testCollegeFind() throws Exception {
+    	Incident incident = new Incident();
+    	
+    	incident.setAbs("dfdfdfdfdf");
+    	incident.setApplyUser("wangdan");
+    	incident.setCategory("010101");
+    	incident.setCritical("04");
+    	incident.setDetail("eeeeeeee");
+    	incident.setFinishTime(new Date());
+    	incident.setInfluence("04");
+    	incident.setPhoneNumber("7777");
+    	incident.setPriority("04");
+    	incident.setSource("01");
+    	incident.setSupportType("01");
+    	incident.setApplyTime(new Date());
+    	incident.setType("01");
+    	incident.setStatus("01");
+
+    	incidentService.save(incident, "mating");
     	DocumentHandler dh = new DocumentHandler();
     	
     	try {

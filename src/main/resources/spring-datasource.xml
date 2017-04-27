@@ -8,8 +8,8 @@
                         http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
                         http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
 	    
-	<!-- DBCP有着比C3P0更高的效率，但是实际应用中，DBCP可能出现丢失 连接的可能，而C3P0稳定性较高。因此在实际应用中,C3P0使用较为广泛。 -->
-	 <bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource" 
+	<!-- DBCP有着比C3P0更高的效率，但是实际应用中，DBCP可能出现丢失 连接的可能，而C3P0稳定性较高。因此在实际应用中,C3P0使用较为广泛。 
+	<bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource" 
 				  destroy-method="close" 
 				  p:driverClass="com.mysql.jdbc.Driver"
 				  p:jdbcUrl="jdbc:mysql://localhost:3306/pmsys?useUnicode=true&amp;characterEncoding=utf8" 
@@ -19,11 +19,39 @@
 				  p:idleConnectionTestPeriod="120" 
 				  p:maxPoolSize="20"
 				  p:maxStatements="200" 
-				  p:minPoolSize="1" />	
+				  p:minPoolSize="1" />	-->
 				  
 	<!-- replace above bean with this if u want to use a server datasource
 	<bean id="fullstackspringhibernate-dataSource" class="org.springframework.jndi.JndiObjectFactoryBean">
 		<property name="jndiName" value="java:comp/env/jdbc/<your_ds_name>"/>
-	</bean>	
- 	-->
+	</bean>	-->
+	<!-- 
+	<bean class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close" id="dataSource">
+        <property name="driverClassName" value="com.mysql.jdbc.Driver" />
+        <property name="url" value="jdbc:mysql://localhost:3306/pmsys?characterEncoding=utf8"/>
+        <property name="username" value="root"/>
+        <property name="password" value="Myoa_888"/>
+    </bean> -->
+	
+	<bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource"
+		init-method="init" destroy-method="close">
+		<property name="driverClassName" value="com.mysql.jdbc.Driver" />
+		<property name="url" value="jdbc:mysql://localhost:3306/pmsys?characterEncoding=utf8" />
+		<property name="username" value="root" />
+		<property name="password" value="Myoa_888" />
+		<property name="initialSize" value="5" />
+		<property name="minIdle" value="5" />
+		<property name="maxActive" value="10" />
+		<property name="timeBetweenEvictionRunsMillis" value="5000" />
+		<property name="minEvictableIdleTimeMillis" value="60000" />
+		<property name="validationQuery" value="SELECT 'x'" />
+		<property name="testWhileIdle" value="true" />
+		<property name="testOnBorrow" value="false" />
+		<property name="testOnReturn" value="false" />
+		<property name="removeAbandoned" value="true" />
+		<property name="removeAbandonedTimeout" value="1800" />
+		<property name="logAbandoned" value="true" />
+		<property name="filters" value="stat" />
+		<property name="connectionProperties" value="druid.stat.slowSqlMillis=100" />
+	</bean>
 </beans>

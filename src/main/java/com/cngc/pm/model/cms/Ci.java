@@ -92,7 +92,27 @@ public class Ci {
 	private Date lastUpdateTime;
 	private String remark;
 	private String propertiesData;
+	private String num;
+	private String serial;
 	
+	@Column(name = "num_")
+	public String getNum() {
+		return num;
+	}
+
+	public void setNum(String num) {
+		this.num = num;
+	}
+
+	@Column(name = "serial_")
+	public String getSerial() {
+		return serial;
+	}
+
+	public void setSerial(String serial) {
+		this.serial = serial;
+	}
+
 	@Transient
 	private String statusName;
 	@Transient
@@ -359,7 +379,7 @@ public class Ci {
 		this.ciManager = ciManager;
 	}
 
-	@DateTimeFormat(pattern = "yyyy-MM-dd hh:mm:ss")
+	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	@Column(name = "created_time")
 	public Date getCreatedTime() {
 		return createdTime;

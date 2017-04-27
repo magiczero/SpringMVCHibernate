@@ -20,10 +20,13 @@ import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.cngc.pm.dao.ManagerFormDAO;
+import com.cngc.pm.dao.StyleDAO;
 import com.cngc.pm.dao.ThreeMemberRelationDAO;
+import com.cngc.pm.model.Style;
 import com.cngc.pm.model.manage.ManageType;
 import com.cngc.pm.model.manage.ManagerForm;
 import com.cngc.pm.model.manage.Relations;
@@ -33,6 +36,7 @@ import com.cngc.pm.threemember.template.Table2;
 import com.googlecode.genericdao.search.Search;
 
 @Service
+@Transactional(propagation = Propagation.SUPPORTS, readOnly=true)
 public class ThreeMemberServiceImpl implements ThreeMemberService {
 
 //	@Autowired
@@ -51,9 +55,10 @@ public class ThreeMemberServiceImpl implements ThreeMemberService {
 	private FormService formService;
 	@Resource
 	private UserService userService;
+	@Autowired
+	private StyleDAO styleDao;
 	
 	@Override
-	@Transactional
 	public List<Relations> getRelationItemListByType(ManageType type) {
 		// TODO Auto-generated method stub
 		
@@ -61,14 +66,13 @@ public class ThreeMemberServiceImpl implements ThreeMemberService {
 	}
 
 	@Override
-	@Transactional
 	public List<Relations> getRelationListByType(ManageType type) {
 		// TODO Auto-generated method stub
 		return relationDao.getListByType(type);
 	}
 
 	@Override
-	@Transactional
+	@Transactional(propagation = Propagation.REQUIRED, readOnly=false)
 	public void save(ManagerForm form, Task task) {
 		// TODO Auto-generated method stub
 		form.setProcessInstanceId(task.getProcessInstanceId());
@@ -79,7 +83,6 @@ public class ThreeMemberServiceImpl implements ThreeMemberService {
 	}
 
 	@Override
-	@Transactional
 	public ManagerForm getFormByPid(String pid) {
 		// TODO Auto-generated method stub
 		Search search = new Search(ManagerForm.class);
@@ -92,7 +95,6 @@ public class ThreeMemberServiceImpl implements ThreeMemberService {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	@Transactional
 	public Map<String, Object> getDocumentData(ManagerForm mf) throws JsonParseException, JsonMappingException, IOException {
 		// TODO Auto-generated method stub
 		ObjectMapper mapper = new ObjectMapper();
@@ -164,6 +166,12 @@ public class ThreeMemberServiceImpl implements ThreeMemberService {
 		dataMap.put("time", sdf.format(hpi.getStartTime()));
 		
 		return dataMap;
+	}
+
+	@Override
+	public Style getSystem() {
+		// TODO Auto-generated method stub
+		return styleDao.getByCode("TM");
 	}
 
 }

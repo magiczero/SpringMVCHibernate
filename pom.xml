@@ -125,12 +125,17 @@
 			<artifactId>c3p0</artifactId>
 			<version>0.9.5</version>
 		</dependency>
-		<!-- Apache Commons DBCP
+		<dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>druid</artifactId>
+            <version>1.0.20</version>
+        </dependency>
+		<!-- Apache Commons DBCP -->
 		<dependency>
 			<groupId>commons-dbcp</groupId>
 			<artifactId>commons-dbcp</artifactId>
 			<version>1.4</version>
-		</dependency> -->
+		</dependency>
 		<!-- https://mvnrepository.com/artifact/org.freemarker/freemarker -->
 		<dependency>
 		    <groupId>org.freemarker</groupId>

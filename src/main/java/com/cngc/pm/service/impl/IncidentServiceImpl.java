@@ -8,14 +8,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.annotation.Resource;
-
 import org.activiti.engine.FormService;
 import org.activiti.engine.IdentityService;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.cngc.pm.dao.IncidentDAO;
@@ -26,21 +25,24 @@ import com.googlecode.genericdao.search.Search;
 import com.googlecode.genericdao.search.SearchResult;
 
 @Service
+@Transactional(propagation = Propagation.SUPPORTS, readOnly=true)
 public class IncidentServiceImpl implements IncidentService {
 
 	@Autowired
 	private IncidentDAO incidentDao;
-	@Resource
+	@Autowired
 	private IdentityService identityService;
-	@Resource
+	@Autowired
 	private FormService formService;
-	@Resource
+	@Autowired
 	private RepositoryService repositoryService;
 
 	@Override
-	@Transactional
+	@Transactional(propagation = Propagation.REQUIRED, readOnly=false)
 	public void save(Incident incident, String userid) throws Exception {
 		incidentDao.save(incident);
+//		System.out.println("transaction start ...");
+//		int i = 1 / 0;
 		// 启动流程
 					ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery()
 							.processDefinitionKey(PropertyFileUtil.getStringValue("workflow.processkey.incident")).active()
@@ -54,7 +56,7 @@ public class IncidentServiceImpl implements IncidentService {
 	}
 
 	@Override
-	@Transactional
+	@Transactional(propagation = Propagation.REQUIRED, readOnly=false)
 	public boolean delByIds(String ids) {
 		String id[] = ids.split(",");
 		int j = id.length;
@@ -77,38 +79,33 @@ public class IncidentServiceImpl implements IncidentService {
 	}
 
 	@Override
-	@Transactional
+	@Transactional(propagation = Propagation.REQUIRED, readOnly=false)
 	public boolean delById(Long id) {
 		incidentDao.removeById(id);
 		return true;
 	}
 
 	@Override
-	@Transactional
 	public Incident getById(Long id) {
 		return incidentDao.find(id);
 	}
 
 	@Override
-	@Transactional
 	public List<Incident> getAll() {
 		return incidentDao.findAll();
 	}
 
 	@Override
-	@Transactional
 	public Map<String, Object> getCountByStatus() {
 		return incidentDao.getCountByStatus();
 	}
 
 	@Override
-	@Transactional
 	public SearchResult<Incident> getByStatus(String status) {
 		return incidentDao.getByStatus(status);
 	}
 
 	@Override
-	@Transactional
 	public SearchResult<Incident> search(String abs, String applyUser, String engineer, String satisfaction,
 			Date startTime, Date endTime, Integer offset, Integer maxResults) {
 		Search search = new Search();
@@ -142,19 +139,16 @@ public class IncidentServiceImpl implements IncidentService {
 	}
 
 	@Override
-	@Transactional
 	public SearchResult<Incident> getNotFinished() {
 		return incidentDao.getNotFinished();
 	}
 
 	@Override
-	@Transactional
 	public SearchResult<Incident> getByProcessInstance(List<String> processInstanceIds) {
 		return incidentDao.getByProcessInstance(processInstanceIds);
 	}
 	
 	@Override
-	@Transactional
 	public Long getIdByProcessInstance(String processInstanceId){
 		List<String> ids = new ArrayList<String>();
 		ids.add(processInstanceId);
@@ -165,37 +159,31 @@ public class IncidentServiceImpl implements IncidentService {
 			return Long.getLong("0");
 	}
 	@Override
-	@Transactional
 	public Map<String, Object> getCountByCategory(String startTime, String endTime) {
 		return incidentDao.getCountByCategory(startTime, endTime);
 	}
 
 	@Override
-	@Transactional
 	public Map<String, Object> getStats(String column, String row, String startTime, String endTime, String status) {
 		return incidentDao.getStats(column, row, startTime, endTime, status);
 	}
 
 	@Override
-	@Transactional
 	public SearchResult<Incident> getByApplyUser(String user) {
 		return incidentDao.getByApplyUser(user);
 	}
 
 	@Override
-	@Transactional
 	public SearchResult<Incident> getByApplyUser(String user, Boolean bClose) {
 		return incidentDao.getByApplyUser(user, bClose);
 	}
 
 	@Override
-	@Transactional
 	public SearchResult<Incident> getByIds(List<Long> ids) {
 		return incidentDao.getByIds(ids);
 	}
 
 	@Override
-	@Transactional
 	public List<Incident> search(String abs, String applyUser,
 			String engineer, String satisfaction, Date startTime, Date endTime) {
 		// TODO Auto-generated method stub
@@ -225,7 +213,7 @@ public class IncidentServiceImpl implements IncidentService {
 	}
 
 	@Override
-	@Transactional
+	@Transactional(propagation = Propagation.REQUIRED, readOnly=false)
 	public void update(Incident newincident) {
 		// TODO Auto-generated method stub
 		incidentDao.save(newincident);

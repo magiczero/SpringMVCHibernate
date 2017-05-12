@@ -41,17 +41,18 @@ public class IncidentServiceImpl implements IncidentService {
 	@Transactional(propagation = Propagation.REQUIRED, readOnly=false)
 	public void save(Incident incident, String userid) throws Exception {
 		incidentDao.save(incident);
-//		System.out.println("transaction start ...");
-//		int i = 1 / 0;
+		System.out.println("transaction start ...");
+		int i = 1 / 0;
+		System.out.println(i);
 		// 启动流程
-					ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery()
+		ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery()
 							.processDefinitionKey(PropertyFileUtil.getStringValue("workflow.processkey.incident")).active()
 							.latestVersion().singleResult();
-					if (processDefinition == null) throw new Exception("未找到相应的事件流程");
-						Map<String, String> variables = new HashMap<String, String>();
-						variables.put("id", String.valueOf(incident.getId()));
-						identityService.setAuthenticatedUserId(userid);
-						formService.submitStartFormData(processDefinition.getId(), variables);
+		if (processDefinition == null) throw new Exception("未找到相应的事件流程");
+		Map<String, String> variables = new HashMap<String, String>();
+		variables.put("id", String.valueOf(incident.getId()));
+		identityService.setAuthenticatedUserId(userid);
+		formService.submitStartFormData(processDefinition.getId(), variables);
 					
 	}
 

@@ -171,35 +171,53 @@ public class GroupServiceImpl implements GroupService {
 
 	@Override
 	@Transactional(readOnly=true)
-	public String getChildByGroup(String groupid) {
+	public String getChildByGroup(String groupid, boolean haveUsers) {
 		// TODO Auto-generated method stub
 		StringBuffer jsonStr = new StringBuffer("[");
 		if(("source").equals(groupid)) {
 			for(Group group : groupDao.getAllTopGroup()) {
-				jsonStr.append("{\"text\":\"").append(group.getGroupName()).append("\"");
-				if(group.getChild().size()>0 || group.getUsers().size()>0) {
-					jsonStr.append(",\"id\":\"").append(group.getId()).append("\",");
-					jsonStr.append("\"hasChildren\":\"true\"");
+				jsonStr.append("{\"text\":\"<a href='javascript:void(0);' onclick='inputGroupinfo(\\\""+group.getId()+"\\\",\\\""+group.getGroupName()+"\\\");'>").append(group.getGroupName()).append("</a>\"");
+				if(haveUsers) {
+					if(group.getChild().size()>0 || group.getUsers().size()>0) {
+						jsonStr.append(",\"id\":\"").append(group.getId()).append("\",");
+						jsonStr.append("\"hasChildren\":\"true\"");
+					}
+				} else {
+					if(group.getChild().size()>0 ) {
+						jsonStr.append(",\"id\":\"").append(group.getId()).append("\",");
+						jsonStr.append("\"hasChildren\":\"true\"");
+					}
 				}
 				jsonStr.append("},");
 			}
 			jsonStr.deleteCharAt(jsonStr.length()-1);
 		} else {
 			Group group =  groupDao.find(Long.valueOf(groupid));
-			if(group.getUsers().size()>0) {
-				for(SysUser user : group.getUsers()) {
-					jsonStr.append("{\"text\":\"<a href='javascript:void(0);' onclick='inputUserinfo(\\\""+user.getUsername()+"\\\",\\\""+user.getName()+"\\\",\\\""+user.getDepName()+"\\\",\\\""+user.getMechName()+"\\\");'>").append(user.getName()).append("</a>\"},");
+			if(haveUsers) {
+				if(group.getUsers().size()>0) {
+					for(SysUser user : group.getUsers()) {
+						jsonStr.append("{\"text\":\"<a href='javascript:void(0);' onclick='inputUserinfo(\\\""+user.getUsername()+"\\\",\\\""+user.getName()+"\\\",\\\""+user.getDepName()+"\\\",\\\""+user.getMechName()+"\\\");'>").append(user.getName()).append("</a>\"},");
+					}
+					jsonStr.deleteCharAt(jsonStr.length()-1);
 				}
-				jsonStr.deleteCharAt(jsonStr.length()-1);
 			}
 			if(group.getChild().size()>0) {
-				if(group.getUsers().size()>0)
-					jsonStr.append(",");
+				if(haveUsers) {
+					if(group.getUsers().size()>0)
+						jsonStr.append(",");
+				}
 				for(Group child : group.getChild()) {
-					jsonStr.append("{\"text\":\"").append(child.getGroupName()).append("\"");
-					if(group.getChild().size()>0 || child.getUsers().size()>0) {
-						jsonStr.append(",\"id\":\"").append(child.getId()).append("\",");
-						jsonStr.append("\"hasChildren\":\"true\"");
+					jsonStr.append("{\"text\":\"<a href='javascript:void(0);' onclick='inputGroupinfo(\\\""+child.getId()+"\\\",\\\""+child.getGroupName()+"\\\");'>").append(child.getGroupName()).append("</a>\"");
+					if(haveUsers) {
+						if(child.getChild().size()>0 || child.getUsers().size()>0) {
+							jsonStr.append(",\"id\":\"").append(child.getId()).append("\",");
+							jsonStr.append("\"hasChildren\":\"true\"");
+						}
+					} else {
+						if(child.getChild().size()>0) {
+							jsonStr.append(",\"id\":\"").append(child.getId()).append("\",");
+							jsonStr.append("\"hasChildren\":\"true\"");
+						}
 					}
 					jsonStr.append("},");
 				}

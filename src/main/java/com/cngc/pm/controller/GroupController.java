@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.cngc.pm.model.Group;
@@ -63,6 +64,11 @@ public class GroupController {
 		return map;
 	}
 	
+	/**
+	 * 返回所有顶级部门
+	 * @param request
+	 * @return
+	 */
 	@RequestMapping(value = "/all-top-groups", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody  
 	public ResponseEntity<List<Map<String, String>>> getTopGroups(HttpServletRequest request) {
@@ -81,18 +87,23 @@ public class GroupController {
 		return new ResponseEntity<List<Map<String, String>>>(groupList, HttpStatus.OK);
 	}
 	
+	/**
+	 * 返回部门列表的json字符串
+	 * @param root 部门id变量，
+	 * @param user 是否显示部门下的人员
+	 * @return 如果为source则返回全部所有部门，如果某一部门id，则返回这个部门下的所有子部门（及人员）
+	 */
 	@RequestMapping(value = "/all-json", method = RequestMethod.GET)
 	@ResponseBody  
-	public String getAllJson(HttpServletRequest request) {
-		String root = request.getParameter("root");
-//		Map<String, Object> map = new HashMap<>();
-//		
-//		map.put("json", groupService.getAllWithJson());
-		
-		//return "[	{\"text\": \"<a href='' onclick=''>1. Pre Lunch (120 min)</a>\",\"expanded\": true,\"classes\": \"important\",\"children\":	[{\"text\": \"1.1 The State of the Powerdome (30 min)\"	},	{\"text\": \"1.2 The Future of jQuery (30 min)\"},	{\"text\": \"1.2 jQuery UI - A step to richnessy (60 min)\"}]	},	{\"text\": \"2. Lunch  (60 min)\"},{\"text\": \"3. After Lunch  (120+ min)\",\"children\":	[{\"text\": \"3.1 jQuery Calendar Success Story (20 min)\"},	{\"text\": \"3.2 jQuery and Ruby Web Frameworks (20 min)\"},	{\"text\": \"3.3 Hey, I Can Do That! (20 min)\"},{\"text\": \"3.4 Taconite and Form (20 min)\"}, {\"text\": \"3.5 Server-side JavaScript with jQuery and AOLserver (20 min)\"}, 	{\"text\": \"3.6 The Onion: How to add features without adding features (20 min)\",\"id\": \"36\",	\"hasChildren\": true}	]}]";
-		return groupService.getChildByGroup(root);
+	public String getAllJson(@RequestParam String root, @RequestParam boolean haveuser) {
+
+		return groupService.getChildByGroup(root,haveuser);
 	}
 	
+	/**
+	 * 返回部门及部门下的人员
+	 * @return
+	 */
 	@RequestMapping(value = "/all-tree", method = RequestMethod.GET)
 	@ResponseBody  
 	public Map<String, Object> getAllTree() {

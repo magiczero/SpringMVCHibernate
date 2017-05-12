@@ -43,15 +43,16 @@
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/pnotify/jquery.pnotify.min.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/scrollup/jquery.scrollUp.min.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/select2/select2.min.js'></script>
+    <script type='text/javascript' src='${contextPath }/resources/js/plugins/uploadify/jquery.uploadify.min.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/datetimepicker/datetimepicker.min.js' charset="UTF-8"></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/datetimepicker/datetimepicker.zh-CN.js'></script>
     <!-- <script type='text/javascript' src='${contextPath }/resources/js/plugins/jtree/jtree.js'></script>-->
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/jstree/jquery.treeview.js'></script>
+    <script type='text/javascript' src='${contextPath }/resources/js/plugins/jstree/jquery.treeview.edit.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/jstree/jquery.treeview.async.js'></script>
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/uploadify/jquery.uploadify.min.js'></script>
     
     <script type='text/javascript' src='${contextPath }/resources/js/pm-common.js'></script>
-    <script type='text/javascript' src='${contextPath }/resources/js/pm-select.js'></script>
+    <!-- <script type='text/javascript' src='${contextPath }/resources/js/pm-select.js'></script> -->
     
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
@@ -80,14 +81,6 @@
             		forceParse: 0
                 });
                 
-                //act_dialog_ci_init();			//IE8+
-                $(".wrapper").append("<div class='dialog' id='b_popup_select' style='display: none;' title='分类'></div>");
-				$("#b_popup_select").html("<div class='block dialog_block messages '>"
-						//+"<div>"
-						//+"<div id='treeview'></div>"		//IE8+
-						+"<ul id='treeview'></ul>"
-						+"</div>");
-				
 			    $("#b_popup_select").dialog({
 			        autoOpen: false,
 			        width: 400,
@@ -98,8 +91,7 @@
                 $("input[name='categoryCode']").bind("click",function(){
                 	
                 	//act_dialog_ci_select("categoryCode",true);//IE8+
-                	//$("#treeview").html('');
-                	
+                	$("#treeview").empty('');
                 	
                 	$("#treeview").treeview({
                 		collapsed: true,
@@ -110,9 +102,28 @@
             		$("#b_popup_select").dialog('open');
                 	
                 });
+                
+                $("#b_popup_group").dialog({
+    		        autoOpen: false,
+    		        width: 400,
+    		        height:500,
+    		        buttons: { "确定": function () { $(this).dialog("close") } }
+    		    });
+                
+                $("input[name='department1']").bind("click",function(){
+    		    	$("#grouptree").empty();
+    		    	$("#grouptree").treeview({
+    		    		url:ctx + '/group/all-json?haveuser=false&t=' + pm_random(),
+                		collapsed: true,
+                		unique: true
+                	});
+    	    		$("#b_popup_group").dialog('open');
+                });
+                
                 $("#userInMaintenance").select2();
-                $("#status").select2();
                 $("select[name='status'] option[value='07']").attr("selected","selected");
+                $("#status").select2();
+                
                 
                 $('#file_upload').uploadify({
     				'formData' : { 'type' : 3 },
@@ -130,6 +141,13 @@
     		        }
     		    });
             });
+            
+            function inputGroupinfo(groupid, groupname) {
+            	$("#departmentInUse").val(groupid);
+            	$("input[name='department1']").val(groupname);
+            	
+            	$("#b_popup_group").dialog('close');
+            }
             
             function initTable(value) {
             	//console.log(value);
@@ -178,7 +196,7 @@
                         <c:url var="addAction" value="/cms/ci/save" ></c:url>
 						<form:form id="validation"  action="${addAction}" commandName="ci" method="post">
 						<form:hidden path="use" value="启用"/>
-						<form:hidden path="securityLevel" value="04"/>
+						<form:hidden path="departmentInUse" value=""/>
 						<form:hidden path="importance" value="低"/>
 						<input id="fileids" name="fileids" type="hidden" />
                         <div class="block-fluid">                        
@@ -186,22 +204,29 @@
                                 <div class="col-md-1"><form:label path="name">设备名称:</form:label></div>
                                 <div class="col-md-3"><form:input path="name" class="validate[required,maxSize[50]]"></form:input></div>
                                 <div class="col-md-1"><form:label path="num">设备编号:</form:label></div>
-                                <div class="col-md-3"><form:input path="num" class="validate[required,maxSize[50]]"></form:input></div>
+                                <div class="col-md-3"><form:input path="num" class="validate[maxSize[5]]"></form:input></div>
                                 <div class="col-md-1"><form:label path="categoryCode">分类:</form:label></div>
                                 <div class="col-md-3"><form:input path="categoryCode" readonly="true" class="validate[required,maxSize[50]]"></form:input></div>
                             </div>
                             <div class="row-form clearfix">
-                            	<div class="col-md-1"><form:label path="serial">出厂编号/序列号:</form:label></div>
-	                            <div class="col-md-3"><form:input path="serial" class="validate[required,maxSize[50]]"></form:input></div>
-                            	<div class="col-md-1"><form:label path="model">型号/版本号:</form:label></div>
-	                            <div class="col-md-3"><form:input path="model" class="validate[required,maxSize[50]]"></form:input></div>
-	                            <div class="col-md-1"><form:label path="producer">生产厂商/品牌:</form:label></div>
-	                            <div class="col-md-3"><form:input path="producer" class="validate[required,maxSize[50]]"></form:input></div>
+                            	<div class="col-md-2"><form:label path="serial">出厂编号/序列号:</form:label></div>
+	                            <div class="col-md-2"><form:input path="serial" class="validate[required,maxSize[50]]"></form:input></div>
+                            	<div class="col-md-2"><form:label path="model">型号/版本号:</form:label></div>
+	                            <div class="col-md-2"><form:input path="model" class="validate[required,maxSize[50]]"></form:input></div>
+	                            <div class="col-md-2"><form:label path="producer">生产厂商/品牌:</form:label></div>
+	                            <div class="col-md-2"><form:input path="producer" class="validate[required,maxSize[50]]"></form:input></div>
                             </div>
-                            
                             <div class="row-form clearfix">
-                                <div class="col-md-1"><form:label path="departmentInUse">所属部门:</form:label></div>
-                                <div class="col-md-3"><form:input path="departmentInUse" class="validate[required,maxSize[50]]"></form:input></div>
+                            	<div class="col-md-1"><form:label path="securityLevel">密级:</form:label></div>
+	                            <div class="col-md-3"><form:select path="securityLevel" items="${securityLevel }" itemLabel="codeName" itemValue="code" cssStyle="width:100%"></form:select></div>
+                        
+                                <div class="col-md-1"><form:label path="securityNo">保密编号:</form:label></div>
+                                <div class="col-md-3"><form:input path="securityNo"></form:input></div>
+                                
+                            </div>
+                            <div class="row-form clearfix">
+                                <div class="col-md-1"><label for="department1">所属部门:</label></div>
+                                <div class="col-md-3"><input name="department1" type="text" readonly="readonly"/></div>
                                 <div class="col-md-1"><form:label path="userInMaintenance">责任人:</form:label></div>
                                 <div class="col-md-3"><form:select path="userInMaintenance" items="${users }" itemLabel="name" itemValue="username" cssStyle="width:100%"></form:select></div>
                                 <div class="col-md-1"><form:label path="purpose">设备用途:</form:label></div>
@@ -265,7 +290,12 @@
             <!--workplace end-->
         </div>   
     </div>
-    
+    <div class='dialog' id='b_popup_group' style='display: none;' title='部门列表'>
+    	<div class='block dialog_block messages '><ul id='grouptree'></ul></div>
+    </div>
+    <div class='dialog' id='b_popup_select' style='display: none;' title='分类'>
+    <div class='block dialog_block messages '><ul id='treeview'></ul></div>
+    </div>
 </body>
 
 </html>

@@ -2,3 +2,5 @@
  232 ：：INSPECTION_BKY ：：兵科院日常巡检 ：：INSPECTION_TYPE
  
 12.16 wk_account表增加views_字段
+
+4.27 cms_ci表增加num_和serial_字段

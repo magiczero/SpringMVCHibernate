@@ -88,7 +88,7 @@
 						+"<td>"+data.list[i]["categoryName"]+"</td>"
 						+"<td>"+data.list[i]["producer"]+"</td>"
 						+"<td>"+data.list[i]["model"]+"</td>"
-						+"<td>"+data.list[i]["departmentInUse"]+"</td>"
+						+"<td>"+data.list[i]["departmentName"]+"</td>"
 						+"<td>"+data.list[i]["userInMaintenanceName"]+"</td>"
 						+"<td>"+data.list[i]["serial"]+"</td>"
 						+"<td>"+transDate(data.list[i]["createdTime"])+"</td>"

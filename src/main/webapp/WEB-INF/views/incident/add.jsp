@@ -143,7 +143,7 @@
 		    $("input[name='user_name']").bind("click",function(){
 		    	$("#grouptree").empty();
 		    	$("#grouptree").treeview({
-		    		url:ctx + '/group/all-json?t=' + pm_random(),
+		    		url:ctx + '/group/all-json?haveuser=true&t=' + pm_random(),
             		collapsed: true,
             		unique: true
             	});
@@ -193,20 +193,24 @@
         	$("input[name='user_name']").attr("value",username);
         	$("input[name='phoneNumber']").attr("value",tel);
         	$("#room").attr("value", room);
+        	
+        	$("#b_popup_group").dialog('close');
+        }
+        
+        function inputGroupinfo(groupid, groupname) {
+        	console.log(groupid + ' ' + groupname);
         }
 
       //获取当前时间,格式 2015-09-05 10:00:00.000
-              function gettodayfinishedtime() {
+        function gettodayfinishedtime() {
                   var nowtime = new Date();
                   var year = nowtime.getFullYear();
                   var month = padleft0(nowtime.getMonth() + 1);
                   var day = padleft0(nowtime.getDate());
                   return year + "-" + month + "-" + day + " 17:00";
-              }
+        }
               //补齐两位数
-              function padleft0(obj) {
-                  return obj.toString().replace(/^[0-9]{1}$/, "0" + obj);
-              }
+        function padleft0(obj) {return obj.toString().replace(/^[0-9]{1}$/, "0" + obj);}
 
     </script>
     <style type="text/css">

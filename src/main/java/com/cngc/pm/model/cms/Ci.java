@@ -127,6 +127,8 @@ public class Ci {
 	private String systemName;
 	@Transient
 	private String userInMaintenanceName;
+	@Transient
+	private String departmentName;
 	
 	private Set<Attachment> attachs = new HashSet<>();							//附件
 	
@@ -480,5 +482,13 @@ public class Ci {
 	public void setUserInMaintenanceName(String userInMaintenanceName) {
 		this.userInMaintenanceName = userInMaintenanceName;
 	}
-	
+	@Formula(value="(SELECT a.group_name FROM sys_group a WHERE a.id=department_in_use)")
+	public String getDepartmentName() {
+		return departmentName;
+	}
+
+	public void setDepartmentName(String departmentName) {
+		this.departmentName = departmentName;
+	}
+
 }

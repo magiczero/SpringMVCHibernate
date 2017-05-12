@@ -85,11 +85,11 @@
         <property name="shared" value="true"/>
     </bean>
 	
-	<tx:annotation-driven transaction-manager="transactionManager" proxy-target-class="true" />
-	
 	<bean id="transactionManager" class="org.springframework.orm.hibernate4.HibernateTransactionManager">
 		<property name="sessionFactory" ref="hibernate4AnnotatedSessionFactory" />
 	</bean>
+	
+	<tx:annotation-driven transaction-manager="transactionManager" proxy-target-class="true" />
 	
 	<!-- <bean class="org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor" /> -->
 	

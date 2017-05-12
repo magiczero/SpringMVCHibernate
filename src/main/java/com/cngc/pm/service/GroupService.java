@@ -16,5 +16,5 @@ public interface GroupService {
 	
 	boolean saveGroup(Group group);
 	
-	String getChildByGroup(String group);
+	String getChildByGroup(String group, boolean haveUsers);
 }

@@ -10,6 +10,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
+import com.cngc.pm.model.Group;
 import com.cngc.pm.model.SysUser;
 import com.cngc.pm.model.UserRole;
 import com.cngc.pm.service.UserService;
@@ -143,6 +144,51 @@ public class UserUtil {
 	public Boolean IsEngineer(Authentication authentication) {
 	
 		return QueryUser(authentication,PropertyFileUtil.getStringValue("system.user.engineer"));
+	}
+	
+	public Boolean IsEngineer(SysUser user) {
+		
+		String roles = PropertyFileUtil.getStringValue("system.user.engineer");
+		
+		return isRolesWithUser(user,roles.split(","));
+	}
+	
+	
+	/**
+	 * 获取部门所属的单位
+	 * @param group
+	 * @return
+	 */
+	public Group getTopGroup(Group group) {
+		
+		Group groupParent = group.getParentGroup();
+		if(groupParent==null)
+			return group;
+		else
+			return getTopGroup(groupParent);
+	}
+	
+	/**
+	 * 判断某一用户是否是某一角色
+	 * @param user        用户
+	 * @param rolenames   角色列表
+	 * @return
+	 */
+	public boolean isRolesWithUser(SysUser user, String... rolenames) {
+		
+		boolean result = false;
+		
+		Set<UserRole> roles = user.getUserRoles();
+		
+		for (UserRole role : roles) {
+			for(String rname : rolenames) {
+				if ( rname.indexOf(role.getRole().getRoleName())>=0 ) {
+					result = true;
+					break;
+				}
+			}
+		}
+		return result;
 	}
 	
 	public Boolean QueryUser(Authentication auth,String userrole) {

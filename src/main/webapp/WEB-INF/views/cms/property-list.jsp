@@ -161,32 +161,73 @@
                         <div class="row">
                             <div class="block-fluid">
                                 <div class="row-form clearfix">
-                                    <div class="col-md-3"><form:label path="propertyId">属性ID：</form:label></div>
-                                    <div class="col-md-9"><form:input path="propertyId" class="validate[required,maxSize[50]]"></form:input></div>
+                                    <div class="col-md-2"><form:label path="propertyId">属性ID：</form:label></div>
+                                    <div class="col-md-4"><form:input path="propertyId" class="validate[required,maxSize[50]]"></form:input></div>
+                                    <div class="col-md-2"><form:label path="propertyName">属性名：</form:label></div>
+                                    <div class="col-md-4"><form:input path="propertyName" class="validate[required,maxSize[50]]"></form:input></div>
                                 </div>                                                           
                             </div>                
                         </div>
                         <div class="row">
                             <div class="block-fluid">
                                 <div class="row-form clearfix">
-                                    <div class="col-md-3"><form:label path="propertyName">属性名：</form:label></div>
-                                    <div class="col-md-9"><form:input path="propertyName" class="validate[required,maxSize[50]]"></form:input></div>
+                                    <div class="col-md-2"><form:label path="propertyType">属性类型：</form:label></div>
+                                    <div class="col-md-4">
+                                    	<form:select path="propertyType" class="validate[required]">
+                                    		<form:option value="string">字符型</form:option>
+                                    		<form:option value="integer">整数</form:option>
+                                    		<form:option value="number">数字</form:option>
+                                    		<form:option value="date">日期/时间</form:option>
+                                    		<form:option value="enum">列表选择</form:option>
+                                    	</form:select>
+                                    </div>
+                                    <div class="col-md-2"><form:label path="requiredField">是否必填：</form:label></div>
+                                    <div class="col-md-4">
+										<form:select path="requiredField" class="validate[required]">
+                                    		<form:option value="1">必填</form:option>
+                                    		<form:option value="0">非必填</form:option>
+                                    	</form:select></div>
                                 </div>                                                           
                             </div>                
                         </div>
                         <div class="row">
                             <div class="block-fluid">
                                 <div class="row-form clearfix">
-                                    <div class="col-md-3"><form:label path="propertyType">属性类型：</form:label></div>
-                                    <div class="col-md-9"><form:input path="propertyType" class="validate[required,maxSize[50]]"></form:input></div>
+                                    <div class="col-md-2"><form:label path="maxLength">字数上限：</form:label></div>
+                                    <div class="col-md-4"><form:input path="maxLength" class="validate[optional,custom[integer]]"></form:input></div>
+                                    <div class="col-md-2"><form:label path="minLength">字数下限：</form:label></div>
+                                    <div class="col-md-4"><form:input path="minLength" class="validate[optional,custom[integer]]"></form:input></div>
                                 </div>                                                           
                             </div>                
                         </div>
                         <div class="row">
                             <div class="block-fluid">
                                 <div class="row-form clearfix">
-                                    <div class="col-md-3"><form:label path="propertyConstraint">约束条件：</form:label></div>
-                                    <div class="col-md-9"><form:input path="propertyConstraint" class="validate[required,maxSize[50]]"></form:input></div>
+                                    <div class="col-md-2"><form:label path="maxValue">最大数值 ：</form:label></div>
+                                    <div class="col-md-4"><form:input path="maxValue" class="validate[optional,custom[number]]"></form:input></div>
+                                    <div class="col-md-2"><form:label path="minValue">最小数值：</form:label></div>
+                                    <div class="col-md-4"><form:input path="minValue" class="validate[optional,custom[number]]"></form:input></div>
+                                </div>                                                           
+                            </div>                
+                        </div>
+                        <div class="row">
+                            <div class="block-fluid">
+                                <div class="row-form clearfix">
+                                    <div class="col-md-3"><form:label path="defaultDateFormat">日期约束条件：</form:label></div>
+                                    <div class="col-md-9">
+                                    	<form:select path="defaultDateFormat">
+                                    		<form:option value="1">年-月-日</form:option>
+                                    		<form:option value="2">年-月-日 小时：分钟</form:option>
+                                    	</form:select>
+                                    </div>
+                                </div>                                                           
+                            </div>                
+                        </div>
+                        <div class="row">
+                            <div class="block-fluid">
+                                <div class="row-form clearfix">
+                                    <div class="col-md-3"><form:label path="defaultValue">预设值：</form:label></div>
+                                    <div class="col-md-9"><form:input path="defaultValue" class="validate[optional,maxSize[255]]"></form:input></div>
                                 </div>                                                           
                             </div>                
                         </div>

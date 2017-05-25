@@ -188,9 +188,9 @@
         	$("input[name='"+name+"']").attr("value",value);
         }
         
-        function inputUserinfo(userid,username,tel,room) {
-        	$("#applyUser").attr("value", userid);
-        	$("input[name='user_name']").attr("value",username);
+        function inputUserinfo(username,realname,tel,room,userid) {
+        	$("#applyUser").attr("value", username);
+        	$("input[name='user_name']").attr("value",realname);
         	$("input[name='phoneNumber']").attr("value",tel);
         	$("#room").attr("value", room);
         	
@@ -272,7 +272,7 @@
 	                                </div>
 	                            </div>
 	                            <div class="row-form clearfix">
-	                                <div class="col-md-1"><label for="user">申请人:</label></div>
+	                                <div class="col-md-1"><label for="user_name">申请人:</label></div>
 	                                <div class="col-md-3">
 	                                <input type="text" id="user_name" value="${incident.applyUserName }" readonly="readonly" name="user_name" class="validate[required]">
 	                                <!--<form:select path="applyUser" items="${users }" itemLabel="name" itemValue="username" cssStyle="width:100%"></form:select>--></div>

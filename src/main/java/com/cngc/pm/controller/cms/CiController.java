@@ -8,8 +8,8 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -32,6 +32,7 @@ import com.cngc.pm.common.web.common.UserUtil;
 import com.cngc.pm.model.Attachment;
 import com.cngc.pm.model.cms.Category;
 import com.cngc.pm.model.cms.Ci;
+import com.cngc.pm.model.cms.Property;
 import com.cngc.pm.service.AttachService;
 import com.cngc.pm.service.ItilRelationService;
 import com.cngc.pm.service.SysCodeService;
@@ -89,7 +90,12 @@ public class CiController {
 		{
 			//根据code分级判断
 			Category category = categoryService.getByCode(tmpcode);
-			map.put(category.getCategoryName(), category.getProperties());
+			//
+			List<String> htmlCodes = new ArrayList<>();
+			for(Property p : category.getProperties()) {
+				htmlCodes.add(p.getPropertyName()+"-"+propertyService.analyzePropertyToHtml(p));
+			}
+			map.put(category.getCategoryName(), htmlCodes);
 			if(tmpcode.length()+2>code.length())
 				break;
 			tmpcode = code.substring(0,tmpcode.length()+2);

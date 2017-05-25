@@ -66,7 +66,6 @@ public class ServiceTest {
     }
     
     @Test
-    @Ignore
     @Transactional(readOnly=true)
     public void testfindCurrentYearStudent() {
     	JSONObject jsonObj = new JSONObject();
@@ -142,6 +141,7 @@ public class ServiceTest {
     }
 
     @Test
+    @Ignore
     public void testCollegeFind() throws Exception {
     	Incident incident = new Incident();
     	

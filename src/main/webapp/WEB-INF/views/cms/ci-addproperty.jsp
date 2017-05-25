@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <c:set var="contextPath" value="${pageContext.request.contextPath}"></c:set>
 <!DOCTYPE html>
 <html lang="en">
@@ -21,6 +22,7 @@
     <link href="${contextPath }/resources/css/styling.css" rel="stylesheet" type="text/css" />
     <link href="${contextPath }/resources/css/mycss.css" rel="stylesheet" type="text/css" />
     <link href="${contextPath }/resources/css/validation.css" rel="stylesheet" type="text/css" />
+     <link href="${contextPath }/resources/js/plugins/datetimepicker/datetimepicker.min.css" rel="stylesheet" type="text/css" />
     <!--[if lt IE 8]>
         <link href="${contextPath }/resources/css/ie7.css" rel="stylesheet" type="text/css" />
     <![endif]-->  
@@ -35,6 +37,8 @@
 <script type='text/javascript' src='${contextPath }/resources/js/plugins/validation/jquery.validationEngine.js' charset='utf-8'></script>    
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/highlight/jquery.highlight-4.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/pnotify/jquery.pnotify.min.js'></script>
+    <script type='text/javascript' src='${contextPath }/resources/js/plugins/datetimepicker/datetimepicker.min.js' charset="UTF-8"></script>
+    <script type='text/javascript' src='${contextPath }/resources/js/plugins/datetimepicker/datetimepicker.zh-CN.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/scrollup/jquery.scrollUp.min.js'></script>
     
     <script type='text/javascript' src='${contextPath }/resources/js/pm-common.js'></script>
@@ -54,6 +58,13 @@
             $(".menu").load("${contextPath }/menu?t="+pm_random(), function () { $("#node_${moduleId}").addClass("active"); });
             $(".breadLine .buttons").load("${contextPath }/contentbuttons?t="+pm_random());
 
+            //var $form = $('#property_form');
+            //if($form.find('.dateISO').length>0) {
+           	$(".dateISO").datetimepicker({autoclose: true,language: 'zh-CN',minuteStep: 5,todayBtn: true});
+            
+          //表单验证
+            $("#property_form").validationEngine({promptPosition : "topRight", scroll: true});
+           	
             // 将属性值附加到表单中
             if(propertiesdata!="")
             {   propertiesdata = $.parseJSON(propertiesdata);	
@@ -90,7 +101,7 @@
 			<!--workplace-->
 			<div class="workplace">
 				<c:url var="addAction" value="/cms/ci/saveproperty/${ci.id }"></c:url>
-				<form action="${addAction}" method="post">
+				<form id="property_form" action="${addAction}" method="post">
 					<div class="row">
 						<c:forEach items="${properties}" var="map">
 							<div class="col-md-4">
@@ -103,11 +114,11 @@
 										<div class="row-form clearfix"><span style="color:#999;">未定义属性</span></div>
 									</c:if>
 									<c:if test="${map.value.size()>0 }">
-									<c:forEach items="${map.value }" var="property">
+									<c:forEach items="${map.value }" var="htmlContent">
 										<div class="row-form clearfix">
-											<div class="col-md-3">${property.propertyName}:</div>
+											<div class="col-md-3">${ fn:split(htmlContent, '-')[0] }:</div>
 											<div class="col-md-9">
-												<input id="${property.propertyId }" name="${property.propertyId }" type="text" />
+												${ fn:split(htmlContent, '-')[1] }
 											</div>
 										</div>
 									</c:forEach>

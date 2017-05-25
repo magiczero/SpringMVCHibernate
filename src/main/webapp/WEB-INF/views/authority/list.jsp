@@ -163,9 +163,6 @@
             		return false;
             	}
             }
-            function notify_e(title,text){
-                $.pnotify({title: title, text: text, opacity: .8, type: 'error'});            
-            }
     </script>
 </head>
 <body>

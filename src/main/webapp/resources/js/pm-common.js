@@ -97,8 +97,8 @@ $(document).ready(function() {
 		return false;
 	});
 	// 消息提醒
-	//$.pnotify.defaults.styling = "bootstrap";
-	$.pnotify.defaults.styling = "jqueryui";
+	$.pnotify.defaults.styling = "bootstrap";
+	//$.pnotify.defaults.styling = "jqueryui";
     $.pnotify.defaults.history = false;
     $.pnotify.defaults.delay = 2000;   
     $.pnotify.defaults.stack = {"dir1": "down", "dir2": "left", "push": "bottom"};
@@ -329,4 +329,8 @@ function headInfo(){
     var button = block.find("button");
     
     input.width(block.width()-button.width()-44);    
+}
+
+function notify_e(title,text){
+    $.pnotify({title: title, text: text, opacity: .8, type: 'error'});            
 }

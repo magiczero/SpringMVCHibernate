@@ -139,9 +139,6 @@
                 	});*/
             	});
             });
-            function notify_e(title,text){
-                $.pnotify({title: title, text: text, opacity: .8, type: 'error'});            
-            }
             function confirmd(obj,docid,attachid) {  
                 var msg = "您真的确定要删除吗？请确认！";  
                 if (confirm(msg)==true){  

@@ -133,9 +133,9 @@
                 $("#engineer").select2();
             });
             
-            function inputUserinfo(userid,username,tel,room) {
-            	$("input[name='applyUser']").attr("value", userid);
-            	$("input[name='user_name']").attr("value",username);
+            function inputUserinfo(username,realname,tel,room,userid) {
+            	$("input[name='applyUser']").attr("value", username);
+            	$("input[name='user_name']").attr("value", realname);
             }
          // 3个参数的名字可以随便命名,但必须是3个参数,少一个都不行
     		function retrieveData( sSource111,aoData111, fnCallback111) {

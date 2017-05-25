@@ -1,8 +1,8 @@
 package com.cngc.pm.model.manage;
 
 /**
- * 三员管理文档类型
- * @author HP
+ * 三员角色分类
+ * @author young
  *
  */
 public enum ManageType {

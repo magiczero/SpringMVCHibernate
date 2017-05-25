@@ -196,7 +196,7 @@ public class GroupServiceImpl implements GroupService {
 			if(haveUsers) {
 				if(group.getUsers().size()>0) {
 					for(SysUser user : group.getUsers()) {
-						jsonStr.append("{\"text\":\"<a href='javascript:void(0);' onclick='inputUserinfo(\\\""+user.getUsername()+"\\\",\\\""+user.getName()+"\\\",\\\""+user.getDepName()+"\\\",\\\""+user.getMechName()+"\\\");'>").append(user.getName()).append("</a>\"},");
+						jsonStr.append("{\"text\":\"<a href='javascript:void(0);' onclick='inputUserinfo(\\\""+user.getUsername()+"\\\",\\\""+user.getName()+"\\\",\\\""+user.getDepName()+"\\\",\\\""+user.getMechName()+"\\\",\\\""+user.getId()+"\\\");'>").append(user.getName()).append("</a>\"},");
 					}
 					jsonStr.deleteCharAt(jsonStr.length()-1);
 				}

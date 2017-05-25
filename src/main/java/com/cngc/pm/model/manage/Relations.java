@@ -20,6 +20,11 @@ import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.validator.constraints.NotBlank;
 
+/**
+ * 三员角色所能操作的项目和动作
+ * @author young
+ *
+ */
 @Entity
 @DynamicUpdate(true)  
 @DynamicInsert(true)

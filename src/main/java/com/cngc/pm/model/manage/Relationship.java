@@ -15,12 +15,13 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.validation.constraints.NotNull;
 
-import com.cngc.pm.model.Style;
 import com.cngc.pm.model.SysUser;
+import com.cngc.pm.model.cms.Ci;
 
 /**
- * 人员、系统、角色关系
+ * 人员、系统或产品（CMDB）、角色关系
  * @author young
  *
  */
@@ -34,23 +35,23 @@ public class Relationship implements Serializable {
 	private static final long serialVersionUID = 6042020083497773540L;
 
 	private Long id;
-	private Style style;		//系统
+	private Ci cmdb;		//系统或产品（CMDB）
 	private ManageType role;		//角色
 	private SysUser user;			//人员
-	private boolean isDel;			//是否删除
+	private boolean del = false;			//是否删除
 	private Date inTime;			//建立时间
 	private Date delTime;			//删除时间
 	
 	@Column(name="is_del")
 	public boolean isDel() {
-		return isDel;
+		return del;
 	}
-	public void setDel(boolean isDel) {
-		this.isDel = isDel;
+	public void setDel(boolean del) {
+		this.del = del;
 	}
 	
 	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name="in_time")
+	@Column(name="in_time",insertable=false)
 	public Date getInTime() {
 		return inTime;
 	}
@@ -77,13 +78,14 @@ public class Relationship implements Serializable {
 		this.id = id;
 	}
 	
+	@NotNull
 	@ManyToOne
 	@JoinColumn(name = "system_id")
-	public Style getStyle() {
-		return style;
+	public Ci getCmdb() {
+		return cmdb;
 	}
-	public void setStyle(Style style) {
-		this.style = style;
+	public void setCmdb(Ci cmdb) {
+		this.cmdb = cmdb;
 	}
 	
 	@Enumerated(EnumType.STRING)

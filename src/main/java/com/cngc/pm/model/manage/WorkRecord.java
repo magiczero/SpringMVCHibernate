@@ -32,7 +32,16 @@ public class WorkRecord implements Serializable {
 //	private Style system;					//系统
 //	private ManageType type;				//管理员类别
 	private Relationship auth;				//权限信息
+	private Date recordTime;
 	
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name="record_time")
+	public Date getRecordTime() {
+		return recordTime;
+	}
+	public void setRecordTime(Date recordTime) {
+		this.recordTime = recordTime;
+	}
 	@ManyToOne
 	@JoinColumn(name = "auth_id")
 	public Relationship getAuth() {

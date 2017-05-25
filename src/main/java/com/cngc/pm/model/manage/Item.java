@@ -16,6 +16,11 @@ import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.validator.constraints.NotBlank;
 
+/**
+ * 项，
+ * @author young
+ *
+ */
 @Entity
 @DynamicUpdate(true)  
 @DynamicInsert(true)

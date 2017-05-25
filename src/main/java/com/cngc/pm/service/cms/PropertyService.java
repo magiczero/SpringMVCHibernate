@@ -23,4 +23,11 @@ public interface PropertyService {
 	List<Property> getFields();
 	
 	SearchResult<Property> getByPropertyIds(String propertyIds);
+	
+	/**
+	 * 分析property的条件生成html
+	 * @param property
+	 * @return
+	 */
+	String analyzePropertyToHtml(Property property);
 }

@@ -41,9 +41,9 @@ public class IncidentServiceImpl implements IncidentService {
 	@Transactional(propagation = Propagation.REQUIRED, readOnly=false)
 	public void save(Incident incident, String userid) throws Exception {
 		incidentDao.save(incident);
-		System.out.println("transaction start ...");
-		int i = 1 / 0;
-		System.out.println(i);
+//		System.out.println("transaction start ...");
+//		int i = 1 / 0;
+//		System.out.println(i);
 		// 启动流程
 		ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery()
 							.processDefinitionKey(PropertyFileUtil.getStringValue("workflow.processkey.incident")).active()

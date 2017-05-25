@@ -480,9 +480,13 @@ disabled look for disabled choices in the results dropdown
     padding: 0 5px 0 0;
     position: relative;
 
-    border: 1px solid #aaa;
+    border: 1px solid #D7D7D7;
     cursor: text;
     overflow: hidden;
+    
+    -moz-border-radius: 4px;
+    -webkit-border-radius: 4px;
+    border-radius: 4px;
 
     background-color: #fff;
     background-image: -webkit-gradient(linear, 0% 0%, 0% 100%, color-stop(1%, #eee), color-stop(15%, #fff));

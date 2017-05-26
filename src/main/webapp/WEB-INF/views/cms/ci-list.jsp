@@ -14,9 +14,30 @@
     <![endif]-->
     
     <title>配置管理--运维管理系统</title>
+    <%--
+    //
+//                       .::::.
+//                     .::::::::.
+//                    :::::::::::
+//                 ..:::::::::::'
+//              '::::::::::::'
+//                .::::::::::
+//           '::::::::::::::..
+//                ..::::::::::::.
+//              ``::::::::::::::::
+//               ::::``:::::::::'        .:::.
+//              ::::'   ':::::'       .::::::::.
+//            .::::'      ::::     .:::::::'::::.
+//           .:::'       :::::  .:::::::::' ':::::.
+//          .::'        :::::.:::::::::'      ':::::.
+//         .::'         ::::::::::::::'         ``::::.
+//     ...:::           ::::::::::::'              ``::.
+//    ```` ':.          ':::::::::'                  ::::..
+//                       '.:::::'                    ':'````..
+//
+//			by yhp 美女保佑   2017-05-26
+     --%>
 
-    <link rel="icon" type="image/ico" href="favicon.ico"/>
-    
     <link href="${contextPath }/resources/css/icons.css" rel="stylesheet" type="text/css" />
     <link href="${contextPath }/resources/css/bootstrap.css" rel="stylesheet" type="text/css" />
     <link href="${contextPath }/resources/css/ui.css" rel="stylesheet" type="text/css" />
@@ -25,6 +46,8 @@
     <link href="${contextPath }/resources/css/styling.css" rel="stylesheet" type="text/css" />
     <link href="${contextPath }/resources/css/validation.css" rel="stylesheet" type="text/css" />
     <link href="${contextPath }/resources/css/mycss.css" rel="stylesheet" type="text/css" />
+    <link href="${contextPath }/resources/css/dataTables.css" rel="stylesheet" type="text/css" />
+    <link href="${contextPath }/resources/css/dataTables.fixedColumns.css" rel="stylesheet" type="text/css" />
     <link href='${contextPath }/resources/js/plugins/jstree/jquery.treeview.css' rel="stylesheet" type="text/css" />
     <link href="${contextPath }/resources/css/uploadify.css" rel="stylesheet" type="text/css" />
     <!--[if lt IE 8]>
@@ -37,6 +60,7 @@
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/cookie/jquery.cookies.2.2.0.min.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/bootstrap.min.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/dataTables/jquery.dataTables.min.js'></script> 
+    <script type='text/javascript' src='${contextPath }/resources/js/plugins/dataTables/dataTables.fixedColumns.min.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/validation/languages/jquery.validationEngine-zh-CN.js' charset='utf-8'></script>
 <script type='text/javascript' src='${contextPath }/resources/js/plugins/validation/jquery.validationEngine.js' charset='utf-8'></script>   
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/highlight/jquery.highlight-4.js'></script>
@@ -70,6 +94,7 @@
             	});
                 
                 initTable("0");
+                
             });
             function initTable(code)
             {
@@ -109,6 +134,37 @@
 						
             		}
             		$("#ciTable tbody").append(trs);
+            		
+            		var datatables_options = {
+            				"oLanguage": {"sUrl": "${contextPath}/resources/json/Chinese.json"},
+            			    "bAutoWidth": true,
+            			    "sDom": '<"top"i>rt<"bottom"flp><"clear">',           
+            			    "bPaginate": true,   
+            			    "sPaginationType": "full_numbers", 
+            			    "iDisplayLength": 10, 
+            			    "bSort": true, 
+            			    "bFilter": false, 
+            			    "aaSorting": [], 
+            			    "bInfo": false, 
+            			    "bStateSave": false, 
+            			    "iCookieDuration": 0, 
+            			    "bScrollAutoCss": true, 
+            			    "bProcessing": true, 
+            			    "bJQueryUI": false,
+            			    "fixedColumns":   {
+            		            leftColumns: 1,
+            		            rightColumns: 1
+            		        }
+            			};
+
+            			datatables_options["sScrollX"] = "100%";
+            			datatables_options["bScrollCollapse"] = true;
+
+            			// add this
+            			datatables_options["sScrollXInner"] = '150%';
+            			//
+            			var table = $('#ciTable').dataTable(datatables_options);
+            			new $.fn.dataTable.FixedColumns(table);
             		
                     $(".confirm").bind("click",function(){
                     	if(!confirm("确定要执行该操作?"))
@@ -189,27 +245,26 @@
                             </ul>                             
                         </div>
                         <div class="block-fluid table-sorting clearfix">
-                            <table class="table" id="ciTable">
+                            <table class="stripe row-border order-column" id="ciTable" cellspacing="0" width="100%">
                                 <thead>
                                 	<tr>
 										<th>设备名称</th>
-										<th width="100px">设备编号</th>
-										<th width="80px">分类</th>
-										<th width="60px">生产厂商/品牌</th>
-										<th width="80px">型号/版本号</th>
-										<th width="100px">所属部门</th>
-										<th width="70px">责任人</th>
-										<th width="80px">出厂编号/序列号</th>
-										<th width="65px">购置时间</th>
-										<th width="60px">维保截止时间</th>
-										<th width="60px">启用时间</th>
-										<th width="60px">设备用途</th>
-										<th width="60px">使用情况</th>
-										<th width="80px">操作</th>
+										<th>设备编号</th>
+										<th>分类</th>
+										<th>生产厂商/品牌</th>
+										<th>型号/版本号</th>
+										<th>所属部门</th>
+										<th>责任人</th>
+										<th>出厂编号/序列号</th>
+										<th >购置时间</th>
+										<th >维保截止时间</th>
+										<th >启用时间</th>
+										<th >设备用途</th>
+										<th >使用情况</th>
+										<th >操作</th>
 									</tr>
                                 </thead>
                                 <tbody>
-  
                                 </tbody>
                             </table>
                         </div>

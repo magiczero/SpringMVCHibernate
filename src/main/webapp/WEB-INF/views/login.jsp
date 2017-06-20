@@ -72,6 +72,7 @@
 <body>
 <div class="loginBlock" id="login" style="display: block;">
         <h1>欢迎使用，请登录</h1>
+         
         <div class="dr"><span></span></div>
         <div class="loginForm">${sessionScope.SPRING_SECURITY_LAST_EXCEPTION.message} 
             <form class="form-horizontal" action="${contextPath }/login" method="POST" id="validation">
@@ -101,10 +102,8 @@
             <div class="dr"><span></span></div>
             <div class="controls">
                 <div class="row">
-                    <div class="col-md-6">&nbsp;
-                    </div>                    
-                    <div class="col-md-6">&nbsp;
-                    </div>
+                    <div class="col-md-6">&nbsp;</div>                    
+                    <div class="col-md-6">&nbsp;</div>
                 </div>
             </div>
         </div>

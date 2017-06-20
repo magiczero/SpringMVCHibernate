@@ -8,6 +8,7 @@ import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.cngc.exception.ParameterException;
@@ -30,6 +31,8 @@ import com.googlecode.genericdao.search.Search;
 public class UserServiceImpl implements UserService {
 
 	@Autowired
+	private RecordsDAO recordsDao;
+	@Autowired
 	private UserDAO userDao;
 	
 	@Autowired
@@ -37,9 +40,6 @@ public class UserServiceImpl implements UserService {
 	
 	@Autowired
 	private UserRoleDAO urDao;
-	
-	@Autowired
-	private RecordsDAO recordsDao;
 	
 	@Override
 	@Transactional
@@ -314,5 +314,30 @@ public class UserServiceImpl implements UserService {
 	public List<SysUser> getThreemembers() {
 		// TODO Auto-generated method stub
 		return getByRole("system.user.threemember");
+	}
+	@Override
+	@Transactional(propagation = Propagation.REQUIRED, readOnly=false)
+	public void lockingOrUnlockingWithUser(boolean isLocking, String username, String operator) {
+		// TODO Auto-generated method stub
+		SysUser user0 = userDao.getUserByUserName(username);
+		if(user0==null) 
+			throw new ParameterException("没有这个用户");
+		
+		Records records = new Records();
+		String lock = "";
+		if(isLocking) {		//锁定
+			user0.setAccountNonLocked(false);
+			
+		} else {		//解锁
+			user0.setAccountNonLocked(true);
+			lock= "解锁";
+		}
+		records.setUsername(operator);
+		records.setType(RecordsType.user);
+		records.setDesc("【"+operator+"】"+lock+"了用户["+username+"]");
+		
+		
+		userDao.save(user0);
+		recordsDao.save(records);
 	}
 }

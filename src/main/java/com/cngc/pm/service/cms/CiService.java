@@ -41,4 +41,13 @@ public interface CiService {
 	 * @throws ParseException 
 	 */
 	void importData(Set<Attachment> setAttach) throws IOException, ParseException;
+
+	/**
+	 * 分页获取CI，根据code
+	 * @param categoryCode
+	 * @param iDisplayStart
+	 * @param iDisplayLength
+	 * @return
+	 */
+	SearchResult<Ci> getAllWithPage(String categoryCode,int iDisplayStart, int iDisplayLength);
 }

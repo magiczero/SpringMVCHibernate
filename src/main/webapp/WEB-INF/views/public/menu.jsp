@@ -45,13 +45,13 @@
 							<div class="row-form clearfix">
 								<div class="col-md-3">新密码:</div>
 								<div class="col-md-9">
-									<input type="password" name="newPwd" class="validate[required,minSize[6],maxSize[8],equals[repeatPwd]]" />
+									<input type="password" id="newPwd" name="newPwd" class="validate[required,custom[password0]]" />
 								</div>
 							</div>
 							<div class="row-form clearfix">
 								<div class="col-md-3">新密码确认:</div>
 								<div class="col-md-9">
-									<input type="password" id="repeatPwd" name="repeatPwd" class="validate[required,minSize[6],maxSize[8]]" />
+									<input type="password" id="repeatPwd" name="repeatPwd" class="validate[required,equals[newPwd]]" />
 								</div>
 							</div>
 						</div>
@@ -135,7 +135,7 @@
 		 
 	});
 	function pm_getcount() {
-		$.getJSON(ctx + "/workflow/task/getmytaskcount?t" + pm_random(),
+		$.getJSON(ctx + "/workflow/task/getmytaskcount?t=" + pm_random(),
 				function(datas) {
 					if (datas.count == "0")
 					{
@@ -145,6 +145,9 @@
 					{
 						$(".link_navPopMessages").show();
 						$(".link_navPopMessages").text(datas.count);
+						
+						$(".task_count").text(
+								"(" + datas.claim + "/" + datas.count + ")");
 					}
 				});
 	}

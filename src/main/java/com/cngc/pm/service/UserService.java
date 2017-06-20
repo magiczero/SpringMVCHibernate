@@ -49,4 +49,13 @@ public interface UserService {
 	Group getTopGroupByUser(SysUser user);
 
 	List<SysUser> getThreemembers();
+	
+	/**
+	 * 锁定/解锁用户
+	 * @param isLocking 锁定/解锁
+	 * @param user 用户
+	 * @param operator 操作者
+	 * @return
+	 */
+	void lockingOrUnlockingWithUser(boolean isLocking, String username, String operator);
 }

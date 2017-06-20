@@ -162,6 +162,28 @@
     	$("#rolefrom_userrole").attr('value',$("#selRole").val());
     	return true;
     }
+    
+    function unlockUser(username) {
+    	if(confirm('确定解锁？')) {
+        	$.ajax({
+				type : "put",
+				dataType : "json",
+				url : "${contextPath }/user/unlock/"+username,
+				success : function(data) {
+					//console.log(data.flag);
+					if (data.flag) {
+		            	//notify_e('Success','启用成功');
+		            	window.location.reload();
+					} else {
+						notify_e('Error','解锁失败，请联系系统管理员');
+					}
+				}
+			});
+        	return true;
+    	} else {
+    		return false;
+    	}
+    }
     function enableUser(id) {
     	if(confirm('确定启用？')) {
         	$.ajax({
@@ -233,8 +255,8 @@
                                 <li>
                                     <a href="#" class="isw-settings tipl" title="操作 "></a>
                                     <ul class="dd-list">
-                                    	<li><a href="#" class="lnk_new" role="button" data-toggle="modal"><span class="isw-ok"></span> 创建</a></li>
-                                        <li><a href="javascript:void(0);" id="delBtn"><span class="isw-list"></span> 删除</a></li>
+                                    	<sec:authorize access="hasAnyRole('system_admin')"><li><a href="#" class="lnk_new" role="button" data-toggle="modal"><span class="isw-ok"></span> 创建</a></li>
+                                        <li><a href="javascript:void(0);" id="delBtn"><span class="isw-list"></span> 删除</a></li></sec:authorize>
                                         <li><a href="#"><span class="isw-refresh"></span> 刷新</a></li>
                                     </ul>
                                 </li>
@@ -250,7 +272,7 @@
 									<th width="10%">所属部门</th>
 									<th >用户角色</th>
 									<th width="10%">创建时间</th>
-									<th width="5%">是否启用</th>
+									<sec:authorize access="hasRole('security_secrecy_admin')"><th width="7%">解锁</th></sec:authorize>
 									<th width="10%">最后访问时间</th>
 									<th width="50px">ID</th>
 									<th width="180px">操作</th>
@@ -269,14 +291,13 @@
 										</c:forEach>
 										</td>
 										<td>${user.createWhile }</td>
-										<td><c:if test="${!user.enabled }">否</c:if></td>
+										<sec:authorize access="hasRole('security_secrecy_admin')"><td><c:if test="${!user.accountNonLocked }"><a href="#" onclick="unlockUser('${user.username}');">解锁</a></c:if></td></sec:authorize>
 										<td>${user.lastWhile }</td>
 										<td class="userid">${user.id }</td>
 										<td>
 											<sec:authorize access="hasAnyRole('security_secrecy_admin','ROLE_ADMIN')"><a class="lnk_setrole" href="#" >设置角色</a></sec:authorize>
-											<sec:authorize access="hasAnyRole('sys_admin','ROLE_ADMIN')"><a class="lnk_modify" href="#">编辑</a></sec:authorize>
-					                        <sec:authorize access="hasAnyRole('sys_admin','ROLE_ADMIN')"><a href="javascript:void(0);" onclick="delUser(${user.id},this);">删除</a></sec:authorize>
-					                        <sec:authorize url="/user/enable/*"><c:if test="${!user.enabled }"><a href="javascript:void(0);" onclick="enableUser(${user.id});">启用</a></c:if></sec:authorize>
+											<sec:authorize access="hasAnyRole('sys_admin','ROLE_ADMIN')"><a class="lnk_modify" href="#">编辑</a><a href="javascript:void(0);" onclick="delUser(${user.id},this);">删除</a></sec:authorize>
+					                        <%--<sec:authorize url="/user/enable/*"><c:if test="${!user.enabled }"><a href="javascript:void(0);" onclick="enableUser(${user.id});">启用</a></c:if></sec:authorize>--%>
 					                        <%--<sec:authorize access="hasRole('security_secrecy_admin')"><c:if test="${!user.enabled }"><a href="javascript:void(0);" onclick="enableUser(${user.id});">启用</a></c:if></sec:authorize> --%>
 										</td>
 									</tr>

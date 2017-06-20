@@ -13,7 +13,6 @@
     
     <title>配置管理--运维管理系统</title>
 
-    <link rel="icon" type="image/ico" href="favicon.ico"/>
     <link href="${contextPath }/resources/css/icons.css" rel="stylesheet" type="text/css" />
     <link href="${contextPath }/resources/css/bootstrap.css" rel="stylesheet" type="text/css" />
     <link href="${contextPath }/resources/css/ui.css" rel="stylesheet" type="text/css" />
@@ -69,7 +68,8 @@
                 {
                 	propertiesdata = $.parseJSON(propertiesdata);
 	                $.each(propertiesdata, function(k,v){
-	        			$("div[name='"+k+"']").html(v);
+	                	if(v!="")
+	        				$("div[name='"+k+"']").html(v);
 	        		});
                 }
                 pm_cms_initselectdialog('ci');

@@ -94,24 +94,24 @@
 			return false;
 		});
 		pm_message_gettipscount();
-		pm_task_getmytaskcount();
+		//pm_task_getmytaskcount();
 
 		// 定时刷新
 		//setInterval(pm_message_gettipscount, 10000);
 		//setInterval(pm_task_getmytaskcount, 10000);
 	});
-	function pm_task_getmytaskcount() {
-		$.getJSON(ctx + "/workflow/task/getmytaskcount?t" + pm_random(),
-				function(datas) {
-					if (datas.count == "0")
-						return;
-					$(".task_count").text(
-							"(" + datas.claim + "/" + datas.count + ")");
-				});
-	}
+	//function pm_task_getmytaskcount() {
+	//	$.getJSON(ctx + "/workflow/task/getmytaskcount?t=" + pm_random(),
+	//			function(datas) {
+	//				if (datas.count == "0")
+	//					return;
+	//				$(".task_count").text(
+	//						"(" + datas.claim + "/" + datas.count + ")");
+	//			});
+	//}
 	function pm_user_getcurrent(){
 		$("#popup_users_box").html('');
-		$.getJSON(ctx + "/getcurrentusers?t" + pm_random(),
+		$.getJSON(ctx + "/getcurrentusers?t=" + pm_random(),
 				function(datas) {
 					if (datas.users.length == 0)
 						return;

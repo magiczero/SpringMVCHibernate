@@ -15,6 +15,8 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
+import org.activiti.engine.impl.util.json.JSONArray;
+import org.activiti.engine.impl.util.json.JSONObject;
 import org.apache.cxf.common.util.StringUtils;
 import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.map.JsonMappingException;
@@ -26,6 +28,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.cngc.pm.common.web.common.UserUtil;
@@ -43,6 +46,7 @@ import com.cngc.pm.service.cms.CiService;
 import com.cngc.pm.service.cms.PropertyService;
 import com.cngc.pm.service.cms.RelationService;
 import com.cngc.utils.PropertyFileUtil;
+import com.googlecode.genericdao.search.SearchResult;
 
 @Controller
 @RequestMapping(value="/cms/ci")
@@ -218,16 +222,40 @@ public class CiController {
 		return "cms/ci-list";
 	}
 	
-	@RequestMapping(value="/list/{code}/",method = RequestMethod.GET)
+	@RequestMapping(value="/list-by-category",method = RequestMethod.GET)
 	@ResponseBody
-	public Map<String,Object> geListByCategoryCode(@PathVariable("code") String code,Model model){
-		Map<String,Object> map = new HashMap<String,Object>();
-		if(code.equals("0"))
-			map.put("list", ciService.getAll());
-		else
-			map.put("list", ciService.getByCategoryCode(code).getResult());
+	public String geListByCategoryCode(@RequestParam(required=true) String aoData){
+		JSONArray jsonarray = new JSONArray(aoData);
 		
-		return map;
+		String sEcho = null;  
+	    int iDisplayStart = 0; // 起始索引  
+	    int iDisplayLength = 0; // 每页显示的行数  
+	    String code = "0";
+	    
+	    for (int i = 0; i < jsonarray.length(); i++) {  
+	        JSONObject obj = (JSONObject) jsonarray.get(i);  
+	        if (obj.get("name").equals("sEcho"))  {
+	            sEcho = obj.get("value").toString();  
+	        } else if (obj.get("name").equals("iDisplayStart")) {  
+	            iDisplayStart = obj.getInt("value");  
+	        } else if (obj.get("name").equals("iDisplayLength")) {  
+	            iDisplayLength = obj.getInt("value");  
+	        } else if (obj.get("name").equals("code")) {  
+	            code = obj.getString("value");  
+	        } 
+	    } 
+	    
+	    SearchResult<Ci> sr  = ciService.getAllWithPage(code,iDisplayStart,iDisplayLength);
+		
+		JSONObject getObj = new JSONObject();
+		
+		getObj.put("sEcho", sEcho);// 不知道这个值有什么用,有知道的请告知一下
+	    getObj.put("iTotalRecords", sr.getTotalCount());//实际的行数
+	    getObj.put("iTotalDisplayRecords",  sr.getTotalCount());//显示的行数,这个要和上面写的一样
+	    
+	    getObj.put("aaData", sr.getResult());//要以JSON格式返回
+	    
+		return getObj.toString();
 	}
 	
 	@RequestMapping(value="/delete/{id}", method = RequestMethod.GET)

@@ -288,6 +288,21 @@ public class UserController extends BaseController  {
 		return map;
 	}
 	
+	@RequestMapping(value="/unlock/{username}", method = RequestMethod.PUT)
+	public @ResponseBody Map<String, Object> unlockUser(@PathVariable("username") String username) {
+		Map<String, Object> map = new HashMap<>();
+		String currentusername = SecurityContextHolder.getContext().getAuthentication().getName();
+		try{
+			userService.lockingOrUnlockingWithUser(false, username, currentusername);
+			map.put("flag", true);
+		} catch (Exception e) {
+			
+			map.put("flag", false);
+		}
+		
+		return map;
+	}
+	
 	@RequestMapping(value="/del/{id}", method = RequestMethod.PUT)
 	public @ResponseBody Map<String, Object> delUser(@PathVariable("id") long id) {
 		Map<String, Object> map = new HashMap<>();

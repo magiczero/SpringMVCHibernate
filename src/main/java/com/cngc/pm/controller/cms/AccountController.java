@@ -286,6 +286,7 @@ public class AccountController {
 		{
 			List<String> row = new LinkedList<String>();
 			try {
+				//需要判断是否为空ci.getPropertiesData()
 				Map<String,String> propertymap = mapper.readValue(ci.getPropertiesData(), Map.class);
 				Object obj;
 				for(Property p:fieldsSet)

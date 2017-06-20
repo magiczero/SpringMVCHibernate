@@ -149,17 +149,19 @@ function pm_cms_getIncident()
 {
 	$.getJSON(ctx+'/itilrelation/get-ci-incident/'+ciId+'/?t='+pm_random(),function(data){
 		var ids = data.incidents;
-		$("#incidentTable tbody tr").remove();
-		$.getJSON(ctx+'/incident/getjson/'+ids+'/?t='+pm_random(),function(data){
-			
-			var trs = "";
-			$.each(data.incidents,function(i,v){
-				trs += "<tr><td><a href='"+ctx+"/incident/view/"+v.id+"' target=_blank>"+v.abs+"</a></td>"
-					+"<td>"+new Date(v.applyTime).format("yyyy-MM-dd HH:mm")+"</td>"
-					+"<td>"+v.statusName+"</td></tr>";
+		if(ids != "") {
+			$("#incidentTable tbody tr").remove();
+			$.getJSON(ctx+'/incident/getjson/'+ids+'/?t='+pm_random(),function(data){
+				
+				var trs = "";
+				$.each(data.incidents,function(i,v){
+					trs += "<tr><td><a href='"+ctx+"/incident/view/"+v.id+"' target=_blank>"+v.abs+"</a></td>"
+						+"<td>"+new Date(v.applyTime).format("yyyy-MM-dd HH:mm")+"</td>"
+						+"<td>"+v.statusName+"</td></tr>";
+				});
+				$("#incidentTable tbody").append(trs);
 			});
-			$("#incidentTable tbody").append(trs);
-		});
+		}
 	});
 }
 function pm_cms_getChange()

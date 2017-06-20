@@ -22,7 +22,16 @@ public class LoginController {
 	
 	@RequestMapping(value = "/initLogin.html")
 	public String initLoginPage() {
-			return "login";
+//	    Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+//	    if(auth instanceof AnonymousAuthenticationToken){
+	      return "login";
+//	    }else{
+//	    	if(userUtil.IsLeader(auth)) {
+//				return "redirect:/workflow/task/board";
+//			} else
+//				return "redirect:/workflow/task/mytask";
+//	    }
+		//	return "login";
 	}
 	
 	@RequestMapping(value = "/welcome.html", method = RequestMethod.GET)

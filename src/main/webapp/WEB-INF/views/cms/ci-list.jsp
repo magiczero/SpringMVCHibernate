@@ -14,29 +14,6 @@
     <![endif]-->
     
     <title>配置管理--运维管理系统</title>
-    <%--
-    //
-//                       .::::.
-//                     .::::::::.
-//                    :::::::::::
-//                 ..:::::::::::'
-//              '::::::::::::'
-//                .::::::::::
-//           '::::::::::::::..
-//                ..::::::::::::.
-//              ``::::::::::::::::
-//               ::::``:::::::::'        .:::.
-//              ::::'   ':::::'       .::::::::.
-//            .::::'      ::::     .:::::::'::::.
-//           .:::'       :::::  .:::::::::' ':::::.
-//          .::'        :::::.:::::::::'      ':::::.
-//         .::'         ::::::::::::::'         ``::::.
-//     ...:::           ::::::::::::'              ``::.
-//    ```` ':.          ':::::::::'                  ::::..
-//                       '.:::::'                    ':'````..
-//
-//			by yhp 美女保佑   2017-05-26
-     --%>
 
     <link href="${contextPath }/resources/css/icons.css" rel="stylesheet" type="text/css" />
     <link href="${contextPath }/resources/css/bootstrap.css" rel="stylesheet" type="text/css" />
@@ -47,7 +24,7 @@
     <link href="${contextPath }/resources/css/validation.css" rel="stylesheet" type="text/css" />
     <link href="${contextPath }/resources/css/mycss.css" rel="stylesheet" type="text/css" />
     <link href="${contextPath }/resources/css/dataTables.css" rel="stylesheet" type="text/css" />
-    <link href="${contextPath }/resources/css/dataTables.fixedColumns.css" rel="stylesheet" type="text/css" />
+    <!-- <link href="${contextPath }/resources/css/dataTables.fixedColumns.css" rel="stylesheet" type="text/css" /> -->
     <link href='${contextPath }/resources/js/plugins/jstree/jquery.treeview.css' rel="stylesheet" type="text/css" />
     <link href="${contextPath }/resources/css/uploadify.css" rel="stylesheet" type="text/css" />
     <!--[if lt IE 8]>
@@ -60,7 +37,7 @@
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/cookie/jquery.cookies.2.2.0.min.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/bootstrap.min.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/dataTables/jquery.dataTables.min.js'></script> 
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/dataTables/dataTables.fixedColumns.min.js'></script>
+    <!-- <script type='text/javascript' src='${contextPath }/resources/js/plugins/dataTables/dataTables.fixedColumns.min.js'></script> -->
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/validation/languages/jquery.validationEngine-zh-CN.js' charset='utf-8'></script>
 <script type='text/javascript' src='${contextPath }/resources/js/plugins/validation/jquery.validationEngine.js' charset='utf-8'></script>   
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/highlight/jquery.highlight-4.js'></script>
@@ -79,8 +56,78 @@
     <![endif]-->
     <script type="text/javascript">
     	var ctx = "${contextPath}";
+    	var table;
             $(document).ready(function () {
-                
+            	
+            	table = $('#ciTable').dataTable({
+        				"oLanguage": {"sUrl": "${contextPath}/resources/json/Chinese.json"},
+        			    "bAutoWidth": true,
+        			    "sDom": '<"top"i>rt<"bottom"flp><"clear">',     //改变页面元素位置      
+        			    "bPaginate": true,   
+        			    "sPaginationType": "full_numbers", 
+        			    "iDisplayLength": 10, 
+        			    "bSort": true, 
+        			    "bFilter": false, 
+        			    "aaSorting": [], 
+        			    "bInfo": false, 
+        			    "bStateSave": false, 
+        			    "iCookieDuration": 0, 
+        			    "bScrollCollapse": true, 
+        			    "bProcessing": true, 
+        			    "bJQueryUI": false,
+        			    "sScrollX":"100%",
+        			    "sScrollXInner":"200%",
+        			    //"fixedColumns":  true,
+        			    //"fixedColumnsOptions":{
+        		        //    iLeftColumns: 1,
+        		        //    iRightColumns: 1
+        		        //},
+        		        "bServerSide": true,//这个用来指明是通过服务端来取数据
+        	            "sAjaxSource": ctx + '/cms/ci/list-by-category?t=' + pm_random(),//这个是请求的地址
+        	            "fnServerData": retrieveData, // 获取数据的处理函数
+        	            "fnServerParams": function (aoData) {  //查询条件
+        	                aoData.push(
+        	                		{ "name": "code", "value": $("#search_code").val() }
+        	                    );
+        	            },
+        	            "aoColumnDefs": [ {
+        	                "aTargets": [ 0 ],
+        	                "mData": "download_link",
+        	                "mRender": function ( data, type, full ) {
+        	                  return '<a href="${contextPath }/cms/ci/detail/'+full.id+'">'+data+'</a>';
+        	                }
+        	              },
+        	              {
+          	                "aTargets": [ 8 ],
+          	                "mRender": function ( data, type, full ) {
+          	                  return (data.split(" "))[0];
+          	                }
+          	              },
+        	              {
+          	                "aTargets": [ 13 ],
+          	                "mData": "download_link",
+          	                "mRender": function ( data, type, full ) {
+          	                  return '<a href="${contextPath }/cms/ci/addproperty/'+full.id+'">属性</a>&nbsp;&nbsp;<a href="#" onclick="del('+full.id+');">删除</a>';
+          	                }
+          	              }],
+        	            "aoColumns" : [
+        	                           { "mData" : 'name' }, 
+        	                           { "mData" : 'num' }, 
+        	                           { "mData" : 'categoryName' }, 
+        	                           { "mData" : 'producer' }, 
+        	                           { "mData" : 'model' }, 
+        	                           { "mData" : 'departmentName' }, 
+        	                           { "mData" : 'userInMaintenanceName' }, 
+        	                           { "mData" : 'serial' }, 
+        	                           { "mData" : 'createdTime' }, 
+        	                           { "mData" : 'expirationTime' }, 
+        	                           { "mData" : 'serviceStartTime' }, 
+        	                           { "mData" : 'purpose' }, 
+        	                           { "mData" : 'statusName' }, 
+        	                           { "mData" : 'id' }
+        	                             ]
+        			});
+            	//new $.fn.dataTable.FixedColumns(table);
                 $(".header").load("${contextPath}/header?t="+pm_random());
                 $(".menu").load("${contextPath }/menu?t="+pm_random(), function() {$("#node_${moduleId}").addClass("active");});
                 $(".breadLine .buttons").load("${contextPath}/contentbuttons?t="+pm_random());
@@ -93,84 +140,23 @@
             		url : ctx + '/cms/category/getjson?t=' + pm_random()
             	});
                 
-                initTable("0");
+                //initTable("0");
                 
             });
+            
+            //$(document).ready(function () {$('.sorting')[0].click;});
             function initTable(code)
             {
-            	$.getJSON(ctx + '/cms/ci/list/'+code+'/?t=' + pm_random() , function(data) {
-            		$("#ciTable tbody tr").remove();
-            		if(data.list==null)
-            			return;
-            		var trs = "";
-            		for(i=0;i<data.list.length;i++)
-            		{
-            			trs += "<tr>"
-						+"<td><a href='"+ctx+"/cms/ci/detail/"+data.list[i]["id"]+"'>"+data.list[i]["name"]+"</a>"
-						
-						trs += "</td>";
-						trs += "<td>"+data.list[i]["num"]+"</td>"
-						+"<td>"+data.list[i]["categoryName"]+"</td>"
-						+"<td>"+data.list[i]["producer"]+"</td>"
-						+"<td>"+data.list[i]["model"]+"</td>"
-						+"<td>"+data.list[i]["departmentName"]+"</td>"
-						+"<td>"+data.list[i]["userInMaintenanceName"]+"</td>"
-						+"<td>"+data.list[i]["serial"]+"</td>"
-						+"<td>"+transDate(data.list[i]["createdTime"])+"</td>"
-						+"<td>"+transDate(data.list[i]["expirationTime"])+"</td>"
-						+"<td>"+transDate(data.list[i]["serviceStartTime"])+"</td>"
-						+"<td>"+data.list[i]["purpose"]+"</td>"
-						+"<td>"+data.list[i]["statusName"]+"</td>";
-						//if(data.list[i]["deleteStatus"]=='01')
-						//	trs += "<td><span class='label label-success'>"+data.list[i]["deleteStatusName"]+"</span></td>";
-						//else
-						//	trs += "<td><span class='label label-danger'>"+data.list[i]["deleteStatusName"]+"</span></td>";
-						//+"<td>"+new Date(data.list[i]["lastUpdateTime"]).format('yyyy-MM-dd HH:mm:ss')+"</td>"
-						trs += "<td>"
-						+"<a href='"+ctx+"/cms/ci/addproperty/"+data.list[i]["id"]+"' >属性</a> "
-						+" <a href='"+ctx+"/cms/ci/delete/"+data.list[i]["id"]+"' class='confirm'>删除</a>"
-						+"</td>"
-						+"</tr>";
-						
-            		}
-            		$("#ciTable tbody").append(trs);
-            		
-            		var datatables_options = {
-            				"oLanguage": {"sUrl": "${contextPath}/resources/json/Chinese.json"},
-            			    "bAutoWidth": true,
-            			    "sDom": '<"top"i>rt<"bottom"flp><"clear">',           
-            			    "bPaginate": true,   
-            			    "sPaginationType": "full_numbers", 
-            			    "iDisplayLength": 10, 
-            			    "bSort": true, 
-            			    "bFilter": false, 
-            			    "aaSorting": [], 
-            			    "bInfo": false, 
-            			    "bStateSave": false, 
-            			    "iCookieDuration": 0, 
-            			    "bScrollAutoCss": true, 
-            			    "bProcessing": true, 
-            			    "bJQueryUI": false,
-            			    "fixedColumns":   {
-            		            leftColumns: 1,
-            		            rightColumns: 1
-            		        }
-            			};
+            	//datatables_options["sAjaxSource"] = ctx + '/cms/ci/list-by-category?t=' + pm_random();
+            		$("#search_code").val(code);
 
-            			datatables_options["sScrollX"] = "100%";
-            			datatables_options["bScrollCollapse"] = true;
-
-            			// add this
-            			datatables_options["sScrollXInner"] = '150%';
-            			//
-            			var table = $('#ciTable').dataTable(datatables_options);
-            			new $.fn.dataTable.FixedColumns(table);
+            		 table.fnDraw();
             		
-                    $(".confirm").bind("click",function(){
-                    	if(!confirm("确定要执行该操作?"))
-                    		return false;
-                    }); 
-            	});
+                    //$(".confirm").bind("click",function(){
+                    //	if(!confirm("确定要执行该操作?"))
+                    //		return false;
+                    //}); 
+                    
             }
             
             function transDate(time_) {
@@ -178,6 +164,30 @@
             	var dt = new Date(time_);
             	
             	return dt.toLocaleDateString();
+            }
+            
+            function retrieveData( sSource111,aoData111, fnCallback111) {
+    			$.ajax({
+    				url : sSource111,//这个就是请求地址对应sAjaxSource
+    				data : {"aoData":JSON.stringify(aoData111)},//这个是把datatable的一些基本数据传给后台,比如起始位置,每页显示的行数
+    				type : 'get',
+    				dataType : 'json',
+    				async : false,
+    				success : function(result) {
+    					fnCallback111(result);//把返回的数据传给这个方法就可以了,datatable会自动绑定数据的
+    					
+    				},
+    				error : function(msg) {
+    				}
+    			});
+    		}
+            
+            function del(id) {
+            	if(confirm("确认删除")) {
+            		window.location='${contextPath}/cms/ci/delete/'+id;
+            	} else {
+            		return false;
+            	}
             }
     </script>
     <style type="text/css">
@@ -245,6 +255,7 @@
                             </ul>                             
                         </div>
                         <div class="block-fluid table-sorting clearfix">
+                        	<input type="hidden" id="search_code" name="search_code" value="0" />
                             <table class="stripe row-border order-column" id="ciTable" cellspacing="0" width="100%">
                                 <thead>
                                 	<tr>

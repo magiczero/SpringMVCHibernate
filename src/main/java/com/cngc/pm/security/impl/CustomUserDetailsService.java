@@ -18,6 +18,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import com.cngc.pm.model.Role;
 import com.cngc.pm.model.SysUser;
+import com.cngc.pm.service.LoginAttemptService;
 import com.cngc.pm.service.UserService;
 
 public class CustomUserDetailsService implements UserDetailsService {
@@ -29,7 +30,8 @@ public class CustomUserDetailsService implements UserDetailsService {
 	
 	@Resource
 	private UserService userService;
-	
+	@Resource
+	private LoginAttemptService loginAttemptService;
 	
 	@Override
 	public UserDetails loadUserByUsername(String username)
@@ -48,6 +50,11 @@ public class CustomUserDetailsService implements UserDetailsService {
                     "User.notFound", new Object[] { username },
                     "用户名 {0} 不存在"));
 		}
+		//5次登陆锁定
+//		if (loginAttemptService.isBlocked(username)) {
+//			
+//            throw new RuntimeException("blocked");  
+//        }
 		
 		Collection<GrantedAuthority> auths = new ArrayList<GrantedAuthority>();
 		
@@ -58,7 +65,7 @@ public class CustomUserDetailsService implements UserDetailsService {
 		//accountLocked  定义账号是否已经锁定
 		//accountExpired  定义账号是否已经过期
 		//credentialsExpired  定义凭证是否已经过期
-		User userdetail = new User(user.getUsername(), user.getPassword(), user.isEnabled(), true, true, true, auths);
+		User userdetail = new User(user.getUsername(), user.getPassword(), user.isEnabled(), user.isAccountNonExpired(), user.isCreadentialsNonExpired(), user.isAccountNonLocked(), auths);
 		return userdetail;
 	}
 

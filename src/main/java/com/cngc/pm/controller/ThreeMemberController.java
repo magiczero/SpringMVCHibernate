@@ -496,7 +496,7 @@ public class ThreeMemberController {
 		return list1;
 	}
 	
-	@RequestMapping(value="/init-create-threemember",method=RequestMethod.GET)
+	@RequestMapping(value="/create-threemember",method=RequestMethod.GET)
 	public String initCreateThreemember(Model model) {
 		
 //		model.addAttribute("relationship", new Relationship());

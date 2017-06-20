@@ -58,12 +58,14 @@
             $(".menu").load("${contextPath }/menu?t="+pm_random(), function () { $("#node_${moduleId}").addClass("active"); });
             $(".breadLine .buttons").load("${contextPath }/contentbuttons?t="+pm_random());
 
-            //var $form = $('#property_form');
-            //if($form.find('.dateISO').length>0) {
-           	$(".dateISO").datetimepicker({autoclose: true,language: 'zh-CN',minuteStep: 5,todayBtn: true});
+            var $form = $('#property_form');
+            if($form.find('.dateISO').length>0) {
+            	$('.dateISO').datepicker();
+            }
+           	//$(".dateISO").datetimepicker({autoclose: true,language: 'zh-CN',minuteStep: 5,todayBtn: true});
             
           //表单验证
-            $("#property_form").validationEngine({promptPosition : "topRight", scroll: true});
+            $form.validationEngine({promptPosition : "topRight", scroll: true});
            	
             // 将属性值附加到表单中
             if(propertiesdata!="")

@@ -20,6 +20,7 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.cngc.pm.dao.StatsDAO;
@@ -35,6 +36,7 @@ import com.googlecode.genericdao.search.Search;
 import com.googlecode.genericdao.search.SearchResult;
 
 @Service
+@Transactional(propagation = Propagation.SUPPORTS, readOnly=true)
 public class CiServiceImpl implements CiService{
 	
 	@Autowired
@@ -47,13 +49,13 @@ public class CiServiceImpl implements CiService{
 	private UserDAO userDao;
 
 	@Override
-	@Transactional
+	@Transactional(propagation = Propagation.REQUIRED, readOnly=false)
 	public void save(Ci ci){
 		ciDao.save(ci);
 	}
 	
 	@Override
-	@Transactional
+	@Transactional(propagation = Propagation.REQUIRED, readOnly=false)
 	public boolean delById(Long id)
 	{
 		ciDao.removeById(id);
@@ -61,26 +63,22 @@ public class CiServiceImpl implements CiService{
 	}
 	
 	@Override
-	@Transactional
 	public Ci getById(Long id){
 		return ciDao.find(id);
 	}
 	
 	@Override
-	@Transactional
 	public List<Ci> getAll()
 	{
 		return ciDao.findAll();
 	}
 	
 	@Override
-	@Transactional
 	public List<Ci> getByRelation(String relationId,Long primaryId)
 	{
 		return ciDao.getByRelation(relationId, primaryId);
 	}
 	@Override
-	@Transactional
 	public SearchResult<Ci> getByCategoryCode(String code)
 	{
 		Search search = new Search();
@@ -88,38 +86,35 @@ public class CiServiceImpl implements CiService{
 		return ciDao.searchAndCount(search);
 	}
 	@Override
-	@Transactional
+	@Transactional(propagation = Propagation.REQUIRED, readOnly=false)
 	public boolean deleteRelation(Long primaryId,Long secondaryId,String relationId)
 	{
 		return ciDao.deleteRelation(primaryId, secondaryId, relationId);
 	}
 	@Override
-	@Transactional
+	@Transactional(propagation = Propagation.REQUIRED, readOnly=false)
 	public boolean saveRelation(Long primaryId,Long secondaryId,String relationId)
 	{
 		return ciDao.saveRelation(primaryId, secondaryId, relationId);
 	}
 	@Override
-	@Transactional
 	public SearchResult<Ci> getByIds(List<Long> ids)
 	{
 		return ciDao.getByIds(ids);
 	}
 	@Override
-	@Transactional
 	public Map<String,Object> getStats(String column,String row,String status)
 	{
 		return statsDao.getStats("CMS", column, row, null, null, status);
 	}
 	@Override
-	@Transactional
 	public SearchResult<Ci> getByUser(String user)
 	{
 		return ciDao.getByUser(user);
 	}
 
 	@Override
-	@Transactional
+	@Transactional(propagation = Propagation.REQUIRED, readOnly=false)
 	public void importData(Set<Attachment> setAttach) throws IOException, ParseException {
 		// TODO Auto-generated method stub
 		//首先加载properties文件
@@ -384,5 +379,20 @@ public class CiServiceImpl implements CiService{
 		}
 		
 		return ci;
+	}
+
+	@Override
+	public SearchResult<Ci> getAllWithPage(String code,int iDisplayStart, int iDisplayLength) {
+		// TODO Auto-generated method stub
+		Search search = new Search(Ci.class);
+		
+		search.addFilterEqual("deleteStatus", "01");
+		if(!code.equals("0"))
+			search.addFilterLike("categoryCode", code+"%");
+		
+		search.setFirstResult(iDisplayStart);
+		search.setMaxResults(iDisplayLength);
+		
+		return ciDao.searchAndCount(search);
 	}
 }

@@ -255,7 +255,7 @@
                                 <li>
                                     <a href="#" class="isw-settings tipl" title="操作 "></a>
                                     <ul class="dd-list">
-                                    	<sec:authorize access="hasAnyRole('system_admin')"><li><a href="#" class="lnk_new" role="button" data-toggle="modal"><span class="isw-ok"></span> 创建</a></li>
+                                    	<sec:authorize access="hasAnyRole('sys_admin')"><li><a href="#" class="lnk_new" role="button" data-toggle="modal"><span class="isw-ok"></span> 创建</a></li>
                                         <li><a href="javascript:void(0);" id="delBtn"><span class="isw-list"></span> 删除</a></li></sec:authorize>
                                         <li><a href="#"><span class="isw-refresh"></span> 刷新</a></li>
                                     </ul>
@@ -266,7 +266,7 @@
                             <table class="table" id="eventTable">
                                 <thead>
 								<tr>
-									<th width="50px">序号</th>
+									<th width="70px">序号</th>
 									<th width="10%">用户名</th>
 									<th width="10%">真实姓名</th>
 									<th width="10%">所属部门</th>
@@ -274,7 +274,7 @@
 									<th width="10%">创建时间</th>
 									<sec:authorize access="hasRole('security_secrecy_admin')"><th width="7%">解锁</th></sec:authorize>
 									<th width="10%">最后访问时间</th>
-									<th width="50px">ID</th>
+									<th width="70px">ID</th>
 									<th width="180px">操作</th>
 								</tr>
                                 </thead>
@@ -295,8 +295,8 @@
 										<td>${user.lastWhile }</td>
 										<td class="userid">${user.id }</td>
 										<td>
-											<sec:authorize access="hasAnyRole('security_secrecy_admin','ROLE_ADMIN')"><a class="lnk_setrole" href="#" >设置角色</a></sec:authorize>
-											<sec:authorize access="hasAnyRole('sys_admin','ROLE_ADMIN')"><a class="lnk_modify" href="#">编辑</a><a href="javascript:void(0);" onclick="delUser(${user.id},this);">删除</a></sec:authorize>
+											<sec:authorize access="hasAnyRole('security_secrecy_admin','ROLE_ADMIN')"><a class="lnk_setrole" href="#" >设置角色</a>&nbsp;&nbsp;</sec:authorize>
+											<sec:authorize access="hasAnyRole('sys_admin','ROLE_ADMIN')"><a class="lnk_modify" href="#">编辑</a>&nbsp;&nbsp;<a href="javascript:void(0);" onclick="delUser(${user.id},this);">删除</a>&nbsp;&nbsp;</sec:authorize>
 					                        <%--<sec:authorize url="/user/enable/*"><c:if test="${!user.enabled }"><a href="javascript:void(0);" onclick="enableUser(${user.id});">启用</a></c:if></sec:authorize>--%>
 					                        <%--<sec:authorize access="hasRole('security_secrecy_admin')"><c:if test="${!user.enabled }"><a href="javascript:void(0);" onclick="enableUser(${user.id});">启用</a></c:if></sec:authorize> --%>
 										</td>
@@ -334,7 +334,15 @@
                             <div class="block-fluid">
                                 <div class="row-form clearfix">
                                     <div class="col-md-3">用户密码:</div>
-                                    <div class="col-md-9"><input id="password" name="password" type="password" /></div>
+                                    <div class="col-md-9"><input id="password" name="password" type="password" class="validate[required,custom[password0]]"/></div>
+                                </div>                                                           
+                            </div>                
+                        </div>
+                        <div class="row">
+                            <div class="block-fluid">
+                                <div class="row-form clearfix">
+                                    <div class="col-md-3">确认密码:</div>
+                                    <div class="col-md-9"> <input type="password" id="repeatPwd" name="repeatPwd" class="validate[required,equals[password]]" /></div>
                                 </div>                                                           
                             </div>                
                         </div>
@@ -383,9 +391,6 @@
                             </div>                
                         </div>
                         <div class="dr"><span></span></div>
-                            <div class="block">
-                                <p>如果密码不填写，默认“123456”</p>
-                            </div>
                     </div>   
                     <div class="modal-footer">
                         <button class="btn btn-primary" aria-hidden="true">保存</button> 

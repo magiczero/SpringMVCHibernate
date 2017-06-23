@@ -196,4 +196,14 @@ public class RoleServiceImpl implements RoleService{
 		}
 		return false;
 	}
+	@Override
+	@Transactional(readOnly=true)
+	public List<Role> getNonSysAll() {
+		// TODO Auto-generated method stub
+		Search search = new Search(Role.class);
+		
+		search.addFilterEqual("sys", false);
+		
+		return roleDao.search(search);
+	}
 }

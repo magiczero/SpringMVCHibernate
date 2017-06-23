@@ -177,4 +177,10 @@ public class SystemController {
 		
 		return "public/content_buttons";
 	}
+	
+	@RequestMapping(value = "/modify-initial-password", method = RequestMethod.GET)
+	public String modifyInitPassword() {
+		
+		return "public/modify-initial-password";
+	}
 }

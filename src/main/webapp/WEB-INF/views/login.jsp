@@ -89,14 +89,16 @@
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-md-8">
+                   <!--  <div class="col-md-8">
                     <div class="form-group" style="margin-top: 5px;">
-                            <label class="checkbox"><input name="remember-me" type="checkbox" />  记住我的信息</label>                                                
+                            <label class="checkbox"><input name="remember-me" type="checkbox"/>  记住我的信息</label>                                                
                         </div>  
-                    </div>
+                    </div> -->
+                    <div class="col-md-4"></div>
                     <div class="col-md-4">
                         <button type="submit" class="btn btn-default btn-block">登 录</button>       
                     </div>
+                    <div class="col-md-4"></div>
                 </div>
             </form>  
             <div class="dr"><span></span></div>

@@ -18,4 +18,9 @@ public interface RoleService {
 	List<Authority> getAuthsByRole(long id);
 	void setAuths(String username, Role role, String... authIds);
 	void setMenuByRole(String username, Role role, String[] menuIds);
+	/**
+	 * 获取非系统角色
+	 * @return
+	 */
+	List<Role> getNonSysAll();
 }

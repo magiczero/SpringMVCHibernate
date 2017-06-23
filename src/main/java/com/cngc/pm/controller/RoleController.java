@@ -43,7 +43,7 @@ public class RoleController {
 
 	@RequestMapping(value = "/list", method = RequestMethod.GET)
 	public String list(Model model) {
-		model.addAttribute("list", roleService.getAll());
+		model.addAttribute("list", roleService.getNonSysAll());
 		model.addAttribute("authList", authService.getAll());
 		List<Moudle> menuAll = moudleService.getAllTopMenu();
 

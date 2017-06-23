@@ -13,8 +13,18 @@ public interface UserService {
 	 * @param user
 	 * @param username
 	 * @param enable	是否启用
+	 * @param ip
 	 */
-	void save(SysUser user, String username, boolean enable);
+	void save(SysUser user, String username, boolean enable, String ip);
+	
+	
+	/**
+	 * 系统管理员新建用户
+	 * @param user
+	 * @param SysAdminName
+	 * @param ip
+	 */
+	void saveUserWithSysAdmin(SysUser user, String SysAdminName, String ip);
 	
 	SysUser getById(Long id);
 	

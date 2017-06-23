@@ -24,7 +24,11 @@
 	
 
 	<bean id="messageSource" class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
-		<property name="basename" value="classpath:messages"></property>		
+		<property name="basenames">
+			<list>
+				<value>classpath:messages</value>
+			</list>
+		</property>		
 	</bean>
 	
 	<!-- <beans:bean id="conversionService" class="org.springframework.format.support.FormattingConversionServiceFactoryBean">

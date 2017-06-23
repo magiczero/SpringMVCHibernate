@@ -18,7 +18,7 @@ import com.google.common.cache.LoadingCache;
 @Service
 @Transactional(propagation = Propagation.SUPPORTS, readOnly=true)
 public class LoginAttemptServiceImpl implements LoginAttemptService {
-	private final int MAX_ATTEMPT = 5;  
+	private final int MAX_ATTEMPT = 4;  
     private LoadingCache<String, Integer> attemptsCache;  
     
     @Autowired
@@ -46,11 +46,11 @@ public class LoginAttemptServiceImpl implements LoginAttemptService {
         }  
         attempts++;  
         attemptsCache.put(key, attempts);  
-        
+        System.out.println(attempts++);
         //数据库锁定
         if(isBlocked(key)) {
         	SysUser user0 = userDao.getUserByUserName(key);
-			user0.setAccountNonLocked(true);
+			user0.setAccountNonLocked(false);
 			
 			userDao.save(user0);
         }
@@ -69,6 +69,11 @@ public class LoginAttemptServiceImpl implements LoginAttemptService {
         } catch (ExecutionException e) {  
             return false;  
         }  
+	}
+	@Override
+	public int getAttempts(String key) throws ExecutionException {
+		// TODO Auto-generated method stub
+		return attemptsCache.get(key)+1;
 	}
 
 }

@@ -106,7 +106,7 @@
 	    <authentication-provider ref="rememberMeAuthenticationProvider"/>
 	 </authentication-manager>
     
-	<beans:bean id="authenticationProvider" class="org.springframework.security.authentication.dao.DaoAuthenticationProvider">  
+	<beans:bean id="authenticationProvider" class="com.cngc.pm.security.PasswordAuthenticationProvider">  
    		<beans:property name="userDetailsService" ref="customUserDetailsService" />  
    		<!--显示用户错误信息-->
         <beans:property name="hideUserNotFoundExceptions" value="false" />

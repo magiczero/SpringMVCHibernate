@@ -1,12 +1,24 @@
 package com.cngc.pm.controller;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
+import java.security.InvalidKeyException;
+import java.security.Key;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
 import java.util.Iterator;
 import java.util.UUID;
 
 import javax.annotation.Resource;
+import javax.crypto.Cipher;
+import javax.crypto.CipherInputStream;
+import javax.crypto.CipherOutputStream;
+import javax.crypto.KeyGenerator;
+import javax.crypto.NoSuchPaddingException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -19,6 +31,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -47,6 +60,9 @@ public class AttachmentController {
 	private AttachService attachService;
 
 	private String fileUploadDirectory = Common._fileUploadPath;
+	
+	// 密钥是16位长度的byte[]进行Base64转换后得到的字符串
+	public static String strKey = "LmMGStGtOpF4xNyvYt54EQ==";
 
 //	@RequestMapping
 //	public String index() {
@@ -64,16 +80,35 @@ public class AttachmentController {
 		}
 		return flag;
 	}
+	
+//	 /** 
+//	  * 根据参数生成KEY 
+//	  */ 
+//	  public void getKey(String strKey) { 
+//	    try { 
+//	        KeyGenerator _generator = KeyGenerator.getInstance("DES"); 
+//	        _generator.init(new SecureRandom(strKey.getBytes())); 
+//	        this.key = _generator.generateKey(); 
+//	        _generator = null; 
+//	    } catch (Exception e) { 
+//	        throw new RuntimeException("Error initializing SqlMap class. Cause: " + e); 
+//	    } 
+//	  } 
 
 	@RequestMapping(value = "/upload", produces="text/html;charset=UTF-8",method = RequestMethod.POST)
 	public String upload(Model model,MultipartHttpServletRequest request,
-			HttpServletResponse response) {
+			HttpServletResponse response) throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException, IOException {
 		log.debug("上传附件……");
+		String currentusername = SecurityContextHolder.getContext().getAuthentication().getName();
 		Iterator<String> itr = request.getFileNames();
 		MultipartFile mpf;
 		String type = request.getParameter("type");
 
 		//List<Attachment> list = new LinkedList<>();
+		KeyGenerator _generator = KeyGenerator.getInstance("DES"); 
+		_generator.init(new SecureRandom(strKey.getBytes())); 
+		Key key = _generator.generateKey(); 
+		_generator = null; 
 
 		while (itr.hasNext()) {
 			mpf = request.getFile(itr.next());
@@ -89,7 +124,7 @@ public class AttachmentController {
 				throw new BusinessException("非法文件");
 			}
 			//判断是否是指定扩展名
-			if(isExtension(originalFileExtension, ".doc",".docx",".xls",".xlsx",".pdf",".ppt",".pptx",".jpg",".png",".zip",".rar")) {
+			if(isExtension(originalFileExtension, ".txt",".doc",".docx",".xls",".xlsx",".pdf",".ppt",".pptx",".jpg",".png",".zip",".rar")) {
 				String newFilename = newFilenameBase + originalFileExtension; // 重命名
 	//			String storageDirectory = request.getSession().getServletContext()
 	//					.getRealPath("")
@@ -100,9 +135,25 @@ public class AttachmentController {
 					folder.mkdirs();
 	
 				File newFile = new File(storageDirectory + "/" + newFilename);
-				try {
-					mpf.transferTo(newFile);
-	
+					//mpf.transferTo(newFile);
+					//加密
+				Cipher cipher = Cipher.getInstance("DES"); 
+			    // cipher.init(Cipher.ENCRYPT_MODE, getKey()); 
+			    cipher.init(Cipher.ENCRYPT_MODE, key); 
+			    InputStream is = mpf.getInputStream(); 
+			    OutputStream out = new FileOutputStream(newFile); 
+			    CipherInputStream cis = new CipherInputStream(is, cipher); 
+			    byte[] buffer = new byte[1024]; 
+			    int r; 
+			    while ((r = cis.read(buffer)) > 0) { 
+			        out.write(buffer, 0, r); 
+			    } 
+			    cis.close(); 
+			    is.close(); 
+			    out.close(); 
+			    //加密完成
+				
+				
 					 Attachment attach = new Attachment();
 					 attach.setName(origFilename);
 					 //attach.setThumbnailFilename(thumbnailFilename);
@@ -131,14 +182,10 @@ public class AttachmentController {
 					 	case "7":
 					 		attach.setType(AttachType.feedback);
 					 }
-					 attach = attachService.create(attach);
+					 attach = attachService.create(attach,currentusername);
 					
 					 //list.add(attach);
 					 model.addAttribute("fileId", attach.getId()+",");
-				} catch (IOException e) {
-					e.printStackTrace();
-					log.error("不能上传文件 " + mpf.getOriginalFilename(), e);
-				}
 			} else {
 				throw new BusinessException("非法文件");
 			}
@@ -213,7 +260,7 @@ public class AttachmentController {
 					 attach.setSize(mpf.getSize());
 					 attach.setPath(folder.getPath());
 					 attach.setType(AttachType.uefile);
-					 attach = attachService.create(attach);
+					 attach = attachService.create(attach,SecurityContextHolder.getContext().getAuthentication().getName());
 					
 					//msg = "{\"original\":\""+attach.getName()+"\",\"url\":\"../resources/ueuploadfiles/"+attach.getNewFilename()+"\",\"title\":\"\",\"state\":\"\"}";
 					msg = "{\"name\":\""+ attach.getNewFilename() +"\", \"originalName\": \""+ attach.getName() +"\", \"size\": "+ attach.getSize() +", \"state\": \"SUCCESS\", \"type\": \""+ originalFileExtension +"\", \"url\": \"resources/ueuploadfiles/"+attach.getNewFilename()+"\"}";
@@ -282,7 +329,7 @@ public class AttachmentController {
 			attach.setSize(file.getSize());
 			attach.setPath(folder.getPath());
 			attach.setType(AttachType.doc);			//如何灵活判断
-			attach = attachService.create(attach); // 保存
+			attach = attachService.create(attach,SecurityContextHolder.getContext().getAuthentication().getName()); // 保存
 
 		} catch (IOException e) {
 			log.error(e.getMessage());
@@ -291,27 +338,47 @@ public class AttachmentController {
 	}
 	
 	@RequestMapping("download/{id}")
-	public void downloadFile(@PathVariable("id") long id, HttpServletResponse response) throws IOException {
+	public void downloadFile(@PathVariable("id") long id, HttpServletResponse response) throws IOException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException {
 		Attachment attach = attachService.get(id);
 		String path = fileUploadDirectory + attach.getNewFilename();
-		File file = new File(path);
-		
+//		File file = new File(path);
+		//解密
+		KeyGenerator _generator = KeyGenerator.getInstance("DES"); 
+	    _generator.init(new SecureRandom(strKey.getBytes())); 
+	    Key key = _generator.generateKey(); 
+	    _generator = null; 
+		Cipher cipher = Cipher.getInstance("DES"); 
+	    cipher.init(Cipher.DECRYPT_MODE, key); 
+	    InputStream is = new FileInputStream(path); 
+	    response.reset();  
+    	response.setHeader("Content-Disposition", "attachment; filename="+java.net.URLEncoder.encode(attach.getName(), "UTF-8"));  
+    	response.setContentType("application/octet-stream; charset=utf-8");  
+	    OutputStream out = response.getOutputStream();
+	    CipherOutputStream cos = new CipherOutputStream(out, cipher); 
+	    byte[] buffer = new byte[1024]; 
+	    int r; 
+	    while ((r = is.read(buffer)) >= 0) { 
+	        cos.write(buffer, 0, r); 
+	    } 
+	    cos.close(); 
+	    out.close(); 
+	    is.close(); 
 //		String fileName = new String(attach.getName().getBytes("UTF-8"),
 //				"iso-8859-1");// 为了解决中文名称乱码问题
 		
-		String fileName = attach.getName();
-		OutputStream os = response.getOutputStream();  
-	    try {  
-	    	response.reset();  
-	    	response.setHeader("Content-Disposition", "attachment; filename="+java.net.URLEncoder.encode(fileName, "UTF-8"));  
-	    	response.setContentType("application/octet-stream; charset=utf-8");  
-	        os.write(FileUtils.readFileToByteArray(file));  
-	        os.flush();  
-	    } finally {  
-	        if (os != null) {  
-	            os.close();  
-	        }  
-	    }  
+//		String fileName = attach.getName();
+//		OutputStream os = response.getOutputStream();  
+//	    try {  
+//	    	response.reset();  
+//	    	response.setHeader("Content-Disposition", "attachment; filename="+java.net.URLEncoder.encode(fileName, "UTF-8"));  
+//	    	response.setContentType("application/octet-stream; charset=utf-8");  
+//	        os.write(FileUtils.readFileToByteArray(file));  
+//	        os.flush();  
+//	    } finally {  
+//	        if (os != null) {  
+//	            os.close();  
+//	        }  
+//	    }  
 	}
 
 	@RequestMapping("downloadFile/{id}")

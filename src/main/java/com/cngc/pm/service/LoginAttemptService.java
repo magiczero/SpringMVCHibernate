@@ -1,8 +1,12 @@
 package com.cngc.pm.service;
 
+import java.util.concurrent.ExecutionException;
+
 public interface LoginAttemptService {
 	void loginFailed(String remoteAddress);
 	void loginSucceeded(String remoteAddress);
 	
 	boolean isBlocked(String key);
+	
+	int getAttempts(String key) throws ExecutionException;
 }

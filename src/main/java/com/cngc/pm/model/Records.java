@@ -30,7 +30,15 @@ public class Records implements Serializable {
 	private RecordsType type;					//操作类型
 	private String desc;
 	private Date inTime;
+	private String ipAddress;
 	
+	@Column(name="ip_address")
+	public String getIpAddress() {
+		return ipAddress;
+	}
+	public void setIpAddress(String ipAddress) {
+		this.ipAddress = ipAddress;
+	}
 	@Column(name="user_name")
 	public String getUsername() {
 		return username;

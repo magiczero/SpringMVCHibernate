@@ -38,9 +38,11 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 
+import static com.cngc.utils.Common.getRemortIP;
+
 @Controller
 @RequestMapping(value = "/user")
-public class UserController extends BaseController  {
+public class UserController extends BaseController{
 
 	@Resource
 	private UserService userService;
@@ -156,7 +158,7 @@ public class UserController extends BaseController  {
 				user.setPassword(md5.encodePassword(newPwd, username));
 				//user.setEnabled(true);
 				
-				userService.save(user, username, user.isEnabled());
+				userService.save(user, username, user.isEnabled(), getRemortIP(request));
 			}
 		} else {
 			return "redirect:/500";
@@ -184,7 +186,7 @@ public class UserController extends BaseController  {
 		user.setUsername(username);
 		user.setName(request.getParameter("name"));
 		Md5PasswordEncoder md5 = new Md5PasswordEncoder();
-		user.setPassword(md5.encodePassword(	"123456",username));
+		user.setPassword(md5.encodePassword("123456",username));
 		
 		//部门
 		Long groupId = Long.parseLong(request.getParameter("group"));
@@ -197,7 +199,7 @@ public class UserController extends BaseController  {
 		user.setMechId(Integer.parseInt(request.getParameter("priority")));
 		user.setMechName(request.getParameter("mechName"));
 				
-		userService.save(user, currentName, true);
+		userService.save(user, currentName, true, getRemortIP(request));
 				
 		map.put("flag", true);
 		
@@ -230,7 +232,7 @@ public class UserController extends BaseController  {
 					request.getParameter("password"),user.getUsername())
 			);
 		} else {
-			user.setPassword(md5.encodePassword(	"123456",user.getUsername()));
+			user.setPassword(md5.encodePassword("123456",user.getUsername()));
 		}
 		user.setName(request.getParameter("name"));
 		//部门
@@ -241,8 +243,11 @@ public class UserController extends BaseController  {
 		//user.setEnabled(false);		//因为三员管理的关系，所以保存时设置为未启用
 		user.setDepId(Integer.parseInt(request.getParameter("sort")));
 		user.setDepName(request.getParameter("tel"));
+		user.setAccountNonExpired(true);
+		user.setAccountNonLocked(true);				//锁定				
+		user.setCreadentialsNonExpired(true);
 		
-		userService.save(user, username, false);
+		userService.save(user, username, false, getRemortIP(request));
 		
 		return "redirect:/user/list";
 	}
@@ -262,7 +267,7 @@ public class UserController extends BaseController  {
 			euser.setMechName(request.getParameter("emechName"));
 			String currentUsername = SecurityContextHolder.getContext().getAuthentication().getName();
 			
-			userService.save(euser, currentUsername, true);
+			userService.save(euser, currentUsername, true, getRemortIP(request));
 			
 			map.put("flag", true);
 		} catch(Exception e) {

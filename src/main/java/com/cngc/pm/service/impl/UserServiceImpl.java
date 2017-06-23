@@ -43,13 +43,14 @@ public class UserServiceImpl implements UserService {
 	
 	@Override
 	@Transactional
-	public void save(SysUser user, String username , boolean enable){
+	public void save(SysUser user, String username , boolean enable, String ip){
 		user.setEnabled(enable);
 	
 		userDao.save(user);
 		Records record = new Records();
 		record.setUsername(username);
 		record.setType(RecordsType.user);
+		record.setIpAddress(ip);
 		record.setDesc("新建了用户，用户id：[" + user.getId() +"]，用户名：["+ user.getUsername()+"]");
 		recordsDao.save(record);
 	}
@@ -339,5 +340,10 @@ public class UserServiceImpl implements UserService {
 		
 		userDao.save(user0);
 		recordsDao.save(records);
+	}
+	@Override
+	public void saveUserWithSysAdmin(SysUser user, String SysAdminName, String ip) {
+		// TODO Auto-generated method stub
+		
 	}
 }

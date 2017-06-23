@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.security.authentication.encoding.Md5PasswordEncoder;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.User;
@@ -37,7 +38,8 @@ public class AuthenticationSuccessHandlerImpl implements
 	private String defaultTargetUrl; 
 	
 	private static final String boardUrl = "/workflow/task/board";
-	
+	private static final String initialPassword = "123456";
+	private static final String modifyInitialPasswordUrl = "/modify-initial-password";
 	@Resource
 	private UserService userService;
 	@Resource
@@ -85,21 +87,29 @@ public class AuthenticationSuccessHandlerImpl implements
 		record.setDesc(username + " 登入了系统");
 		recordsService.save(record);
 		
-        if(this.forwardToDestination){  
-            logger.info("Login success,Forwarding to "+this.defaultTargetUrl);  
-              
-            request.getRequestDispatcher(this.defaultTargetUrl).forward(request, response);  
-        }else{  
-        	if(isLeader) {
-        		logger.info("Login success,Redirecting to board");
-        		
-        		 this.redirectStrategy.sendRedirect(request, response, boardUrl); 
-        	} else {
-	            logger.info("Login success,Redirecting to "+this.defaultTargetUrl);  
+		//判断是否更改了初始密码
+		Md5PasswordEncoder md5 = new Md5PasswordEncoder();
+		if(md5.isPasswordValid(user.getPassword(), initialPassword, user.getUsername())) {
+			//
+			this.redirectStrategy.sendRedirect(request, response, modifyInitialPasswordUrl); 
+//			request.getRequestDispatcher(modifyInitialPasswordUrl).forward(request, response);  
+		} else {
+	        if(this.forwardToDestination){  
+	            logger.info("Login success,Forwarding to "+this.defaultTargetUrl);  
 	              
-	            this.redirectStrategy.sendRedirect(request, response, this.defaultTargetUrl);
-        	}
-        }  
+	            request.getRequestDispatcher(this.defaultTargetUrl).forward(request, response);  
+	        }else{  
+	        	if(isLeader) {
+	        		logger.info("Login success,Redirecting to board");
+	        		
+	        		 this.redirectStrategy.sendRedirect(request, response, boardUrl); 
+	        	} else {
+		            logger.info("Login success,Redirecting to "+this.defaultTargetUrl);  
+		              
+		            this.redirectStrategy.sendRedirect(request, response, this.defaultTargetUrl);
+	        	}
+	        }  
+		}
         
 	}
 

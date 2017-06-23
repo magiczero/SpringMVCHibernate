@@ -12,6 +12,8 @@ import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.slf4j.Logger;
 
 public class Common {
@@ -32,6 +34,17 @@ public class Common {
 		}
 	}
 
+	/**
+	 * 获取ip地址
+	 * @param request
+	 * @return
+	 */
+	public static String getRemortIP(HttpServletRequest request) {  
+	    if (request.getHeader("x-forwarded-for") == null) {  
+	        return request.getRemoteAddr();  
+	    }  
+	    return request.getHeader("x-forwarded-for");  
+	}  
 	/**
 	 * 判断是否为数字
 	 * 

@@ -8,7 +8,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.cngc.pm.dao.AttachmentDAO;
+import com.cngc.pm.dao.RecordsDAO;
 import com.cngc.pm.model.Attachment;
+import com.cngc.pm.model.Records;
+import com.cngc.pm.model.RecordsType;
 import com.cngc.pm.service.AttachService;
 
 @Service
@@ -17,10 +20,20 @@ public class AttachServiceImpl implements AttachService {
 	@Autowired
 	AttachmentDAO attachDao;
 	
+	@Autowired
+	private RecordsDAO recordsDao;
+	
 	@Override
 	@Transactional
-	public Attachment create(Attachment attach) {
+	public Attachment create(Attachment attach, String username) {
 		// TODO Auto-generated method stub
+		Records record = new Records();
+		record.setUsername(username);
+		record.setType(RecordsType.user);
+		record.setDesc(username+"上传了文件，文件名：[" + attach.getName() +"]");
+		
+		recordsDao.save(record);
+		
 		return attachDao.create(attach);
 	}
 

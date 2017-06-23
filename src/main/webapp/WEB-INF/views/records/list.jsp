@@ -165,6 +165,7 @@
                                        	<th width="50px">No.</th>
                                         <th width="10%">操作用户</th>
                                         <th width="10%">操作类型</th>
+                                        <th width="10%">IP地址</th>
 										<th width="10%">操作时间</th>
 										<th >说明</th>
                                     </tr>
@@ -175,6 +176,7 @@
                                         <td>${offset + itr.index +1 }</td>
                                         <td>${record.username }</td>
                                         <td>${record.type }</td>
+                                        <td>${record.ipAddress }</td>
 										<td>${record.inTime }</td>
 										<td>${record.desc }</td>
                                     </tr>

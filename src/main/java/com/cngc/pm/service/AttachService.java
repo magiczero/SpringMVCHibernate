@@ -6,7 +6,7 @@ import com.cngc.pm.model.Attachment;
 
 public interface AttachService {
 
-	Attachment create(Attachment attach);
+	Attachment create(Attachment attach, String username);
 
 	Attachment get(long id);
 

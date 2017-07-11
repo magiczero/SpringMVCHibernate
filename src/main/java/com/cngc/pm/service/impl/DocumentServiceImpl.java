@@ -16,11 +16,14 @@ import org.springframework.transaction.annotation.Transactional;
 import com.cngc.exception.ParameterException;
 import com.cngc.pm.dao.AttachmentDAO;
 import com.cngc.pm.dao.DocumentDAO;
+import com.cngc.pm.dao.RecordsDAO;
 import com.cngc.pm.dao.ResourcesDAO;
 import com.cngc.pm.dao.StyleDAO;
 import com.cngc.pm.dao.SysCodeDAO;
 import com.cngc.pm.model.Attachment;
 import com.cngc.pm.model.Document;
+import com.cngc.pm.model.Records;
+import com.cngc.pm.model.RecordsType;
 import com.cngc.pm.model.Resources;
 import com.cngc.pm.model.Style;
 import com.cngc.pm.model.SysCode;
@@ -36,6 +39,8 @@ public class DocumentServiceImpl implements DocumentService {
 
 	@Autowired
 	private DocumentDAO docDao;
+	@Autowired
+	private RecordsDAO recordsDao;
 	
 	@Autowired
 	private AttachmentDAO attachDao;
@@ -58,9 +63,20 @@ public class DocumentServiceImpl implements DocumentService {
 
 	@Override
 	@Transactional
-	public void save(Document document) {
+	public void save(Document document, String ip) {
 		// TODO Auto-generated method stub
 		docDao.save(document);
+		
+		Records record = new Records();
+		record.setUsername(document.getUser().getUsername());
+		record.setType(RecordsType.user);
+		record.setIpAddress(ip);
+		String docNames = "";
+		for(Attachment att:document.getAttachs()) {
+			docNames +=att.getName()+",";
+		}
+		record.setDesc("上传了文档，文档名：[" + docNames +"]，密级：["+ document.getSecretLevel().getLevel()+"]");
+		recordsDao.save(record);
 	}
 
 	@Override

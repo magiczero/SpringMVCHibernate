@@ -6,7 +6,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.cngc.pm.dao.RecordsDAO;
 import com.cngc.pm.dao.SysCodeDAO;
+import com.cngc.pm.model.Records;
+import com.cngc.pm.model.RecordsType;
 import com.cngc.pm.model.SysCode;
 import com.cngc.pm.service.SysCodeService;
 import com.googlecode.genericdao.search.SearchResult;
@@ -17,11 +20,21 @@ public class SysCodeServiceImpl implements SysCodeService{
 	@Autowired
 	private SysCodeDAO syscodeDAO;
 	
+	@Autowired
+	private RecordsDAO recordsDao;
+	
 	@Override
 	@Transactional
-	public void save(SysCode code)
+	public void save(SysCode code, String name, String ip)
 	{
 		syscodeDAO.save(code);
+		
+		Records record = new Records();
+		record.setUsername(name);
+		record.setType(RecordsType.role);
+		record.setIpAddress(ip);
+		record.setDesc("新建了数据字典，id：[" + code.getId() +"]，字典名：["+ code.getCodeName()+"]");
+		recordsDao.save(record);
 	}
 	@Override
 	@Transactional

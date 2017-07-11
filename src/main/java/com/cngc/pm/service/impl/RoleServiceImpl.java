@@ -206,4 +206,9 @@ public class RoleServiceImpl implements RoleService{
 		
 		return roleDao.search(search);
 	}
+	@Override
+	public List<Role> getAllRole() {
+		// TODO Auto-generated method stub
+		return roleDao.findAll();
+	}
 }

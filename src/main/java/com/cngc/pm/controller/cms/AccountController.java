@@ -205,6 +205,7 @@ public class AccountController {
 		List<Property> propertiesSet = propertyService.getByPropertyIds(properties).getResult();
 		
 		for(Property p:fieldsSet) {
+//			System.out.println(p.getPropertyName());
 			Object obj = Common.getFieldValueByName(ci, p.getPropertyConstraint());
 			ciMap.put(p.getPropertyName(), obj.toString());
 		}

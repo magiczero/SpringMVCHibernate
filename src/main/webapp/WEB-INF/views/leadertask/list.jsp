@@ -15,8 +15,6 @@
     
     <title>领导交办管理--运维管理系统</title>
 
-    <link rel="icon" type="image/ico" href="favicon.ico"/>
-    
     <link href="${contextPath }/resources/css/icons.css" rel="stylesheet" type="text/css" />
     <link href="${contextPath }/resources/css/bootstrap.css" rel="stylesheet" type="text/css" />
     <link href="${contextPath }/resources/css/ui.css" rel="stylesheet" type="text/css" />
@@ -98,6 +96,13 @@
                 height: 600,
                 buttons: { "关闭": function () { $(this).dialog("close") } }
             });
+         
+            $("#b_popup_details").dialog({
+                autoOpen: false,
+                width: 1150,
+                height: 600,
+                buttons: { "关闭": function () { $(this).dialog("close") } }
+            });
             pm_workflow_inittracedialog();
             act_commont_initdialog();
             act_history_initdialog();
@@ -107,6 +112,9 @@
         		
         	$("#b_popup_leadertask").dialog('open');
         	return false;
+        }
+        function viewDetails(){
+        	$("#b_popup_details").dialog('open');
         }
     </script>
 </head>
@@ -164,14 +172,14 @@
                             <table class="table" id="eventTable">
                                 <thead>
                                 	<tr>
-                                		<th width="60px">流程号</th>
-                                		<th width="60px">交办领导</th>
+                                		<th width="70px">流程号</th>
+                                		<th width="90px">交办领导</th>
 										<th >任务标题</th>
-										<th width="60px">受派人</th>
-										<th width="70px">提交时间</th>
-										<th width="70px">到期时间</th>
-										<th width="110px">状态</th>
-										<th width="130px">操作</th>
+										<th width="80px">受派人</th>
+										<th width="120px">提交时间</th>
+										<th width="120px">到期时间</th>
+										<th width="180px">状态</th>
+										<th width="160px">操作</th>
 									</tr>
                                 </thead>
                                 <tbody>
@@ -209,23 +217,24 @@
 										</td>
 										<td>
 											<c:if test="${empty task && empty mytask }">
-												<a href="javascript:void(0);" onclick="act_comment_open('${leaderTask.processInstanceId}',true)"><span class="glyphicon glyphicon-edit"></span> 意见</a>
+												&nbsp;<a href="javascript:void(0);" onclick="act_comment_open('${leaderTask.processInstanceId}',true)"><span class="glyphicon glyphicon-edit"></span> 意见</a>
 											</c:if>
 											<c:if test="${not empty task || not empty mytask }">
-												<a href="javascript:void(0);" onclick="act_comment_open('${leaderTask.processInstanceId}',false)"><span class="glyphicon glyphicon-edit"></span> 意见</a>
+												&nbsp;<a href="javascript:void(0);" onclick="act_comment_open('${leaderTask.processInstanceId}',false)"><span class="glyphicon glyphicon-edit"></span> 意见</a>
 											</c:if>
 											<a href="javascript:void(0);" onclick="act_history_open('${leaderTask.processInstanceId}')"><span class="glyphicon glyphicon-list-alt"></span> 历史</a>
 											<c:if test="${not empty mytask }">
 												<c:if test="${empty mytask.assignee }">
-													<a class="claim confirm" href="${contextPath }/workflow/task/claim/${mytask.id}"><span class="glyphicon glyphicon-edit"></span> 签收</a>
+													&nbsp;<a class="claim confirm" href="${contextPath }/workflow/task/claim/${mytask.id}"><span class="glyphicon glyphicon-edit"></span> 签收</a>
 												</c:if>
 												<c:if test="${not empty mytask.assignee }">
-													<a href="${contextPath }/leadertask/deal/${leaderTask.id}/${mytask.id}"><span class="glyphicon glyphicon-edit"></span> 办理</a>
+													&nbsp;<a href="${contextPath }/leadertask/deal/${leaderTask.id}/${mytask.id}"><span class="glyphicon glyphicon-edit"></span> 办理</a>
 												</c:if>
 											</c:if>
 											<c:if test="${empty mytask }">
-												<a onclick="viewLeadertask('${contextPath }/leadertask/view/${leaderTask.id}');"  href="#"><span class="glyphicon glyphicon-search"></span> 详情</a>
+												&nbsp;<a onclick="viewLeadertask('${contextPath }/leadertask/view/${leaderTask.id}');"  href="#"><span class="glyphicon glyphicon-search"></span> 详情</a>
 											</c:if>
+											&nbsp;<a onclick="viewDetails();"  href="#"><span class="glyphicon glyphicon-search"></span> 详情1</a>
 										</td>
 									</tr>
 								</c:forEach>   
@@ -281,6 +290,20 @@
     	<div class="dialog" id="b_popup_leadertask" style="display: none;" title="查看领导交办">
 	    	<div class="block dialog_block" id="form_template"></div>
     	</div>
+    	
+    	 <!-- 查看详细信息 -->
+    <div class="dialog" id="b_popup_details" style="display: none;" title="查看领导交办详细信息">                                
+            <div class="block">
+                <span>First name:</span>
+                <p><input type="text" name="fname" value=""/></p>
+                <span>Last name:</span>
+                <p><input type="text" name="lname" value=""/></p>
+                <span>About:</span>
+                <p><textarea></textarea></p>
+                <div class="dr"><span></span></div>
+                <p>Sed non urna. Donec et ante. Phasellus eu ligula. Vestibulum sit amet purus. Vivamus hendrerit, dolor at aliquet laoreet.</p>
+            </div>
+        </div> 
     </div>
 </body>
 

@@ -3,6 +3,7 @@
 <%@ page import="java.util.List,com.cngc.pm.model.Style" %>
     <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>    <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
     <%@ taglib prefix="tag" uri="/WEB-INF/taglibs/customTaglib.tld"%>
+    <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %> 
     <c:set var="contextPath" value="${pageContext.request.contextPath}"></c:set>
 <!DOCTYPE html>
 <html lang="en">
@@ -175,7 +176,7 @@
                                     <tr>
                                         <td>${offset + itr.index +1 }</td>
                                         <td>${record.username }</td>
-                                        <td>${record.type }</td>
+                                        <td><c:if test="${record.type=='user' }">用户操作</c:if><c:if test="${record.type=='role' }">权限操作</c:if><c:if test="${record.type=='memberlogin' }">三员登录/退出信息</c:if><c:if test="${record.type=='login' }">用户登录/退出信息</c:if></td>
                                         <td>${record.ipAddress }</td>
 										<td>${record.inTime }</td>
 										<td>${record.desc }</td>
@@ -200,7 +201,7 @@
                 <div class="modal-content">
                     <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>                        
-                        <h4>添加检查项</h4>
+                        <h4>检索日志</h4>
                     </div>
                     <div class="modal-body modal-body-np">
                     <div class="row">&nbsp;</div>
@@ -228,12 +229,11 @@
                                 </div>
                                 <div class="col-md-10">
                                 <select multiple id="type" name="type" class="multiselect">
-                                	<option value="1">权限</option>
-                                	<option value="2">登录</option>
-                                	<option value="3">用户</option>
-                                	<option value="4">资源</option>
+                                <sec:authorize access="hasRole('security_secrecy_admin')"><option value="2">用户登录</option><option value="3">用户操作</option></sec:authorize>
+								<sec:authorize access="hasRole('security_auditor')"><option value="1">权限</option><option value="7">三员登录</option></sec:authorize>
+                                <%-- <option value="4">资源</option>
                                 	<option value="5">菜单</option>
-                                	<option value="6">角色</option>
+                                	<option value="6">角色</option> --%>
                                 </select>
                                 </div>
                             </div>

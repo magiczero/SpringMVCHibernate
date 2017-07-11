@@ -10,6 +10,7 @@ import com.cngc.pm.model.SysUser;
 public interface UserService {
 
 	/**
+	 * 保存用户，建议只可系统管理员使用
 	 * @param user
 	 * @param username
 	 * @param enable	是否启用
@@ -30,9 +31,9 @@ public interface UserService {
 	
 	SysUser getByName(String name);
 	
-	boolean delByIds(String username, String ids);
+	boolean delByIds(String username, String ids, String ip);
 	
-	boolean delById(Long id, String username);
+	boolean delById(Long id, String username, String ip);
 	
 	SysUser getByUsername(String username);
 
@@ -44,15 +45,22 @@ public interface UserService {
 	
 	List<Role> getRolesByUser(Long userid);
 
-	void setRole(String username, SysUser user, String roleIds);
+	void setRole(String username, SysUser user, String roleIds, String ip);
 	
 	List<SysUser> getEngineer();
 	List<SysUser> getLeader();
 	List<SysUser> getCommonUser();
 	
-	boolean enableUser(String loginname,SysUser user );
+	/**
+	 * 启用/停用 用户
+	 * @param adminName 管理员name
+	 * @param userid 启用/停用 用户id
+	 * @param ip	操作IP地址
+	 * @return
+	 */
+	boolean enableUser(String adminName,long userid, String ip );
 
-	boolean disableUser(String username, SysUser user);
+	boolean disableUser(String username, SysUser user, String ip);
 	
 	String getUserName(String userid);
 	
@@ -65,7 +73,26 @@ public interface UserService {
 	 * @param isLocking 锁定/解锁
 	 * @param user 用户
 	 * @param operator 操作者
+	 * @param ip 操作ip
 	 * @return
 	 */
-	void lockingOrUnlockingWithUser(boolean isLocking, String username, String operator);
+	void lockingOrUnlockingWithUser(boolean isLocking, String username, String operator, String ip);
+
+
+	/**
+	 * 验证密码是否正确
+	 * @param pwd
+	 * @param currentUsername
+	 * @return
+	 */
+	boolean validatePwd(String pwd, String currentUsername);
+
+
+	/**
+	 * 修改密码操作
+	 * @param user
+	 * @param username
+	 * @param remortIP
+	 */
+	void updatePwd(String newPwd, String username, boolean isAdmin, String adminName, String remortIP);
 }

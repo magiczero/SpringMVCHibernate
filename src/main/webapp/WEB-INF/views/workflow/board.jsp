@@ -101,9 +101,9 @@
 									$("#node_${moduleId}").addClass(
 											"active");
 								});
-						$(".breadLine .buttons").load(
+						<%--$(".breadLine .buttons").load(
 								"${contextPath}/contentbuttons?t="
-										+ pm_random());
+										+ pm_random());--%>
 						if( ($.browser.msie&&$.browser.version=="8.0") )
 			            {
 			            	if($("#barChart").length > 0){       

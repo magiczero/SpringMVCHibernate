@@ -1,5 +1,7 @@
 package com.cngc.pm.controller;
 
+import static com.cngc.utils.Common.getRemortIP;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -14,8 +16,8 @@ import javax.servlet.http.HttpServletRequest;
 import org.activiti.engine.IdentityService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.authentication.encoding.Md5PasswordEncoder;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -37,8 +39,6 @@ import com.cngc.utils.UserSerializer;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
-
-import static com.cngc.utils.Common.getRemortIP;
 
 @Controller
 @RequestMapping(value = "/user")
@@ -69,6 +69,36 @@ public class UserController extends BaseController{
 			} else {
 				status = false;
 				msg = "用户名已经存在，请重新填写";
+				
+			}
+		}
+		// field, status, message不可更改，和前台ajax紧耦合
+		map.put("fieldId", fieldId);
+		map.put("status", status);
+		map.put("message", msg);
+		return map;
+	}
+	
+	/**
+	 * 验证密码是否正确
+	 * @param fieldId
+	 * @param fieldValue
+	 * @return
+	 */
+	@RequestMapping(value = "/old-pwd-check")
+	@ResponseBody  
+	public Map<String,Object> validateOldPwd(@RequestParam String fieldId,@RequestParam String fieldValue ) {
+		Map<String,Object> map = new HashMap<String,Object>();
+		String currentUsername = SecurityContextHolder.getContext().getAuthentication().getName();
+		String msg = "";
+		boolean status = true;
+		
+		if("oldPwd".equals(fieldId) && (fieldValue!=null || !"".equals(fieldValue))) {
+			if(userService.validatePwd(fieldValue.trim(),currentUsername)) {
+				msg = "密码通过";
+			} else {
+				status = false;
+				msg = "密码不正确，请重新填写";
 				
 			}
 		}
@@ -134,7 +164,7 @@ public class UserController extends BaseController{
 	@RequestMapping(value = "/list", method = RequestMethod.GET)
 	public String list(Model model) {
 		model.addAttribute("list", userService.getAll());
-		model.addAttribute("rolelist",roleService.getAll());
+		model.addAttribute("rolelist",roleService.getNonSysAll());
 		model.addAttribute("groupList", groupService.getAllTop());
 		
 		return "sysmanage/user-list";
@@ -142,9 +172,19 @@ public class UserController extends BaseController{
 	
 	@RequestMapping(value="/update-pwd", method = RequestMethod.POST)
 	public String updatePassword(Model model, HttpServletRequest request) {
-		UserDetails user1 = (UserDetails)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		
-		String username = user1.getUsername();
+		boolean isSysAdmin = false;
+		String username = SecurityContextHolder.getContext().getAuthentication().getName();
+		String adminName = username;
+		for(GrantedAuthority ga : SecurityContextHolder.getContext().getAuthentication().getAuthorities()){
+			if(ga.getAuthority().equals("sys_admin")) {
+				isSysAdmin = true;
+				break;
+			}
+		}
+		if(isSysAdmin) {
+			adminName = SecurityContextHolder.getContext().getAuthentication().getName();
+			username= request.getParameter("user_name");
+		}
 		String oldPwd = request.getParameter("oldPwd");
 		String newPwd = request.getParameter("newPwd");
 		String repeatPwd = request.getParameter("repeatPwd");
@@ -153,19 +193,24 @@ public class UserController extends BaseController{
 		
 		Md5PasswordEncoder md5 = new Md5PasswordEncoder();
 		
-		if(md5.encodePassword(oldPwd, username).equals(user.getPassword())) {		//如果旧密码输入正确，则可以修改
-			if(newPwd.equals(repeatPwd)) {
-				user.setPassword(md5.encodePassword(newPwd, username));
-				//user.setEnabled(true);
-				
-				userService.save(user, username, user.isEnabled(), getRemortIP(request));
-			}
+		if(isSysAdmin) {	//如果是管理员，不需要验证旧密码
+			userService.updatePwd(newPwd, username, isSysAdmin, adminName, getRemortIP(request));
+			return "redirect:/user/list";
 		} else {
-			return "redirect:/500";
+			if(md5.encodePassword(oldPwd, username).equals(user.getPassword())) {		//如果旧密码输入正确，则可以修改
+				if(newPwd.equals(repeatPwd)) {
+					
+					//user.setEnabled(true);
+					
+					userService.updatePwd(newPwd, username, isSysAdmin, adminName, getRemortIP(request));
+				}
+			} else {
+				return "redirect:/500";
+			}
+			
+			//成功后重新登陆
+			return "redirect:/logout";
 		}
-		
-		//成功后重新登陆
-		return "redirect:/logout";
 	}
 	
 	@RequestMapping(value="/save-user", method = RequestMethod.POST)
@@ -213,6 +258,17 @@ public class UserController extends BaseController{
 	 */
 	@RequestMapping(value="/save", method = RequestMethod.POST)
 	public String save(Model model,HttpServletRequest request)	{
+		boolean isSysAdmin = false;
+		for(GrantedAuthority ga : SecurityContextHolder.getContext().getAuthentication().getAuthorities()){
+			if(ga.getAuthority().equals("sys_admin")) {
+				isSysAdmin = true;
+				break;
+			}
+		}
+		
+		if(!isSysAdmin) {
+			return "403";
+		}
 		SysUser user = new SysUser();
 		Long id = Long.parseLong(request.getParameter("userform_id"));
 		
@@ -246,6 +302,7 @@ public class UserController extends BaseController{
 		user.setAccountNonExpired(true);
 		user.setAccountNonLocked(true);				//锁定				
 		user.setCreadentialsNonExpired(true);
+		user.setInitPwd(true); 						//初始密码
 		
 		userService.save(user, username, false, getRemortIP(request));
 		
@@ -278,13 +335,25 @@ public class UserController extends BaseController{
 	}
 	
 	@RequestMapping(value="/enable/{id}", method = RequestMethod.PUT)
-	public @ResponseBody Map<String, Object> enableUser(@PathVariable("id") long id) {
+	public @ResponseBody Map<String, Object> enableUser(@PathVariable("id") long id,HttpServletRequest request) {
 		Map<String, Object> map = new HashMap<>();
+		map.put("flag", false);
+		
+		boolean isAuth = false;
+		for(GrantedAuthority ga : SecurityContextHolder.getContext().getAuthentication().getAuthorities()){
+			if(ga.getAuthority().equals("security_secrecy_admin")) {
+				isAuth = true;
+				break;
+			}
+		}
+		if(!isAuth)
+			return map;
+		
 		String username = SecurityContextHolder.getContext().getAuthentication().getName();
 		SysUser user = userService.getById(id);
 		if(user == null) throw new BusinessException("无法启用用户，无此用户");
 		
-		if(userService.enableUser(username, user)) {
+		if(userService.enableUser(username, id, getRemortIP(request))) {
 			map.put("flag", true);
 		} else {
 			map.put("flag", false);
@@ -294,11 +363,22 @@ public class UserController extends BaseController{
 	}
 	
 	@RequestMapping(value="/unlock/{username}", method = RequestMethod.PUT)
-	public @ResponseBody Map<String, Object> unlockUser(@PathVariable("username") String username) {
+	public @ResponseBody Map<String, Object> unlockUser(@PathVariable("username") String username,HttpServletRequest request) {
 		Map<String, Object> map = new HashMap<>();
+		map.put("flag", false);
+		
+		boolean isAuth = false;
+		for(GrantedAuthority ga : SecurityContextHolder.getContext().getAuthentication().getAuthorities()){
+			if(ga.getAuthority().equals("security_secrecy_admin")) {
+				isAuth = true;
+				break;
+			}
+		}
+		if(!isAuth)
+			return map;
 		String currentusername = SecurityContextHolder.getContext().getAuthentication().getName();
 		try{
-			userService.lockingOrUnlockingWithUser(false, username, currentusername);
+			userService.lockingOrUnlockingWithUser(false, username, currentusername,getRemortIP(request));
 			map.put("flag", true);
 		} catch (Exception e) {
 			
@@ -309,13 +389,26 @@ public class UserController extends BaseController{
 	}
 	
 	@RequestMapping(value="/del/{id}", method = RequestMethod.PUT)
-	public @ResponseBody Map<String, Object> delUser(@PathVariable("id") long id) {
+	public @ResponseBody Map<String, Object> delUser(@PathVariable("id") long id,HttpServletRequest request) {
 		Map<String, Object> map = new HashMap<>();
+		map.put("flag", false);
+		boolean isSysAdmin = false;
+		for(GrantedAuthority ga : SecurityContextHolder.getContext().getAuthentication().getAuthorities()){
+			if(ga.getAuthority().equals("sys_admin")) {
+				isSysAdmin = true;
+				break;
+			}
+		}
+		
+		if(!isSysAdmin) {
+			return map;
+		}
+		
 		String username = SecurityContextHolder.getContext().getAuthentication().getName();
 		SysUser user = userService.getById(id);
 		if(user == null) throw new BusinessException("无法删除用户，无此用户");
 		
-		if(userService.disableUser(username, user)) {
+		if(userService.disableUser(username, user,getRemortIP(request))) {
 			map.put("flag", true);
 		} else {
 			map.put("flag", false);
@@ -340,7 +433,7 @@ public class UserController extends BaseController{
 //				
 //				userService.save(user,username, user.isEnabled());
 //			} else {
-				userService.setRole(username,user,roleIds);
+				userService.setRole(username,user,roleIds,getRemortIP(request));
 //			}
 			
 //			if(!StringUtils.equals(roles, "0"))

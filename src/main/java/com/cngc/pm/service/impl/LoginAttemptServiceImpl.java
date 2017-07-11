@@ -8,7 +8,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.cngc.pm.dao.RecordsDAO;
 import com.cngc.pm.dao.UserDAO;
+import com.cngc.pm.model.Records;
+import com.cngc.pm.model.RecordsType;
 import com.cngc.pm.model.SysUser;
 import com.cngc.pm.service.LoginAttemptService;
 import com.google.common.cache.CacheBuilder;
@@ -23,6 +26,8 @@ public class LoginAttemptServiceImpl implements LoginAttemptService {
     
     @Autowired
 	private UserDAO userDao;
+    @Autowired
+	private RecordsDAO recordsDao;
     
     public LoginAttemptServiceImpl() {
     	super();  
@@ -35,7 +40,7 @@ public class LoginAttemptServiceImpl implements LoginAttemptService {
     }
 	@Override
 	@Transactional(propagation = Propagation.REQUIRED, readOnly=false)
-	public void loginFailed(String key) {
+	public void loginFailed(String key, String ip) {
 		// TODO Auto-generated method stub
 		
 		int attempts = 0;  
@@ -46,13 +51,20 @@ public class LoginAttemptServiceImpl implements LoginAttemptService {
         }  
         attempts++;  
         attemptsCache.put(key, attempts);  
-        System.out.println(attempts++);
+//        System.out.println(attempts++);
         //数据库锁定
         if(isBlocked(key)) {
         	SysUser user0 = userDao.getUserByUserName(key);
 			user0.setAccountNonLocked(false);
 			
 			userDao.save(user0);
+			
+			Records record = new Records();
+			record.setUsername(user0.getUsername());
+			record.setType(RecordsType.user);
+			record.setIpAddress(ip);
+			record.setDesc("用户"+user0.getUsername()+"登录5次失败，已被锁定");
+			recordsDao.save(record);
         }
 	}
 

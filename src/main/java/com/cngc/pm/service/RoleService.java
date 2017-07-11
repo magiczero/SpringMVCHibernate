@@ -23,4 +23,5 @@ public interface RoleService {
 	 * @return
 	 */
 	List<Role> getNonSysAll();
+	List<Role> getAllRole();
 }

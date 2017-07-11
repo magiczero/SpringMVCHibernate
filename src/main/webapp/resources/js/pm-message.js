@@ -3,7 +3,7 @@ var isRead = false;
 function pm_message_gettips()
 {
 	$("#popup_messages_box").html('');
-	$.getJSON(ctx+"/message/getnotreadlist?t"+pm_random(),function(datas){
+	$.getJSON(ctx+"/message/getnotreadlist?t="+pm_random(),function(datas){
 		var divs = "";
 		if(datas.messages.length==0)
 		{
@@ -27,7 +27,7 @@ function pm_message_gettips()
 }
 function pm_message_read(id)
 {
-	$.getJSON(ctx+"/message/read/"+id+"?t"+pm_random(),function(datas){
+	$.getJSON(ctx+"/message/read/"+id+"?t="+pm_random(),function(datas){
 		isRead = true;
 		if(datas.result=="ok")
 		{
@@ -39,7 +39,7 @@ function pm_message_gettipscount()
 {
 	if(isRead)
 		return;
-	$.getJSON(ctx+"/message/getnotreadcount?t"+pm_random(),function(datas){
+	$.getJSON(ctx+"/message/getnotreadcount?t=aaa"+pm_random(),function(datas){
 		isRead = true;
 		if(datas.count=="0")
 			return;

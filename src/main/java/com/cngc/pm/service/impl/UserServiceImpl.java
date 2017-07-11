@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.encoding.Md5PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -49,7 +50,7 @@ public class UserServiceImpl implements UserService {
 		userDao.save(user);
 		Records record = new Records();
 		record.setUsername(username);
-		record.setType(RecordsType.user);
+		record.setType(RecordsType.role);
 		record.setIpAddress(ip);
 		record.setDesc("新建了用户，用户id：[" + user.getId() +"]，用户名：["+ user.getUsername()+"]");
 		recordsDao.save(record);
@@ -68,14 +69,15 @@ public class UserServiceImpl implements UserService {
 	}
 	@Override
 	@Transactional
-	public boolean delById(Long id, String username){
+	public boolean delById(Long id, String username, String ip){
 		SysUser user = userDao.find(id);
 		//userDao.removeByIds(k);
 		userDao.remove(user);
 		
 		Records record = new Records();
 		record.setUsername(username);
-		record.setType(RecordsType.user);
+		record.setType(RecordsType.role);
+		record.setIpAddress(ip);
 		record.setDesc("删除了用户，用户id：[" + user.getId() +"]，用户名：["+ user.getUsername()+"]");
 		recordsDao.save(record);
 		return true;
@@ -83,7 +85,7 @@ public class UserServiceImpl implements UserService {
 	
 	@Override
 	@Transactional
-	public boolean delByIds(String username, String ids)
+	public boolean delByIds(String username, String ids, String ip)
 	{
 		String id[] = ids.split(",");
 		int j = id.length;
@@ -108,7 +110,8 @@ public class UserServiceImpl implements UserService {
 		}
 		Records record = new Records();
 		record.setUsername(username);
-		record.setType(RecordsType.user);
+		record.setType(RecordsType.role);
+		record.setIpAddress(ip);
 		record.setDesc("批量删除了用户，详情：" + desc);
 		recordsDao.save(record);
 		return true;
@@ -165,14 +168,14 @@ public class UserServiceImpl implements UserService {
 	
 	@Override
 	@Transactional
-	public void setRole(String username, SysUser user, String roleIds) {
+	public void setRole(String username, SysUser user, String roleIds, String ip) {
 		// TODO Auto-generated method stub
 		String ids[] = roleIds.split(",");
 		//首先清空权限
 		urDao.deleteByUser(user);
 		Records record = new Records();
 		record.setUsername(username);
-		record.setType(RecordsType.user);
+		record.setType(RecordsType.role);
 		if(roleIds.isEmpty()) {
 			record.setDesc("用户id：["+user.getId() +"]，用户名：["+user.getName()+"]，被清空了角色");
 		} else {
@@ -196,7 +199,7 @@ public class UserServiceImpl implements UserService {
 			}
 			record.setDesc("用户id：["+user.getId() +"]，用户名：["+user.getName()+"]，设置了角色，详情：" + desc);
 		}
-		
+		record.setIpAddress(ip);
 		recordsDao.save(record);
 	}
 	@Override
@@ -244,24 +247,34 @@ public class UserServiceImpl implements UserService {
 	
 	@Override
 	@Transactional
-	public boolean enableUser(String loginname, SysUser user) {
+	public boolean enableUser(String adminName, long userid, String ip) {
 		// TODO Auto-generated method stub
-		user.setEnabled(true);
-		if(userDao.save(user)) {			//源码中如果是修改，返回false
+		SysUser user = userDao.find(userid);
+		if(user == null)
 			return false;
-		} else {
-			Records record = new Records();
-			record.setUsername(loginname);
-			record.setType(RecordsType.user);
-			record.setDesc("【启用】了用户，用户id：[" + user.getId() +"]，用户名：["+ user.getUsername()+"]");
-			recordsDao.save(record);
-			return true;
+		String strAction = "";
+		if(user.isEnabled()){
+			user.setEnabled(false);
+			strAction = "停用";
+		}else {
+			user.setEnabled(true);
+			strAction = "启用";
 		}
+		userDao.save(user);			//
+		
+		Records record = new Records();
+		record.setUsername(adminName);
+		record.setType(RecordsType.role);
+		record.setIpAddress(ip);
+		record.setDesc("管理员:"+adminName+"【"+strAction+"】了用户，用户id：[" + user.getId() +"]，用户名：["+ user.getUsername()+"]");
+		recordsDao.save(record);
+			
+		return true;
 		
 	}
 	@Override
 	@Transactional
-	public boolean disableUser(String loginname, SysUser user) {
+	public boolean disableUser(String loginname, SysUser user, String ip) {
 		// TODO Auto-generated method stub
 		user.setEnabled(false);
 		user.setUsername(user.getUsername()+"_"+user.getId());
@@ -270,7 +283,8 @@ public class UserServiceImpl implements UserService {
 		} else {
 			Records record = new Records();
 			record.setUsername(loginname);
-			record.setType(RecordsType.user);
+			record.setType(RecordsType.role);
+			record.setIpAddress(ip);
 			record.setDesc("【禁用】删除了用户，用户id：[" + user.getId() +"]，用户名：["+ user.getUsername()+"]");
 			recordsDao.save(record);
 			return true;
@@ -318,7 +332,7 @@ public class UserServiceImpl implements UserService {
 	}
 	@Override
 	@Transactional(propagation = Propagation.REQUIRED, readOnly=false)
-	public void lockingOrUnlockingWithUser(boolean isLocking, String username, String operator) {
+	public void lockingOrUnlockingWithUser(boolean isLocking, String username, String operator, String ip) {
 		// TODO Auto-generated method stub
 		SysUser user0 = userDao.getUserByUserName(username);
 		if(user0==null) 
@@ -334,7 +348,8 @@ public class UserServiceImpl implements UserService {
 			lock= "解锁";
 		}
 		records.setUsername(operator);
-		records.setType(RecordsType.user);
+		records.setType(RecordsType.role);
+		records.setIpAddress(ip);
 		records.setDesc("【"+operator+"】"+lock+"了用户["+username+"]");
 		
 		
@@ -345,5 +360,58 @@ public class UserServiceImpl implements UserService {
 	public void saveUserWithSysAdmin(SysUser user, String SysAdminName, String ip) {
 		// TODO Auto-generated method stub
 		
+	}
+	@Override
+	@Transactional(readOnly=true)
+	public boolean validatePwd(String pwd, String currentUsername) {
+		// TODO Auto-generated method stub
+		SysUser user = userDao.getUserByUserName(currentUsername);
+		if(user == null)
+			return false;
+		
+		Md5PasswordEncoder md5 = new Md5PasswordEncoder();
+		if(md5.isPasswordValid(user.getPassword(), pwd, user.getUsername())) {
+			return true;
+		} else
+			return false;
+		
+	}
+	@Override
+	@Transactional
+	public void updatePwd(String newPwd, String username, boolean isAdmin, String adminName, String remortIP) {
+		// TODO Auto-generated method stub
+		SysUser user = userDao.getUserByUserName(username);
+		
+		if(user.isInitPwd()){			//如果是初始密码
+			//必须是本人修改
+			if(username.equals(adminName)) {
+				user.setInitPwd(false);
+			}
+		}
+		
+		Md5PasswordEncoder md5 = new Md5PasswordEncoder();
+		user.setPassword(md5.encodePassword(newPwd, username));
+		
+		Records records = new Records();
+		
+		records.setIpAddress(remortIP);
+		
+		if(isAdmin) {
+			records.setUsername(adminName);
+			records.setType(RecordsType.role);
+			records.setDesc("修改了用户的密码，用户名："+username);
+			
+			user.setAccountNonLocked(false);
+		} else {
+			records.setUsername(username);
+			records.setType(RecordsType.user);
+			records.setDesc("修改了自己的密码");
+		}
+		
+		userDao.save(user);
+		
+		
+		
+		recordsDao.save(records);
 	}
 }

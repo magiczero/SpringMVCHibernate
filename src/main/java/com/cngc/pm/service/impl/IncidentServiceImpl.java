@@ -18,7 +18,10 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.cngc.pm.dao.IncidentDAO;
+import com.cngc.pm.dao.RecordsDAO;
 import com.cngc.pm.model.Incident;
+import com.cngc.pm.model.Records;
+import com.cngc.pm.model.RecordsType;
 import com.cngc.pm.service.IncidentService;
 import com.cngc.utils.PropertyFileUtil;
 import com.googlecode.genericdao.search.Search;
@@ -28,6 +31,8 @@ import com.googlecode.genericdao.search.SearchResult;
 @Transactional(propagation = Propagation.SUPPORTS, readOnly=true)
 public class IncidentServiceImpl implements IncidentService {
 
+	@Autowired
+	private RecordsDAO recordsDao;
 	@Autowired
 	private IncidentDAO incidentDao;
 	@Autowired
@@ -39,7 +44,7 @@ public class IncidentServiceImpl implements IncidentService {
 
 	@Override
 	@Transactional(propagation = Propagation.REQUIRED, readOnly=false)
-	public void save(Incident incident, String userid) throws Exception {
+	public void save(Incident incident, String userid, String ip) throws Exception {
 		incidentDao.save(incident);
 //		System.out.println("transaction start ...");
 //		int i = 1 / 0;
@@ -53,6 +58,13 @@ public class IncidentServiceImpl implements IncidentService {
 		variables.put("id", String.valueOf(incident.getId()));
 		identityService.setAuthenticatedUserId(userid);
 		formService.submitStartFormData(processDefinition.getId(), variables);
+		
+		Records record = new Records();
+		record.setUsername(userid);
+		record.setType(RecordsType.user);
+		record.setIpAddress(ip);
+		record.setDesc("新建了工单，工单id：[" + incident.getId() +"]");
+		recordsDao.save(record);
 					
 	}
 

@@ -145,6 +145,11 @@
     		$("#userFormDialog").modal('show');
     	});
     }
+    function resetPwd(username) {
+    	if($("input[name='user_name']").attr("value",username)){
+    		$("#setPwdFormDialog").modal('show');	
+    	}
+    }
     function setRole(){
     	var userid = $(this).parents('tr').find('.userid').text();
     	$("#selRole").multiSelect("deselect_all");
@@ -185,7 +190,7 @@
     	}
     }
     function enableUser(id) {
-    	if(confirm('确定启用？')) {
+    	if(confirm('确定启用或停用？')) {
         	$.ajax({
 				type : "put",
 				dataType : "json",
@@ -272,7 +277,9 @@
 									<th width="10%">所属部门</th>
 									<th >用户角色</th>
 									<th width="10%">创建时间</th>
+									<sec:authorize access="hasRole('security_secrecy_admin')"><th width="7%">启用/停用</th></sec:authorize>
 									<sec:authorize access="hasRole('security_secrecy_admin')"><th width="7%">解锁</th></sec:authorize>
+									<sec:authorize access="hasRole('sys_admin')"><th width="7%">重置密码</th></sec:authorize>
 									<th width="10%">最后访问时间</th>
 									<th width="70px">ID</th>
 									<th width="180px">操作</th>
@@ -291,7 +298,9 @@
 										</c:forEach>
 										</td>
 										<td>${user.createWhile }</td>
+										<sec:authorize access="hasRole('security_secrecy_admin')"><td><c:if test="${user.enabled }"><a href="#" onclick="enableUser('${user.id}');">停用</a></c:if><c:if test="${!user.enabled }"><a href="#" onclick="enableUser('${user.id}');">启用</a></c:if></td></sec:authorize>
 										<sec:authorize access="hasRole('security_secrecy_admin')"><td><c:if test="${!user.accountNonLocked }"><a href="#" onclick="unlockUser('${user.username}');">解锁</a></c:if></td></sec:authorize>
+										<sec:authorize access="hasRole('sys_admin')"><td><a href="#" onclick="resetPwd('${user.username}');">重置密码</a></td></sec:authorize>
 										<td>${user.lastWhile }</td>
 										<td class="userid">${user.id }</td>
 										<td>
@@ -431,6 +440,42 @@
                     </div>
                     <input type="hidden" id="roleform_id"  name="roleform_id" value="0" /> 
                     <input type="hidden" id="rolefrom_userrole" name="rolefrom_userrole" value="0" />
+                    </form>
+                </div>
+            </div>
+        </div>
+    	<!-- 设置角色 end from -->
+    	
+    	<!-- 重置密码 form -->
+    	<div class="modal fade" id="setPwdFormDialog" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>                        
+                        <h4>设置用户角色</h4>
+                    </div>
+                    <form id="setPwdForm" action="${contextPath}/user/update-pwd" method="post">
+                    <input type="hidden" name="user_name" value="" />
+                    <div class="modal-body modal-body-np">
+                        <div class="row">
+                            <div class="block-fluid">
+                                <div class="row-form clearfix">
+                                    <div class="col-md-3"><label for="newPwd">新密码:</label></div>
+	                                <div class="col-md-9"><input type="password" id="newPwd" name="newPwd" class="validate[required,custom[password0]]" /></div>
+                                </div>                                                           
+                            </div>  
+                            <div class="block-fluid">
+                                <div class="row-form clearfix">
+                                    <div class="col-md-3"><label for="cmdb">新密码确认:</label></div>
+                                	<div class="col-md-9"><input type="password" id="repeatPwd" name="repeatPwd" class="validate[required,equals[newPwd]]" /></div>
+                                </div>                                                           
+                            </div>               
+                        </div>
+                    </div>   
+                    <div class="modal-footer">
+                        <button class="btn btn-primary" id="btn_set_role">保存</button> 
+                        <button class="btn btn-default" data-dismiss="modal" aria-hidden="true">关闭</button>            
+                    </div>
                     </form>
                 </div>
             </div>

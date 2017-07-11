@@ -53,7 +53,16 @@ public class SysUser implements Serializable {
 	private boolean accountNonExpired;				//是否过期
 	private boolean accountNonLocked;				//是否锁定
 	private boolean creadentialsNonExpired;		//证书是否有效
-	
+	private boolean initPwd;
+	@Column(name="init_pwd")
+	public boolean isInitPwd() {				//是否是初始密码
+		return initPwd;
+	}
+
+	public void setInitPwd(boolean initPwd) {
+		this.initPwd = initPwd;
+	}
+
 	private Group group;			//所属机构，公司，部门等
 	
 //	private Set<Role> roles = new LinkedHashSet<Role>();						//角色列表

@@ -166,6 +166,16 @@
                     // speaks by itself
                     "alertTextLoad": "* 正在确认名称是否有其他人使用，请稍等。"
                 },
+                "validateOldPwd": {
+                    // remote json service location  ///"url": "ajaxValidateFieldName",
+                    "url": "user/old-pwd-check",
+                    // error
+                    "alertText": "* 此密码录入不正确",
+                    // if you provide an "alertTextOk", it will show as a green prompt when the field validates
+                    "alertTextOk": "* 密码正确",
+                    // speaks by itself
+                    "alertTextLoad": "* 正在确认密码是否正确，请稍等。"
+                },
                 "existUserName": {
                     // remote json service location  ///"url": "ajaxValidateFieldName",
                     "url": "name-check",

@@ -25,7 +25,7 @@ public class LogoutHandlerImpl implements LogoutHandler {
 			Records record = new Records();
 			record.setUsername(username);
 			record.setType(RecordsType.login);
-			record.setDesc(username + " 退出了系统");
+			record.setDesc(username + " 退出了系统！");
 			recordsService.save(record);
 			
 		}

@@ -57,6 +57,7 @@
 	</div></li>
 <script type="text/javascript">
 	$(document).ready(function() {
+		pm_getcount();
 		$(".link_bcPopupTask").click(function() {
 			if ($("#bcPopupTask").is(":visible")) {
 				$("#bcPopupTask").fadeOut(200);
@@ -128,6 +129,23 @@
 								+"</div>";
 					}
 					$("#popup_users_box").append(divs);
+				});
+	}
+	function pm_getcount() {
+		$.getJSON(ctx + "/workflow/task/getmytaskcount?t=" + pm_random(),
+				function(datas) {
+					if (datas.count == "0")
+					{
+						$(".link_navPopMessages").hide();
+					}
+					else
+					{
+						$(".link_navPopMessages").show();
+						$(".link_navPopMessages").text(datas.count);
+						
+						$(".task_count").text(
+								"(" + datas.claim + "/" + datas.count + ")");
+					}
 				});
 	}
 </script>

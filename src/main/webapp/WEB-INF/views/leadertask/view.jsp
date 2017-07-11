@@ -13,8 +13,6 @@
     
     <title>领导交办管理--运维管理系统</title>
 
-    <link rel="icon" type="image/ico" href="favicon.ico"/>
-    
     <link href="${contextPath }/resources/css/icons.css" rel="stylesheet" type="text/css" />
     <link href="${contextPath }/resources/css/bootstrap.css" rel="stylesheet" type="text/css" />
     <link href="${contextPath }/resources/css/ui.css" rel="stylesheet" type="text/css" />
@@ -59,8 +57,6 @@
    		var processInstanceId = '${leaderTask.processInstanceId}';
    		
             $(document).ready(function () {
-                $(".header").load("${contextPath}/header?t="+pm_random());
-  
                 act_comment_getlist(processInstanceId,taskId);
             });
     </script>
@@ -72,9 +68,6 @@
 
             <!--workplace-->
             <div class="workplace">             
-				<div class="alert alert-danger hide">                
-                    <h4>错误!</h4>请至少选择一项
-                </div> 
                 <div class="row">
                	
                	  <div class="col-md-5">

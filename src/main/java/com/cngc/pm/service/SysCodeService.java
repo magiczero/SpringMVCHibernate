@@ -6,7 +6,7 @@ import com.googlecode.genericdao.search.SearchResult;
 
 public interface SysCodeService {
 
-	void save(SysCode code);
+	void save(SysCode code, String username, String ip);
 
 	boolean delById(Long id);
 

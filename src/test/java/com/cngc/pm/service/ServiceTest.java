@@ -160,7 +160,7 @@ public class ServiceTest {
     	incident.setType("01");
     	incident.setStatus("01");
 
-    	incidentService.save(incident, "mating");
+    	incidentService.save(incident, "mating","192.168.0.1");
     	DocumentHandler dh = new DocumentHandler();
     	
     	try {

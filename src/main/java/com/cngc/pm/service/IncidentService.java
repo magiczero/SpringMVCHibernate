@@ -9,7 +9,7 @@ import com.googlecode.genericdao.search.SearchResult;
 
 public interface IncidentService {
 
-	public void save(Incident event, String userid) throws Exception;
+	public void save(Incident event, String userid, String ip) throws Exception;
 	boolean delByIds(String ids);
 	boolean delById(Long id);
 	Incident getById(Long id);

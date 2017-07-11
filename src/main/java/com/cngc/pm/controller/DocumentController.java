@@ -1,5 +1,6 @@
 package com.cngc.pm.controller;
 
+import static com.cngc.utils.Common.getRemortIP;
 import java.beans.PropertyEditorSupport;
 import java.util.HashMap;
 import java.util.List;
@@ -411,7 +412,7 @@ public class DocumentController {
 		document.setAttachs(setAttach);
 		document.setEnabled(true);
 //		document.setStyles(setStyle);
-		docService.save(document);
+		docService.save(document,getRemortIP(request));
 		
 		Style style = this.getTopStyle(docService.loadStyleById(document.getStyle().getId()));
 		SysCode code = syscodeService.getCode(style.getCode(), PropertyFileUtil.getStringValue("syscode.cms.ci.system"));

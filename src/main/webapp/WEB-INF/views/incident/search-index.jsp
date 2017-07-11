@@ -119,7 +119,7 @@
                 $("input[name='user_name']").bind("click",function(){
     		    	$("#grouptree").empty();
     		    	$("#grouptree").treeview({
-    		    		url:ctx + '/group/all-json?t=' + pm_random(),
+    		    		url:ctx + '/group/all-json?haveuser=true&t=' + pm_random(),
                 		collapsed: true,
                 		unique: true
                 	});
@@ -132,6 +132,10 @@
                 $("#satisfaction").select2();
                 $("#engineer").select2();
             });
+            
+            function inputGroupinfo(groupid, groupname) {
+            	console.log(groupid + ' ' + groupname);
+            }
             
             function inputUserinfo(username,realname,tel,room,userid) {
             	$("input[name='applyUser']").attr("value", username);

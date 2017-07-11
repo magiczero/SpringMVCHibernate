@@ -1,11 +1,15 @@
 package com.cngc.pm.controller;
 
+import static com.cngc.utils.Common.getRemortIP;
+
 import java.util.HashMap;
 import java.util.Map;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -24,21 +28,35 @@ public class SysCodeController {
 	
 	@RequestMapping(value="/save",method = RequestMethod.POST)
 	public String save(Model model,HttpServletRequest request){
-		SysCode code;
-		Long id = Long.parseLong(request.getParameter("fp_id"));
+		//首先判断权限
+		boolean isSysAdmin = false;
+		for(GrantedAuthority ga : SecurityContextHolder.getContext().getAuthentication().getAuthorities()){
+			if(ga.getAuthority().equals("sys_admin")) {
+				isSysAdmin = true;
+				break;
+			}
+		}
 		
-		if(id!=0)
-			code = syscodeService.getById(id);
-		else
-			code = new SysCode();
-		code.setCode(request.getParameter("fp_code"));
-		code.setCodeName(request.getParameter("fp_codename"));
-		code.setType(request.getParameter("fp_type"));
-		
-		syscodeService.save(code);
-		
-		//return "redirect:/system/syscode/list/" + code.getType();
-		return "redirect:/system/syscode/list";
+		if(isSysAdmin) {
+			String currentUsername = SecurityContextHolder.getContext().getAuthentication().getName();
+			SysCode code;
+			Long id = Long.parseLong(request.getParameter("fp_id"));
+			
+			if(id!=0)
+				code = syscodeService.getById(id);
+			else
+				code = new SysCode();
+			code.setCode(request.getParameter("fp_code"));
+			code.setCodeName(request.getParameter("fp_codename"));
+			code.setType(request.getParameter("fp_type"));
+			
+			syscodeService.save(code, currentUsername, getRemortIP(request));
+			
+			//return "redirect:/system/syscode/list/" + code.getType();
+			return "redirect:/system/syscode/list";
+		} else {
+			return "403";
+		}
 	}
 	@RequestMapping(value="/list",method = RequestMethod.GET)
 	public String list(Model model){

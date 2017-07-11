@@ -13,7 +13,7 @@ public interface RecordsService {
 	
 	List<Records> getListAll();
 	
-	SearchResult<Records> getAllWithPage(Integer offset, Integer maxResults);
+	SearchResult<Records> getAllWithPage(String roleName, Integer offset, Integer maxResults);
 	
 	/**
 	 * 根据角色获得用户
@@ -22,6 +22,6 @@ public interface RecordsService {
 	 */
 	List<SysUser> getUsersByRole(String...names);
 	
-	List<Records> searchList(String username, int[] type, String start, String end)  throws ParseException;
+	List<Records> searchList(String username, List<Integer> typeList, String start, String end)  throws ParseException;
 	
 }

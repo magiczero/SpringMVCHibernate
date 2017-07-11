@@ -20,7 +20,7 @@ public interface DocumentService {
 	 */
 	Set<Attachment> getSetAttach(String... filenames);
 
-	void save(Document document);
+	void save(Document document,String ip);
 
 	List<Document> getAll(Long userid);
 	

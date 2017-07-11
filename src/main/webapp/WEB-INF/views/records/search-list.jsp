@@ -2,6 +2,7 @@
     pageEncoding="UTF-8"%>
 <%@ page import="java.util.List,com.cngc.pm.model.Style" %>
     <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+    <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %> 
     <c:set var="contextPath" value="${pageContext.request.contextPath}"></c:set>
 <!DOCTYPE html>
 <html lang="en">
@@ -163,7 +164,8 @@
                                     <tr>
                                        	<th width="50px">No.</th>
                                         <th width="10%">操作用户</th>
-                                        <th width="10%">操作类型</th>
+                                         <th width="10%">操作类型</th>
+                                        <th width="10%">IP地址</th>
 										<th width="20%">操作时间</th>
 										<th >说明</th>
                                     </tr>
@@ -173,7 +175,8 @@
                                     <tr>
                                         <td>${itr.index +1 }</td>
                                         <td>${record.username }</td>
-                                        <td>${record.type }</td>
+                                        <td><c:if test="${record.type=='user' }">用户操作</c:if><c:if test="${record.type=='role' }">权限操作</c:if><c:if test="${record.type=='memberlogin' }">三员登录/退出信息</c:if><c:if test="${record.type=='login' }">用户登录/退出信息</c:if></td>
+                                        <td>${record.ipAddress }</td>
 										<td>${record.inTime }</td>
 										<td>${record.desc }</td>
                                     </tr>
@@ -225,12 +228,8 @@
                                 </div>
                                 <div class="col-md-10">
                                 <select multiple id="type" name="type" class="multiselect">
-                                	<option value="1">权限</option>
-                                	<option value="2">登录</option>
-                                	<option value="3">用户</option>
-                                	<option value="4">资源</option>
-                                	<option value="5">菜单</option>
-                                	<option value="6">角色</option>
+                                	<sec:authorize access="hasRole('security_secrecy_admin')"><option value="2">用户登录</option><option value="3">用户操作</option></sec:authorize>
+								<sec:authorize access="hasRole('security_auditor')"><option value="1">权限</option><option value="7">三员登录</option></sec:authorize>
                                 </select>
                                 </div>
                             </div>

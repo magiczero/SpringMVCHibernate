@@ -89,11 +89,14 @@
 	                            <h1>初始密码修改</h1>
 	                        </div>
 	                       	<form id="pwdForm" action="${contextPath }/user/update-pwd" method="post">
-	                        <input name="oldPwd" type="hidden" value="123456" />
 	                        <div class="block-fluid">   
 	                        	<div class="row-form clearfix">
 	                                <div class="col-md-12">密码修改成功后直接跳转到登录页面</div>
-	                            </div>                     
+	                            </div>     
+	                            <div class="row-form clearfix">
+	                                <div class="col-md-3"><label for="oldPwd">初始密码:</label></div>
+	                                <div class="col-md-9"><input type="password" id="oldPwd" name="oldPwd" class="validate[required,ajax[validateOldPwd]]" /></div>
+	                            </div>                
 	                            <div class="row-form clearfix">
 	                                <div class="col-md-3"><label for="user_name">新密码:</label></div>
 	                                <div class="col-md-9"><input type="password" id="newPwd" name="newPwd" class="validate[required,custom[password0]]" /></div>

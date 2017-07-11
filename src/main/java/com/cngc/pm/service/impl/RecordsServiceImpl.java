@@ -45,10 +45,15 @@ public class RecordsServiceImpl implements RecordsService {
 
 	@Override
 	@Transactional(readOnly = true)
-	public SearchResult<Records> getAllWithPage(Integer offset,
+	public SearchResult<Records> getAllWithPage(String roleName, Integer offset,
 			Integer maxResults) {
 		// TODO Auto-generated method stub
 		Search search = new Search();
+		if(roleName.equals("security_secrecy_admin")) {
+			search.addFilterIn("type", RecordsType.user,RecordsType.login);
+		} else if(roleName.equals("security_auditor")) {
+			search.addFilterIn("type", RecordsType.role,RecordsType.memberlogin);
+		}
 		search.setFirstResult(offset == null?0:offset);
 		search.setMaxResults(maxResults==null?10:maxResults);
 		search.addSort("id", true);
@@ -69,7 +74,7 @@ public class RecordsServiceImpl implements RecordsService {
 
 	@Override
 	@Transactional(readOnly = true)
-	public List<Records> searchList(String username, int[] type, String start,
+	public List<Records> searchList(String username, List<Integer> typeList, String start,
 			String end) throws ParseException {
 		Search search = new Search();
 		if(!StringUtils.isEmpty(username)) {
@@ -78,7 +83,7 @@ public class RecordsServiceImpl implements RecordsService {
 		
 		List<RecordsType> rts = new ArrayList<>();
 		
-		for(int i : type) {
+		for(int i : typeList) {
 			switch(i) 
 			{
 				case 1:
@@ -99,10 +104,14 @@ public class RecordsServiceImpl implements RecordsService {
 				case 6:
 					rts.add(RecordsType.role);
 					break;
+				case 7:
+					rts.add(RecordsType.memberlogin);
+					break;
 			}
 		}
 		
-		search.addFilterIn("type", rts);
+		if(rts.size()>0)
+			search.addFilterIn("type", rts);
 		
 		if(!StringUtils.isEmpty(start)) {
 			start = start + " 00:00:00";

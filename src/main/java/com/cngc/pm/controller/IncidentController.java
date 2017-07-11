@@ -1,5 +1,7 @@
 package com.cngc.pm.controller;
 
+import static com.cngc.utils.Common.getRemortIP;
+
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -223,7 +225,7 @@ public class IncidentController {
 		}
 		
 
-		incidentService.save(incident, user.getUsername());
+		incidentService.save(incident, user.getUsername(),getRemortIP(request));
 
 		// 启动流程
 //		ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery()
@@ -260,7 +262,7 @@ public class IncidentController {
 			
 			incident.setStatus(PropertyFileUtil.getStringValue("syscode.incident.status.new"));
 			incident.setApplyTime(new Date());
-			incidentService.save(incident,userUtil.getUsernameByAuth(authentication));
+			incidentService.save(incident,userUtil.getUsernameByAuth(authentication),getRemortIP(request));
 
 			// 启动流程
 //			ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery()
@@ -561,7 +563,7 @@ public class IncidentController {
 		} catch (IOException e) {
 
 		}
-		incidentService.save(incident,userUtil.getUsernameByAuth(authentication));
+		incidentService.save(incident,userUtil.getUsernameByAuth(authentication),getRemortIP(request));
 
 		result.put("result", "true");
 

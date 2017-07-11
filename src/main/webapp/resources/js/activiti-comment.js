@@ -134,7 +134,7 @@ var act_comment_eventHandler = {
 		return  '添加了附件：' + msg;
 	},
 	'AddComment': function(event,  msg) {
-		return  '发表了意见：<span class="text-danger">' + msg + '</span>';
+		return  '发表了意见：<span class="text-danger">' + return2Br(msg) + '</span>';
 	},
 	'DeleteComment': function(event,  msg) {
 		return  '<span class="text-error">删除</span>了意见：' + msg;
@@ -152,3 +152,8 @@ var act_comment_eventHandler = {
 		return  '从[<span class="text-info">' + act_comment_translateType(event) + '</span>]中<span class="text-error">移除了</span><span class="text-info">' + event.messageParts[0] + '</span>';
 	}
 }
+
+function return2Br(str) { 
+	var newStr = str.replace(/\r?\n/g,"<br />"); 
+	 return newStr.replace(/\t/g,"&nbsp;&nbsp;&nbsp;&nbsp;"); 
+	} 

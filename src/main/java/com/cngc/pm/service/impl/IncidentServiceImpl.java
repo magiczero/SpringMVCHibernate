@@ -232,4 +232,12 @@ public class IncidentServiceImpl implements IncidentService {
 		incidentDao.save(newincident);
 	}
 
+	@Override
+	public SearchResult<Incident> searchByUnit(String abs, String unit, String engineer, String satisfaction, Date startDate,
+			Date endDate, int iDisplayStart, int iDisplayLength) {
+		// TODO Auto-generated method stub
+		
+		return incidentDao.searchByUnit(abs, unit, engineer, satisfaction, startDate, endDate, iDisplayStart, iDisplayLength);
+	}
+
 }

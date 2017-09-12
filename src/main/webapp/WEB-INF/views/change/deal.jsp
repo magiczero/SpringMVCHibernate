@@ -95,13 +95,17 @@
 				act_form_task(taskid,'/change/list');   
 				//pm_knowledge_initdialog("incident",changeid);
                 act_comment_getlist(processInstanceId,taskid);
-                if(status=="05")
+                if(status=="03")
                 {
                 	$("#div_change_setting").show();
                 	pm_cms_initselectdialog('change');
                 	pm_change_getci();
                 }
-                if(status=="06")
+                if(status=="04") {
+                	$("#div_items_view").show();
+                	$("#div_items_view").load("${contextPath}/change/items0/${change.id}?t="+pm_random());
+                }
+                if(status=="06" || status=="05")
                 {
                 	$("#div_items").show();
                 	$("#form_items").load("${contextPath}/change/items/${change.id}?t="+pm_random());
@@ -182,7 +186,7 @@
                 </div> 
                 <div class="row">
                	
-               	  <div class="col-md-5">
+               	  <div class="col-md-4">
                      	<div style="text-align:right;">
                             <div class="btn-group">
                                 <button class="btn btn-default" type="button" id="lnk_knowledge">查看知识库</button>
@@ -236,7 +240,7 @@
                
                     </div>
 
-                  <div class="col-md-7">
+                  <div class="col-md-8">
                         <div class="head clearfix">
                             <div class="isw-chats"></div>
                             <h1>${task.name }</h1>
@@ -247,6 +251,9 @@
                     		</div>
                     		<div id="div_items" class="row-form" style="display:none">                                                     
                             	<form id="form_items" action="${contextPath }/change/${change.id}/saveitems/" method="post"></form>
+                    		</div>
+                    		<div id="div_items_view" class="row-form" style="display:none">                                                     
+                            	
                     		</div>
                     		<div id="div_change_setting" class="without-head" style="display:none">                        
 	                            <div class="toolbar nopadding-toolbar clearfix">

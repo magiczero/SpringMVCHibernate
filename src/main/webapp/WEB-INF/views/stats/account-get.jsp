@@ -11,7 +11,7 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <![endif]-->
     
-    <title>统计与报表管理--运维管理系统</title>
+    <title>台账--运维管理系统</title>
 
     <link href="${contextPath }/resources/css/icons.css" rel="stylesheet" type="text/css" />
     <link href="${contextPath }/resources/css/bootstrap.css" rel="stylesheet" type="text/css" />
@@ -34,7 +34,7 @@
     <link href="${contextPath }/resources/css/styling.css" rel="stylesheet" type="text/css" />
     <link href="${contextPath }/resources/css/mycss.css" rel="stylesheet" type="text/css" />
 	<link href="${contextPath }/resources/css/stylesheets2.css" rel="stylesheet" type="text/css" />
-    <link rel='stylesheet' type='text/css' href='${contextPath }/resources/css/fullcalendar.print.css' media='print' />
+    <link href="${contextPath }/resources/js/plugins/dataTables/extras/css/TableTools.css" rel="stylesheet" type="text/css" />
     
 
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/jquery/jquery-1.10.2.min.js'></script>
@@ -44,6 +44,8 @@
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/cookie/jquery.cookies.2.2.0.min.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/bootstrap.min.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/dataTables/jquery.dataTables.min.js'></script>
+    <script type='text/javascript' src='${contextPath }/resources/js/plugins/dataTables/extras/js/ZeroClipboard.js'></script>
+    <script type='text/javascript' src='${contextPath }/resources/js/plugins/dataTables/extras/js/TableTools.min.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/validation/languages/jquery.validationEngine-zh-CN.js' charset='utf-8'></script>
 <script type='text/javascript' src='${contextPath }/resources/js/plugins/validation/jquery.validationEngine.js' charset='utf-8'></script>    
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/highlight/jquery.highlight-4.js'></script>
@@ -64,6 +66,44 @@
             	$(".header").load("${contextPath }/header?t=" + pm_random());
                 $(".menu").load("${contextPath }/menu?t=" + pm_random(), function () { $("#node_${moduleId}").addClass("active"); });
                 $(".breadLine .buttons").load("${contextPath }/contentbuttons?t=" + pm_random());
+                
+                var datatables_options = {
+                		"bFilter" : false,
+                		//关闭过滤功能替换为文件导出按钮
+                        "sDom" : 'T<"clear">lfrtip' ,
+                    	"oTableTools": {
+                            "sSwfPath": "${contextPath }/resources/js/plugins/dataTables/extras/swf/copy_csv_xls_pdf.swf",
+                            "aButtons" : [
+                                          {
+                                             "sExtends" : "xls" ,
+                                             "sButtonText" : "导出Excel文件" ,
+                                             "sFileName" : "*.xls"
+                                            },
+                                          ]
+                        },
+                	    "bAutoWidth": true,
+                	    "bPaginate": false,   
+                	    "bSort": true, 
+                	    "bFilter": false, 
+                	    "aaSorting": [], 
+                	    "bInfo": false, 
+                	    "bStateSave": false, 
+                	    "iCookieDuration": 0, 
+                	    "bScrollAutoCss": true, 
+                	    "bProcessing": true, 
+                	    "bJQueryUI": false 
+                	};
+
+                	datatables_options["sScrollY"] = "450px";
+                	datatables_options["sScrollX"] = "100%";
+                	datatables_options["bScrollCollapse"] = true;
+
+                	// add this
+                	datatables_options["sScrollXInner"] = '150%';
+                	//
+                	                   
+                	var table = $('#accountTable').DataTable(datatables_options);
+                	//new $.fn.dataTable.FixedColumns(table);
             });
     </script>
 </head>
@@ -100,7 +140,7 @@
                     <h4>错误!</h4>请至少选择一项
                 </div> 
                 <div class="row">
-                	<div class="col-md-3">
+                	<div class="col-md-2">
                         <div class="head clearfix">
                             <div class="isw-list"></div>
                             <h1>台账管理</h1>
@@ -124,7 +164,7 @@
                             </div>                    
                         </div>
                     </div> 
-                    <div class="col-md-9">
+                    <div class="col-md-10">
                         <div class="head clearfix">
                             <div class="isw-grid"></div>
                             <h1>台账</h1> 
@@ -135,14 +175,13 @@
                             </ul>                           
                         </div>
                         <div class="block-fluid">
-                            <table class="table">
+                            <table id="accountTable" class="stripe row-border order-column">
                                 <thead>
                                     <tr>                                    
                                         <th width="60px">序号</th>
                                         <c:forEach items="${columns }" var="column">
                                         	<th>${column }</th>
                                         </c:forEach>
-                                        <th>操作</th>
                                     </tr>
                                 </thead>
                                 <tbody>

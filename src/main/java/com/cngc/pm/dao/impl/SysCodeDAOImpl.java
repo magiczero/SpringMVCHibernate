@@ -1,7 +1,5 @@
 package com.cngc.pm.dao.impl;
 
-import java.util.List;
-
 import org.springframework.stereotype.Repository;
 
 import com.cngc.pm.dao.SysCodeDAO;
@@ -21,6 +19,7 @@ public class SysCodeDAOImpl extends BaseDAOImpl<SysCode,Long> implements SysCode
 		
 		return this.searchAndCount(search);
 	}
+	
 	@Override
 	public SysCode getCode(String code,String type)
 	{
@@ -29,14 +28,9 @@ public class SysCodeDAOImpl extends BaseDAOImpl<SysCode,Long> implements SysCode
 		search.addFilterEqual("code", code);
 		search.addFilterEqual("type", type);
 		
-		List<SysCode> list = this.search(search);
-		
-		if(list.size()==0)
-			return null;
-		else
-			return list.get(0);
-		
+		return this.searchUnique(search);
 	}
+	
 	@Override
 	public SearchResult<SysCode> getParentCodeByType(String type){
 		Search search = new Search();

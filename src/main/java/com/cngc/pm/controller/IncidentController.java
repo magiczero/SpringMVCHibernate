@@ -53,7 +53,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.cngc.pm.common.web.common.UserUtil;
 import com.cngc.pm.model.Attachment;
 import com.cngc.pm.model.ChangeItem;
-import com.cngc.pm.model.Group;
 import com.cngc.pm.model.Incident;
 import com.cngc.pm.model.SysUser;
 import com.cngc.pm.model.cms.Ci;
@@ -694,26 +693,31 @@ public class IncidentController {
 			satisfaction = null;
 		
 		List<Incident> list = new LinkedList<>();
+		SearchResult<Incident> result = new SearchResult<>();
 		int count = 0;
 		if(unit.equals("00")) {
-			SearchResult<Incident> result = incidentService.search(abs, applyUser, engineer, satisfaction, startDate, endDate,iDisplayStart,iDisplayLength);
-			list = result.getResult();
-			count = result.getTotalCount();
+			result = incidentService.search(abs, applyUser, engineer, satisfaction, startDate, endDate,iDisplayStart,iDisplayLength);
+//			list = result.getResult();
+//			count = result.getTotalCount();
 		} else {
-			List<Incident> listAll = incidentService.search(abs, applyUser, engineer, satisfaction, startDate, endDate);
-			Group group = groupService.getById(Long.valueOf(unit));
-				
-			for(Incident in : listAll) {
-				Group group1 = userService.getTopGroupByUser(userService.getByUsername(in.getApplyUser()));
-				if(group1 == group) {
-					list.add(in);
-				}
-			}
-			count = list.size();
-			if(iDisplayLength>-1)
-				list = list.subList(iDisplayStart, iDisplayStart+iDisplayLength>list.size()?list.size():iDisplayStart+iDisplayLength);
+			result =incidentService.searchByUnit(abs, unit, engineer, satisfaction, startDate, endDate,iDisplayStart,iDisplayLength);
+//			List<Incident> listAll = incidentService.search(abs, applyUser, engineer, satisfaction, startDate, endDate);
+//			Group group = groupService.getById(Long.valueOf(unit));
+//				
+//			for(Incident in : listAll) {
+//				Group group1 = userService.getTopGroupByUser(userService.getByUsername(in.getApplyUser()));
+//				if(group1 == group) {
+//					list.add(in);
+//				}
+//			}
+//			count = list.size();
+//			if(iDisplayLength>-1)
+//				list = list.subList(iDisplayStart, iDisplayStart+iDisplayLength>list.size()?list.size():iDisplayStart+iDisplayLength);
 			
 		}
+		
+		list = result.getResult();
+		count = result.getTotalCount();
 		
 		JSONObject getObj = new JSONObject();
 	    
@@ -782,18 +786,21 @@ public class IncidentController {
 			list = result.getResult();
 			count = result.getTotalCount();
 		} else {
-			if(!unit.equals("00")) {
-				List<Incident> listAll = incidentService.search(abs, applyUser, engineer, satisfaction, startDate, endDate);
-				Group group = groupService.getById(Long.valueOf(unit));
-				
-				for(Incident in : listAll) {
-					Group group1 = userService.getTopGroupByUser(userService.getByUsername(in.getApplyUser()));
-					if(group1 == group) {
-						list.add(in);
-					}
-				}
-				count = list.size();
-			}
+			SearchResult<Incident> result = incidentService.searchByUnit(abs, unit, engineer, satisfaction, startDate, endDate, offset, maxResults);
+			list = result.getResult();
+			count = result.getTotalCount();
+//			if(!unit.equals("00")) {
+//				List<Incident> listAll = incidentService.search(abs, applyUser, engineer, satisfaction, startDate, endDate);
+//				Group group = groupService.getById(Long.valueOf(unit));
+//				
+//				for(Incident in : listAll) {
+//					Group group1 = userService.getTopGroupByUser(userService.getByUsername(in.getApplyUser()));
+//					if(group1 == group) {
+//						list.add(in);
+//					}
+//				}
+//				count = list.size();
+//			}
 		}
 		model.addAttribute("satisfaction", syscodeService.getAllByType("INCIDENT_SATISFACTION").getResult());				//满意度
 		model.addAttribute("list", list);

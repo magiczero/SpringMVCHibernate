@@ -77,9 +77,31 @@
 				<prop key="hibernate.cache.region.factory_class">
 				     org.hibernate.cache.ehcache.SingletonEhCacheRegionFactory
 				</prop>
+				 <!-- 配置envers-->    
+				 <!-- 配置自动生成表-->    
+      <prop key="hibernate.hbm2ddl.auto">update</prop>  
+           <!--配置审计表名的后缀，默认为空  -->    
+           <prop key="org.hibernate.envers.audit_table_suffix">_revinfo</prop>    
+           <!--配置审计表名的前缀，默认为_AUD  -->    
+           <prop key="org.hibernate.envers.audit_table_prefix"></prop>    
+           <!--配置审计表中记录版本号的字段名称  -->    
+           <prop key="org.hibernate.envers.revision_field_name">REV</prop>    
+           <!--配置审计表中数据操作类型的字段名称，0：新增   1：修改   2：删除  -->    
+           <prop key="org.hibernate.envers.revision_type_field_name">REVTYPE</prop>    
+           <!--配置是否支持关联表修改时记录修改记录,默认为true  -->    
+           <prop key="org.hibernate.envers.revision_on_collection_change">true</prop>    
+           <!--配置是否不对乐观锁字段修改时记录修改记录，即使用Version字段，默认值为true  -->    
+           <prop key="org.hibernate.envers.do_not_audit_optimistic_locking_field">true</prop>    
+           <!--配置是否在删除操作时，记录所有字段还是只记录id值。默认为false    false：只记录id   true：记录全部字段  -->    
+           <prop key="org.hibernate.envers.store_data_at_delete">true</prop>    
+           <!--配置审计表的schema，默认为null  -->    
+           <prop key="org.hibernate.envers.default_schema">pmsys_20170711</prop>    
+           <!--配置审计表的catalog，默认为null  -->    
+           <prop key="org.hibernate.envers.default_catalog"></prop>  
 			</props>
 		</property>
 	</bean>
+	
 	<!-- cacheManager, 指定ehcache.xml的位置 -->
     <bean id="cacheManagerEhcache" class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean">
         <property name="configLocation">

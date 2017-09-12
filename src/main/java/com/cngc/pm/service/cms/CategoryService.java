@@ -18,4 +18,6 @@ public interface CategoryService {
 	
 	String getJSON();
 
+	String getAllJSON();
+
 }

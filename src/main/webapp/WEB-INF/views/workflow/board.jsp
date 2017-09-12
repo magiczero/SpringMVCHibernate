@@ -113,7 +113,10 @@
 			    		            var barChart = new Chart(bctx).Bar({
 			    		            	labels : mylabels,
 			    		                datasets : [{fillColor : "rgba(151,187,205,0.5)",strokeColor : "rgba(151,187,205,1)",data : mydata}]
-			    		            }, {animation : Modernizr.canvas});
+			    		            }, {animation : Modernizr.canvas, 
+			    		            	scaleShowGridLines : false, 
+			    		            	showLabelsOnBars:true
+			    		            	});
 			                	});
 			                }
 			            }else{
@@ -123,7 +126,12 @@
 			    		        var barChart = new Chart(bctx).Bar({
 			    		          	labels : mylabels,
 			    		            datasets : [{fillColor : "rgba(151,187,205,0.5)",strokeColor : "rgba(151,187,205,1)",data : mydata}]
-			    		        });
+			    		        }, {animation : Modernizr.canvas, 
+			    		        	scaleShowGridLines : false, 
+			    		        	showLabelsOnBars:true
+			    		        	//
+								});
+			    		        console.log("adg");
 			                }
 			            }
 					    if ($("#chart-3").length > 0) {

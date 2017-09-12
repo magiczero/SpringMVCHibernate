@@ -39,7 +39,7 @@
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/pnotify/jquery.pnotify.min.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/scrollup/jquery.scrollUp.min.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/validation/languages/jquery.validationEngine-zh-CN.js' charset='utf-8'></script>
-<script type='text/javascript' src='${contextPath }/resources/js/plugins/validation/jquery.validationEngine.js' charset='utf-8'></script>
+	<script type='text/javascript' src='${contextPath }/resources/js/plugins/validation/jquery.validationEngine.js' charset='utf-8'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/uniform/uniform.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/multiselect/jquery.multi-select.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/jstree/jquery.treeview.js'></script>
@@ -123,10 +123,9 @@
                             <h3>台账</h3>
                             <div class="active">
                                  <ul>
-                                 	<li><a href="${contextPath }/stats/account/get/1">服务器台账</a></li>
-                                 	<li><a href="${contextPath }/stats/account/get/1">网络设备台账</a></li>
-                                    <li><a href="${contextPath }/stats/account/get/1">安全设备台账</a></li>
-                                    <li><a href="${contextPath }/stats/account/get/1">终端设备台账</a></li>
+                                 <c:forEach items="${accounts }" var="account1">
+                                 	<li><a href="${contextPath }/stats/account/get/${account1.id}">${account1.name }</a></li>
+                                 	</c:forEach>
                                 </ul>                                               
                             </div>
 
@@ -166,6 +165,12 @@
 		                        	<select multiple class="multiselect" id="sel_properties" name="sel_properties"></select>
 		                        </div>
 		                	</div>
+		                	<!-- <div class="row-form clearfix">
+		                    	<div class="col-md-2">选择要显示的项</div>
+		                        <div class="col-md-10">
+		                        	<textarea name="view_item"></textarea>
+		                        </div>
+		                	</div> -->
 		                	<div class="footer tar">
 		                		<input type="hidden" id="fm_fields" name="fm_fields" value="0" />
 		                		<input type="hidden" id="fm_properties" name="fm_properties" value="0" />

@@ -10,6 +10,7 @@ public interface RoleService {
 
 	void save(Role role, String username);
 	Role getById(Long id);
+	Role getByName(String roleName);
 	boolean delById(Long id);
 	boolean delByIds(String ids);
 	boolean del(Role role, String username);

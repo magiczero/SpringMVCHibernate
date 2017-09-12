@@ -104,10 +104,9 @@
                             <h3>台账</h3>
                             <div class="active">
                                  <ul>
-                                 	<li><a href="${contextPath }/stats/account/get/1">服务器台账</a></li>
-                                 	<li><a href="${contextPath }/stats/account/get/1">网络设备台账</a></li>
-                                    <li><a href="${contextPath }/stats/account/get/1">安全设备台账</a></li>
-                                    <li><a href="${contextPath }/stats/account/get/1">终端设备台账</a></li>
+                                 <c:forEach items="${list }" var="account1">
+                                 	<li><a href="${contextPath }/stats/account/get/${account1.id}">${account1.name }</a></li>
+                                 	</c:forEach>
                                 </ul>                                               
                             </div>
 

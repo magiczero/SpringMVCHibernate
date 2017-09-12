@@ -138,4 +138,10 @@ public class CategoryController {
 //		return map;
 		return categoryService.getJSON();
 	}
+	
+	@RequestMapping(value="/getjson-all-department", method = RequestMethod.GET)
+	@ResponseBody
+	public String getAllJson(Model model){
+		return categoryService.getAllJSON();
+	}
 }

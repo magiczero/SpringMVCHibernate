@@ -11,6 +11,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.annotation.Resource;
+
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.DateUtil;
@@ -19,15 +21,18 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.cngc.pm.common.web.common.UserUtil;
 import com.cngc.pm.dao.StatsDAO;
 import com.cngc.pm.dao.UserDAO;
 import com.cngc.pm.dao.cms.CategoryDAO;
 import com.cngc.pm.dao.cms.CiDAO;
 import com.cngc.pm.model.Attachment;
+import com.cngc.pm.model.SysUser;
 import com.cngc.pm.model.cms.Category;
 import com.cngc.pm.model.cms.Ci;
 import com.cngc.pm.service.cms.CiService;
@@ -47,6 +52,8 @@ public class CiServiceImpl implements CiService{
 	private CategoryDAO categoryDao;
 	@Autowired
 	private UserDAO userDao;
+//	@Autowired
+//	private UserUtil userUtil;
 
 	@Override
 	@Transactional(propagation = Propagation.REQUIRED, readOnly=false)
@@ -394,5 +401,32 @@ public class CiServiceImpl implements CiService{
 		search.setMaxResults(iDisplayLength);
 		
 		return ciDao.searchAndCount(search);
+	}
+
+	@Override
+	public List<Ci> getByAuthAndCategory(int secretlevel, SysUser user, List<String> codeList) {
+		// TODO Auto-generated method stub
+//		Search search = new Search(Ci.class);
+//		//权限
+//		if(userUtil.isRolesWithUser(user, "ROLE_USER")) {		//普通员工
+//			search.addFilterEqual("userInMaintenance", user.getUsername());
+//		} else if(userUtil.isRolesWithUser(user, "DEPARTMENT_LEADER")) {	//部门领导
+//			search.addFilterEqual("departmentInUse", user.getGroup().getId());
+//		} else if(userUtil.isRolesWithUser(user, "COMPANY_LEADER")) {	//单位领导
+//			String groupid = userUtil.getTopGroup(user.getGroup()).getId().toString();
+//			search.addFilterLike("departmentInUse", groupid+"%");
+//		}
+//		
+//		//密级
+//		if(secretlevel == 1) {
+//			search.addFilterNotEqual("serviceLevel", "04");
+//		} else if(secretlevel ==2) {	//非密
+//			search.addFilterEqual("serviceLevel", "04");
+//		}
+//		
+//		SearchResult<Ci> sr = ciDao.searchAndCount(search); 
+//		
+//		return sr.getResult();
+		return null;
 	}
 }

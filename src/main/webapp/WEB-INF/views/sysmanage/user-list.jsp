@@ -272,8 +272,8 @@
                                 <thead>
 								<tr>
 									<th width="70px">序号</th>
-									<th width="10%">用户名</th>
-									<th width="10%">真实姓名</th>
+									<th width="6%">用户名</th>
+									<th width="6%">真实姓名</th>
 									<th width="10%">所属部门</th>
 									<th >用户角色</th>
 									<th width="10%">创建时间</th>
@@ -281,8 +281,8 @@
 									<sec:authorize access="hasRole('security_secrecy_admin')"><th width="7%">解锁</th></sec:authorize>
 									<sec:authorize access="hasRole('sys_admin')"><th width="7%">重置密码</th></sec:authorize>
 									<th width="10%">最后访问时间</th>
-									<th width="70px">ID</th>
-									<th width="180px">操作</th>
+									<th width="40px">ID</th>
+									<th width="140px">操作</th>
 								</tr>
                                 </thead>
                                 <tbody>

@@ -10,6 +10,7 @@ import com.cngc.pm.dao.GroupDAO;
 import com.cngc.pm.model.Group;
 import com.cngc.pm.model.SysUser;
 import com.cngc.pm.service.GroupService;
+import com.googlecode.genericdao.search.Search;
 
 @Service
 public class GroupServiceImpl implements GroupService {
@@ -227,5 +228,30 @@ public class GroupServiceImpl implements GroupService {
 		
 		jsonStr.append("]");
 		return jsonStr.toString();
+	}
+
+	@Override
+	@Transactional(readOnly=true)
+	public Group getMaxTop() {
+		// TODO Auto-generated method stub
+		Search search = new Search(Group.class);
+		
+		search.addFilterEmpty("parentGroup");
+		search.addFilterLessThan("id", 100);
+		search.addSortDesc("id");
+		
+		return (Group) groupDao.search(search).get(0);
+	}
+
+	@Override
+	@Transactional(readOnly=true)
+	public Group getMaxChild(Group parentGroup) {
+		// TODO Auto-generated method stub
+		Search search = new Search(Group.class);
+		
+		search.addFilterEqual("parentGroup", parentGroup);
+		search.addSortDesc("id");
+		
+		return (Group) groupDao.search(search).get(0);
 	}
 }

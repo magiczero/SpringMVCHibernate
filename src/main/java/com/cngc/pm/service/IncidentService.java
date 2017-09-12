@@ -28,4 +28,18 @@ public interface IncidentService {
 	Long getIdByProcessInstance(String processInstanceId);
 	List<Incident> search(String abs,String applyUser,String engineer,String satisfaction,Date startTime,Date endTime);
 	void update(Incident newincident);
+	/**
+	 * 根据单位查询统计
+	 * @param abs
+	 * @param unit
+	 * @param engineer
+	 * @param satisfaction
+	 * @param startDate
+	 * @param endDate
+	 * @param iDisplayStart
+	 * @param iDisplayLength
+	 * @return
+	 */
+	public SearchResult<Incident> searchByUnit(String abs, String unit, String engineer, String satisfaction, Date startDate,
+			Date endDate, int iDisplayStart, int iDisplayLength);
 }

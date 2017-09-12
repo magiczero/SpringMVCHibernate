@@ -6,5 +6,10 @@ package com.cngc.pm.model;
  *
  */
 public enum AttachType {
-	doc, other, event, ci, knowledge, secjob, uefile, feedback
+	doc, other, event, ci, knowledge, 
+	secjob, 
+	uefile, 
+	feedback, 
+	threemember, 
+	maintainrecord
 }

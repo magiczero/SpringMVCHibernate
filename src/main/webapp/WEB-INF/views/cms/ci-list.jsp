@@ -24,7 +24,7 @@
     <link href="${contextPath }/resources/css/validation.css" rel="stylesheet" type="text/css" />
     <link href="${contextPath }/resources/css/mycss.css" rel="stylesheet" type="text/css" />
     <link href="${contextPath }/resources/css/dataTables.css" rel="stylesheet" type="text/css" />
-    <!-- <link href="${contextPath }/resources/css/dataTables.fixedColumns.css" rel="stylesheet" type="text/css" /> -->
+    <link href="${contextPath }/resources/css/dataTables.fixedColumns.css" rel="stylesheet" type="text/css" />
     <link href='${contextPath }/resources/js/plugins/jstree/jquery.treeview.css' rel="stylesheet" type="text/css" />
     <link href="${contextPath }/resources/css/uploadify.css" rel="stylesheet" type="text/css" />
     <!--[if lt IE 8]>
@@ -37,7 +37,7 @@
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/cookie/jquery.cookies.2.2.0.min.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/bootstrap.min.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/dataTables/jquery.dataTables.min.js'></script> 
-    <!-- <script type='text/javascript' src='${contextPath }/resources/js/plugins/dataTables/dataTables.fixedColumns.min.js'></script> -->
+    <script type='text/javascript' src='${contextPath }/resources/js/plugins/dataTables/dataTables.fixedColumns.min.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/validation/languages/jquery.validationEngine-zh-CN.js' charset='utf-8'></script>
 <script type='text/javascript' src='${contextPath }/resources/js/plugins/validation/jquery.validationEngine.js' charset='utf-8'></script>   
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/highlight/jquery.highlight-4.js'></script>
@@ -59,6 +59,31 @@
     	var table;
             $(document).ready(function () {
             	
+                $(".header").load("${contextPath}/header?t="+pm_random());
+                $(".menu").load("${contextPath }/menu?t="+pm_random(), function() {$("#node_${moduleId}").addClass("active");});
+                $(".breadLine .buttons").load("${contextPath}/contentbuttons?t="+pm_random());
+                $(".confirm").bind("click",function(){
+                	if(!confirm("确定要执行该操作?"))
+                		return false;
+                });
+                
+                $("#b_popup_type").dialog({
+    		        autoOpen: false,
+    		        width: 400,
+    		        height:500,
+    		        buttons: { "确定": function () { $(this).dialog("close") } }
+    		    });
+    		    
+    		    $("#type_sel").bind("click",function(){
+    		    	$("#treeview").empty();
+    		    	$("#treeview").treeview({
+    		    		url:ctx + '/cms/category/getjson?t=' + pm_random(),
+                		collapsed: true,
+                		unique: true
+                	});
+    	    		$("#b_popup_type").dialog('open');
+                });
+    		    
             	table = $('#ciTable').dataTable({
         				"oLanguage": {"sUrl": "${contextPath}/resources/json/Chinese.json"},
         			    "bAutoWidth": true,
@@ -100,11 +125,45 @@
         	              {
           	                "aTargets": [ 8 ],
           	                "mRender": function ( data, type, full ) {
-          	                  return (data.split(" "))[0];
+          	                	if(data==null)
+          	                		return "";
+          	                	else
+          	                  		return (data.split(" "))[0];
           	                }
           	              },
+          	            {
+            	                "aTargets": [ 9 ],
+            	                "mRender": function ( data, type, full ) {
+            	                	if(data==null)
+            	                		return "";
+            	                	else
+            	                  		return (data.split(" "))[0];
+            	                }
+            	              },
+            	        {
+                	        "aTargets": [ 10 ],
+                	        "mRender": function ( data, type, full ) {
+                	        	if(data==null)
+                	            	return "";
+                	        	else
+                	           		return (data.split(" "))[0];
+                	        }
+                	    },
+          	            	{
+            	                "aTargets": [ 13 ],
+            	                "mData": "download_link",
+            	                "mRender": function ( data, type, full ) {
+            	                	
+            	                	if(data.length>0){
+            	                		for (var k = 0, length = data.length; k < length; k++) {
+            	                			return '<a href="${contextPath }/attachment/download/'+data[k].id+'">'+data[k].name+'</a><br/>';
+            	                		}
+            	                	}else
+            	                		return "";
+            	                }
+            	              },
         	              {
-          	                "aTargets": [ 13 ],
+          	                "aTargets": [ 14 ],
           	                "mData": "download_link",
           	                "mRender": function ( data, type, full ) {
           	                  return '<a href="${contextPath }/cms/ci/addproperty/'+full.id+'">属性</a>&nbsp;&nbsp;<a href="#" onclick="del('+full.id+');">删除</a>';
@@ -124,27 +183,14 @@
         	                           { "mData" : 'serviceStartTime' }, 
         	                           { "mData" : 'purpose' }, 
         	                           { "mData" : 'statusName' }, 
+        	                           { "mData" : 'attachs' },
         	                           { "mData" : 'id' }
         	                             ]
         			});
-            	//new $.fn.dataTable.FixedColumns(table);
-                $(".header").load("${contextPath}/header?t="+pm_random());
-                $(".menu").load("${contextPath }/menu?t="+pm_random(), function() {$("#node_${moduleId}").addClass("active");});
-                $(".breadLine .buttons").load("${contextPath}/contentbuttons?t="+pm_random());
-                $(".confirm").bind("click",function(){
-                	if(!confirm("确定要执行该操作?"))
-                		return false;
-                });
-                $("#treeview").treeview({
-                	unique: true,
-            		url : ctx + '/cms/category/getjson?t=' + pm_random()
-            	});
-                
-                //initTable("0");
+            	new $.fn.dataTable.FixedColumns(table);
                 
             });
             
-            //$(document).ready(function () {$('.sorting')[0].click;});
             function initTable(code)
             {
             	//datatables_options["sAjaxSource"] = ctx + '/cms/ci/list-by-category?t=' + pm_random();
@@ -156,7 +202,7 @@
                     //	if(!confirm("确定要执行该操作?"))
                     //		return false;
                     //}); 
-                    
+            		 $("#b_popup_type").dialog('close');    
             }
             
             function transDate(time_) {
@@ -227,16 +273,7 @@
                     <h4>错误!</h4>请至少选择一项
                 </div> 
                 <div class="row">
-                	<div class="col-md-2">
-                	<div class="head clearfix">
-                        <div class="isw-donw_circle"></div>
-                        <h1>配置项类别</h1>
-                    </div>
-                		<div class="block-fluid">
-                		<ul id="treeview" style="margin-left:10px;"></ul>
-                		</div>
-                	</div>
-                    <div class="col-md-10">                    
+                    <div class="col-md-12">                    
                         <div class="head clearfix">
                             <div class="isw-grid"></div>
                             <h1>配置项管理</h1>  
@@ -248,6 +285,7 @@
                                 <li>
                                     <a href="#" class="isw-settings tipl" title="操作 "></a>
                                     <ul class="dd-list">
+                                    	<li><a href="#" id="type_sel" title="按照配置项的类别显示"><span class="isw-list"></span> 类别选择</a></li>
                                     	<li><a href="#fModal" data-toggle="modal"><span class="isw-up"></span> 导入数据</a></li>
                                         <li><a href="#" onclick="pm_refresh()"><span class="isw-refresh"></span> 刷新</a></li>
                                     </ul>
@@ -256,7 +294,7 @@
                         </div>
                         <div class="block-fluid table-sorting clearfix">
                         	<input type="hidden" id="search_code" name="search_code" value="0" />
-                            <table class="stripe row-border order-column" id="ciTable" cellspacing="0" width="100%">
+                            <table class="stripe row-border order-column" id="ciTable">
                                 <thead>
                                 	<tr>
 										<th>设备名称</th>
@@ -267,12 +305,13 @@
 										<th>所属部门</th>
 										<th>责任人</th>
 										<th>出厂编号/序列号</th>
-										<th >购置时间</th>
-										<th >维保截止时间</th>
-										<th >启用时间</th>
-										<th >设备用途</th>
-										<th >使用情况</th>
-										<th >操作</th>
+										<th>购置时间</th>
+										<th>维保截止时间</th>
+										<th>启用时间</th>
+										<th>设备用途</th>
+										<th>使用情况</th>
+										<th>文件</th>
+										<th>操作</th>
 									</tr>
                                 </thead>
                                 <tbody>
@@ -315,6 +354,10 @@
                 </div>
             </div>
         </div>  
+    </div>
+    
+    <div class='dialog' id='b_popup_type' style='display: none;' title='配置项类别'>
+    	<div class='block dialog_block messages '><div><ul id='treeview'></ul></div></div>
     </div>
 </body>
 

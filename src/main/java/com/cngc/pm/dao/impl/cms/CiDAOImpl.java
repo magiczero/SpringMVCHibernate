@@ -83,4 +83,14 @@ public class CiDAOImpl extends BaseDAOImpl<Ci, Long> implements CiDAO {
 		return this.searchAndCount(search);
 	}
 	
+	@Override
+	public List<Ci> getListByCode(String curcode) {
+		// TODO Auto-generated method stub
+		Search search = new Search();
+		
+		search.addFilterEqual("categoryCode", curcode);
+		
+		return this.search(search);
+	}
+	
 }

@@ -10,25 +10,27 @@ function pm_change_getci()
 				ids += ",";
 			ids += v.ciId; 
 		});
-		$.getJSON(ctx+'/cms/ci/getjson/'+ids+'/?t='+pm_random(),function(data){
-			var map = new Object();
-			$.each(data.cis,function(i,v){
-				map[v.id] = v;
+		if(ids.length>0) {
+			$.getJSON(ctx+'/cms/ci/getjson/'+ids+'/?t='+pm_random(),function(data){
+				var map = new Object();
+				$.each(data.cis,function(i,v){
+					map[v.id] = v;
+				});
+				$.each(items,function(i,v){
+					
+					trs += "<tr>"
+						+"<td>"+(i+1)+"</td>"
+						+"<td><a href='"+ctx+"/cms/ci/detail/"+v.ciId+"' target=_blank>"+map[v.ciId].name+"</a></td>";
+					if( v.propertiesName==null )
+						trs += "<td></td>";
+					else
+						trs += "<td>"+v.propertiesName+"</td>";
+					trs += "<td><a href='#' onclick='pm_change_setProperty("+v.id+","+v.ciId+",\""+v.properties+"\")'><span class='glyphicon glyphicon-pencil'></span></a> <a href='#' onclick='pm_change_removeci("+v.id+")'><span class='glyphicon glyphicon-remove'></span></a></td>"
+						+"</tr>";
+				});
+				$("#itemTable tbody").append(trs);
 			});
-			$.each(items,function(i,v){
-				
-				trs += "<tr>"
-					+"<td>"+(i+1)+"</td>"
-					+"<td><a href='"+ctx+"/cms/ci/detail/"+v.ciId+"' target=_blank>"+map[v.ciId].name+"</a></td>";
-				if( v.propertiesName==null )
-					trs += "<td></td>";
-				else
-					trs += "<td>"+v.propertiesName+"</td>";
-				trs += "<td><a href='#' onclick='pm_change_setProperty("+v.id+","+v.ciId+",\""+v.properties+"\")'><span class='glyphicon glyphicon-pencil'></span></a> <a href='#' onclick='pm_change_removeci("+v.id+")'><span class='glyphicon glyphicon-remove'></span></a></td>"
-					+"</tr>";
-			});
-			$("#itemTable tbody").append(trs);
-		});
+		}
 	});
 }
 function pm_change_removeci(id)

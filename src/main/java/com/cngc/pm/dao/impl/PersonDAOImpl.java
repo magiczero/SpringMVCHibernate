@@ -1,5 +1,6 @@
 package com.cngc.pm.dao.impl;
 
+import org.hibernate.Session;
 import org.springframework.stereotype.Repository;
 
 import com.cngc.pm.dao.PersonDAO;
@@ -7,6 +8,10 @@ import com.cngc.pm.model.Person;
 
 @Repository
 public class PersonDAOImpl extends BaseDAOImpl<Person, Integer> implements PersonDAO {
+	@Override
+	public Session getSession(){
+		return this.getSessionFactory().getCurrentSession();
+	}
 	/*
 	private static final Logger logger = LoggerFactory.getLogger(PersonDAOImpl.class);
 

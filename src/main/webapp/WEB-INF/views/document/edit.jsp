@@ -108,6 +108,8 @@
                 
                 $("#document").validationEngine({promptPosition : "topRight", scroll: true});
                 
+                $("select[name='secretLevel'] option[value='${document.secretLevel.value}']").attr("selected","selected");
+                
                 $(function() {
                 	$('#file_upload').uploadify({
         				'formData' : { 'type' : 1 },
@@ -213,7 +215,7 @@
                             <div class="row-form clearfix">
                              <div class="col-md-2"><form:label path="secretLevel">密级*</form:label></div>
                                 <div class="col-md-4">
-									<form:select path="secretLevel" multiple="false">
+									<form:select path="secretLevel">
 										<c:forEach items="${levels }" var="level">
 										<form:option value="${level.value }">${level.level }</form:option> 
 										</c:forEach>

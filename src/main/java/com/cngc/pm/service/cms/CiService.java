@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.Set;
 
 import com.cngc.pm.model.Attachment;
+import com.cngc.pm.model.SysUser;
 import com.cngc.pm.model.cms.Ci;
 import com.googlecode.genericdao.search.SearchResult;
 
@@ -50,4 +51,13 @@ public interface CiService {
 	 * @return
 	 */
 	SearchResult<Ci> getAllWithPage(String categoryCode,int iDisplayStart, int iDisplayLength);
+
+	/**
+	 * 根据用户权限和分类代码确定Ci集合
+	 * @param secretlevel  0=全部，1=涉密，2=非密
+	 * @param user
+	 * @param codeList
+	 * @return
+	 */
+	List<Ci> getByAuthAndCategory(int secretlevel,SysUser user, List<String> codeList);
 }

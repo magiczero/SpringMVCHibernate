@@ -1,6 +1,6 @@
 /*
 SQLyog Community v12.4.1 (64 bit)
-MySQL - 5.7.17-log : Database - pmsys
+MySQL - 5.7.17-log : Database - pmsys_20170711
 *********************************************************************
 */
 
@@ -12,9 +12,9 @@ MySQL - 5.7.17-log : Database - pmsys
 /*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
-CREATE DATABASE /*!32312 IF NOT EXISTS*/`pmsys` /*!40100 DEFAULT CHARACTER SET utf8 */;
+CREATE DATABASE /*!32312 IF NOT EXISTS*/`pmsys_20170711` /*!40100 DEFAULT CHARACTER SET utf8 */;
 
-USE `pmsys`;
+USE `pmsys_20170711`;
 
 /*Table structure for table `act_evt_log` */
 
@@ -34,7 +34,7 @@ CREATE TABLE `act_evt_log` (
   `LOCK_TIME_` timestamp NULL DEFAULT NULL,
   `IS_PROCESSED_` tinyint(4) DEFAULT '0',
   PRIMARY KEY (`LOG_NR_`)
-) ENGINE=MyISAM AUTO_INCREMENT=6894 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+) ENGINE=MyISAM AUTO_INCREMENT=7291 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 /*Table structure for table `act_ge_bytearray` */
 
@@ -520,7 +520,7 @@ CREATE TABLE `attachment` (
   `thumbnail_size` bigint(20) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `FK_abpc1wrf8notq4f3nclwvn0nb` (`type_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=406 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=412 DEFAULT CHARSET=utf8;
 
 /*Table structure for table `cabinet` */
 
@@ -559,7 +559,8 @@ CREATE TABLE `check_item` (
   `technique` text COMMENT '测评方法',
   `base_` tinyint(1) DEFAULT NULL COMMENT '是否是基本测评项',
   `record_` text COMMENT '相关记录',
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  KEY `FK_ma8hmkf09c8ofvs8x9nk5dry3` (`item_id`)
 ) ENGINE=MyISAM AUTO_INCREMENT=52 DEFAULT CHARSET=utf8;
 
 /*Table structure for table `cms_category` */
@@ -579,7 +580,9 @@ CREATE TABLE `cms_category_property` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `category_code` varchar(50) DEFAULT NULL,
   `property_id` bigint(20) DEFAULT NULL,
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  KEY `FK_kii5jo26ykp3b07itvsaisagq` (`property_id`),
+  KEY `FK_rfpfujkdfjyvwfer8oqn29ttd` (`category_code`)
 ) ENGINE=MyISAM AUTO_INCREMENT=148 DEFAULT CHARSET=utf8;
 
 /*Table structure for table `cms_category_relation` */
@@ -591,7 +594,10 @@ CREATE TABLE `cms_category_relation` (
   `category_code_primary` varchar(50) DEFAULT NULL,
   `category_code_secondary` varchar(50) DEFAULT NULL,
   `relation_id` varchar(50) DEFAULT NULL,
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  KEY `FK_t4lt84iu2agbblv42hkpac7hq` (`category_code_primary`),
+  KEY `FK_2alhqru4pqsf0gof1ruo185ki` (`category_code_secondary`),
+  KEY `FK_cc0nhoc83dtdisrnm9wuos6v0` (`relation_id`)
 ) ENGINE=MyISAM AUTO_INCREMENT=12 DEFAULT CHARSET=utf8;
 
 /*Table structure for table `cms_ci` */
@@ -636,7 +642,7 @@ CREATE TABLE `cms_ci` (
   `num_` varchar(50) DEFAULT NULL COMMENT '设备编号',
   `serial_` varchar(100) DEFAULT NULL COMMENT '出厂编号/序列号',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=28 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=31 DEFAULT CHARSET=utf8;
 
 /*Table structure for table `cms_ci_relation` */
 
@@ -670,7 +676,7 @@ CREATE TABLE `cms_property` (
   `date_format` varchar(64) DEFAULT NULL COMMENT '时间格式',
   `in_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP COMMENT '建立时间',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=77 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=78 DEFAULT CHARSET=utf8;
 
 /*Table structure for table `cms_relation` */
 
@@ -716,7 +722,8 @@ CREATE TABLE `department` (
   `name` varchar(50) NOT NULL,
   `parent_id` int(11) DEFAULT NULL COMMENT '上级部门id',
   `telephone` varchar(64) DEFAULT NULL COMMENT '部门电话',
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  KEY `FK_65cvny6rlr2o9o7pw0af5oxxk` (`parent_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 /*Table structure for table `doc_style` */
@@ -727,7 +734,9 @@ CREATE TABLE `doc_style` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `doc_id` int(11) NOT NULL,
   `style_id` int(11) NOT NULL,
-  KEY `id` (`id`)
+  KEY `id` (`id`),
+  KEY `FK_1nhvd4yirmwonmvk0044qfe6d` (`doc_id`),
+  KEY `FK_3yqtp6adkwncm40ay8tddanrr` (`style_id`)
 ) ENGINE=MyISAM AUTO_INCREMENT=126 DEFAULT CHARSET=utf8 COMMENT='文档类别表';
 
 /*Table structure for table `document` */
@@ -751,7 +760,9 @@ CREATE TABLE `document` (
   `style_id` int(11) NOT NULL COMMENT '所属类别',
   `link_` varchar(64) DEFAULT NULL COMMENT '文档所在链接',
   `enabled` tinyint(1) NOT NULL COMMENT '是否删除',
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  KEY `FK_9ygxt6fvlc1fbrpsxmwduvdcw` (`style_id`),
+  KEY `FK_esb799ihho7ek44mndbsvmyit` (`user_id`)
 ) ENGINE=MyISAM AUTO_INCREMENT=114 DEFAULT CHARSET=utf8;
 
 /*Table structure for table `document_sec_audit` */
@@ -850,6 +861,25 @@ CREATE TABLE `leave_jpa` (
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
 
+/*Table structure for table `maintain_record` */
+
+DROP TABLE IF EXISTS `maintain_record`;
+
+CREATE TABLE `maintain_record` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `equip_name` varchar(50) DEFAULT NULL COMMENT '设备名称',
+  `equip_num` varchar(50) DEFAULT NULL COMMENT '设备编号',
+  `maintain_time` datetime NOT NULL COMMENT '维护时间',
+  `add_in` varchar(1000) DEFAULT NULL COMMENT '外接设备情况',
+  `performance_circs` varchar(2000) DEFAULT NULL COMMENT '执行情况',
+  `executor` varchar(50) NOT NULL COMMENT '执行人',
+  `escort` varchar(50) DEFAULT NULL COMMENT '陪同者',
+  `remark` varchar(2000) DEFAULT NULL COMMENT '备注',
+  `type_` int(11) NOT NULL COMMENT '类型',
+  `role_` int(11) NOT NULL COMMENT '管理员角色',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;
+
 /*Table structure for table `manage_action` */
 
 DROP TABLE IF EXISTS `manage_action`;
@@ -857,7 +887,8 @@ DROP TABLE IF EXISTS `manage_action`;
 CREATE TABLE `manage_action` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `action_name` varchar(50) NOT NULL,
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `UK_in5798c0hcjorv9jjfntqeujt` (`action_name`)
 ) ENGINE=MyISAM AUTO_INCREMENT=34 DEFAULT CHARSET=utf8;
 
 /*Table structure for table `manage_form` */
@@ -881,7 +912,8 @@ CREATE TABLE `manage_item` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name_` varchar(50) NOT NULL,
   `order_` int(11) NOT NULL,
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `UK_4dqn9ifys1jwebh4uxgevgplo` (`name_`)
 ) ENGINE=MyISAM AUTO_INCREMENT=9 DEFAULT CHARSET=utf8;
 
 /*Table structure for table `manage_position` */
@@ -896,8 +928,10 @@ CREATE TABLE `manage_position` (
   `is_del` tinyint(1) NOT NULL DEFAULT '0' COMMENT '是否删除',
   `in_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '插入时间',
   `del_time` datetime DEFAULT NULL COMMENT '删除时间',
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 COMMENT='人、系统、角色定位表';
+  PRIMARY KEY (`id`),
+  KEY `FK_elpi7dklotslgghc7dowhphyb` (`user_id`),
+  CONSTRAINT `FK_elpi7dklotslgghc7dowhphyb` FOREIGN KEY (`user_id`) REFERENCES `sys_users` (`USER_ID`)
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8 COMMENT='人、系统、角色定位表';
 
 /*Table structure for table `manage_records` */
 
@@ -911,8 +945,10 @@ CREATE TABLE `manage_records` (
   `basis_` varchar(512) DEFAULT NULL COMMENT '依据',
   `record_time` datetime DEFAULT NULL COMMENT '记录发生的日期',
   `auth_id` int(11) NOT NULL COMMENT '权限表id',
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8;
+  PRIMARY KEY (`id`),
+  KEY `FK_n9plsw2hte3vh6n3sot3mwk26` (`auth_id`),
+  CONSTRAINT `FK_n9plsw2hte3vh6n3sot3mwk26` FOREIGN KEY (`auth_id`) REFERENCES `manage_position` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8;
 
 /*Table structure for table `manage_relation` */
 
@@ -925,7 +961,8 @@ CREATE TABLE `manage_relation` (
   `type_` varchar(255) NOT NULL,
   `order_` int(11) NOT NULL COMMENT '排序',
   PRIMARY KEY (`id`),
-  UNIQUE KEY `unique_item` (`item_id`,`action_id`,`type_`)
+  UNIQUE KEY `unique_item` (`item_id`,`action_id`,`type_`),
+  KEY `FK_2iqd57xr4bxywjduieur2warc` (`action_id`)
 ) ENGINE=MyISAM AUTO_INCREMENT=58 DEFAULT CHARSET=utf8;
 
 /*Table structure for table `manufacturer` */
@@ -956,7 +993,7 @@ CREATE TABLE `message` (
   `created_time` datetime DEFAULT NULL,
   `read_time` datetime DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=1044 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=1259 DEFAULT CHARSET=utf8;
 
 /*Table structure for table `network_card` */
 
@@ -1000,7 +1037,7 @@ CREATE TABLE `operation_records` (
   `in_while` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '记录时间',
   `ip_address` varchar(50) DEFAULT NULL COMMENT 'ip地址',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3754 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=4095 DEFAULT CHARSET=utf8;
 
 /*Table structure for table `persistent_logins` */
 
@@ -1023,7 +1060,32 @@ CREATE TABLE `person` (
   `name` varchar(20) NOT NULL DEFAULT '',
   `country` varchar(20) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8;
+
+/*Table structure for table `person_revinfo` */
+
+DROP TABLE IF EXISTS `person_revinfo`;
+
+CREATE TABLE `person_revinfo` (
+  `id` int(11) NOT NULL,
+  `REV` int(11) NOT NULL,
+  `REVTYPE` tinyint(4) DEFAULT NULL,
+  `country` varchar(255) DEFAULT NULL,
+  `name` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`id`,`REV`),
+  KEY `FK_qlm61yhfbpr4svs7f5st5hhh3` (`REV`),
+  CONSTRAINT `FK_qlm61yhfbpr4svs7f5st5hhh3` FOREIGN KEY (`REV`) REFERENCES `revinfo` (`REV`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+/*Table structure for table `revinfo` */
+
+DROP TABLE IF EXISTS `revinfo`;
+
+CREATE TABLE `revinfo` (
+  `REV` int(11) NOT NULL AUTO_INCREMENT,
+  `REVTSTMP` bigint(20) DEFAULT NULL,
+  PRIMARY KEY (`REV`)
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
 
 /*Table structure for table `server_software` */
 
@@ -1089,8 +1151,9 @@ CREATE TABLE `styles` (
   `parent_id` int(11) DEFAULT NULL,
   `code_` varchar(10) DEFAULT NULL COMMENT '代号',
   `order_` int(11) DEFAULT NULL COMMENT '顺序',
-  PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=274 DEFAULT CHARSET=utf8;
+  PRIMARY KEY (`id`),
+  KEY `FK_rm7322xf8x6prpc56gbhxx0po` (`parent_id`)
+) ENGINE=MyISAM AUTO_INCREMENT=278 DEFAULT CHARSET=utf8;
 
 /*Table structure for table `sys_authorities` */
 
@@ -1116,7 +1179,9 @@ CREATE TABLE `sys_authorities_resources` (
   `ID` int(11) NOT NULL AUTO_INCREMENT,
   `RESOURCE_ID` int(11) NOT NULL,
   `AUTHORITY_ID` int(11) NOT NULL,
-  PRIMARY KEY (`ID`)
+  PRIMARY KEY (`ID`),
+  KEY `FK_7n0wf51c7kbsfvtr19qy5p7nx` (`AUTHORITY_ID`),
+  KEY `FK_c70f2qag35ebmw5nhs3qr3xbx` (`RESOURCE_ID`)
 ) ENGINE=MyISAM AUTO_INCREMENT=495 DEFAULT CHARSET=utf8 COMMENT='权限资源表';
 
 /*Table structure for table `sys_code` */
@@ -1129,19 +1194,20 @@ CREATE TABLE `sys_code` (
   `code_name` varchar(50) DEFAULT NULL,
   `type_` varchar(50) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=244 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=245 DEFAULT CHARSET=utf8;
 
 /*Table structure for table `sys_group` */
 
 DROP TABLE IF EXISTS `sys_group`;
 
 CREATE TABLE `sys_group` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `id` int(11) NOT NULL,
   `group_name` varchar(255) NOT NULL,
   `parent_id` int(11) DEFAULT NULL,
   `remark_` varchar(255) DEFAULT NULL,
   `order_` int(11) DEFAULT NULL,
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  KEY `FK_cpe22l4nto9hpqhl9qh3drnbf` (`parent_id`)
 ) ENGINE=MyISAM AUTO_INCREMENT=34 DEFAULT CHARSET=utf8 COMMENT='用户组表';
 
 /*Table structure for table `sys_modules` */
@@ -1161,8 +1227,10 @@ CREATE TABLE `sys_modules` (
   `CONTROLLER` varchar(100) DEFAULT NULL,
   `ENABLE` int(1) DEFAULT '1',
   `PRIORITY` int(4) DEFAULT '1',
-  PRIMARY KEY (`MODULE_ID`)
-) ENGINE=MyISAM AUTO_INCREMENT=112 DEFAULT CHARSET=utf8 COMMENT='模块表，与菜单有关系';
+  PRIMARY KEY (`MODULE_ID`),
+  UNIQUE KEY `UK_39h60w9j08ogr7jr7kyb6natj` (`MODULE_NAME`,`PARENT`),
+  KEY `FK_ohfu43hjekojyb0icqyn113eg` (`PARENT`)
+) ENGINE=MyISAM AUTO_INCREMENT=114 DEFAULT CHARSET=utf8 COMMENT='模块表，与菜单有关系';
 
 /*Table structure for table `sys_resources` */
 
@@ -1178,7 +1246,8 @@ CREATE TABLE `sys_resources` (
   `ENABLE` int(4) DEFAULT '1',
   `ISSYS` int(4) DEFAULT '1',
   `MODULE_ID` int(11) DEFAULT NULL,
-  PRIMARY KEY (`RESOURCE_ID`)
+  PRIMARY KEY (`RESOURCE_ID`),
+  KEY `FK_b03c5vty62u32sd76foycw10b` (`MODULE_ID`)
 ) ENGINE=MyISAM AUTO_INCREMENT=114 DEFAULT CHARSET=utf8 COMMENT='资源表';
 
 /*Table structure for table `sys_roles` */
@@ -1196,7 +1265,7 @@ CREATE TABLE `sys_roles` (
   `TYPE_` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`ROLE_ID`),
   UNIQUE KEY `unique_role_name` (`ROLE_NAME`)
-) ENGINE=MyISAM AUTO_INCREMENT=17 DEFAULT CHARSET=utf8 COMMENT='角色表';
+) ENGINE=MyISAM AUTO_INCREMENT=22 DEFAULT CHARSET=utf8 COMMENT='角色表';
 
 /*Table structure for table `sys_roles_authorities` */
 
@@ -1206,7 +1275,9 @@ CREATE TABLE `sys_roles_authorities` (
   `ID` int(11) NOT NULL AUTO_INCREMENT,
   `AUTHORITY_ID` int(11) NOT NULL,
   `ROLE_ID` int(11) NOT NULL,
-  PRIMARY KEY (`ID`)
+  PRIMARY KEY (`ID`),
+  KEY `FK_dkh9l7rjxrfg486vytc4wbx4x` (`AUTHORITY_ID`),
+  KEY `FK_ef555l3uejwmxhxt0fjbl4bdu` (`ROLE_ID`)
 ) ENGINE=MyISAM AUTO_INCREMENT=32 DEFAULT CHARSET=utf8 COMMENT='角色权限表';
 
 /*Table structure for table `sys_roles_moudles` */
@@ -1217,8 +1288,10 @@ CREATE TABLE `sys_roles_moudles` (
   `ID` int(11) NOT NULL AUTO_INCREMENT,
   `MODULE_ID` int(11) NOT NULL,
   `ROLE_ID` int(11) NOT NULL,
-  PRIMARY KEY (`ID`)
-) ENGINE=MyISAM AUTO_INCREMENT=1418 DEFAULT CHARSET=utf8 COMMENT='角色模块表——控制角色对模块的访问权，主要用于生成菜单';
+  PRIMARY KEY (`ID`),
+  KEY `FK_7o7dhbi2e0j1wqo1chv6x0t1o` (`MODULE_ID`),
+  KEY `FK_n989by7yrj3374ypuen52tivu` (`ROLE_ID`)
+) ENGINE=MyISAM AUTO_INCREMENT=1498 DEFAULT CHARSET=utf8 COMMENT='角色模块表——控制角色对模块的访问权，主要用于生成菜单';
 
 /*Table structure for table `sys_users` */
 
@@ -1248,8 +1321,9 @@ CREATE TABLE `sys_users` (
   `EMAIL_` varchar(255) DEFAULT NULL,
   `PWD_` varchar(255) DEFAULT NULL,
   `PICTURE_ID_` varchar(64) DEFAULT NULL,
-  PRIMARY KEY (`USER_ID`)
-) ENGINE=InnoDB AUTO_INCREMENT=62 DEFAULT CHARSET=utf8 COMMENT='系统用户表';
+  PRIMARY KEY (`USER_ID`),
+  UNIQUE KEY `UK_lgllb14jd9kcm09b9enkkbh0q` (`USERNAME`)
+) ENGINE=InnoDB AUTO_INCREMENT=65 DEFAULT CHARSET=utf8 COMMENT='系统用户表';
 
 /*Table structure for table `sys_users_roles` */
 
@@ -1259,8 +1333,10 @@ CREATE TABLE `sys_users_roles` (
   `ID` int(11) NOT NULL AUTO_INCREMENT,
   `ROLE_ID` int(11) NOT NULL,
   `USER_ID` int(11) NOT NULL,
-  PRIMARY KEY (`ID`)
-) ENGINE=MyISAM AUTO_INCREMENT=129 DEFAULT CHARSET=utf8 COMMENT='用户角色表';
+  PRIMARY KEY (`ID`),
+  KEY `FK_laitchy0659so1fu7j7841p3s` (`ROLE_ID`),
+  KEY `FK_2hdponpg7247h0udx3fmyg0p2` (`USER_ID`)
+) ENGINE=MyISAM AUTO_INCREMENT=135 DEFAULT CHARSET=utf8 COMMENT='用户角色表';
 
 /*Table structure for table `wk_account` */
 
@@ -1275,8 +1351,9 @@ CREATE TABLE `wk_account` (
   `views_` varchar(2000) DEFAULT NULL COMMENT '页面要显示的属性',
   `created_user` varchar(255) DEFAULT NULL,
   `created_time` datetime DEFAULT NULL,
+  `type_` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
 
 /*Table structure for table `wk_change` */
 
@@ -1307,7 +1384,7 @@ CREATE TABLE `wk_change` (
   `end_time` datetime DEFAULT NULL COMMENT '变更结束时间',
   `endbyuser` tinyint(1) DEFAULT '0' COMMENT '是否正常关闭',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=48 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=56 DEFAULT CHARSET=utf8;
 
 /*Table structure for table `wk_change_item` */
 
@@ -1323,8 +1400,9 @@ CREATE TABLE `wk_change_item` (
   `new_value` text COMMENT '属性新值',
   `created_time` datetime DEFAULT NULL,
   `updated_time` datetime DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=30 DEFAULT CHARSET=utf8;
+  PRIMARY KEY (`id`),
+  KEY `FK_2s0mnwv50t384gdi425li2vlm` (`change_id`)
+) ENGINE=MyISAM AUTO_INCREMENT=33 DEFAULT CHARSET=utf8;
 
 /*Table structure for table `wk_event` */
 
@@ -1409,7 +1487,7 @@ CREATE TABLE `wk_incident` (
   `feedback` varchar(255) DEFAULT NULL COMMENT '反馈意见',
   `endbyuser` tinyint(1) DEFAULT '0' COMMENT '是否正常关闭',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=129 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=133 DEFAULT CHARSET=utf8;
 
 /*Table structure for table `wk_income` */
 
@@ -1426,7 +1504,7 @@ CREATE TABLE `wk_income` (
   `created_time` datetime DEFAULT NULL COMMENT '创建时间',
   `created_user` varchar(255) DEFAULT NULL COMMENT '创建用户',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=21 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=22 DEFAULT CHARSET=utf8;
 
 /*Table structure for table `wk_inspection` */
 
@@ -1479,7 +1557,7 @@ CREATE TABLE `wk_knowledge` (
   `update_time` datetime DEFAULT NULL,
   `endbyuser` tinyint(1) DEFAULT '0' COMMENT '是否正常关闭',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=55 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=56 DEFAULT CHARSET=utf8;
 
 /*Table structure for table `wk_sec_job` */
 
@@ -1518,7 +1596,7 @@ CREATE TABLE `wk_task` (
   `task_desc` varchar(255) DEFAULT NULL,
   `endbyuser` tinyint(1) DEFAULT '0' COMMENT '是否正常关闭',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=40 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=41 DEFAULT CHARSET=utf8;
 
 /*Table structure for table `wk_training` */
 

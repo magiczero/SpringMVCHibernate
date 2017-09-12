@@ -18,6 +18,7 @@ import javax.validation.Valid;
 
 import org.activiti.engine.FormService;
 import org.activiti.engine.HistoryService;
+import org.activiti.engine.IdentityService;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
@@ -70,6 +71,8 @@ public class ChangeController {
 	private HistoryService historyService;
 	@Resource
 	private SysCodeService syscodeService;
+	@Resource
+	private IdentityService identityService;
 	@Resource
 	private ChangeItemService changeitemService;
 	@Resource
@@ -138,6 +141,7 @@ public class ChangeController {
 	public String save(@Valid @ModelAttribute("change") Change change, Authentication authentication) throws Exception {
 		if(change.getId()==null)
 		{
+			
 			change.setStatus("01");
 			change.setApplyTime(new Date());
 			change.setApplyUser(userUtil.getUsernameByAuth(authentication));
@@ -150,6 +154,7 @@ public class ChangeController {
 			if (processDefinition != null) {
 				Map<String, String> variables = new HashMap<String, String>();
 				variables.put("id", String.valueOf(change.getId()));
+				identityService.setAuthenticatedUserId(change.getApplyUser());
 				formService.submitStartFormData(processDefinition.getId(), variables);
 			}
 		}
@@ -579,6 +584,21 @@ public class ChangeController {
 		model.addAttribute("cis", map);
 
 		return "change/items";
+	}
+	
+	@RequestMapping(value = "/items0/{id}", method = RequestMethod.GET)
+	public String items0(@PathVariable("id") long id, Model model) {
+		Map<String, Object> map = new HashMap<String, Object>();
+		Change change = changeService.getById(id);
+		
+		model.addAttribute("items", change.getItems());
+		
+		for (ChangeItem item : change.getItems()) {
+			map.put(item.getCiId().toString(), ciService.getById(item.getCiId()));
+		}
+		model.addAttribute("cis", map);
+
+		return "change/items0";
 	}
 
 	@SuppressWarnings("unchecked")

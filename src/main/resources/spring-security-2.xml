@@ -13,6 +13,7 @@
     </beans:bean>
 
 	<http pattern="/resources/**" security="none" />
+	<http pattern="/fixedcolumns/**" security="none" />
 	<http pattern="/initLogin.html" security="none" />
 	<!-- <http pattern="/workflow/task/getmytaskcount*" security="none" /> -->
 	

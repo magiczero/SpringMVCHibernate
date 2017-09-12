@@ -469,7 +469,7 @@ public class DocumentController {
 		model.addAttribute("count", result.getTotalCount());
 		model.addAttribute("offset", offset);
 		//model.addAttribute("document", new Document());
-		model.addAttribute("url", request.getRequestURI()+"/"+styleid);
+		model.addAttribute("url", request.getRequestURI());
 		
 		return "document/list-by-code";
 	}
@@ -486,7 +486,7 @@ public class DocumentController {
 		model.addAttribute("offset", offset);
 		model.addAttribute("styleid", itemid);
 		model.addAttribute("document", new Document());
-		model.addAttribute("url", request.getRequestURI()+"/"+itemid);
+		model.addAttribute("url", request.getRequestURI());
 		
 		return "document/list2";
 	}

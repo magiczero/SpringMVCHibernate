@@ -211,4 +211,13 @@ public class RoleServiceImpl implements RoleService{
 		// TODO Auto-generated method stub
 		return roleDao.findAll();
 	}
+	@Override
+	public Role getByName(String roleName) {
+		// TODO Auto-generated method stub
+		Search search = new Search(Role.class);
+		
+		search.addFilterEqual("roleName", roleName);
+		
+		return roleDao.searchUnique(search);
+	}
 }

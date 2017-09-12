@@ -1,5 +1,6 @@
 package com.cngc.pm.dao;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -43,5 +44,8 @@ public interface IncidentDAO extends GenericDAO<Incident, Long> {
 	 * @return
 	 */
 	SearchResult<Incident> getByProcessInstance(List<String> processInstanceIds);
+	
+	public SearchResult<Incident> searchByUnit(String abs, String unit, String engineer, String satisfaction, Date startDate,
+			Date endDate, int iDisplayStart, int iDisplayLength);
 	
 }

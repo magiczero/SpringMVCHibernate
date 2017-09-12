@@ -46,7 +46,30 @@ public class GroupController {
 	
 	@RequestMapping(value = "/save", method = RequestMethod.POST)
 	public String save(@Valid @ModelAttribute Group group, BindingResult result,Model model) {
-		groupService.saveGroup(group);
+		if(group.getId()!=null && group.getId()>0) { //修改
+			group.setParentGroup(groupService.getById(group.getId()).getParentGroup());
+			groupService.saveGroup(group);
+		} else {
+			Long parentId = group.getParentGroup().getId();
+			long id = 0;
+			//计算主键
+			if(parentId == null) {
+				id = groupService.getMaxTop().getId()+1;
+			} else {
+				//验证
+				Group parentGroup = groupService.getById(parentId);
+				
+				if(parentGroup!= null && parentGroup.getId() > 0) {
+					if(parentId.toString().length()/2 > 1) {
+						id = groupService.getMaxChild(parentGroup).getId()+1;
+					}
+				}
+			}
+			if(id != 0) {
+				group.setId(id);
+				groupService.saveGroup(group);
+			}
+		}
 		
 		return "redirect:/group/list";
 	}

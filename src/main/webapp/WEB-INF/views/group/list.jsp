@@ -452,7 +452,7 @@
                             </div>
                             <div class="dr"><span></span></div>
                             <div class="block">
-                                <p>如果选择#，则是顶级部门</p>
+                                <p>如果选择#，则是顶级部门; 如果是修改部门，上级部门不能修改</p>
                             </div>
                         </div>
                     </div>

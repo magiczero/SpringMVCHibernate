@@ -179,8 +179,16 @@ public class AttachmentController {
 					 		break;
 					 	case "6":
 					 		attach.setType(AttachType.uefile);
+					 		break;
 					 	case "7":
 					 		attach.setType(AttachType.feedback);
+					 		break;
+					 	case "8":
+					 		attach.setType(AttachType.threemember);
+					 		break;
+					 	case "9":
+					 		attach.setType(AttachType.maintainrecord);
+					 		break;
 					 }
 					 attach = attachService.create(attach,currentusername);
 					

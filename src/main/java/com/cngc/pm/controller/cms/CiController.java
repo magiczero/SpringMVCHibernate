@@ -222,6 +222,18 @@ public class CiController {
 		return "cms/ci-list";
 	}
 	
+	@RequestMapping(value="/list/{code}/",method = RequestMethod.GET)
+	@ResponseBody
+	public Map<String,Object> geListByCategoryCode(@PathVariable("code") String code,Model model){
+		Map<String,Object> map = new HashMap<String,Object>();
+		if(code.equals("0"))
+	 		map.put("list", ciService.getAll());
+	 	else
+	 		map.put("list", ciService.getByCategoryCode(code).getResult());
+	 	
+	 	return map;
+	 }
+	
 	@RequestMapping(value="/list-by-category",method = RequestMethod.GET)
 	@ResponseBody
 	public String geListByCategoryCode(@RequestParam(required=true) String aoData){

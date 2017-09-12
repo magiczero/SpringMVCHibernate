@@ -369,6 +369,9 @@ table.dataTable td {
 .dataTables_wrapper.no-footer div.dataTables_scrollBody table {
   border-bottom: none;
 }
+.dataTables_wrapper div.dataTables_scrollHead table thead {
+	background-color: #F1F1F1; color: #666;
+}
 .dataTables_wrapper:after {
   visibility: hidden;
   display: block;

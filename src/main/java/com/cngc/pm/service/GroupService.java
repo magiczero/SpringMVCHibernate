@@ -17,4 +17,17 @@ public interface GroupService {
 	boolean saveGroup(Group group);
 	
 	String getChildByGroup(String group, boolean haveUsers);
+
+	/**
+	 * 获取单位中id最大的
+	 * @return
+	 */
+	public Group getMaxTop();
+
+	/**
+	 * 获取子部门中id最大的
+	 * @param parentGroup 上级部门
+	 * @return
+	 */
+	public Group getMaxChild(Group parentGroup);
 }

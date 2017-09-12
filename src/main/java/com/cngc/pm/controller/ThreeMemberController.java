@@ -37,6 +37,7 @@ import org.activiti.engine.impl.util.json.JSONArray;
 import org.activiti.engine.impl.util.json.JSONObject;
 import org.activiti.engine.task.Task;
 import org.apache.commons.io.FileUtils;
+import org.apache.cxf.common.util.StringUtils;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -59,6 +60,7 @@ import org.springframework.web.util.HtmlUtils;
 import com.cngc.exception.ResourceNotFoundException;
 import com.cngc.pm.common.web.common.UserUtil;
 import com.cngc.pm.exception.NotDeleteAuthorityException;
+import com.cngc.pm.model.Attachment;
 import com.cngc.pm.model.Group;
 import com.cngc.pm.model.Style;
 import com.cngc.pm.model.SysUser;
@@ -69,6 +71,7 @@ import com.cngc.pm.model.manage.ManagerForm;
 import com.cngc.pm.model.manage.Relations;
 import com.cngc.pm.model.manage.Relationship;
 import com.cngc.pm.model.manage.WorkRecord;
+import com.cngc.pm.service.AttachService;
 import com.cngc.pm.service.GroupService;
 import com.cngc.pm.service.ThreeMemberService;
 import com.cngc.pm.service.UserService;
@@ -100,13 +103,8 @@ public class ThreeMemberController {
 	private GroupService groupService;
 	@Resource
 	private UserUtil userUtil;
-	
-	@RequestMapping(value="/save-record")
-	@ResponseBody
-	public String save(HttpServletRequest request) {
-		
-		return "";
-	}
+	@Resource
+	private AttachService attachService;
 	
 	/**
 	 * 删除workrecord根据id
@@ -229,6 +227,14 @@ public class ThreeMemberController {
 		
 		WorkRecord wr = new WorkRecord();
 		
+		if(!StringUtils.isEmpty(request.getParameter("fileids"))) {
+			String attachIds = request.getParameter("fileids");
+			
+			Set<Attachment> attachSet = attachService.getSetByIds(attachIds);
+			
+			wr.setAttachs(attachSet);
+		}
+		
 		wr.setAuth(rs);
 		wr.setBasis(basis);
 		wr.setDetails(detail);
@@ -249,7 +255,7 @@ public class ThreeMemberController {
 	
 	@RequestMapping(value="/workrecord-with-table",produces = "application/json;charset=UTF-8")
 	@ResponseBody
-	public String workrecordListWithJqueryTable(@RequestParam(required=true) String aoData) throws ParseException {
+	public String workrecordListWithJqueryTable(@RequestParam(required=true) String aoData,HttpServletRequest request) throws ParseException {
 		JSONArray jsonarray = new JSONArray(aoData);
 		
 		String sEcho = null;  
@@ -338,6 +344,9 @@ public class ThreeMemberController {
 	    
 	    List<Map<String, String>> mapList = new ArrayList<>();
 	    SimpleDateFormat sdf1=new SimpleDateFormat("yyyy-MM-dd");
+	    //String path = ContextLoader.getCurrentWebApplicationContext().getServletContext().getRealPath("/");
+	    String path = request.getContextPath();
+	    //System.out.println(path1);
 	    for(WorkRecord wr : result.getResult()) {
 	    	Map<String, String> map = new HashMap<String, String>();
 	    	map.put("id", wr.getId().toString());
@@ -353,6 +362,12 @@ public class ThreeMemberController {
 	    	
 	    	map.put("detail", wr.getDetails());
 	    	map.put("basis", wr.getBasis());
+	    	//保存文档
+	    	String doc= "";
+	    	for(Attachment atta : wr.getAttachs()) {
+	    		doc += "<a href=\""+path+"/attachment/download/"+atta.getId()+"\">"+atta.getName()+"</a><br/>";
+	    	}
+	    	map.put("doc", doc);
 	    	
 	    	mapList.add(map);
 	    }

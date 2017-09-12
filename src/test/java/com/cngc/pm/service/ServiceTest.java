@@ -26,6 +26,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.cngc.pm.model.Group;
 import com.cngc.pm.model.Incident;
+import com.cngc.pm.model.Person;
 import com.cngc.pm.model.SysUser;
 import com.cngc.pm.model.manage.ManageType;
 import com.cngc.pm.model.manage.Relations;
@@ -47,6 +48,8 @@ public class ServiceTest {
 	private ThreeMemberService threeService;
 	@Autowired
 	private IncidentService incidentService;
+	@Autowired
+	private PersonService personService;
 	
 	Logger LOGGER = LoggerFactory.getLogger(ServiceTest.class);
 	
@@ -67,6 +70,7 @@ public class ServiceTest {
     
     @Test
     @Transactional(readOnly=true)
+    @Ignore
     public void testfindCurrentYearStudent() {
     	JSONObject jsonObj = new JSONObject();
     	List<Map<String, Object>> list2= new ArrayList<>();
@@ -138,6 +142,37 @@ public class ServiceTest {
 ////        Assert.assertEquals(students.size(), 2);
 //        System.out.println(list.size());
 //        assertNotNull(list);
+    }
+    
+    @Test
+    public void testPersonAudit() throws Exception {
+    	Person person = new Person();
+    	person.setCountry("china");
+    	person.setName("xiaoming");
+    	
+    	personService.addPerson(person);
+    	//personDao.save(person);
+    	
+    	System.out.println(person);
+    	
+    	person.setCountry("japan");
+    	person.setName("xx");
+    	
+    	personService.addPerson(person);
+    	//personDao.save(person);
+    	
+//    	AuditReader reader = AuditReaderFactory.get(personDao.getSession());
+//    	
+//    	Person original = reader.find(Person.class, person.getId(), 1);
+//        Person current = reader.find(Person.class, person.getId(), 2);
+//        
+//        System.out.println("------------------------------------------------------------------------------------------------------------------");
+//        System.out.print("First Version : ");
+//        System.out.println(original);
+//        System.out.print("Second Version : ");
+//        System.out.println(current);
+//        System.out.println("------------------------------------------------------------------------------------------------------------------");
+//    	
     }
 
     @Test

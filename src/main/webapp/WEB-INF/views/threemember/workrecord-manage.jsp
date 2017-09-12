@@ -26,6 +26,7 @@
     <link href="${contextPath }/resources/css/styling.css" rel="stylesheet" type="text/css" />
     <link href="${contextPath }/resources/css/mycss.css" rel="stylesheet" type="text/css" />
     <link href="${contextPath }/resources/css/validation.css" rel="stylesheet" type="text/css" />
+    <link href="${contextPath }/resources/css/uploadify.css" rel="stylesheet" type="text/css" />
     <link href="${contextPath }/resources/js/plugins/select2/select2.css" rel="stylesheet" type="text/css" />
     <link href='${contextPath }/resources/js/plugins/jstree/jquery.treeview.css' rel="stylesheet" type="text/css" />
     <!--[if lt IE 8]>
@@ -46,6 +47,7 @@
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/pnotify/jquery.pnotify.min.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/ibutton/jquery.ibutton.min.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/scrollup/jquery.scrollUp.min.js'></script>
+    <script type='text/javascript' src='${contextPath }/resources/js/plugins/uploadify/jquery.uploadify.min.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/select2/select2.min.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/jstree/jquery.treeview.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/jstree/jquery.treeview.edit.js'></script>
@@ -76,7 +78,7 @@
                     );
             },
             "aoColumnDefs": [ {
-                "aTargets": [ 8 ],
+                "aTargets": [ 9 ],
                 "mData": "download_link",
                 "mRender": function ( data, type, full ) {
                   return '<a href="#" data-href="workrecord/'+data+'" data-toggle="modal" data-target="#confirm-delete">删除</a>';
@@ -91,6 +93,7 @@
                            { "mData" : 'intime' }, 
                            { "mData" : 'detail' }, 
                            { "mData" : 'basis'},
+                           { "mData" : 'doc'},
                            { "mData" : 'id'},
                              ]
             });
@@ -198,6 +201,23 @@
                 $("#myModal").modal('hide');
             });
             
+            $('#file_upload').uploadify({
+				'formData' : { 'type' : 8 },
+		        'swf'      : '${contextPath }/resources/flash/uploadify.swf',
+		      //按钮显示的文字
+                'buttonText': '选择文件……',
+		        'uploader' : '${contextPath}/attachment/upload',
+		        'removeCompleted' : false,
+		        'multi': true,
+		        // Put your options here
+		        'onUploadSuccess': function (file, data, response) {
+		        	console.log(data);
+	                $('#' + file.id).find('.data').html(' 上传完毕');
+	                var fileids = document.getElementById("fileids").value + '';
+	                document.getElementById("fileids").value = fileids + data;
+		        }
+		    });
+            
         });
 
         function retrieveData( sSource111,aoData111, fnCallback111) {
@@ -279,6 +299,9 @@
         	});
         }
     </script>
+    <style type="text/css">
+    	.uploadify-button-text {color:#fff !important;}
+    </style>
 </head>
 <body>
     <div class="wrapper"> 
@@ -342,6 +365,7 @@
 										<th>时间</th>
 										<th width="20%">详细信息</th>
 										<th>依据</th>
+										<th>文档</th>
 										<th>操作</th>
 									</tr>
                                 </thead>
@@ -365,6 +389,7 @@
                         <h4>填写工作记录</h4>
                     </div>
                     <form action="${contextPath }/three-member/save-workrecord" id="form1">
+                    <input id="fileids" name="fileids" type="hidden" />
                     <div class="modal-body modal-body-np">
                         <div class="row">
                             <div class="block-fluid">
@@ -425,7 +450,14 @@
                                 </div>                                                           
                             </div>                
                         </div>
-                        
+                        <div class="row">
+                            <div class="block-fluid">
+                                <div class="row-form clearfix">
+                                    <div class="col-md-3"><label for="file_upload">文档:</label></div>
+                                    <div class="col-md-9"><input type="file" name="file_upload" id="file_upload" /></div>
+                                </div>                                                           
+                            </div>                
+                        </div>
                     </div>   
                     <div class="modal-footer">
                     	<input id="search_" type="hidden" value="0" />

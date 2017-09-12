@@ -168,8 +168,14 @@
 		                        <div class="col-md-10">
 		                        	<select multiple class="multiselect" id="sel_properties" name="sel_properties"></select>
 		                        </div>
+		                	</div><%--
+		                	<div class="row-form clearfix">
+		                    	<div class="col-md-2">选择要显示的项</div>
+		                        <div class="col-md-10">
+		                        	<textarea name="view_item"></textarea>
+		                        </div>
 		                	</div>
-		                	<div class="footer">
+		                	 --%><div class="footer">
 		                		<input type="hidden" id="fm_fields" name="fm_fields" value="0" />
 		                		<input type="hidden" id="fm_properties" name="fm_properties" value="0" />
 	                        	<button class="btn btn-primary center-block" id="btn_save"> 保 存 </button>

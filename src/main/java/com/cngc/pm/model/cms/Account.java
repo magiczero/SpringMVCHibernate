@@ -4,6 +4,8 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -24,7 +26,16 @@ public class Account {
 	private String createdUser;
 	private Date createdTime;
 	private String views;
+	private AccountType type;
 	
+	@Enumerated(EnumType.ORDINAL)
+	@Column(name="type_")
+	public AccountType getType() {
+		return type;
+	}
+	public void setType(AccountType type) {
+		this.type = type;
+	}
 	@Column(name="views_")
 	public String getViews() {
 		return views;

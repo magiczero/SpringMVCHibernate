@@ -29,6 +29,7 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.document.AbstractExcelView;
 
@@ -36,6 +37,8 @@ import com.cngc.pm.common.web.common.UserUtil;
 import com.cngc.pm.model.cms.Account;
 import com.cngc.pm.model.cms.Ci;
 import com.cngc.pm.model.cms.Property;
+import com.cngc.pm.service.GroupService;
+import com.cngc.pm.service.UserService;
 import com.cngc.pm.service.cms.AccountService;
 import com.cngc.pm.service.cms.CiService;
 import com.cngc.pm.service.cms.PropertyService;
@@ -51,7 +54,25 @@ public class AccountController {
 	@Resource
 	private AccountService accountService;
 	@Resource
+	private GroupService groupService;
+	@Resource
+	private UserService userService;
+	@Resource
 	private UserUtil userUtil;
+	
+	//四大类的属性
+	//信息系统--编号、名称、型号、密级、用途、所属部门、放置地点、责任人、操作系统安装日期、硬盘序列号、IP地址、MAC地址、启用时间、使用情况
+//	private static final String _fieldone = "CMS_FIELD_SECURITYNO,CMS_FIELD_NAME,CMS_FIELD_MODEL,CMS_FIELD_SECURITYLEVEL,CMS_FIELD_PURPOSE,CMS_FIELD_DEPARTMENTINUSE,CMS_FIELD_LOCATION,CMS_FIELD_USERINMAINTENANCE,CMS_FIELD_SERVICESTARTTIME,CMS_FIELD_STATUS";
+//	private static final String _propertiesone = "CMS_PROPERTY_OSINSTALLTIME,CMS_PROPERTY_DISKNO,CMS_PROPERTY_IPADDRESS,CMS_PROPERTY_MACADDRESS";
+	//信息设备--编号、名称、型号、密级、用途、所属部门、放置地点、责任人、操作系统安装日期、硬盘序列号、设备序列号、IP地址、启用时间、使用情况
+//	private static final String _fieldtwo = "CMS_FIELD_SECURITYNO,CMS_FIELD_NAME,CMS_FIELD_MODEL,CMS_FIELD_SECURITYLEVEL,CMS_FIELD_PURPOSE,CMS_FIELD_DEPARTMENTINUSE,CMS_FIELD_LOCATION,CMS_FIELD_USERINMAINTENANCE,CMS_FIELD_SERVICESTARTTIME,CMS_FIELD_STATUS";
+//	private static final String _propertiestwo = "CMS_PROPERTY_OSINSTALLTIME,CMS_PROPERTY_DISKNO,CMS_PROPERTY_IPADDRESS,CMS_PROPERTY_EQUIPMENTSERIALNUM";
+	//存储设备--编号、名称、型号、密级、用途、所属部门、放置地点、责任人、序列号、启用时间、使用情况等
+//	private static final String _fieldthree = "CMS_FIELD_SECURITYNO,CMS_FIELD_NAME,CMS_FIELD_MODEL,CMS_FIELD_SECURITYLEVEL,CMS_FIELD_PURPOSE,CMS_FIELD_DEPARTMENTINUSE,CMS_FIELD_LOCATION,CMS_FIELD_USERINMAINTENANCE,CMS_FIELD_SERVICESTARTTIME,CMS_FIELD_STATUS";
+//	private static final String _propertiesthree = "CMS_PROPERTY_EQUIPMENTSERIALNUM";
+	//安全保密产品--编号、名称、型号、密级、所属部门，生产厂家、检测证书名称和编号、责任人、购置时间、启用时间、使用情况等
+//	private static final String _fieldfour = "CMS_FIELD_SECURITYNO,CMS_FIELD_NAME,CMS_FIELD_MODEL,CMS_FIELD_SECURITYLEVEL,CMS_FIELD_DEPARTMENTINUSE,CMS_FIELD_PRODUCER,CMS_FIELD_USERINMAINTENANCE,CMS_FIELD_CREATEDTIME,CMS_FIELD_SERVICESTARTTIME,CMS_FIELD_STATUS";
+//	private static final String _propertiesfour = "CMS_PROPERTY_VERIFIEDNO";
 
 	/**添加台账信息
 	 * @param model
@@ -68,6 +89,22 @@ public class AccountController {
 		
 		return "stats/account-add";
 	}
+	
+	@RequestMapping
+	public String getAccountListByCategoryAndAuth(@RequestParam int category,@RequestParam int secretlevel, Model model,Authentication auth){
+//		SysUser currentUser = userUtil.getUserByAuth(auth);
+//		String authName = "";
+//		List<String> codeList = new ArrayList<>();
+			
+//		List<Ci> ciList = ciService.getByAuthAndCategory(secretlevel,currentUser,codeList);
+			
+		List<Account> accounts = accountService.getAll();
+		
+		model.addAttribute("accounts", accounts);
+		model.addAttribute("fields", propertyService.getFields());
+		
+		return "stats/account-category-list";
+	}
 	/**保存台账信息
 	 * @param category
 	 * @param request
@@ -81,12 +118,14 @@ public class AccountController {
 		String fields = request.getParameter("fm_fields");
 		String properties = request.getParameter("fm_properties");
 		String name = request.getParameter("fm_name");
+//		String viewItem = request.getParameter("view_item");
 		
 		Account account = new Account();
 		account.setName(name);
 		account.setCategory(code);
 		account.setFields(fields);
 		account.setProperties(properties);
+//		account.setViews(viewItem);
 		account.setCreatedTime(new Date());
 		account.setCreatedUser(userUtil.getUsernameByAuth(authentication));
 		
@@ -122,7 +161,9 @@ public class AccountController {
 	 */
 	@RequestMapping(value="/setting",method = RequestMethod.GET)
 	public String setting(Model model,HttpServletRequest request){
-
+		List<Account> accounts = accountService.getAll();
+		
+		model.addAttribute("accounts", accounts);
 		model.addAttribute("fields", propertyService.getFields());
 		
 		return "stats/account-setting";
@@ -207,6 +248,7 @@ public class AccountController {
 		for(Property p:fieldsSet) {
 //			System.out.println(p.getPropertyName());
 			Object obj = Common.getFieldValueByName(ci, p.getPropertyConstraint());
+			//System.out.println(p.getPropertyName());
 			ciMap.put(p.getPropertyName(), obj.toString());
 		}
 		ObjectMapper mapper = new ObjectMapper();
@@ -252,9 +294,12 @@ public class AccountController {
 		List<Account> accounts = accountService.getAll();
 		Account account = accountService.getById(id);
 		String code = account.getCategory();
-//		String fields = account.getFields();
-//		String properties = account.getProperties();
-		String fields = "", properties = "", comma=",";
+		String fields = account.getFields();
+		//编号、名称、型号、密级、用途、所属部门、放置地点、责任人、操作系统安装日期、硬盘序列号、IP地址、MAC地址、启用时间、使用情况
+		//fields = "CMS_FIELD_SECURITYNO,CMS_FIELD_NAME,CMS_FIELD_MODEL,CMS_FIELD_SECURITYLEVEL,CMS_FIELD_PURPOSE,CMS_FIELD_DEPARTMENTINUSE,CMS_FIELD_LOCATION,CMS_FIELD_USERINMAINTENANCE,CMS_FIELD_SERVICESTARTTIME,CMS_FIELD_STATUS";
+		String properties = account.getProperties();
+		//properties = "CMS_PROPERTY_OSINSTALLTIME,CMS_PROPERTY_DISKNO,CMS_PROPERTY_IPADDRESS,CMS_PROPERTY_MACADDRESS";
+		String comma=",";
 		String views = account.getViews();
 		String[] viewproperties = views.split(comma);
 		
@@ -290,18 +335,31 @@ public class AccountController {
 				//需要判断是否为空ci.getPropertiesData()
 				Map<String,String> propertymap = mapper.readValue(ci.getPropertiesData(), Map.class);
 				Object obj;
+				//获取属性
 				for(Property p:fieldsSet)
 				{
-					obj = Common.getFieldValueByName(ci, p.getPropertyConstraint());
+					if(p.getPropertyConstraint().equals("DepartmentInUse")) {		//
+						obj = Common.getFieldValueByName(ci, "departmentName");
+					} else if(p.getPropertyConstraint().equals("UserInMaintenance")) {
+						obj = Common.getFieldValueByName(ci, "userInMaintenanceName");
+					} else if(p.getPropertyConstraint().equals("status")) {
+						obj = Common.getFieldValueByName(ci, "statusName");
+					} else if(p.getPropertyConstraint().equals("SecurityLevel")) {
+						obj = Common.getFieldValueByName(ci, "SecurityLevelName");
+					} else
+						obj = Common.getFieldValueByName(ci, p.getPropertyConstraint());
+					
 					if(obj==null)
 						row.add("-");
-					else
+					else {
 						row.add(obj.toString());
+					}
 				}
+				//获取扩展属性
 				for(Property p:propertiesSet)
 					row.add(propertymap.get(p.getPropertyId()));
 				
-				row.add("<a href=\""+request.getContextPath()+"/stats/account/view/"+ci.getId()+"/"+account.getId()+"\">查看</a>");
+//				row.add("<a href=\""+request.getContextPath()+"/stats/account/view/"+ci.getId()+"/"+account.getId()+"\">查看</a>");
 				
 			} catch (JsonParseException e) {
 				// TODO Auto-generated catch block

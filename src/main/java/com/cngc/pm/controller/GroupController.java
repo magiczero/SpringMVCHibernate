@@ -60,9 +60,13 @@ public class GroupController {
 				Group parentGroup = groupService.getById(parentId);
 				
 				if(parentGroup!= null && parentGroup.getId() > 0) {
-					if(parentId.toString().length()/2 > 1) {
+					//if(parentId.toString().length()/2 > 1) {
+					Group maxChildGroup = groupService.getMaxChild(parentGroup);
+					if(maxChildGroup==null)
+						id = parentGroup.getId()*100+1;
+					else
 						id = groupService.getMaxChild(parentGroup).getId()+1;
-					}
+					//}
 				}
 			}
 			if(id != 0) {

@@ -14,6 +14,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
@@ -58,6 +59,16 @@ public class Moudle implements Serializable, Comparable<Moudle> {				//module故
 	private Set<Moudle> child = new LinkedHashSet<>();
 	
 	private Set<Resources> resSet = new LinkedHashSet<>();
+	
+	private Set<Role> roleSet = new LinkedHashSet<>();
+	
+	@ManyToMany(targetEntity=Role.class,mappedBy="modules")
+	public Set<Role> getRoleSet() {
+		return roleSet;
+	}
+	public void setRoleSet(Set<Role> roleSet) {
+		this.roleSet = roleSet;
+	}
 	
 	@OneToMany(mappedBy = "module")
 	public Set<Resources> getResSet() {

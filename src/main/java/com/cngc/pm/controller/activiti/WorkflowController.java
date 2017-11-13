@@ -133,7 +133,7 @@ public class WorkflowController {
             }
 
         } catch (Exception e) {
-            
+            e.printStackTrace();
         }
 
         return "redirect:/workflow/process/list";

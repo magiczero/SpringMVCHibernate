@@ -73,8 +73,8 @@ public class Ci {
 	private String departmentInUse;
 	private String departmentInMaintenance;
 	private String userInMaintenance;
-	private Date serviceStartTime;
-	private Date serviceEndTime;
+	private java.sql.Date serviceStartTime;
+	private java.sql.Date serviceEndTime;
 	private String serviceLevel;
 	private String serviceProvider;
 	private String serviceProviderContact;
@@ -85,16 +85,26 @@ public class Ci {
 	private String producer;
 	private String status;
 	private String purpose;
-	private Date expirationTime;
+	private java.sql.Date expirationTime;
 	private String ciManager;
-	private Date createdTime;
+	private java.sql.Date createdTime;
 	private String lastUpdateUser;
 	private Date lastUpdateTime;
 	private String remark;
 	private String propertiesData;
 	private String num;
 	private String serial;
+	private boolean isAccount;
 	
+	@Column(name = "is_account")
+	public boolean isAccount() {
+		return isAccount;
+	}
+
+	public void setAccount(boolean isAccount) {
+		this.isAccount = isAccount;
+	}
+
 	@Column(name = "num_")
 	public String getNum() {
 		return num;
@@ -252,21 +262,21 @@ public class Ci {
 
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	@Column(name = "service_start_time")
-	public Date getServiceStartTime() {
+	public java.sql.Date getServiceStartTime() {
 		return serviceStartTime;
 	}
 
-	public void setServiceStartTime(Date serviceStartTime) {
+	public void setServiceStartTime(java.sql.Date serviceStartTime) {
 		this.serviceStartTime = serviceStartTime;
 	}
 
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	@Column(name = "service_end_time")
-	public Date getServiceEndTime() {
+	public java.sql.Date getServiceEndTime() {
 		return serviceEndTime;
 	}
 
-	public void setServiceEndTime(Date serviceEndTime) {
+	public void setServiceEndTime(java.sql.Date serviceEndTime) {
 		this.serviceEndTime = serviceEndTime;
 	}
 
@@ -364,11 +374,11 @@ public class Ci {
 
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	@Column(name = "expiration_time")
-	public Date getExpirationTime() {
+	public java.sql.Date getExpirationTime() {
 		return expirationTime;
 	}
 
-	public void setExpirationTime(Date expirationTime) {
+	public void setExpirationTime(java.sql.Date expirationTime) {
 		this.expirationTime = expirationTime;
 	}
 
@@ -383,11 +393,11 @@ public class Ci {
 
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	@Column(name = "created_time")
-	public Date getCreatedTime() {
+	public java.sql.Date getCreatedTime() {
 		return createdTime;
 	}
 
-	public void setCreatedTime(Date createdTime) {
+	public void setCreatedTime(java.sql.Date createdTime) {
 		this.createdTime = createdTime;
 	}
 

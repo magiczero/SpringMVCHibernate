@@ -39,7 +39,8 @@
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/dataTables/jquery.dataTables.min.js'></script> 
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/dataTables/dataTables.fixedColumns.min.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/validation/languages/jquery.validationEngine-zh-CN.js' charset='utf-8'></script>
-<script type='text/javascript' src='${contextPath }/resources/js/plugins/validation/jquery.validationEngine.js' charset='utf-8'></script>   
+	<script type='text/javascript' src='${contextPath }/resources/js/plugins/validation/jquery.validationEngine.js' charset='utf-8'></script>
+	<script type='text/javascript' src='${contextPath }/resources/js/plugins/uploadify/jquery.uploadify.min.js'></script>   
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/highlight/jquery.highlight-4.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/pnotify/jquery.pnotify.min.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/scrollup/jquery.scrollUp.min.js'></script>
@@ -72,6 +73,24 @@
     		        width: 400,
     		        height:500,
     		        buttons: { "确定": function () { $(this).dialog("close") } }
+    		    });
+                
+                $('#file_upload').uploadify({
+    				'formData' : { 'type' : 1 },
+    		        'swf'      : '${contextPath }/resources/flash/uploadify.swf',
+    		        'fileTypeExts': '*.xls;*.xlsx',//允许上传的文件类型，限制弹出文件选择框里能选择的文件
+    		      //按钮显示的文字
+                    'buttonText': '选择文件……',
+    		        'uploader' : '${contextPath}/attachment/upload',
+    		        'removeCompleted' : false,
+    		        'multi': true,
+    		        // Put your options here
+    		        'onUploadSuccess': function (file, data, response) {
+    		        	
+    	                $('#' + file.id).find('.data').html(' 上传完毕');
+    	                var fileids = document.getElementById("fileids").value + '';
+    	                document.getElementById("fileids").value = fileids + data;
+    		        }
     		    });
     		    
     		    $("#type_sel").bind("click",function(){
@@ -122,33 +141,16 @@
         	                  return '<a href="${contextPath }/cms/ci/detail/'+full.id+'">'+data+'</a>';
         	                }
         	              },
-        	              {
-          	                "aTargets": [ 8 ],
-          	                "mRender": function ( data, type, full ) {
-          	                	if(data==null)
-          	                		return "";
-          	                	else
-          	                  		return (data.split(" "))[0];
-          	                }
-          	              },
-          	            {
-            	                "aTargets": [ 9 ],
-            	                "mRender": function ( data, type, full ) {
-            	                	if(data==null)
-            	                		return "";
-            	                	else
-            	                  		return (data.split(" "))[0];
-            	                }
-            	              },
-            	        {
-                	        "aTargets": [ 10 ],
-                	        "mRender": function ( data, type, full ) {
-                	        	if(data==null)
-                	            	return "";
-                	        	else
-                	           		return (data.split(" "))[0];
-                	        }
-                	    },
+        	              //{
+          	              //  "aTargets": [ 8 ],
+          	              //  "mRender": function ( data, type, full ) {
+          	              //  	if(data==null)
+          	              //  		return "";
+          	              //  	else
+          	              //    		return (data.split(" "))[0];
+          	              //  }
+          	              //},
+          	           
           	            	{
             	                "aTargets": [ 13 ],
             	                "mData": "download_link",
@@ -166,7 +168,7 @@
           	                "aTargets": [ 14 ],
           	                "mData": "download_link",
           	                "mRender": function ( data, type, full ) {
-          	                  return '<a href="${contextPath }/cms/ci/addproperty/'+full.id+'">属性</a>&nbsp;&nbsp;<a href="#" onclick="del('+full.id+');">删除</a>';
+          	                  return '<a href="${contextPath }/cms/ci/addproperty/'+full.id+'">属性</a>&nbsp;&nbsp;<a href="${contextPath }/cms/ci/edit?ciid='+full.id+'">修改</a>&nbsp;&nbsp;<a href="#" onclick="del('+full.id+');">删除</a>';
           	                }
           	              }],
         	            "aoColumns" : [
@@ -205,12 +207,12 @@
             		 $("#b_popup_type").dialog('close');    
             }
             
-            function transDate(time_) {
-            	if(time_==null) return "";
-            	var dt = new Date(time_);
+            //function transDate(time_) {
+            //	if(time_==null) return "";
+            //	var dt = new Date(time_);
             	
-            	return dt.toLocaleDateString();
-            }
+            //	return dt.toLocaleDateString();
+            //}
             
             function retrieveData( sSource111,aoData111, fnCallback111) {
     			$.ajax({

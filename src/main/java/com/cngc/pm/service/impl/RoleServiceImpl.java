@@ -207,11 +207,13 @@ public class RoleServiceImpl implements RoleService{
 		return roleDao.search(search);
 	}
 	@Override
+	@Transactional(readOnly=true)
 	public List<Role> getAllRole() {
 		// TODO Auto-generated method stub
 		return roleDao.findAll();
 	}
 	@Override
+	@Transactional(readOnly=true)
 	public Role getByName(String roleName) {
 		// TODO Auto-generated method stub
 		Search search = new Search(Role.class);

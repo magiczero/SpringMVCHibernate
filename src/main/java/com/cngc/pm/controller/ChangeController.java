@@ -24,6 +24,7 @@ import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
 import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.repository.ProcessDefinition;
+import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.JsonParseException;
@@ -36,11 +37,13 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.cngc.pm.common.web.common.UserUtil;
 import com.cngc.pm.model.Change;
 import com.cngc.pm.model.ChangeItem;
+import com.cngc.pm.model.ChangeitemType;
 import com.cngc.pm.model.SysUser;
 import com.cngc.pm.model.cms.Ci;
 import com.cngc.pm.model.cms.Property;
@@ -105,6 +108,29 @@ public class ChangeController {
 				.getResult());
 		return "change/add";
 	}
+	
+	/**
+	 * 根据设备创建新变更
+	 * 
+	 * @param model
+	 * @return
+	 */
+	@RequestMapping(value = "/add-by-equip", method = RequestMethod.GET)
+	public String addByEquip(@RequestParam(required=true) long equipid,Model model) {
+		model.addAttribute("change", new Change());
+		model.addAttribute("equip", ciService.getById(equipid));
+		model.addAttribute("category",
+				syscodeService.getAllByType(PropertyFileUtil.getStringValue("syscode.change.category")).getResult());
+		model.addAttribute("risk", syscodeService.getAllByType(PropertyFileUtil.getStringValue("syscode.change.risk"))
+				.getResult());
+		model.addAttribute("influence",
+				syscodeService.getAllByType(PropertyFileUtil.getStringValue("syscode.influence")).getResult());
+		model.addAttribute("critical", syscodeService.getAllByType(PropertyFileUtil.getStringValue("syscode.critical"))
+				.getResult());
+		model.addAttribute("priority", syscodeService.getAllByType(PropertyFileUtil.getStringValue("syscode.priority"))
+				.getResult());
+		return "change/add0";
+	}
 
 	/**
 	 * 修改变更信息
@@ -138,15 +164,24 @@ public class ChangeController {
 	 * @throws Exception 
 	 */
 	@RequestMapping(value = "/save", method = RequestMethod.POST)
-	public String save(@Valid @ModelAttribute("change") Change change, Authentication authentication) throws Exception {
+	public String save(@Valid @ModelAttribute("change") Change change, HttpServletRequest request, Authentication authentication) throws Exception {
 		if(change.getId()==null)
 		{
-			
 			change.setStatus("01");
 			change.setApplyTime(new Date());
 			change.setApplyUser(userUtil.getUsernameByAuth(authentication));
 			changeService.save(change);
 	
+			String equipid = request.getParameter("equipid");
+			if(equipid!=null && !equipid.equals("")) {
+				ChangeItem changeItem = new ChangeItem();
+				
+				changeItem.setChangeId(change.getId());
+				changeItem.setCiId(Long.valueOf(equipid));
+				changeItem.setType(ChangeitemType.change);
+				
+				changeitemService.save(changeItem);
+			}
 			// 启动流程
 			ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery()
 					.processDefinitionKey(PropertyFileUtil.getStringValue("workflow.processkey.change")).active()
@@ -155,7 +190,17 @@ public class ChangeController {
 				Map<String, String> variables = new HashMap<String, String>();
 				variables.put("id", String.valueOf(change.getId()));
 				identityService.setAuthenticatedUserId(change.getApplyUser());
-				formService.submitStartFormData(processDefinition.getId(), variables);
+				ProcessInstance processInstance= formService.submitStartFormData(processDefinition.getId(), variables);
+				//如果成立，直接填写
+				if(equipid!=null && !equipid.equals("")) {
+					String procInstanceId = processInstance.getProcessInstanceId();
+
+					Task task = taskService.createTaskQuery().processInstanceId(procInstanceId).active().singleResult(); 
+					
+					taskService.claim(task.getId(), userUtil.getUsernameByAuth(authentication));
+					
+					return "redirect:/change/deal/"+change.getId()+"/"+task.getId();
+				}
 			}
 		}
 		else
@@ -488,6 +533,7 @@ public class ChangeController {
 			ChangeItem item = new ChangeItem();
 			item.setChangeId(changeId);
 			item.setCiId(Long.valueOf(id));
+			item.setType(ChangeitemType.change);
 			changeitemService.save(item);
 		}
 
@@ -576,9 +622,10 @@ public class ChangeController {
 	@RequestMapping(value = "/items/{id}", method = RequestMethod.GET)
 	public String items(@PathVariable("id") long id, Model model) {
 		Map<String, Object> map = new HashMap<String, Object>();
-		Change change = changeService.getById(id);
-		model.addAttribute("items", change.getItems());
-		for (ChangeItem item : change.getItems()) {
+		//Change change = changeService.getById(id);
+		List<ChangeItem> list = changeitemService.getByChangeId(id);
+		model.addAttribute("items", list);
+		for (ChangeItem item : list) {
 			map.put(item.getCiId().toString(), ciService.getById(item.getCiId()));
 		}
 		model.addAttribute("cis", map);
@@ -589,11 +636,11 @@ public class ChangeController {
 	@RequestMapping(value = "/items0/{id}", method = RequestMethod.GET)
 	public String items0(@PathVariable("id") long id, Model model) {
 		Map<String, Object> map = new HashMap<String, Object>();
-		Change change = changeService.getById(id);
+		//Change change = changeService.getById(id);
+		List<ChangeItem> list = changeitemService.getByChangeId(id);
+		model.addAttribute("items", list);
 		
-		model.addAttribute("items", change.getItems());
-		
-		for (ChangeItem item : change.getItems()) {
+		for (ChangeItem item : list) {
 			map.put(item.getCiId().toString(), ciService.getById(item.getCiId()));
 		}
 		model.addAttribute("cis", map);
@@ -608,8 +655,10 @@ public class ChangeController {
 		Map<String, Object> result = new HashMap<String, Object>();
 		ObjectMapper mapper = new ObjectMapper();
 
-		Change change = changeService.getById(id);
-		Set<ChangeItem> items = change.getItems();
+//		Change change = changeService.getById(id);
+//		Set<ChangeItem> items = change.getItems();
+		
+		List<ChangeItem> items = changeitemService.getByChangeId(id);
 
 		Map<String, Map<String, String>> values = new HashMap<String, Map<String, String>>();
 		for (ChangeItem item : items) {

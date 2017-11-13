@@ -30,6 +30,7 @@ import com.cngc.pm.common.web.common.UserUtil;
 import com.cngc.pm.model.Moudle;
 import com.cngc.pm.model.Role;
 import com.cngc.pm.model.SysUser;
+import com.cngc.pm.service.MoudleService;
 import com.cngc.pm.service.UserService;
 
 @Controller
@@ -41,6 +42,8 @@ public class SystemController {
 	SessionRegistry sessionRegistry;
 	@Autowired
 	private UserUtil userUtil;
+	@Resource
+	private MoudleService moudleService;
 	
 	Set<Moudle> moudleSet0 = new LinkedHashSet<>();
 	
@@ -165,6 +168,35 @@ public class SystemController {
 		UserDetails user1 = (UserDetails)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		SysUser user = userService.getByUsername(user1.getUsername());
 
+//		List<Moudle> menu1 = new ArrayList<>();
+		Set<Moudle> menu1 = new LinkedHashSet<>();
+		//List<Moudle> menu2 = new ArrayList<>();
+		Set<Moudle> menu2 =  new LinkedHashSet<>();
+		//for(Role role : user.getRoles()) {
+//		List<Role> roleList = userService.getRolesByUser(user.getId());
+//		Map<Moudle, List<Moudle>> map = new HashMap<>(); 
+//		for(Moudle topMoudle : moudleService.getTopByRoles(roleList)) {
+//			map.put(topMoudle, moudleService.getSecondByRole(roleList, topMoudle));
+//		}
+		
+		//按顺序存储的话使用LinkedHashMap
+		for(Role role : userService.getRolesByUser(user.getId())) {
+			for(Moudle mod : role.getModules()) {
+				if(mod.isEnable()) {
+					//int level = mod.getLevel();
+					int level = mod.reaches();
+					if(level == 0) {
+						menu1.add(mod);
+					} else if(level == 1) {
+						menu2.add(mod);
+					}
+				}
+			}
+		}
+		
+		model.addAttribute("menu1", menu1);
+		model.addAttribute("menu2", menu2);
+//		model.addAttribute("menuMoudle", map);
 		model.addAttribute("user", user);
 		
 		//model.addAttribute("reqestUrl", reqUrl);

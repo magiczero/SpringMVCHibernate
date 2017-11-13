@@ -96,6 +96,12 @@ function pm_cms_ciselected(dialogtype)
 			pm_change_getci();
 		});
 		break;
+	case 'life-cycle':
+		// 变更项
+		$.getJSON(ctx+'/account-life-cycle/saveitems?t=' + pm_random(),{ci_ids:ids},function(data){
+			pm_life_cycle_getci(data.itemids);
+		});
+		break;
 	}
 
 }
@@ -111,7 +117,7 @@ function pm_cms_initdialogtable(code)
 			trs += "<tr>"
 			+"<td><input type='checkbox' name='checkbox' value='"+data.list[i]["id"]+"'/></td>"
 			+"<td><a href='"+ctx+"/cms/ci/detail/"+data.list[i]["id"]+"'>"+data.list[i]["name"]+"</a></td>"
-			+"<td>"+data.list[i]["departmentInUse"]+"</td>"
+			+"<td>"+data.list[i]["departmentName"]+"</td>"
 			+"<td>"+data.list[i]["statusName"]+"</td>"
 			+"<td>"+data.list[i]["reviewStatusName"]+"</td>"
 			+"<td>"+data.list[i]["deleteStatusName"]+"</td>"

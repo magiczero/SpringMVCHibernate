@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.cngc.com.cn/account-life-cycle">
+  <process id="accountLifeCycle" name="资产生命周期管理" isExecutable="true">
+    <extensionElements>
+      <activiti:executionListener event="end" expression="${ accountLifeCycleManager.setChangeResult(execution)}"></activiti:executionListener>
+    </extensionElements>
+    <userTask id="approve" name="领导审批" activiti:candidateGroups="WK_MANAGER">
+      <extensionElements>
+        <activiti:formProperty id="solution" name="方案/原因" type="bigtext" writable="false"></activiti:formProperty>
+        <activiti:formProperty id="type" name="风险等级" type="enum" writable="false">
+          <activiti:value id="01" name="高"></activiti:value>
+          <activiti:value id="02" name="中"></activiti:value>
+          <activiti:value id="03" name="低"></activiti:value>
+        </activiti:formProperty>
+        <activiti:formProperty id="startTime" name="开始时间" type="date" datePattern="yyyy-MM-dd HH:mm" writable="false"></activiti:formProperty>
+        <activiti:formProperty id="endTime" name="结束时间" type="date" datePattern="yyyy-MM-dd HH:mm" writable="false"></activiti:formProperty>
+        <activiti:formProperty id="delegateUser" name="实施人" type="user" writable="false"></activiti:formProperty>
+        <activiti:formProperty id="approve" name="是否同意" type="enum" required="true">
+          <activiti:value id="false" name="否"></activiti:value>
+          <activiti:value id="true" name="是"></activiti:value>
+        </activiti:formProperty>
+        <activiti:formProperty id="approveView" name="审批意见" type="bigtext"></activiti:formProperty>
+        <activiti:taskListener event="complete" expression="${ accountLifeCycleManager.afterApprove(execution)}"></activiti:taskListener>
+      </extensionElements>
+    </userTask>
+    <userTask id="insertResult" name="实施结果" activiti:candidateUsers="${delegateUser}">
+      <extensionElements>
+        <activiti:formProperty id="startTime" name="开始时间" type="date" datePattern="yyyy-MM-dd HH:mm" required="true"></activiti:formProperty>
+        <activiti:formProperty id="endTime" name="结束时间" type="date" datePattern="yyyy-MM-dd HH:mm" required="true"></activiti:formProperty>
+        <activiti:formProperty id="resultView" name="结果描述" type="bigtext" required="true"></activiti:formProperty>
+        <activiti:formProperty id="accompany" name="陪同人员" type="string"></activiti:formProperty>
+        <activiti:formProperty id="externalEquip" name="外接设备情况" type="string"></activiti:formProperty>
+        <activiti:formProperty id="remark" name="备注" type="string"></activiti:formProperty>
+      </extensionElements>
+    </userTask>
+    <userTask id="confirmResult" name="领导确认" activiti:candidateGroups="WK_MANAGER">
+      <extensionElements>
+        <activiti:formProperty id="startTime" name="开始时间" type="date" datePattern="yyyy-MM-dd HH:mm" required="true"></activiti:formProperty>
+        <activiti:formProperty id="endTime" name="结束时间" type="date" datePattern="yyyy-MM-dd HH:mm" required="true"></activiti:formProperty>
+        <activiti:formProperty id="resultView" name="变更结果描述" type="bigtext" writable="false"></activiti:formProperty>
+      </extensionElements>
+    </userTask>
+    <exclusiveGateway id="exclusivegateway1" name="Exclusive Gateway"></exclusiveGateway>
+    <sequenceFlow id="flow2" sourceRef="approve" targetRef="exclusivegateway1"></sequenceFlow>
+    <sequenceFlow id="flow3" sourceRef="exclusivegateway1" targetRef="insertResult">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${approve=='true'}]]></conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="flow4" sourceRef="exclusivegateway1" targetRef="usertask1">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${approve=='false'}]]></conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="flow5" sourceRef="insertResult" targetRef="confirmResult"></sequenceFlow>
+    <startEvent id="startevent2" name="Start" activiti:initiator="applyUserId"></startEvent>
+    <userTask id="usertask1" name="信息填写" activiti:assignee="${applyUserId}">
+      <extensionElements>
+        <activiti:formProperty id="solution" name="方案/原因" type="bigtext" required="true"></activiti:formProperty>
+        <activiti:formProperty id="type" name="风险等级" type="enum" required="true">
+          <activiti:value id="01" name="高"></activiti:value>
+          <activiti:value id="02" name="中"></activiti:value>
+          <activiti:value id="03" name="低"></activiti:value>
+        </activiti:formProperty>
+        <activiti:formProperty id="startTime" name="开始时间" type="date" datePattern="yyyy-MM-dd HH:mm" required="true"></activiti:formProperty>
+        <activiti:formProperty id="endTime" name="结束时间" type="date" datePattern="yyyy-MM-dd HH:mm" required="true"></activiti:formProperty>
+        <activiti:formProperty id="delegateUser" name="实施人" type="user" required="true"></activiti:formProperty>
+      </extensionElements>
+    </userTask>
+    <sequenceFlow id="flow7" sourceRef="startevent2" targetRef="usertask1"></sequenceFlow>
+    <sequenceFlow id="flow8" sourceRef="usertask1" targetRef="approve"></sequenceFlow>
+    <endEvent id="endevent1" name="End"></endEvent>
+    <sequenceFlow id="flow9" sourceRef="confirmResult" targetRef="endevent1"></sequenceFlow>
+  </process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_accountLifeCycle">
+    <bpmndi:BPMNPlane bpmnElement="accountLifeCycle" id="BPMNPlane_accountLifeCycle">
+      <bpmndi:BPMNShape bpmnElement="approve" id="BPMNShape_approve">
+        <omgdc:Bounds height="55.0" width="105.0" x="370.0" y="160.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="insertResult" id="BPMNShape_insertResult">
+        <omgdc:Bounds height="55.0" width="105.0" x="680.0" y="160.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="confirmResult" id="BPMNShape_confirmResult">
+        <omgdc:Bounds height="55.0" width="105.0" x="853.0" y="160.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="exclusivegateway1" id="BPMNShape_exclusivegateway1">
+        <omgdc:Bounds height="40.0" width="40.0" x="550.0" y="167.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="startevent2" id="BPMNShape_startevent2">
+        <omgdc:Bounds height="35.0" width="35.0" x="110.0" y="170.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="usertask1" id="BPMNShape_usertask1">
+        <omgdc:Bounds height="55.0" width="105.0" x="210.0" y="160.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="endevent1" id="BPMNShape_endevent1">
+        <omgdc:Bounds height="35.0" width="35.0" x="1080.0" y="170.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="flow2" id="BPMNEdge_flow2">
+        <omgdi:waypoint x="475.0" y="187.0"></omgdi:waypoint>
+        <omgdi:waypoint x="550.0" y="187.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow3" id="BPMNEdge_flow3">
+        <omgdi:waypoint x="590.0" y="187.0"></omgdi:waypoint>
+        <omgdi:waypoint x="680.0" y="187.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow4" id="BPMNEdge_flow4">
+        <omgdi:waypoint x="570.0" y="167.0"></omgdi:waypoint>
+        <omgdi:waypoint x="569.0" y="100.0"></omgdi:waypoint>
+        <omgdi:waypoint x="419.0" y="100.0"></omgdi:waypoint>
+        <omgdi:waypoint x="262.0" y="100.0"></omgdi:waypoint>
+        <omgdi:waypoint x="262.0" y="160.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow5" id="BPMNEdge_flow5">
+        <omgdi:waypoint x="785.0" y="187.0"></omgdi:waypoint>
+        <omgdi:waypoint x="853.0" y="187.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow7" id="BPMNEdge_flow7">
+        <omgdi:waypoint x="145.0" y="187.0"></omgdi:waypoint>
+        <omgdi:waypoint x="210.0" y="187.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow8" id="BPMNEdge_flow8">
+        <omgdi:waypoint x="315.0" y="187.0"></omgdi:waypoint>
+        <omgdi:waypoint x="370.0" y="187.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow9" id="BPMNEdge_flow9">
+        <omgdi:waypoint x="958.0" y="187.0"></omgdi:waypoint>
+        <omgdi:waypoint x="1080.0" y="187.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>

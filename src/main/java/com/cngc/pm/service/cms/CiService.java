@@ -1,10 +1,14 @@
 package com.cngc.pm.service.cms;
 
 import java.io.IOException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.text.ParseException;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import javax.crypto.NoSuchPaddingException;
 
 import com.cngc.pm.model.Attachment;
 import com.cngc.pm.model.SysUser;
@@ -13,7 +17,7 @@ import com.googlecode.genericdao.search.SearchResult;
 
 public interface CiService {
 
-	void save(Ci ci);
+	void save(Ci ci,String ip);
 
 	boolean delById(Long id);
 
@@ -41,7 +45,7 @@ public interface CiService {
 	 * @throws IOException 
 	 * @throws ParseException 
 	 */
-	void importData(Set<Attachment> setAttach) throws IOException, ParseException;
+	void importData(Set<Attachment> setAttach) throws IOException, ParseException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException;
 
 	/**
 	 * 分页获取CI，根据code
@@ -60,4 +64,6 @@ public interface CiService {
 	 * @return
 	 */
 	List<Ci> getByAuthAndCategory(int secretlevel,SysUser user, List<String> codeList);
+
+	SearchResult<Ci> getListByCondition(List<String> codeList, String type, String department, String status, String securityLevel,int iDisplayStart, int iDisplayLength);
 }

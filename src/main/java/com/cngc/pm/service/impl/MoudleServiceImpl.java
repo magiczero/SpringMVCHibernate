@@ -12,6 +12,7 @@ import com.cngc.pm.model.ModuleType;
 import com.cngc.pm.model.Moudle;
 import com.cngc.pm.model.Records;
 import com.cngc.pm.model.RecordsType;
+import com.cngc.pm.model.Role;
 import com.cngc.pm.service.MoudleService;
 import com.googlecode.genericdao.search.Search;
 
@@ -80,7 +81,7 @@ public class MoudleServiceImpl implements MoudleService {
 	}
 
 	@Override
-	@Transactional
+	@Transactional(readOnly=true)
 	public List<Moudle> getAll() {
 		// TODO Auto-generated method stub
 		
@@ -88,9 +89,39 @@ public class MoudleServiceImpl implements MoudleService {
 	}
 
 	@Override
-	@Transactional
+	@Transactional(readOnly=true)
 	public Moudle getById(Long id) {
 		// TODO Auto-generated method stub
 		return moudleDao.find(id);
+	}
+
+	@Override
+	@Transactional(readOnly=true)
+	public List<Moudle> getTopByRoles(List<Role> roleList) {
+		// TODO Auto-generated method stub
+		Search search = new Search(Moudle.class);
+		
+		search.addFilterEqual("type", ModuleType.menu);
+		search.addFilterEmpty("parent");
+		search.addFilterIn("roleSet", roleList);
+		
+		search.addSortAsc("priority");
+		
+		return moudleDao.search(search);
+	}
+
+	@Override
+	@Transactional(readOnly=true)
+	public List<Moudle> getSecondByRole(List<Role> roleList, Moudle topMoudle) {
+		// TODO Auto-generated method stub
+		Search search = new Search();
+		
+		search.addFilterEqual("type", ModuleType.menu);
+		search.addFilterEqual("parent", topMoudle);
+		search.addFilterIn("roleSet", roleList);
+		
+		search.addSortAsc("priority");
+		
+		return moudleDao.search(search);
 	}
 }

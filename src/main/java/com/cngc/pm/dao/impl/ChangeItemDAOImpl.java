@@ -31,4 +31,14 @@ public class ChangeItemDAOImpl extends BaseDAOImpl<ChangeItem,Long> implements C
 		return this.searchAndCount(search);	
 		
 	}
+	
+	@Override
+	public List<ChangeItem> getByChangeId(Long id) {
+		// TODO Auto-generated method stub
+		Search search = new Search();
+		
+		search.addFilterEqual("changeId", id);
+		
+		return this.search(search);
+	}
 }

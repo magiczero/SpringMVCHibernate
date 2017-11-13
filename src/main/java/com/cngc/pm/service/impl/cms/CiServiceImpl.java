@@ -2,17 +2,33 @@ package com.cngc.pm.service.impl.cms;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
+import java.security.InvalidKeyException;
+import java.security.Key;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 
 import javax.annotation.Resource;
+import javax.crypto.Cipher;
+import javax.crypto.CipherInputStream;
+import javax.crypto.KeyGenerator;
+import javax.crypto.NoSuchPaddingException;
 
+import static com.cngc.utils.Common._strKey;
+
+import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.DateUtil;
@@ -21,20 +37,24 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.cngc.pm.common.web.common.UserUtil;
+import com.cngc.pm.dao.MaintainRecordDAO;
+import com.cngc.pm.dao.RecordsDAO;
 import com.cngc.pm.dao.StatsDAO;
 import com.cngc.pm.dao.UserDAO;
-import com.cngc.pm.dao.cms.CategoryDAO;
 import com.cngc.pm.dao.cms.CiDAO;
 import com.cngc.pm.model.Attachment;
+import com.cngc.pm.model.ChangeItem;
+import com.cngc.pm.model.ChangeitemType;
+import com.cngc.pm.model.MaintainRecord;
+import com.cngc.pm.model.Records;
+import com.cngc.pm.model.RecordsType;
 import com.cngc.pm.model.SysUser;
-import com.cngc.pm.model.cms.Category;
 import com.cngc.pm.model.cms.Ci;
+import com.cngc.pm.service.ChangeItemService;
 import com.cngc.pm.service.cms.CiService;
 import com.cngc.utils.PropertyFileUtil;
 import com.googlecode.genericdao.search.Search;
@@ -48,17 +68,90 @@ public class CiServiceImpl implements CiService{
 	private CiDAO ciDao;
 	@Autowired
 	private StatsDAO statsDao;
-	@Autowired
-	private CategoryDAO categoryDao;
+//	@Autowired
+//	private CategoryDAO categoryDao;
 	@Autowired
 	private UserDAO userDao;
 //	@Autowired
 //	private UserUtil userUtil;
+	@Autowired
+	private MaintainRecordDAO maintainRecordDao;
+	@Autowired
+	private RecordsDAO recordsDao;
+	@Resource
+	private ChangeItemService changeitemService;
 
 	@Override
 	@Transactional(propagation = Propagation.REQUIRED, readOnly=false)
-	public void save(Ci ci){
+	public void save(Ci ci, String ip){
 		ciDao.save(ci);
+		//Date date = new Date();
+		//同时在变更表中填写记录
+		ChangeItem item = new ChangeItem();
+		item.setCiId(ci.getId());
+		
+		StringBuffer sb = new StringBuffer("{");
+		//存入时间
+		Date inTime = ci.getLastUpdateTime();
+		SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd");  
+		String strTime = sdf.format(inTime);
+		sb.append("\"CMS_FIELD_CREATEDTIME\":\""+strTime+"\"");
+		sb.append(",");
+		//责任部门
+		sb.append("\"CMS_FIELD_DEPARTMENTINUSE\":\""+ci.getDepartmentName()+"\"");
+		sb.append(",");
+		//责任人
+		sb.append("\"CMS_FIELD_USERINMAINTENANCE\":\""+ci.getUserInMaintenance()+"\"");
+		sb.append(",");
+		//设备类型
+		sb.append("\"CMS_FIELD_CATEGORYCODE\":\""+ci.getCategoryCode()+"\"");
+		sb.append(",");
+		//设备名称
+		sb.append("\"CMS_FIELD_NAME\":\""+ci.getName()+"\"");
+		sb.append(",");
+		//品牌
+		sb.append("\"CMS_FIELD_PRODUCER\":\""+ci.getProducer()+"\"");
+		sb.append(",");
+		//型号
+		sb.append("\"CMS_FIELD_MODEL\":\""+ci.getModel()+"\"");
+		sb.append(",");
+		//物理位置
+		sb.append("\"CMS_FIELD_LOCATION\":\""+ci.getLocation()+"\"");
+		sb.append(",");
+		//密级
+		sb.append("\"CMS_FIELD_SECURITYLEVEL\":\""+ci.getSecurityLevel()+"\"");
+		sb.append(",");
+		//涉密编号
+		sb.append("\"CMS_FIELD_SECURITYNO\":\""+ci.getSecurityNo()+"\"");
+		sb.append("}");
+		item.setNewValue(sb.toString());
+		item.setCreatedTime(inTime);
+		item.setType(ChangeitemType.create);
+		//保存
+		changeitemService.save(item);
+		//同时写入工作记录
+		MaintainRecord mr = new MaintainRecord();
+		mr.setEquipId(ci.getId().toString());
+		mr.setEquipName(ci.getName());
+		mr.setEquipNum(ci.getNum());
+		mr.setExecutor(ci.getLastUpdateUser());
+		
+		mr.setMaintainTime(inTime);
+		mr.setInTime(inTime);
+		mr.setType(1);
+		mr.setRole(1);
+		
+		mr.setCircs("新建了资产，id是："+ci.getId());//执行情况
+		
+		maintainRecordDao.save(mr);
+		//同时写入审计记录
+		Records record = new Records();
+		record.setUsername(ci.getLastUpdateUser());
+		record.setType(RecordsType.user);
+		record.setIpAddress(ip);
+		record.setDesc("新建了资产，资产id：[" + ci.getId() +"]");
+		
+		recordsDao.save(record);
 	}
 	
 	@Override
@@ -122,7 +215,7 @@ public class CiServiceImpl implements CiService{
 
 	@Override
 	@Transactional(propagation = Propagation.REQUIRED, readOnly=false)
-	public void importData(Set<Attachment> setAttach) throws IOException, ParseException {
+	public void importData(Set<Attachment> setAttach) throws IOException, ParseException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException {
 		// TODO Auto-generated method stub
 		//首先加载properties文件
 		//解析excel文件放到CI中并验证，出错则抛出Exception
@@ -130,14 +223,45 @@ public class CiServiceImpl implements CiService{
 		List<Ci> ciList = new ArrayList<>();
 		
 		for(Attachment attach : setAttach) {
-			String filePath = attach.getPath()+File.separator+attach.getNewFilename();
+			String fileStoreName = attach.getNewFilename();
+			String filePath = attach.getPath()+File.separator+fileStoreName;
 			
+			//解密
+			String tempFilename = UUID.randomUUID().toString(); // 重命名文件名
+			String fileExtension = StringUtils.substring(fileStoreName,  StringUtils.lastIndexOf(fileStoreName, "."));
+			
+			String tempStoreFileName = tempFilename+fileExtension;
+			
+			String tempFilePath = attach.getPath()+File.separator + tempStoreFileName;
+			File newFile = new File(tempFilePath);
+			
+			KeyGenerator _generator = KeyGenerator.getInstance("DES"); 
+		    _generator.init(new SecureRandom(_strKey.getBytes())); 
+		    Key key = _generator.generateKey(); 
+		    _generator = null; 
+			Cipher cipher = Cipher.getInstance("DES"); 
+		    cipher.init(Cipher.DECRYPT_MODE, key);
+		    
+		    InputStream is = new FileInputStream(filePath);
+		    OutputStream out = new FileOutputStream(newFile); 
+		    CipherInputStream cis = new CipherInputStream(is, cipher); 
+		    
+		    byte[] buffer = new byte[1024]; 
+		    int r; 
+		    while ((r = cis.read(buffer)) > 0) { 
+		        out.write(buffer, 0, r); 
+		    } 
+		    
+		    cis.close(); 
+		    is.close(); 
+		    out.close(); 
+		    
 			boolean isE2007 = false;		//判断是否是excel2007格式
 			
 			if(attach.getNewFilename().endsWith("xlsx"))
 				isE2007 = true;
 			
-			InputStream input = new FileInputStream(filePath);
+			InputStream input = new FileInputStream(newFile);
 			Workbook wb  = null;  
 	            //根据文件格式(2003或者2007)来初始化  
 	        if(isE2007)  
@@ -149,12 +273,12 @@ public class CiServiceImpl implements CiService{
             	Sheet sheet = wb.getSheetAt(numSheet);  
             	
             	//根据sheetname获取分类代码
-            	String typeName = sheet.getSheetName();
-            	
-            	Search search = new Search();
-        		search.addFilterEqual("categoryName", typeName);
-        		
-        		Category category = categoryDao.searchUnique(search);
+            	String typeCode = sheet.getSheetName();
+//            	
+//            	Search search = new Search();
+//        		search.addFilterEqual("categoryName", typeName);
+//        		//System.out.println(typeName);
+//        		Category category = categoryDao.searchUnique(search);
             	
             	if(sheet.getLastRowNum() > 0) {
 	            	// 遍历表格的每一行
@@ -172,7 +296,7 @@ public class CiServiceImpl implements CiService{
 	                	String datas2[] = datas[i];
 	                	Ci ci = new Ci();
 	                	
-            			ci.setCategoryCode(category.getCategoryCode());				//设置类型
+            			ci.setCategoryCode(typeCode);				//设置类型
 	                	ci.setSystem("01"); 			//归属系统
 	                	ci.setDeleteStatus("01");
 	                	
@@ -191,6 +315,10 @@ public class CiServiceImpl implements CiService{
             	}
             	
             	
+	        }
+	        
+	        if(newFile.exists()) {
+	        	newFile.delete();
 	        }
 		}
 		//保存到数据库中
@@ -289,6 +417,12 @@ public class CiServiceImpl implements CiService{
 			case "name":					//配置项名称
 				ci.setName(propertyValue);
 				break;
+			case "serial":					//序列号
+				ci.setSerial(propertyValue);
+				break;
+			case "producer":
+				ci.setProducer(propertyValue);
+				break;
 			case "use" :						//是否启用
 				ci.setUse(propertyValue);
 				break;
@@ -350,8 +484,17 @@ public class CiServiceImpl implements CiService{
 			case "location":						//物理位置
 				ci.setLocation(propertyValue);
 				break;
+			case "model":
+				ci.setModel(propertyValue);
+				break;
+			case "remark":
+				ci.setRemark(propertyValue);
+				break;
 			case "userInMaintenance":			//责任人  需要转换 
 				ci.setUserInMaintenance(userDao.getUserByName(propertyValue.trim()).getUsername());
+				break;
+			case "num":				//设备编号
+				ci.setNum(propertyValue);
 				break;
 			case "ciManager":				//配置管理员，应该转换
 				ci.setCiManager(propertyValue);
@@ -360,12 +503,10 @@ public class CiServiceImpl implements CiService{
 				ci.setPurpose(propertyValue);
 				break;
 			case "serviceStartTime":										//启用时间
-				SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-				ci.setServiceStartTime(format.parse(propertyValue));
+				ci.setServiceStartTime(parse(propertyValue));
 				break;
 			case "serviceEndTime":										//启用时间
-				SimpleDateFormat format1 = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-				ci.setServiceStartTime(format1.parse(propertyValue));
+				ci.setServiceStartTime(parse(propertyValue));
 				break;
 			case "telephone":									//电话
 				ci.setServiceProviderContact(propertyValue);
@@ -387,6 +528,14 @@ public class CiServiceImpl implements CiService{
 		
 		return ci;
 	}
+	
+	
+	    public java.sql.Date parse(String text) throws ParseException {  
+	        DateFormat df = null;  
+	        df = new SimpleDateFormat("yyyy-MM-dd");  
+	        return new java.sql.Date(df.parse(text).getTime());  
+	    }  
+	
 
 	@Override
 	public SearchResult<Ci> getAllWithPage(String code,int iDisplayStart, int iDisplayLength) {
@@ -428,5 +577,37 @@ public class CiServiceImpl implements CiService{
 //		
 //		return sr.getResult();
 		return null;
+	}
+
+	@Override
+	public SearchResult<Ci> getListByCondition(List<String> codeList, String type, String department, String status,
+			String securityLevel,int iDisplayStart, int iDisplayLength) {
+		// TODO Auto-generated method stub
+		Search search = new Search(Ci.class);
+		
+		search.addFilterEqual("deleteStatus", "01");
+		if(type.equals("0"))
+			search.addFilterIn("categoryCode", codeList);
+		else {
+			
+			search.addFilterEqual("categoryCode", type);
+		}
+		
+		if(!department.equals("0")) {
+			search.addFilterLike("departmentInUse", department+"%");
+		}
+		
+		if(!status.equals("0")) {
+			search.addFilterEqual("status", status);
+		}
+		
+		if(!securityLevel.equals("0")) {
+			search.addFilterEqual("securityLevel", securityLevel);
+		}
+		
+		search.setFirstResult(iDisplayStart);
+		search.setMaxResults(iDisplayLength);
+		
+		return ciDao.searchAndCount(search);
 	}
 }

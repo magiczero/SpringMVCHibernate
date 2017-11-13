@@ -5,6 +5,8 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -28,7 +30,16 @@ public class ChangeItem implements Serializable {
 	private String newValue;
 	private Date createdTime;
 	private Date updatedTime;
+	private ChangeitemType type;
 	
+	@Enumerated(EnumType.ORDINAL)
+	@Column(name="type_")
+	public ChangeitemType getType() {
+		return type;
+	}
+	public void setType(ChangeitemType type) {
+		this.type = type;
+	}
 	@Id
 	@Column(name="id")
 	@GeneratedValue(strategy = GenerationType.AUTO)

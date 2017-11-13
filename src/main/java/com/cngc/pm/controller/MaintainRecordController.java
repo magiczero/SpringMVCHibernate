@@ -26,9 +26,11 @@ import com.cngc.pm.common.web.common.UserUtil;
 import com.cngc.pm.model.Attachment;
 import com.cngc.pm.model.MaintainRecord;
 import com.cngc.pm.model.SysUser;
+import com.cngc.pm.model.cms.Ci;
 import com.cngc.pm.service.AttachService;
 import com.cngc.pm.service.MaintainRecordService;
 import com.cngc.pm.service.RoleService;
+import com.cngc.pm.service.cms.CiService;
 import com.googlecode.genericdao.search.SearchResult;
 
 
@@ -44,6 +46,8 @@ public class MaintainRecordController {
 	private AttachService attachService;
 	@Resource
 	private RoleService roleService;
+	@Resource
+	private CiService ciService;
 	
 	@RequestMapping
 	public String list(Model model) throws Exception {
@@ -145,6 +149,17 @@ public class MaintainRecordController {
 	public String add(Model model) throws Exception {
 		
 		model.addAttribute("maintainRecord", new MaintainRecord());
+		return "maintain-record/add";
+	}
+	
+	@RequestMapping(value="/add-by-equip",method = RequestMethod.GET)
+	public String addByEquip(@RequestParam(required=true) long equipId,Model model) throws Exception {
+		Ci ci = ciService.getById(equipId);
+		MaintainRecord mr = new MaintainRecord();
+		mr.setEquipId(ci.getId().toString());
+		mr.setEquipName(ci.getName());
+		mr.setEquipNum(ci.getNum());
+		model.addAttribute("maintainRecord", mr);
 		return "maintain-record/add";
 	}
 	

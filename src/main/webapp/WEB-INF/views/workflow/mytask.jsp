@@ -306,6 +306,9 @@
 													<c:if test="${processName=='INSPECTION' }">
 														<a href="${contextPath }/record/${processName.toLowerCase() }/dealbyprocess/${task.processInstanceId }/${task.id}"><span class="glyphicon glyphicon-edit"></span> 办理</a>
 													</c:if>
+													<c:if test="${processName=='accountLifeCycle' }">
+														<a href="${contextPath }/account-life-cycle/deal/${task.id}"><span class="glyphicon glyphicon-edit"></span> 办理</a>
+													</c:if>
 												</c:if></td>
 										</tr>
 									</c:forEach>

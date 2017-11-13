@@ -1,7 +1,7 @@
 package com.cngc.pm.model.cms;
 
 public enum AccountType {
-	infoSys("信息系统",1),infoEquipment("信息设备",2),storage("存储设备",3),security("安全保密产品",4);
+	infoSys("信息系统",1),infoEquipment("信息设备",2),storage("存储设备",3),security("安全保密产品",4),appSys("应用系统",5);
 	
 	private String name;
 	private int num;

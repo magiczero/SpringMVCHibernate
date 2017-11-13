@@ -46,7 +46,8 @@ import com.cngc.exception.BusinessException;
 import com.cngc.pm.model.AttachType;
 import com.cngc.pm.model.Attachment;
 import com.cngc.pm.service.AttachService;
-import com.cngc.utils.Common;
+import static com.cngc.utils.Common._fileUploadPath;
+import static com.cngc.utils.Common._strKey;
 import com.cngc.utils.Uploader;
 
 @Controller
@@ -59,10 +60,10 @@ public class AttachmentController {
 	@Resource
 	private AttachService attachService;
 
-	private String fileUploadDirectory = Common._fileUploadPath;
+	//private String fileUploadDirectory = Common._fileUploadPath;
 	
 	// 密钥是16位长度的byte[]进行Base64转换后得到的字符串
-	public static String strKey = "LmMGStGtOpF4xNyvYt54EQ==";
+	
 
 //	@RequestMapping
 //	public String index() {
@@ -106,7 +107,7 @@ public class AttachmentController {
 
 		//List<Attachment> list = new LinkedList<>();
 		KeyGenerator _generator = KeyGenerator.getInstance("DES"); 
-		_generator.init(new SecureRandom(strKey.getBytes())); 
+		_generator.init(new SecureRandom(_strKey.getBytes())); 
 		Key key = _generator.generateKey(); 
 		_generator = null; 
 
@@ -129,12 +130,12 @@ public class AttachmentController {
 	//			String storageDirectory = request.getSession().getServletContext()
 	//					.getRealPath("")
 	//					+ fileUploadDirectory;
-				String storageDirectory = fileUploadDirectory;
-				File folder = new File(storageDirectory);
+				//String storageDirectory = _fileUploadPath;
+				File folder = new File(_fileUploadPath);
 				if (!folder.exists())
 					folder.mkdirs();
 	
-				File newFile = new File(storageDirectory + "/" + newFilename);
+				File newFile = new File(_fileUploadPath + File.separator + newFilename);
 					//mpf.transferTo(newFile);
 					//加密
 				Cipher cipher = Cipher.getInstance("DES"); 
@@ -306,7 +307,7 @@ public class AttachmentController {
 			}
 			log.info("chunk:[" + chunk + "] chunks:[" + chunks + "]");
 			// 检查文件目录，不存在则创建
-			String relativePath = fileUploadDirectory;
+			String relativePath = _fileUploadPath;
 			//String realPath = session.getServletContext().getRealPath("");
 			//File folder = new File(realPath + relativePath);
 			File folder = new File(relativePath);
@@ -348,11 +349,11 @@ public class AttachmentController {
 	@RequestMapping("download/{id}")
 	public void downloadFile(@PathVariable("id") long id, HttpServletResponse response) throws IOException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException {
 		Attachment attach = attachService.get(id);
-		String path = fileUploadDirectory + attach.getNewFilename();
+		String path = _fileUploadPath + attach.getNewFilename();
 //		File file = new File(path);
 		//解密
 		KeyGenerator _generator = KeyGenerator.getInstance("DES"); 
-	    _generator.init(new SecureRandom(strKey.getBytes())); 
+	    _generator.init(new SecureRandom(_strKey.getBytes())); 
 	    Key key = _generator.generateKey(); 
 	    _generator = null; 
 		Cipher cipher = Cipher.getInstance("DES"); 
@@ -393,7 +394,7 @@ public class AttachmentController {
 	public ResponseEntity<byte[]> download(@PathVariable("id") long id)
 			throws IOException {
 		Attachment attach = attachService.get(id);
-		String path = fileUploadDirectory + attach.getNewFilename();
+		String path = _fileUploadPath + attach.getNewFilename();
 		File file = new File(path);
 		HttpHeaders headers = new HttpHeaders();
 		if(file.exists()) {

@@ -123,4 +123,12 @@ public class PropertyServiceImpl implements PropertyService {
 		
 		return htmlCode;
 	}
+
+	@Override
+	@Transactional(readOnly=true)
+	public String getPropertyNameByPropertyId(String propertyId) {
+		// TODO Auto-generated method stub
+		
+		return propertyDao.getPropertyNameByPropertyId(propertyId);
+	}
 }

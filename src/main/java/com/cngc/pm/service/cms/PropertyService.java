@@ -30,4 +30,6 @@ public interface PropertyService {
 	 * @return
 	 */
 	String analyzePropertyToHtml(Property property);
+	
+	String getPropertyNameByPropertyId(String propertyId);
 }

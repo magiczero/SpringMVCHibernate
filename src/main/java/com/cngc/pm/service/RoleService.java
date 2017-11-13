@@ -25,4 +25,5 @@ public interface RoleService {
 	 */
 	List<Role> getNonSysAll();
 	List<Role> getAllRole();
+	
 }

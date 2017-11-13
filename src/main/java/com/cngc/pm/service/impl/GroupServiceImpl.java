@@ -252,6 +252,9 @@ public class GroupServiceImpl implements GroupService {
 		search.addFilterEqual("parentGroup", parentGroup);
 		search.addSortDesc("id");
 		
-		return (Group) groupDao.search(search).get(0);
+		if((groupDao.search(search)).size() > 0)
+			return (Group) groupDao.search(search).get(0);
+		else
+			return null;
 	}
 }

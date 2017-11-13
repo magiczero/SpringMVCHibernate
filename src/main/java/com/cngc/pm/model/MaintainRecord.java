@@ -48,6 +48,17 @@ public class MaintainRecord implements Serializable {
 	}
 
 	private Date maintainTime;
+	private Date inTime;
+	@Column(name="in_time")
+	@DateTimeFormat( pattern = "yyyy-MM-dd HH:mm" )
+	public Date getInTime() {
+		return inTime;
+	}
+
+	public void setInTime(Date inTime) {
+		this.inTime = inTime;
+	}
+
 	private String addIn;			//外接设备
 	private String circs;			//执行情况
 	private String executor;		//执行者

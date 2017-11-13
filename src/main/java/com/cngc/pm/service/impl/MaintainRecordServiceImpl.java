@@ -59,7 +59,7 @@ public class MaintainRecordServiceImpl implements MaintainRecordService {
 	@Transactional(propagation = Propagation.REQUIRED, readOnly=false)
 	public void save(MaintainRecord mr, String ip) {
 		// TODO Auto-generated method stub
-		
+		mr.setInTime(new java.util.Date());
 		mrDao.save(mr);
 		
 		Records record = new Records();
@@ -74,7 +74,7 @@ public class MaintainRecordServiceImpl implements MaintainRecordService {
 	public List<MaintainRecord> getRecordListByusernames(String... usernames) {
 		// TODO Auto-generated method stub
 		Search search = new Search(MaintainRecord.class);
-		//search.addFilterEqual("executor", username);
+		
 		search.addFilterIn("executor", usernames);
 		
 		search.addSortDesc("maintainTime");
@@ -124,7 +124,7 @@ public class MaintainRecordServiceImpl implements MaintainRecordService {
 	public SearchResult<MaintainRecord> search(SysUser user, String equipName, String startTime,
 			String endTime, String type_, int iDisplayStart, int iDisplayLength) throws ParseException {
 		// TODO Auto-generated method stub
-		boolean isLeader = false, isSysop = false, isSecurity=false, isAuditor = false;
+		boolean isLeader = false, isSecurity=false, isAuditor = false;
 		for (UserRole ur : user.getUserRoles()) {
 			if ("WK_LEADER".indexOf(ur.getRole().getRoleName())>=0 ) {	//领导
 				isLeader = true;
@@ -177,6 +177,7 @@ public class MaintainRecordServiceImpl implements MaintainRecordService {
 			}
 		}
 		
+		usernameList.add(user.getUsername());	//都可以看自己的
 //		System.out.println(usernameList);
 		search.addFilterIn("executor", usernameList);
 		

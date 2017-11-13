@@ -178,6 +178,7 @@ function act_form_getTaskFields(taskId,redirectAddress) {
 		}
 		// 初始化日期组件
 		//$form.find('.dateISO').datepicker();
+		if($form.find(".dateISO").length>0)
 		$form.find('.dateISO').datetimepicker({autoclose: true,language: 'zh-CN',minuteStep: 5,todayBtn: true});
 		// 表单验证
 		//$form.validate($.extend({}, $.common.plugin.validator));

@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+<head>        
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	
+<link href="dataTables.fixedColumns.css" rel="stylesheet" type="text/css" />
+	<script type='text/javascript' src='jquery-1.10.2.min.js'></script>
+<script type='text/javascript' src='jquery.dataTables.js'></script>
+<script type='text/javascript' src='dataTables.fixedColumns.min.js'></script>
+
+<script type="text/javascript">
+  
+            $(document).ready(function () {
+			var datatables_options = {
+    "bAutoWidth": true,
+    "sDom": '<"top"i>rt<"bottom"flp><"clear">',           
+    "bPaginate": false,   
+    "sPaginationType": "full_numbers", 
+    "iDisplayLength": 10, 
+    "bSort": true, 
+    "bFilter": false, 
+    "aaSorting": [], 
+    "bInfo": false, 
+    "bStateSave": false, 
+    "iCookieDuration": 0, 
+    "bScrollAutoCss": true, 
+    "bProcessing": true, 
+    "bJQueryUI": false 
+};
+
+datatables_options["sScrollY"] = "450px";
+datatables_options["sScrollX"] = "100%";
+datatables_options["bScrollCollapse"] = true;
+
+// add this
+datatables_options["sScrollXInner"] = '150%';
+//
+                   
+var table = $('#example').DataTable(datatables_options);
+new $.fn.dataTable.FixedColumns(table);
+});
+</script>
+</head>
+<body>
+<table id="example" class="stripe row-border order-column" cellspacing="0" width="100%">
+                <thead>
+                    <tr>
+                        <th rowspan="2">Name</th>
+                        <th colspan="2">HR Information</th>
+                        <th colspan="3">Contact</th>
+                    </tr>
+                    <tr>
+                        <th>Position</th>
+                        <th>Salary</th>
+                        <th>Office</th>
+                        <th>Extn.</th>
+                        <th>E-mail</th>
+                    </tr>
+                </thead>
+
+                <tfoot>
+                    <tr>
+                        <th>Name</th>
+                        <th>Position</th>
+                        <th>Salary</th>
+                        <th>Office</th>
+                        <th>Extn.</th>
+                        <th>E-mail</th>
+                    </tr>
+                </tfoot>
+
+                <tbody>
+                    <tr>
+                        <td>Tiger Nixon</td>
+                        <td>System Architect</td>
+                        <td>$320,800</td>
+                        <td>Edinburgh</td>
+                        <td>5421</td>
+                        <td>t.nixon@datatables.net</td>
+                    </tr>
+                    <tr>
+                        <td>Garrett Winters</td>
+                        <td>Accountant</td>
+                        <td>$170,750</td>
+                        <td>Tokyo</td>
+                        <td>8422</td>
+                        <td>g.winters@datatables.net</td>
+                    </tr>
+                    <tr>
+                        <td>Ashton Cox</td>
+                        <td>Junior Technical Author</td>
+                        <td>$86,000</td>
+                        <td>San Francisco</td>
+                        <td>1562</td>
+                        <td>a.cox@datatables.net</td>
+                    </tr>
+                    <tr>
+                        <td>Cedric Kelly</td>
+                        <td>Senior Javascript Developer</td>
+                        <td>$433,060</td>
+                        <td>Edinburgh</td>
+                        <td>6224</td>
+                        <td>c.kelly@datatables.net</td>
+                    </tr>
+                    <tr>
+                        <td>Airi Satou</td>
+                        <td>Accountant</td>
+                        <td>$162,700</td>
+                        <td>Tokyo</td>
+                        <td>5407</td>
+                        <td>a.satou@datatables.net</td>
+                    </tr>                    
+                </tbody>
+            </table>
+</body>
+</html>

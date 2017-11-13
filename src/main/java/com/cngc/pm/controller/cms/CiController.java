@@ -1,6 +1,10 @@
 package com.cngc.pm.controller.cms;
 
+import static com.cngc.utils.Common.getRemortIP;
+
 import java.io.IOException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -12,6 +16,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import javax.annotation.Resource;
+import javax.crypto.NoSuchPaddingException;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
@@ -21,9 +26,12 @@ import org.apache.cxf.common.util.StringUtils;
 import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -45,6 +53,7 @@ import com.cngc.pm.service.cms.CategoryService;
 import com.cngc.pm.service.cms.CiService;
 import com.cngc.pm.service.cms.PropertyService;
 import com.cngc.pm.service.cms.RelationService;
+import com.cngc.utils.MyDateFormat;
 import com.cngc.utils.PropertyFileUtil;
 import com.googlecode.genericdao.search.SearchResult;
 
@@ -72,6 +81,25 @@ public class CiController {
 	private UserService userService;
 	@Resource
 	private AttachService attachService;
+	
+	@InitBinder
+	protected void initBinder(WebDataBinder binder) {
+		binder.registerCustomEditor(java.sql.Date.class,  new CustomDateEditor(new MyDateFormat("yyyy-MM-dd HH:mm:ss"), true));
+   
+	}
+	
+	@RequestMapping(value="/edit")
+	public String initEditCi(@RequestParam(required=true) long ciid,Model model) {
+		Ci ci = ciService.getById(ciid);
+		
+		model.addAttribute("ci",ci);
+		model.addAttribute("status", syscodeService.getAllByType(PropertyFileUtil.getStringValue("syscode.cms.ci.status")).getResult());
+		model.addAttribute("securityLevel", syscodeService.getAllByType(PropertyFileUtil.getStringValue("syscode.cms.ci.securitylevel")).getResult());
+		model.addAttribute("system", syscodeService.getAllByType(PropertyFileUtil.getStringValue("syscode.cms.ci.system")).getResult());
+		model.addAttribute("users", userService.getAll());
+		
+		return "cms/ci-add";
+	}
 	
 	@RequestMapping(value="/add")
 	public String add(Model model){
@@ -151,20 +179,46 @@ public class CiController {
 
 	@RequestMapping(value="/save",method = RequestMethod.POST)
 	public String save(@Valid @ModelAttribute("ci") Ci ci, HttpServletRequest request,Authentication authentication) throws Exception{
-		if(!StringUtils.isEmpty(request.getParameter("fileids"))) {
-			String attachIds = request.getParameter("fileids");
-			Set<Attachment> attachSet = attachService.getSetByIds(attachIds);
-			ci.setAttachs(attachSet);
+		if(ci.getId()==null) {	//新建
+			if(!StringUtils.isEmpty(request.getParameter("fileids"))) {
+				String attachIds = request.getParameter("fileids");
+				Set<Attachment> attachSet = attachService.getSetByIds(attachIds);
+				ci.setAttachs(attachSet);
+			}
+			
+			ci.setReviewStatus("02");
+			ci.setDeleteStatus("01");
+			//ci.setCreatedTime(new Date());
+			ci.setLastUpdateTime(new Date());
+			ci.setLastUpdateUser(userUtil.getUsernameByAuth(authentication));
+			
+			ciService.save(ci, getRemortIP(request));
+		} else {
+			Ci originalCi = ciService.getById(ci.getId());
+			//修改的数据
+			originalCi.setName(ci.getName());
+			originalCi.setNum(ci.getNum());
+			originalCi.setCategoryCode(ci.getCategoryCode());
+			originalCi.setSerial(ci.getSerial());
+			originalCi.setModel(ci.getModel());
+			originalCi.setProducer(ci.getProducer());
+			originalCi.setSecurityLevel(ci.getSecurityLevel());
+			originalCi.setSecurityNo(ci.getSecurityNo());
+			originalCi.setDepartmentInUse(ci.getDepartmentInUse());
+			originalCi.setUserInMaintenance(ci.getUserInMaintenance());
+			originalCi.setPurpose(ci.getPurpose());
+			originalCi.setServiceStartTime(ci.getServiceStartTime());//启用日期
+			originalCi.setExpirationTime(ci.getExpirationTime());//维保截止时间
+			originalCi.setStatus(ci.getStatus());//使用情况/状态
+			originalCi.setLocation(ci.getLocation());
+			originalCi.setCreatedTime(ci.getCreatedTime());//购置日期
+			originalCi.setRemark(ci.getRemark());
+			
+			originalCi.setLastUpdateTime(new Date());
+			originalCi.setLastUpdateUser(userUtil.getUsernameByAuth(authentication));
+			
+			ciService.save(originalCi, getRemortIP(request));
 		}
-		
-		ci.setReviewStatus("02");
-		ci.setDeleteStatus("01");
-		//ci.setCreatedTime(new Date());
-		ci.setLastUpdateTime(new Date());
-		ci.setLastUpdateUser(userUtil.getUsernameByAuth(authentication));
-		
-		
-		ciService.save(ci);
 		
 		return "redirect:list";
 	}
@@ -183,6 +237,15 @@ public class CiController {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InvalidKeyException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (NoSuchAlgorithmException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (NoSuchPaddingException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
@@ -211,7 +274,7 @@ public class CiController {
 		}catch(IOException e){
 			
 		}
-		ciService.save(ci);
+		ciService.save(ci, getRemortIP(request));
 		
 		return "redirect:/cms/ci/list";
 	}
@@ -271,13 +334,13 @@ public class CiController {
 	}
 	
 	@RequestMapping(value="/delete/{id}", method = RequestMethod.GET)
-	public String delete(@PathVariable("id") long id,Model model){
+	public String delete(@PathVariable("id") long id,Model model,HttpServletRequest request){
 		if(id!=0)
 		{
 			//	ciService.delById(id);
 			Ci ci = ciService.getById(id);
 			ci.setDeleteStatus(PropertyFileUtil.getStringValue("syscode.cms.ci.delete"));
-			ciService.save(ci);
+			ciService.save(ci, getRemortIP(request));
 		}
 		
 		return "redirect:/cms/ci/list";
@@ -370,4 +433,23 @@ public class CiController {
 		
 		return map;
 	}
+	
+//	class MyDateFormat extends SimpleDateFormat {  
+//	    /**
+//		 * 
+//		 */
+//		private static final long serialVersionUID = 1L;
+//		public MyDateFormat(String s) {  
+//	        super(s);  
+//	    }  
+//	    public Date parse(String text) throws ParseException {  
+//	        DateFormat df = null;  
+//	        if(text.length()<=10){  
+//	            df = new SimpleDateFormat("yyyy-MM-dd");  
+//	            return new java.sql.Date(df.parse(text).getTime());  
+//	        }  
+//	        java.util.Date date = super.parse(text);  
+//	        return new java.sql.Date(date.getTime());  
+//	    }  
+//	}   
 }

@@ -3,6 +3,7 @@ package com.cngc.pm.service;
 import java.util.List;
 
 import com.cngc.pm.model.Moudle;
+import com.cngc.pm.model.Role;
 
 public interface MoudleService {
 
@@ -16,4 +17,7 @@ public interface MoudleService {
 	
 	Moudle getById(Long id);
 
+	List<Moudle> getTopByRoles(List<Role> roleList);
+	
+	List<Moudle> getSecondByRole(List<Role> roleList, Moudle topMoudle);
 }

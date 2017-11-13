@@ -65,6 +65,12 @@
         		</entry>
         	</map>
         </property>
+        <!-- <property name="beans">
+        	<map>
+        		<entry key="changeItemService" value-ref="changeItemService"></entry>
+        		<entry key="changeEntityManager" value-ref="changeEntityManager"></entry>
+        	</map>
+        </property> -->
     </bean>	
     
     <bean id="processEngine" class="org.activiti.spring.ProcessEngineFactoryBean">

@@ -97,10 +97,10 @@ public class Role implements Serializable {
 //		this.auths = auths;
 //	}
 	
-	@ManyToMany(targetEntity=Moudle.class)  
+	@ManyToMany(targetEntity=Moudle.class)
 	@JoinTable(name = "sys_roles_moudles", joinColumns = { @JoinColumn(name = "ROLE_ID") }, inverseJoinColumns = { @JoinColumn(name = "MODULE_ID") })  
 	@OrderBy("priority")  
-	@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)  
+//	@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)  
 	public Set<Moudle> getModules() {
 		return modules;
 	}

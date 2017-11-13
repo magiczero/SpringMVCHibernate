@@ -22,7 +22,48 @@
 	</div>
 	
 </div>
-<div id="tree1"></div>
+<ul class="navigation">
+	<li id="node_0" class="openable"><a href="#"> <span class="isw-attachment"></span><span class="text">快速链接</span></a>
+		<ul>
+			<li><a href="${contextPath }/workflow/task/mytask"> <span class="glyphicon glyphicon-th-large"></span><span class="text">待办任务</span>
+			</a> <a href="#" class="caption yellow link_navPopMessages">0</a></li>
+			<sec:authorize url="/workflow/task/board"><li><a href="${contextPath }/workflow/task/board"> <span class="glyphicon glyphicon-th-large"></span><span class="text">运维控制台</span>
+			</a></li></sec:authorize>
+			<%--<li><a href="${contextPath }/incident/list"> <span class="glyphicon glyphicon-th-large"></span><span class="text">事件控制台</span>
+			</a></li>
+			<li><a href="${contextPath }/change/list"> <span class="glyphicon glyphicon-th-large"></span><span class="text">变更控制台</span>
+			</a></li> --%>
+			<li><a href="${contextPath }/leadertask/list"> <span class="glyphicon glyphicon-user"></span><span class="text">领导交办</span>
+			</a></li>
+			<li><a href="${contextPath }/record/inspection"> <span class="glyphicon glyphicon-wrench"></span><span class="text">日常巡检</span>
+			</a></li>
+			<!-- <li><a href="${contextPath }/knowledge/search"> <span class="glyphicon glyphicon-search"></span><span class="text">知识库</span>
+			</a></li> -->
+		</ul>
+	</li><%--
+	<c:forEach items="${menuMoudle }" var="map">
+		<li id="node_${map.key.id }" class="openable"><a href="${map.key.url }"> <span class="${map.key.styleClass }"></span><span class="text">${map.key.name }</span>	</a>
+		<ul>
+			<c:forEach items="${map.value }" var="moudle">
+			<li><a href="${contextPath }${moudle.url }"> <span class="${moudle.styleClass }"></span><span class="text">${moudle.name }</span></a></li>
+			</c:forEach>
+		</ul>
+		</li>
+	</c:forEach>
+		 --%>
+	<c:forEach items="${menu1 }" var="mod1">
+		<li id="node_${mod1.id }" class="openable"><a href="${mod1.url }"> <span class="${mod1.styleClass }"></span><span class="text">${mod1.name }</span>
+		</a>
+			<ul>
+				<c:forEach items="${menu2 }" var="mod2">
+					<c:if test="${mod2.parent.id == mod1.id }">
+						<li><a href="${contextPath }${mod2.url }"> <span class="${mod2.styleClass }"></span><span class="text">${mod2.name }</span>
+						</a></li>
+					</c:if>
+				</c:forEach>
+			</ul></li>
+	</c:forEach>
+</ul>
 <div class="modal fade" id="pwdModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 	<div class="modal-dialog">
 		<div class="modal-content">
@@ -98,7 +139,6 @@
 	</div>
 </div>
 <script type='text/javascript' src='${contextPath }/resources/js/mymenu.js'></script>
-<script type='text/javascript' src='${contextPath }/resources/js/plugins/menutree/tree.js'></script>
 <script>
 	var ctx1 = "${contextPath }";
 	
@@ -109,29 +149,6 @@
 			promptPosition : "topRight",
 			scroll : true
 		});
-		
-		
-		 $.ajax({
-             type: 'Get',
-             url: ctx1+'/menu-json',
-             //data: {reqUrl:"${reqestUrl}"},
-             dataType: 'json',
-             async: false,
-             success: function (data) {
-                 var treeData = eval(data);
-                 
-                 var tree = {  
-                         'data': treeData,  
-                         'clickIconBefore': 'glyphicon glyphicon-chevron-down',  
-                         'clickIconAfter': 'glyphicon glyphicon-chevron-up'  
-                     }  
-                     getTree($("#tree1"), tree); 
-             },
-             error: function (err) {
-            	 //console.log(err);
-                 alert('不好意思，读取菜单时出错了,请联系管理员^^^');
-             }
-		 });
 		 
 	});
 	

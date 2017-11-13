@@ -19,5 +19,6 @@ public interface CategoryService {
 	String getJSON();
 
 	String getAllJSON();
+	List<Category> getChildListByParent(String code);
 
 }

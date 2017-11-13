@@ -26,7 +26,6 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.activiti.engine.FormService;
 import org.activiti.engine.HistoryService;
 import org.activiti.engine.TaskService;
 import org.activiti.engine.history.HistoricDetail;
@@ -95,8 +94,6 @@ public class ThreeMemberController {
 	private UserService userService;
 	@Resource
 	private TaskService taskService;
-	@Resource
-	private FormService formService;
 	@Resource
 	private CiService ciService;
 	@Resource

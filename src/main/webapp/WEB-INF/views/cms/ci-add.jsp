@@ -110,7 +110,7 @@
     		        buttons: { "确定": function () { $(this).dialog("close") } }
     		    });
                 
-                $("input[name='department1']").bind("click",function(){
+                $("input[name='departmentName']").bind("click",function(){
     		    	$("#grouptree").empty();
     		    	$("#grouptree").treeview({
     		    		url:ctx + '/group/all-json?haveuser=false&t=' + pm_random(),
@@ -144,7 +144,7 @@
             
             function inputGroupinfo(groupid, groupname) {
             	$("#departmentInUse").val(groupid);
-            	$("input[name='department1']").val(groupname);
+            	$("input[name='departmentName']").val(groupname);
             	
             	$("#b_popup_group").dialog('close');
             }
@@ -195,6 +195,7 @@
                         </div>
                         <c:url var="addAction" value="/cms/ci/save" ></c:url>
 						<form:form id="validation"  action="${addAction}" commandName="ci" method="post">
+						<form:hidden path="id"/>
 						<form:hidden path="use" value="启用"/>
 						<form:hidden path="departmentInUse" value=""/>
 						<form:hidden path="importance" value="低"/>
@@ -204,7 +205,7 @@
                                 <div class="col-md-1"><form:label path="name">设备名称:</form:label></div>
                                 <div class="col-md-3"><form:input path="name" class="validate[required,maxSize[50]]"></form:input></div>
                                 <div class="col-md-1"><form:label path="num">设备编号:</form:label></div>
-                                <div class="col-md-3"><form:input path="num" class="validate[maxSize[5]]"></form:input></div>
+                                <div class="col-md-3"><form:input path="num" class="validate[maxSize[50]]"></form:input></div>
                                 <div class="col-md-1"><form:label path="categoryCode">分类:</form:label></div>
                                 <div class="col-md-3"><form:input path="categoryCode" readonly="true" class="validate[required,maxSize[50]]"></form:input></div>
                             </div>
@@ -225,8 +226,8 @@
                                 
                             </div>
                             <div class="row-form clearfix">
-                                <div class="col-md-1"><label for="department1">所属部门:</label></div>
-                                <div class="col-md-3"><input name="department1" type="text" readonly="readonly"/></div>
+                                <div class="col-md-1"><form:label path="departmentName">所属部门:</form:label></div>
+                                <div class="col-md-3"><form:input path="departmentName" type="text" readonly="readonly"/></div>
                                 <div class="col-md-1"><form:label path="userInMaintenance">责任人:</form:label></div>
                                 <div class="col-md-3"><form:select path="userInMaintenance" items="${users }" itemLabel="name" itemValue="username" cssStyle="width:100%"></form:select></div>
                                 <div class="col-md-1"><form:label path="purpose">设备用途:</form:label></div>
@@ -238,7 +239,7 @@
 				                </div>
 				                <div class="col-md-3">
 				                <div class="input-group date form_date " data-date="" data-date-format="yyyy-mm-dd" data-link-field="serviceStartTime" data-link-format="yyyy-mm-dd">
-				                    <input class="form-control" type="text" value="" readonly>
+				                    <input class="form-control" type="text" value="${ci.serviceStartTime }" readonly>
 				                    <span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
 									<span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
 				                </div>
@@ -249,7 +250,7 @@
 				                </div>
 				                <div class="col-md-3">
 				                <div class="input-group date form_date " data-date="" data-date-format="yyyy-mm-dd" data-link-field="expirationTime" data-link-format="yyyy-mm-dd">
-				                    <input class="form-control" type="text" value="" readonly>
+				                    <input class="form-control" type="text" value="${ci.expirationTime }" readonly>
 				                    <span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
 									<span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
 				                </div>
@@ -264,7 +265,7 @@
                                 <div class="col-md-1"><form:label path="createdTime">购置日期:</form:label></div>
                                 <div class="col-md-3">
                                 <div class="input-group date form_date" data-date="" data-date-format="yyyy-mm-dd" data-link-field="createdTime" data-link-format="yyyy-mm-dd">
-				                    <input class="form-control" type="text" value="" readonly>
+				                    <input class="form-control" type="text" value="${ci.createdTime }" readonly>
 				                    <span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
 									<span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
 				                </div>

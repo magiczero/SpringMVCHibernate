@@ -154,6 +154,17 @@
 		                        <div class="col-md-10"><input name="category" id="category" type="text"></div>
 		                	</div>
 		                	<div class="row-form clearfix">
+		                    	<div class="col-md-2">所属类别</div>
+		                        <div class="col-md-10">
+									<select name="type">
+									<option value="1">信息系统</option>
+									<option value="2">信息设备</option>
+									<option value="3">存储设备</option>
+									<option value="4">安全保密产品</option>
+									</select>
+								</div>
+		                	</div>
+		                	<div class="row-form clearfix">
 		                    	<div class="col-md-2">选择字段</div>
 		                        <div class="col-md-10">
 		                        	<select multiple class="multiselect" id="sel_fields" name="sel_fields">

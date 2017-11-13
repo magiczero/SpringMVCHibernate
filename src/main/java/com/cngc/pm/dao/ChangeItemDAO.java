@@ -10,4 +10,5 @@ public interface ChangeItemDAO extends GenericDAO<ChangeItem,Long>{
 
 	SearchResult<ChangeItem> getByCi(Long id);
 	SearchResult<ChangeItem> getByCi(List<Long> ids);
+	List<ChangeItem> getByChangeId(Long id);
 }

@@ -58,6 +58,7 @@
         	var table = $("#eventTable").dataTable({
             	"oLanguage": {"sUrl": "${contextPath}/resources/json/Chinese.json"},
      			"bProcessing": false, // 是否显示取数据时的那个等待提示
+     			"bAutoWidth": true,                   //是否启用自动适应列宽
     		    "bServerSide": true,//这个用来指明是通过服务端来取数据
                 "sAjaxSource": "${contextPath}/maintain-record/maintainrecord-list-with-table",//这个是请求的地址
                 "fnServerData": retrieveData, // 获取数据的处理函数
@@ -114,7 +115,7 @@
                                { "mData" : 'type' },
                                { "mData" : 'maintainTime' },
                                { "mData" : 'addIn' },
-                               { "mData" : 'circs' },
+                               { "mData" : 'circs' ,"sWidth": "120px"},
                                { "mData" : 'executorName' }, 
                                { "mData" : 'escort' }, 
                                { "mData" : 'attachs' }, 
@@ -199,7 +200,7 @@
                                 <li>
                                     <a href="${contextPath }/maintain-record/add" class="isw-plus tipb" title="创建新记录"></a>
                                 </li>                            
-                                <li><a href="#myModal" data-toggle="modal" class="isw-zoom tipb" title="创建新记录"></a></li>
+                                <li><a href="#myModal" data-toggle="modal" class="isw-zoom tipb" title="搜索"></a></li>
                             </ul>
                         </div>
                         <div class="block-fluid table-sorting clearfix">
@@ -211,11 +212,11 @@
 										<th width="100px">维护类型</th>
 										<th width="130px">维护时间</th>
 										<th width="130px">外接设备情况</th>
-										<th>执行情况</th>
+										<th width="200px">执行情况</th>
 										<th width="80px">执行人</th>
 										<th width="100px">陪同人</th>
 										<th width="100px">文件</th>
-										<th width="70px">备注</th>
+										<th >备注</th>
 										<sec:authorize access="hasRole('WK_LEADER')"><th>删除</th></sec:authorize>
 									</tr>
                                 </thead>

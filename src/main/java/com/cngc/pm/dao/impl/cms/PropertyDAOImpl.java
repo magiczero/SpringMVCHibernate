@@ -89,4 +89,16 @@ public class PropertyDAOImpl extends BaseDAOImpl<Property, Long> implements Prop
 		
 		return this.searchAndCount(search);
 	}
+
+	@Override
+	public String getPropertyNameByPropertyId(String propertyId) {
+		// TODO Auto-generated method stub
+		Search search = new Search(Property.class);
+		
+		search.addFilterEqual("propertyId", propertyId);
+		
+		Property property = this.searchUnique(search);
+		
+		return property.getPropertyName();
+	}
 }

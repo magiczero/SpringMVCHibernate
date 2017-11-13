@@ -26,4 +26,6 @@ public interface PropertyDAO extends GenericDAO<Property, Long> {
 	
 	List<Property> getFields();
 	SearchResult<Property> getByPropertyIds(String propertyIds);
+	
+	String getPropertyNameByPropertyId(String propertyId);
 }

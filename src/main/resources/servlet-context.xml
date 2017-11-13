@@ -47,6 +47,7 @@ xmlns:context="http://www.springframework.org/schema/context"
 			<mapping path="/group/**" />
 			<mapping path="/system/**" />
 			<mapping path="/overtime/**"/>
+			<mapping path="/account-life-cycle/**"/>
 			<beans:bean class="com.cngc.pm.interceptor.MyInterceptor" />
 		</interceptor>
 	</interceptors>

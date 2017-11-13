@@ -154,11 +154,11 @@ public class ServiceTest {
     	//personDao.save(person);
     	
     	System.out.println(person);
-    	
-    	person.setCountry("japan");
-    	person.setName("xx");
-    	
-    	personService.addPerson(person);
+//    	
+//    	person.setCountry("japan");
+//    	person.setName("xx");
+//    	
+//    	personService.addPerson(person);
     	//personDao.save(person);
     	
 //    	AuditReader reader = AuditReaderFactory.get(personDao.getSession());

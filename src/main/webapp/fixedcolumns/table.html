@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html>
+<head>        
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+<link href="/PmSys/resources/css/icons.css" rel="stylesheet" type="text/css" />
+    <link href="/PmSys/resources/css/bootstrap.css" rel="stylesheet" type="text/css" />
+    <link href="/PmSys/resources/css/ui.css" rel="stylesheet" type="text/css" />
+    <link href="/PmSys/resources/css/pnotify.css" rel="stylesheet" type="text/css" />
+    <link href="/PmSys/resources/css/stylesheet.css" rel="stylesheet" type="text/css" />
+    <link href="/PmSys/resources/css/styling.css" rel="stylesheet" type="text/css" />
+    <link href="/PmSys/resources/css/validation.css" rel="stylesheet" type="text/css" />
+    <link href="/PmSys/resources/css/mycss.css" rel="stylesheet" type="text/css" />
+   	<link href="jquery.dataTables.css" rel="stylesheet" type="text/css" />
+<link href="dataTables.fixedColumns.css" rel="stylesheet" type="text/css" />
+    <link href='/PmSys/resources/js/plugins/jstree/jquery.treeview.css' rel="stylesheet" type="text/css" />
+    <link href="/PmSys/resources/css/uploadify.css" rel="stylesheet" type="text/css" />
+
+	<script type='text/javascript' src='jquery-1.10.2.min.js'></script>
+<script type='text/javascript' src='jquery.dataTables.js'></script>
+<script type='text/javascript' src='dataTables.fixedColumns.min.js'></script>
+
+<script type="text/javascript">
+  
+            $(document).ready(function () {
+			var datatables_options = {
+    "bAutoWidth": true,
+    "sDom": '<"top"i>rt<"bottom"flp><"clear">',           
+    "bPaginate": false,   
+    "sPaginationType": "full_numbers", 
+    "iDisplayLength": 10, 
+    "bSort": true, 
+    "bFilter": false, 
+    "aaSorting": [], 
+    "bInfo": false, 
+    "bStateSave": false, 
+    "iCookieDuration": 0, 
+    "bScrollAutoCss": true, 
+    "bProcessing": true, 
+    "bJQueryUI": false,
+    "bServerSide": true,//这个用来指明是通过服务端来取数据
+    "sAjaxSource": '/PmSys/cms/ci/list-by-category?t=235',//这个是请求的地址
+    "fnServerData": retrieveData, // 获取数据的处理函数
+    "fnServerParams": function (aoData) {  //查询条件
+        aoData.push(
+        		{ "name": "code", "value": 0 }
+            );
+    },
+    "aoColumnDefs": [ {
+        "aTargets": [ 0 ],
+        "mData": "download_link",
+        "mRender": function ( data, type, full ) {
+          return '<a href="/cms/ci/detail/'+full.id+'">'+data+'</a>';
+        }
+      },
+      {
+          "aTargets": [ 8 ],
+          "mRender": function ( data, type, full ) {
+          	if(data==null)
+          		return "";
+          	else
+            		return (data.split(" "))[0];
+          }
+        },
+      	{
+            "aTargets": [ 13 ],
+            "mData": "download_link",
+            "mRender": function ( data, type, full ) {
+            	
+            	if(data.length>0){
+            		for (var k = 0, length = data.length; k < length; k++) {
+            			return '<a href="/attachment/download/'+data[k].id+'">'+data[k].name+'</a><br/>';
+            		}
+            	}else
+            		return "";
+            }
+          },
+      {
+          "aTargets": [ 14 ],
+          "mData": "download_link",
+          "mRender": function ( data, type, full ) {
+            return '<a href="/cms/ci/addproperty/'+full.id+'">属性</a>&nbsp;&nbsp;<a href="#" onclick="del('+full.id+');">删除</a>';
+          }
+        }],
+    "aoColumns" : [
+                   { "mData" : 'name' }, 
+                   { "mData" : 'num' }, 
+                   { "mData" : 'categoryName' }, 
+                   { "mData" : 'producer' }, 
+                   { "mData" : 'model' }, 
+                   { "mData" : 'departmentName' }, 
+                   { "mData" : 'userInMaintenanceName' }, 
+                   { "mData" : 'serial' }, 
+                   { "mData" : 'createdTime' }, 
+                   { "mData" : 'expirationTime' }, 
+                   { "mData" : 'serviceStartTime' }, 
+                   { "mData" : 'purpose' }, 
+                   { "mData" : 'statusName' }, 
+                   { "mData" : 'attachs' },
+                   { "mData" : 'id' }
+                     ]
+};
+
+datatables_options["sScrollY"] = "450px";
+datatables_options["sScrollX"] = "100%";
+datatables_options["bScrollCollapse"] = true;
+
+// add this
+datatables_options["sScrollXInner"] = '150%';
+//
+                   
+var table = $('#example').DataTable(datatables_options);
+new $.fn.dataTable.FixedColumns(table);
+});
+            
+            function retrieveData( sSource111,aoData111, fnCallback111) {
+    			$.ajax({
+    				url : sSource111,//这个就是请求地址对应sAjaxSource
+    				data : {"aoData":JSON.stringify(aoData111)},//这个是把datatable的一些基本数据传给后台,比如起始位置,每页显示的行数
+    				type : 'get',
+    				dataType : 'json',
+    				async : false,
+    				success : function(result) {
+    					fnCallback111(result);//把返回的数据传给这个方法就可以了,datatable会自动绑定数据的
+    					
+    				},
+    				error : function(msg) {
+    				}
+    			});
+    		}
+</script>
+</head>
+<body>
+<table id="example" class="stripe row-border order-column" cellspacing="0" width="100%">
+                <thead>
+                    <tr>
+										<th><div>设备名称</div></th>
+										<th><div>设备编号</div></th>
+										<th>分类</th>
+										<th>生产厂商/品牌</th>
+										<th>型号/版本号</th>
+										<th>所属部门</th>
+										<th>责任人</th>
+										<th>出厂编号/序列号</th>
+										<th >购置时间</th>
+										<th >维保截止时间</th>
+										<th >启用时间</th>
+										<th >设备用途</th>
+										<th >使用情况</th>
+										<th >文件</th>
+										<th >操作</th>
+									</tr>
+                </thead>
+
+                <tbody>
+                </tbody>
+            </table>
+</body>
+</html>

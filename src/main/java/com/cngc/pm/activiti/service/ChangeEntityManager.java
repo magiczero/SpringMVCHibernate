@@ -16,10 +16,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.cngc.pm.dao.ChangeDAO;
+import com.cngc.pm.dao.MaintainRecordDAO;
 import com.cngc.pm.dao.cms.CiDAO;
 import com.cngc.pm.dao.cms.PropertyDAO;
 import com.cngc.pm.model.Change;
 import com.cngc.pm.model.ChangeItem;
+import com.cngc.pm.model.MaintainRecord;
 import com.cngc.pm.model.cms.Ci;
 import com.cngc.pm.model.cms.Property;
 import com.cngc.utils.Common;
@@ -39,6 +41,8 @@ public class ChangeEntityManager {
 	private CiDAO ciDao;
 	@Autowired
 	private PropertyDAO propertyDao;
+	@Autowired
+	private MaintainRecordDAO maintainRecordDao;
     
 	@Transactional
 	public Change getChange(DelegateExecution execution){
@@ -54,12 +58,13 @@ public class ChangeEntityManager {
 	@Transactional
 	public boolean setChangeStatus(DelegateExecution execution,String status){
 		Change change = (Change)execution.getVariable("change");
-		change.setStatus( status );
+		Change newChange = changeDao.find(change.getId());
+		newChange.setStatus( status );
 		if(execution.getCurrentActivityName()!=null)
 		{
 			// 按流程步骤运行至结束
 			if(execution.getCurrentActivityName().equals("End"))
-				change.setEndbyuser(true);
+				newChange.setEndbyuser(true);
 		}
 		if( status.equals(PropertyFileUtil.getStringValue("syscode.change.status.finished")) )
 		{
@@ -100,7 +105,18 @@ public class ChangeEntityManager {
 					}
 					ci.setPropertiesData( mapper.writeValueAsString(propertymap) );
 					ciDao.save(ci);
+					//同时写入工作记录
+					MaintainRecord mr = new MaintainRecord();
+					mr.setEquipId(ci.getId().toString());
+					mr.setEquipName(ci.getName());
+					mr.setEquipNum(ci.getNum());
+					mr.setExecutor(newChange.getApplyUser());
+					mr.setMaintainTime(newChange.getApplyTime());
+					mr.setType(1);
+					mr.setRole(1);
+					mr.setCircs("变更前内容为："+item.getOldValue()+"，变更后内容为："+item.getNewValue());//执行情况
 					
+					maintainRecordDao.save(mr);
 				} catch (JsonParseException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -113,11 +129,12 @@ public class ChangeEntityManager {
 				}
 				
 			}
-			change.setEndTime(new Date());
+			newChange.setEndTime(new Date());
 		}
 		//entityManager.persist(change);
 		
-		changeDao.save(change);
+		changeDao.save(newChange);
+		changeDao.flush();
 		return true;
 	} 
 }

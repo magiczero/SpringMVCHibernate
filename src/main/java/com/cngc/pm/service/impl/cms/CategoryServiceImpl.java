@@ -43,7 +43,7 @@ public class CategoryServiceImpl implements CategoryService {
 	}
 
 	@Override
-	@Transactional
+	@Transactional(readOnly=true)
 	public List<Category> getAll() {
 		// return categoryDao.findAll();
 		return categoryDao.getCategoryOrderByCode();
@@ -150,6 +150,18 @@ public class CategoryServiceImpl implements CategoryService {
 		sjson = "[" + sjson + "]";
 
 		return sjson;
+	}
+
+	@Override
+	@Transactional(readOnly=true)
+	public List<Category> getChildListByParent(String code) {
+		// TODO Auto-generated method stub
+		Search search = new Search(Category.class);
+		
+		search.addFilterLike("categoryCode", code+"%");
+		search.addFilterNotEqual("categoryCode", code);
+		
+		return categoryDao.search(search);
 	}
 
 }

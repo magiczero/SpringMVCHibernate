@@ -39,6 +39,7 @@ xmlns:context="http://www.springframework.org/schema/context"
 			<mvc:mapping path="/leadertask/**" />
 			<mvc:mapping path="/group/**" />
 			<mvc:mapping path="/system/**" />
+			<mvc:mapping path="/computer/**" />
 			<bean class="com.cngc.pm.interceptor.MyInterceptor"></bean>
 		</mvc:interceptor>
 	</mvc:interceptors>

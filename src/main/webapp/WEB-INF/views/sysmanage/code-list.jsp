@@ -211,7 +211,42 @@
                                 <li><a href="#" class="lnk_type" title="SECJOB_TYPE"> 三员工作类型</a><span class="arrow"></span></li>
                                 <li><a href="#" class="lnk_type" title="NOTICE_STATUS"> 运维公告状态</a><span class="arrow"></span></li>
                                 </ul>                                                
-                            </div>                   
+                            </div>  
+                            <h3>终端检查管理</h3>
+                            <div class="active">
+                                <ul>
+                                <li><a href="#" class="lnk_type" title="INSPECTIONTASK_STATUS"> 检查任务状态</a><span class="arrow"></span></li>
+                                <li><a href="#" class="lnk_type" title="COMPUTERINFO"> 主机</a><span class="arrow"></span></li>
+                                <li><a href="#" class="lnk_type" title="NETINFO"> 网络适配器</a><span class="arrow"></span></li>
+                                <li><a href="#" class="lnk_type" title="DISK"> 硬盘</a><span class="arrow"></span></li>
+                                <li><a href="#" class="lnk_type" title="DISKPARTITIONINFO"> 磁盘分区</a><span class="arrow"></span></li>
+                                <li><a href="#" class="lnk_type" title="OSINFO"> 操作系统</a><span class="arrow"></span></li>
+                                <li><a href="#" class="lnk_type" title="USERINFO"> 身份鉴别</a><span class="arrow"></span></li>
+                                <li><a href="#" class="lnk_type" title="DEVICEINFO"> 硬件设备</a><span class="arrow"></span></li>
+                                <li><a href="#" class="lnk_type" title="USBDEVICE"> USB设备</a><span class="arrow"></span></li>
+                                <li><a href="#" class="lnk_type" title="USBSTORAGE"> USB存储设备</a><span class="arrow"></span></li>
+                                <li><a href="#" class="lnk_type" title="IEHISTORY"> 上网记录</a><span class="arrow"></span></li>
+                                <li><a href="#" class="lnk_type" title="BROWSERHISTORY"> 浏览器记录</a><span class="arrow"></span></li>
+                                <li><a href="#" class="lnk_type" title="IECOOKIE"> Cookie记录</a><span class="arrow"></span></li>
+                                <li><a href="#" class="lnk_type" title="IECACHE"> 缓存记录</a><span class="arrow"></span></li>
+                                <li><a href="#" class="lnk_type" title="WEBMAIL"> WEB邮箱登录</a><span class="arrow"></span></li>
+                                <li><a href="#" class="lnk_type" title="INTERNET"> 终端外联</a><span class="arrow"></span></li>
+                                <li><a href="#" class="lnk_type" title="INSTALLEDSOFTWARE"> 系统软件</a><span class="arrow"></span></li>
+                                <li><a href="#" class="lnk_type" title="MAILAPP"> 邮件客户端</a><span class="arrow"></span></li>
+                                <li><a href="#" class="lnk_type" title="EXPLORERRECENT"> 文件痕迹</a><span class="arrow"></span></li>
+                                <li><a href="#" class="lnk_type" title="POWERON"> 开关机记录</a><span class="arrow"></span></li>
+                                <li><a href="#" class="lnk_type" title="NETSHAREINFO"> 系统共享</a><span class="arrow"></span></li>
+                                <li><a href="#" class="lnk_type" title="WIRELESS"> 无线通信模块</a><span class="arrow"></span></li>
+                                <li><a href="#" class="lnk_type" title="SYSTEMPATCH"> 系统补丁</a><span class="arrow"></span></li>
+                                <li><a href="#" class="lnk_type" title="PROCESSINFO"> 系统进程信息</a><span class="arrow"></span></li>
+                                <li><a href="#" class="lnk_type" title="ACCOUNT"> 账户安全配置</a><span class="arrow"></span></li>
+                                <li><a href="#" class="lnk_type" title="POLICYINFO"> 策略</a><span class="arrow"></span></li>
+                                <li><a href="#" class="lnk_type" title="AUDIT"> 安全审计配置</a><span class="arrow"></span></li>
+                                <li><a href="#" class="lnk_type" title="PRIVILEGE"> 账户权限配置</a><span class="arrow"></span></li>
+                                <li><a href="#" class="lnk_type" title="SERVICEINFO"> 系统服务信息</a><span class="arrow"></span></li>
+                                <li><a href="#" class="lnk_type" title="PORTSINFO"> 端口信息</a><span class="arrow"></span></li>
+                                </ul>                                                
+                            </div>                  
                         </div>
                 	</div>
                     <div class="col-md-9">                    

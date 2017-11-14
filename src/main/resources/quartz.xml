@@ -17,6 +17,7 @@
 	<bean id="virusUpdateJob" class="com.cngc.pm.job.VirusUpdateJob"></bean>
 	<bean id="leaderTaskJob" class="com.cngc.pm.job.LeaderTaskJob"></bean>
 	<bean id="auditJob" class="com.cngc.pm.job.AuditJob"></bean>
+	<bean id="analyseJob" class="com.cngc.pm.job.ComputerAnalyseJob"></bean>
 	<!-- 定义调用对象和调用对象的方法 -->
 	<bean id="inspectiontask" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
 		<!-- 调用的类 -->
@@ -58,6 +59,16 @@
 			<value>startAudit</value>
 		</property>
 	</bean>
+	<bean id="analyseTask" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<!-- 调用的类 -->
+		<property name="targetObject">
+			<ref bean="analyseJob" />
+		</property>
+		<!-- 调用类中的方法 -->
+		<property name="targetMethod">
+			<value>startAnalyse</value>
+		</property>
+	</bean>
 	<!-- 定义触发时间 -->
 	<bean id="inspectionTime" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
 		<property name="jobDetail">
@@ -95,6 +106,15 @@
 			<value>0 15 8 1 1/1 ? *</value>
 		</property>
 	</bean>
+	<bean id="analyseTime" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+		<property name="jobDetail">
+			<ref bean="analyseTask" />
+		</property>
+		<!-- cron表达式 -->
+		<property name="cronExpression">
+			<value>0 */5 * * * ?</value>
+		</property>
+	</bean>
 	<!-- 总管理类 如果将lazy-init='false'那么容器启动就会执行调度程序 -->
 	<bean id="startQuertz" lazy-init="false" autowire="no"
 		class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
@@ -104,6 +124,7 @@
 				<ref bean="virusUpdateTime" />
 				<ref bean="leaderTaskTime" />
 				<ref bean="auditTime" />
+				<ref bean="analyseTime" />
 			</list>
 		</property>
 	</bean>

@@ -40,7 +40,30 @@
 			<!-- <li><a href="${contextPath }/knowledge/search"> <span class="glyphicon glyphicon-search"></span><span class="text">知识库</span>
 			</a></li> -->
 		</ul>
-	</li><%--
+	</li>
+	<li id="node_0" class="openable"><a href="#"> <span class="isw-ok"></span><span class="text">终端合规性管理</span></a>
+		<ul>
+			<li><a href="${contextPath }/computer/task/list"> <span class="glyphicon glyphicon-ok"></span><span class="text">合规性检查</span>
+			</a></li>
+			<li><a href="${contextPath }/computer/usbalarm/list/USBALARM"> <span class="glyphicon glyphicon-volume-down"></span><span class="text">终端USB连接报警</span>
+			</a></li>
+			<li><a href="${contextPath }/computer/list"> <span class="glyphicon glyphicon-user"></span><span class="text">用户终端管理</span>
+			</a></li>
+		</ul>
+	</li>
+	<li id="node_0" class="openable"><a href="#"> <span class="isw-settings"></span><span class="text">终端合规性参数设置</span></a>
+		<ul>
+			<li><a href="${contextPath }/computer/inspectionitem/list"> <span class="glyphicon glyphicon-tag"></span><span class="text">检查项</span>
+			</a></li>
+			<li><a href="${contextPath }/computer/inspectiontarget/list"> <span class="glyphicon glyphicon-tags"></span><span class="text">检查指标集</span>
+			</a></li>
+			<li><a href="${contextPath }/computer/parameter"> <span class="glyphicon glyphicon-wrench"></span><span class="text">终端代理参数</span>
+			</a></li>
+			<li><a href="${contextPath }/operate/rule/list"> <span class="glyphicon glyphicon-list"></span><span class="text">合规性规则</span>
+			</a></li>
+		</ul>
+	</li>
+	<%--
 	<c:forEach items="${menuMoudle }" var="map">
 		<li id="node_${map.key.id }" class="openable"><a href="${map.key.url }"> <span class="${map.key.styleClass }"></span><span class="text">${map.key.name }</span>	</a>
 		<ul>

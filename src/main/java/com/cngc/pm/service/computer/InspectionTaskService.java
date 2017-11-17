@@ -10,7 +10,7 @@ import com.cngc.pm.model.computer.InspectionTask;
 
 public interface InspectionTaskService {
 
-	void save(InspectionTask inspectionTask);
+	void save(InspectionTask inspectionTask,String userid) throws Exception;
 	boolean delById(Long taskId);
 	InspectionTask getById(Long taskId);
 	List<InspectionTask> getAll();

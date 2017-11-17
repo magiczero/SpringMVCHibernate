@@ -245,6 +245,7 @@
                                 <li><a href="#" class="lnk_type" title="PRIVILEGE"> 账户权限配置</a><span class="arrow"></span></li>
                                 <li><a href="#" class="lnk_type" title="SERVICEINFO"> 系统服务信息</a><span class="arrow"></span></li>
                                 <li><a href="#" class="lnk_type" title="PORTSINFO"> 端口信息</a><span class="arrow"></span></li>
+                                <li><a href="#" class="lnk_type" title="USBALARM"> USB报警</a><span class="arrow"></span></li>
                                 </ul>                                                
                             </div>                  
                         </div>

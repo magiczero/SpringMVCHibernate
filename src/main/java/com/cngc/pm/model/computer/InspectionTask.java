@@ -1,5 +1,6 @@
 package com.cngc.pm.model.computer;
 
+import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -23,8 +24,10 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 @Entity
 @Table(name = "cmp_task")
-public class InspectionTask {
+public class InspectionTask implements Serializable{
 
+	private static final long serialVersionUID = -2423333474814770683L;
+	
 	private Long id;
 	private String taskName;
 	private String taskInfo;
@@ -33,6 +36,8 @@ public class InspectionTask {
 	private Timestamp updateDate;
 	private Set<InspectionItem> items = new LinkedHashSet<InspectionItem>();
 	private Set<Computer> computers = new LinkedHashSet<Computer>();
+	private boolean publish;
+	private String processInstanceId;
 	
 	@Id
 	@Column(name = "id")
@@ -99,4 +104,19 @@ public class InspectionTask {
 	public void setComputers(Set<Computer> computers) {
 		this.computers = computers;
 	}
+	@Column(name="publish")
+	public boolean isPublish() {
+		return publish;
+	}
+	public void setPublish(boolean publish) {
+		this.publish = publish;
+	}
+	@Column(name="process_instance_id")
+	public String getProcessInstanceId() {
+		return processInstanceId;
+	}
+	public void setProcessInstanceId(String processInstanceId) {
+		this.processInstanceId = processInstanceId;
+	}
+	
 }

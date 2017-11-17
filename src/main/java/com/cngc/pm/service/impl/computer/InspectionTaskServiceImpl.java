@@ -1,12 +1,19 @@
 package com.cngc.pm.service.impl.computer;
 
 import java.sql.Timestamp;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
+import org.activiti.engine.FormService;
+import org.activiti.engine.IdentityService;
+import org.activiti.engine.RepositoryService;
+import org.activiti.engine.repository.ProcessDefinition;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.cngc.pm.dao.computer.ComputerDAO;
@@ -18,6 +25,7 @@ import com.cngc.pm.model.computer.ComputerTask;
 import com.cngc.pm.model.computer.InspectionData;
 import com.cngc.pm.model.computer.InspectionTask;
 import com.cngc.pm.service.computer.InspectionTaskService;
+import com.cngc.utils.PropertyFileUtil;
 
 @Service
 public class InspectionTaskServiceImpl implements InspectionTaskService{
@@ -30,12 +38,27 @@ public class InspectionTaskServiceImpl implements InspectionTaskService{
 	private ComputerDAO computerDao;
 	@Autowired
 	private InspectionDataDAO inspectionDataDao;
+	@Autowired
+	private FormService formService;
+	@Autowired
+	private RepositoryService repositoryService;
+	@Autowired
+	private IdentityService identityService;
 	
 	@Override
-	@Transactional
-	public void save(InspectionTask inspectionTask) {
+	@Transactional(propagation = Propagation.REQUIRED, readOnly=false)
+	public void save(InspectionTask inspectionTask,String userid) throws Exception {
 		// TODO 自动生成的方法存根
 		taskDao.save(inspectionTask);
+		taskDao.flush();
+		ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery()
+				.processDefinitionKey(PropertyFileUtil.getStringValue("workflow.processkey.computerinspection")).active()
+				.latestVersion().singleResult();
+		if (processDefinition == null) throw new Exception("未找到相应的事件流程");
+		Map<String, String> variables = new HashMap<String, String>();
+		variables.put("id", String.valueOf(inspectionTask.getId()));
+		identityService.setAuthenticatedUserId(userid);
+		formService.submitStartFormData(processDefinition.getId(), variables);
 	}
 
 	@Override

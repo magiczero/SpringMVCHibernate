@@ -57,7 +57,7 @@
      			},"aoColumns": [ { "bSortable": false }, null, null, {"bSortable":false}]});
                 
                 $(".header").load("${contextPath}/header?t="+pm_random());
-                $(".menu").load("${contextPath}/menu?t="+pm_random(), function () { $(".navigation > li:eq(1)").addClass("active"); });
+                $(".menu").load("${contextPath}/menu?t="+pm_random(), function () { $(".navigation > li:eq(2)").addClass("active"); });
                 $(".breadLine .buttons").load("${contextPath}/contentbuttons?t="+pm_random());
                 
               	//表单验证

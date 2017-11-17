@@ -81,7 +81,7 @@
          			"sUrl": "${contextPath}/resources/json/Chinese.json"
      			}});
             $(".header").load("${contextPath}/header?t="+pm_random());
-            $(".menu").load("${contextPath}/menu?t="+pm_random(), function () { $(".navigation > li:eq(0)").addClass("active"); });
+            $(".menu").load("${contextPath}/menu?t="+pm_random(), function () { $(".navigation > li:eq(1)").addClass("active"); });
             $(".breadLine .buttons").load("${contextPath}/contentbuttons?t="+pm_random());
           
             $(".confirm").bind("click",function(){
@@ -286,7 +286,7 @@
 												<span class='label label-success'>合规</span>
 												</c:if>
 												<c:if test="${!reportmap.get(computerTask.id).get('PORTSINFO')}">
-												<a href="#" tid="${computerTask.task.id }/0/PORTSINFO" class="lnk_data"><span class='label label-danger'>不合规</span></a>
+												<a href="#" tid="${computerTask.id }/0/PORTSINFO" class="lnk_data"><span class='label label-danger'>不合规</span></a>
 												</c:if>
 											</c:if>
 										</td>

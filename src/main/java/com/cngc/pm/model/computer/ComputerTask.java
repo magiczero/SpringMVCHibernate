@@ -1,5 +1,7 @@
 package com.cngc.pm.model.computer;
 
+import java.io.Serializable;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -8,12 +10,17 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+
 import org.hibernate.annotations.Formula;
 
 @Entity
 @Table(name = "cmp_task_computer")  
-public class ComputerTask {
+public class ComputerTask implements Serializable{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -7911214288128983128L;
 	private Long id;
 	private Computer computer;
 	private InspectionTask task;

@@ -1,5 +1,7 @@
 package com.cngc.pm.model.computer;
 
+import java.io.Serializable;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -9,8 +11,12 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "cmp_inspection_data")
-public class InspectionData {
+public class InspectionData implements Serializable{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 4297861943557820665L;
 	private Long id;
 	private Long computerTaskId;
 	private String itemName;

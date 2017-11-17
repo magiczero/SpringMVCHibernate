@@ -10,7 +10,12 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
+import org.activiti.engine.FormService;
+import org.activiti.engine.RepositoryService;
+import org.activiti.engine.TaskService;
+import org.activiti.engine.task.Task;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -18,6 +23,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import com.cngc.pm.common.web.common.UserUtil;
 import com.cngc.pm.model.computer.Computer;
 import com.cngc.pm.model.computer.InspectionData;
 import com.cngc.pm.model.computer.InspectionItem;
@@ -28,6 +34,7 @@ import com.cngc.pm.service.computer.ComputerService;
 import com.cngc.pm.service.computer.InspectionItemService;
 import com.cngc.pm.service.computer.InspectionTargetService;
 import com.cngc.pm.service.computer.InspectionTaskService;
+import com.cngc.utils.PropertyFileUtil;
 
 @Controller
 @RequestMapping(value="/computer/task")
@@ -43,6 +50,14 @@ public class InspectionTaskController {
 	private InspectionTargetService targetService;
 	@Resource
 	private AnalyseService analyseService;
+	@Resource
+	private UserUtil userUtil;
+	@Resource
+	private RepositoryService repositoryService;
+	@Resource
+	private TaskService taskService;
+	@Resource
+	private FormService formService;
 	
 	@RequestMapping(value="/add")
 	public String add(Model model){
@@ -54,7 +69,8 @@ public class InspectionTaskController {
 	}
 	
 	@RequestMapping(value="/save",method = RequestMethod.POST)
-	public String save(@Valid @ModelAttribute("task") InspectionTask inspectionTask, HttpServletRequest request){
+	public String save(@Valid @ModelAttribute("task") InspectionTask inspectionTask, 
+			HttpServletRequest request,Authentication authentication)throws Exception{
 		String items = request.getParameter("form_items");
 		String computers = request.getParameter("form_computers");
 		String chkItem = request.getParameter("chkItem");
@@ -92,14 +108,39 @@ public class InspectionTaskController {
 		
 		inspectionTask.setCreateDate(new Timestamp(System.currentTimeMillis()));
 		inspectionTask.setUpdateDate(new Timestamp(System.currentTimeMillis()));
-		inspectionTaskService.save(inspectionTask);
+		inspectionTaskService.save(inspectionTask,userUtil.getUsernameByAuth(authentication));
 		
 		return "redirect:list";
 	}
 	
 	@RequestMapping(value="/list",method = RequestMethod.GET)
-	public String list(Model model){
+	public String list(Model model,Authentication authentication)throws Exception{
 		model.addAttribute("list", inspectionTaskService.getAll());
+		List<Task> tasks = null;
+		List<Task> mytasks = null;
+		Map<String, Task> taskmap = null;
+		Map<String, Task> mytaskmap = new HashMap<String, Task>();
+
+		// 我的任务
+		mytasks = taskService.createTaskQuery()
+				.processDefinitionKey(PropertyFileUtil.getStringValue("workflow.processkey.computerinspection"))
+				.taskCandidateOrAssigned(userUtil.getUsernameByAuth(authentication)).active().list();
+		for (Task task : mytasks)
+			mytaskmap.put(task.getProcessInstanceId(), task);
+
+		// 所有为未关闭的事件信息
+		//if (userUtil.IsLeader(authentication) || userUtil.IsServiceDesk(authentication) || userUtil.IsWorkflowManager(authentication) || userUtil.IsManager(authentication)) // 服务台、领导、流程管理者可查看所有事件任务信息
+		{
+			// 所有任务
+			tasks = taskService.createTaskQuery()
+					.processDefinitionKey(PropertyFileUtil.getStringValue("workflow.processkey.computerinspection")).active()
+					.list();
+			taskmap = new HashMap<String, Task>();
+			for (Task task : tasks)
+				taskmap.put(task.getProcessInstanceId(), task);
+		}
+		model.addAttribute("tasks", taskmap);
+		model.addAttribute("mytasks", mytaskmap);
 		return "computer/task-list";
 	}
 	

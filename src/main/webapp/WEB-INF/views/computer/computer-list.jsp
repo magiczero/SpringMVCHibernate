@@ -68,7 +68,7 @@
          			"sUrl": "${contextPath}/resources/json/Chinese.json"
      			},"aoColumns": [ { "bSortable": false },{ "bSortable": false }, null,null,null,null,null,null]});
             $(".header").load("${contextPath}/header?t="+pm_random());
-            $(".menu").load("${contextPath}/menu?t="+pm_random(), function () { $(".navigation > li:eq(0)").addClass("active"); });
+            $(".menu").load("${contextPath}/menu?t="+pm_random(), function () { $(".navigation > li:eq(1)").addClass("active"); });
             $(".breadLine .buttons").load("${contextPath}/contentbuttons?t="+pm_random());
             $("#mytree").treeview({collapsed:true}); 
             //alert(groupId);

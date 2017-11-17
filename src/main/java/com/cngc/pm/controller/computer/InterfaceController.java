@@ -27,6 +27,7 @@ import com.cngc.pm.model.computer.ComputerTask;
 import com.cngc.pm.model.computer.InspectionItem;
 import com.cngc.pm.model.computer.Parameter;
 import com.cngc.pm.service.GroupService;
+import com.cngc.pm.service.computer.AnalyseUSBService;
 import com.cngc.pm.service.computer.ComputerService;
 import com.cngc.pm.service.computer.InspectionTaskService;
 import com.cngc.pm.service.computer.ParameterService;
@@ -47,6 +48,8 @@ public class InterfaceController {
 	private InspectionTaskService inspectionTaskService;
 	@Resource
 	private ParameterService parameterService;
+	@Resource
+	private AnalyseUSBService analyseUSBService;
 	
 	private String RESPONSE_SUCCESS = "100";
 	private String RESPONSE_ERROR = "200";
@@ -110,7 +113,12 @@ public class InterfaceController {
 			File newFile = new File(storageDirectory + "/" + origFilename);
 			try {
 				mpf.transferTo(newFile);
-				inspectionTaskService.SetTaskReback(origFilename);
+				if(origFilename.indexOf("AU_")==0)
+				{	//USB报警
+					analyseUSBService.analyse(origFilename);
+				}
+				else
+					inspectionTaskService.SetTaskReback(origFilename);
 				
 				PrintWriter out = response.getWriter();
 				out.print(RESPONSE_SUCCESS + RESPONSE_SPLIT_CHAR);
@@ -205,6 +213,7 @@ public class InterfaceController {
 	public String GetTask(HttpServletRequest request,HttpServletResponse response){
 		
 		try {
+			request.getSession();
 			PrintWriter out = response.getWriter();
 			String userid = request.getParameter("userSN");
 			if(userid==null||userid.isEmpty())	//未获取终端标识id
@@ -226,7 +235,16 @@ public class InterfaceController {
 			computer.setLastRebackDate(new Timestamp(System.currentTimeMillis()));
 			computerService.save(computer);
 			List<ComputerTask> tasks = inspectionTaskService.getNewTaskByComputer(computer);
-			if(tasks.size()==0)	//未查询到检查任务
+			boolean btask = false;
+			for(ComputerTask t:tasks)
+			{
+				if(t.getTask().isPublish())
+				{
+					btask = true;
+					break;
+				}
+			}
+			if(tasks.size()==0||!btask)	//未查询到检查任务
 			{
 				out.print(RESPONSE_NULL + RESPONSE_SPLIT_CHAR);
 				out.flush();
@@ -275,7 +293,8 @@ public class InterfaceController {
 					out.print(RESPONSE_CONNECT_CHAR);
 				}
 				out.print(RESPONSE_SPLIT_CHAR);
-				out.print("1");	//是否提醒
+				//out.print("1");	//提醒
+				out.print("0");		//不提醒
 				out.print(RESPONSE_SPLIT_CHAR);
 				out.print(t.getTask().getTaskInfo());
 				//设置任务已接收
@@ -294,6 +313,7 @@ public class InterfaceController {
 	 */
 	public String GetPara(HttpServletRequest request,HttpServletResponse response){
 		try {
+			request.getSession();
 			PrintWriter out = response.getWriter();
 			//更新终端最后访问时间
 			String userid = request.getParameter("userSN");

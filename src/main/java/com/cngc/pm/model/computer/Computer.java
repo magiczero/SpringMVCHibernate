@@ -1,5 +1,6 @@
 package com.cngc.pm.model.computer;
 
+import java.io.Serializable;
 import java.sql.Timestamp;
 
 import javax.persistence.Column;
@@ -17,8 +18,12 @@ import com.cngc.pm.model.Group;
 
 @Entity
 @Table(name = "cmp_computer")
-public class Computer {
+public class Computer implements Serializable{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 6231808744259003568L;
 	private Long id;
 	private String userName;
 	private String diskSn;

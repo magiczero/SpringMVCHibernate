@@ -2,6 +2,10 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>    
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
+<%@page import="org.codehaus.jackson.map.ObjectMapper"%>
+<%@page import="java.util.*" %>
+<%@page import="com.cngc.pm.model.computer.UsbAlarm" %>
+<%@page import="com.cngc.pm.model.SysCode" %>
 <c:set var="contextPath" value="${pageContext.request.contextPath}"></c:set>
 <!DOCTYPE html>
 <html lang="en">
@@ -49,11 +53,12 @@
     <![endif]-->
     <script type="text/javascript">
     	var ctx="${contextPath}";
+    	var href="${contextPath }/analyse/view/${computerId}/${taskId }/${fields[0].type }";
         $(document).ready(function () {
             $("#eventTable").dataTable({
             	"oLanguage": {
          			"sUrl": "${contextPath}/resources/json/Chinese.json"
-     			},"aoColumns": [ { "bSortable": false }, null, null,null,null, {"bSortable":false}]});
+     			},"aaSorting":[[8,'desc']]});
             $(".header").load("${contextPath}/header?t="+pm_random());
             $(".menu").load("${contextPath}/menu?t="+pm_random(), function () { $(".navigation > li:eq(1)").addClass("active"); });
             $(".breadLine .buttons").load("${contextPath}/contentbuttons?t="+pm_random());
@@ -62,6 +67,8 @@
             	if(!confirm("确定要执行该操作?"))
                 	return false;
         	});
+            $( ".accordion" ).accordion({active: ($(".accordion a[href='"+href+"']").parent().parent().parent().index()-1)/2});
+           //alert($(".accordion a[href='"+href+"']").parent().parent().parent().index());
         });
     </script>
 </head>
@@ -83,7 +90,7 @@
                 <ul class="breadcrumb">
                     <li><a href="#">运维管理系统</a> <span class="divider">></span></li>
                     <li><a href="#">终端合规性管理</a> <span class="divider">></span></li>       
-                    <li class="active">合规性检查</li>
+                    <li class="active">终端USB连接报警</li>
                 </ul>
 
                 <ul class="buttons"></ul>
@@ -100,12 +107,9 @@
                     <div class="col-md-12">                    
                         <div class="head clearfix">
                             <div class="isw-grid"></div>
-                            <h1>检查任务终端列表</h1>  
+                            <h1>终端USB连接报警</h1>  
 
                             <ul class="buttons">    
-                            	<li>
-                                    <a href="${contextPath }/computer/task/list" role="button" data-toggle="modal" class="isw-left_circle tipb" title="返回"></a>
-                                </li>                     
                                 <li>
                                     <a href="#" class="isw-settings tipl" title="操作 "></a>
                                     <ul class="dd-list">
@@ -115,47 +119,38 @@
                             </ul>                             
                         </div>
                         <div class="block-fluid table-sorting clearfix">
-                            <table class="table" id="eventTable">
+                            <table class="table" id="eventTable" style="word-break:break-all">
                                 <thead>
                                 	<tr>
                                 		<th width="60px" class="tac">序号</th>
-										<th>终端名称</th>
-										<th width="150px">所在部门</th>
-										<th width="150px">状态</th>
-										<th width="80px">合规性</th>
-										<th width="120px">操作</th>
+                                		<th width="100px">终端</th>
+                                		<c:forEach items="${fields}" var="field">
+                                			<th>${field.codeName }</th>
+                                		</c:forEach>
+                                		<th width="80px">操作</th>
 									</tr>
                                 </thead>
                                 <tbody>
-                                	<c:forEach items="${list}" var="computerTask" varStatus="st">
+                                	<%
+                                		ObjectMapper mapper = new ObjectMapper();
+                                		List<UsbAlarm> list = (List<UsbAlarm>)request.getAttribute("datas");
+                                		List<SysCode> codes = (List<SysCode>)request.getAttribute("fields");
+                                		for(int i=0;i<list.size();i++){
+                                	%>
 									<tr>
-										<td class="tac">${st.index+1 }</td>
-										<td>${computerTask.computer.userName }</td>
-										<td>${computerTask.computer.group.groupName }</td>		
-										<td>${computerTask.statusName }</td>
-										<td>
-											<c:if test="${computerTask.status.equals('04') }">
-												<c:if test="${computerTask.compliance }">
-													<span class='label label-success'>合规</span>
-												</c:if>
-												<c:if test="${!computerTask.compliance }">
-													<span class='label label-danger'>不合规</span>
-												</c:if>
-											</c:if>
-											<c:if test="${!computerTask.status.equals('04') }">
-												<span class='label label-warning'>未知</span>
-											</c:if>
-										</td>							
-										<td>
-											<c:if test="${computerTask.status.equals('03') }">
-												<a href="${contextPath }/analyse/${computerTask.computer.id }/${computerTask.task.id}"><span class="glyphicon glyphicon-check"></span> 数据解析</a>&nbsp;&nbsp;&nbsp;&nbsp;
-										 	</c:if>
-										 	<c:if test="${computerTask.status.equals('04') }">
-										 		<a href="${contextPath }/analyse/view/${computerTask.computer.id }/${computerTask.task.id}/COMPUTERINFO"><span class="glyphicon glyphicon-check"></span> 查看详细数据</a>
-										 	</c:if>
-										</td>
+										<td class="tac"><%=i+1 %></td>
+										<td><%=list.get(i).getComputer().getUserName() %></td>
+										<%
+											Map<String,String> maps = mapper.readValue(list.get(i).getData(),Map.class);
+											for (SysCode code : codes) {
+										%>
+											<td><%=maps.get(code.getCode()) %></td>
+										<% 
+											}
+										%>
+										<td><a class="confirm" href="${contextPath}/computer/usbalarm/delete/<%=list.get(i).getId()%>"><span class="glyphicon glyphicon-remove"></span> 删除</a></td>
 									</tr>
-									</c:forEach>    
+									<% } %>
                                 </tbody>
                             </table>
                         </div>

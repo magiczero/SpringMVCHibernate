@@ -1,5 +1,6 @@
 package com.cngc.pm.model.computer;
 
+import java.io.Serializable;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -24,8 +25,12 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
  */
 @Entity
 @Table(name = "cmp_inspection_target")
-public class InspectionTarget {
+public class InspectionTarget implements Serializable{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 8004604057607947427L;
 	private Long targetId;
 	private String targetName;
 	

@@ -234,7 +234,7 @@
 											<c:if test="${empty mytask }">
 												&nbsp;<a onclick="viewLeadertask('${contextPath }/leadertask/view/${leaderTask.id}');"  href="#"><span class="glyphicon glyphicon-search"></span> 详情</a>
 											</c:if>
-											&nbsp;<a onclick="viewDetails();"  href="#"><span class="glyphicon glyphicon-search"></span> 详情1</a>
+											<%--&nbsp;<a onclick="viewDetails();"  href="#"><span class="glyphicon glyphicon-search"></span> 详情1</a> --%>
 										</td>
 									</tr>
 								</c:forEach>   

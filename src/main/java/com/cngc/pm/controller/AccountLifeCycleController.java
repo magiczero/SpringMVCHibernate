@@ -163,6 +163,28 @@ public class AccountLifeCycleController {
 			//ci.setCreatedTime(new Date());
 			ci.setLastUpdateTime(new Date());
 			ci.setLastUpdateUser(userUtil.getUsernameByAuth(authentication));
+			//属性初始化，都为空
+			String code = ci.getCategoryCode();
+			String tmpcode = code.substring(0,2);
+			Map<String,String> map = new LinkedHashMap<>();
+			while(tmpcode.length()<=code.length())
+			{
+				//根据code分级判断
+				Category category = categoryService.getByCode(tmpcode);
+				//
+				for(Property p : category.getProperties()) {
+					//htmlCodes.add(p.getPropertyName()+"-"+propertyService.analyzePropertyToHtml(p));
+					map.put(p.getPropertyId(), "");
+				}
+				
+				if(tmpcode.length()+2>code.length())
+					break;
+				tmpcode = code.substring(0,tmpcode.length()+2);
+			}
+			
+			ObjectMapper mapper = new ObjectMapper();
+			ci.setPropertiesData(mapper.writeValueAsString(map));
+			//--属性初始化完毕
 			
 			ciService.save(ci, getRemortIP(request));
 			

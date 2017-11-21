@@ -26,7 +26,6 @@ import com.cngc.pm.dao.computer.ComputerDAO;
 import com.cngc.pm.dao.computer.ComputerTaskDAO;
 import com.cngc.pm.dao.computer.InspectionDataDAO;
 import com.cngc.pm.dao.computer.InspectionTaskDAO;
-import com.cngc.pm.dao.computer.RsComputerInfoDAO;
 import com.cngc.pm.dao.opr.ComplianceRuleDAO;
 import com.cngc.pm.model.computer.Computer;
 import com.cngc.pm.model.computer.ComputerTask;
@@ -34,6 +33,8 @@ import com.cngc.pm.model.computer.InspectionData;
 import com.cngc.pm.model.computer.InspectionTask;
 import com.cngc.pm.model.opr.ComplianceRule;
 import com.cngc.pm.service.computer.AnalyseService;
+
+import static com.cngc.utils.Common._fileUploadPath;
 
 @Service
 public class AnalyseServiceImpl implements AnalyseService {
@@ -45,13 +46,9 @@ public class AnalyseServiceImpl implements AnalyseService {
 	@Autowired
 	private ComputerDAO computerDao;
 	@Autowired
-	private RsComputerInfoDAO computerInfoDao;
-	@Autowired
 	private InspectionDataDAO inspectionDataDao;
 	@Autowired
 	private ComplianceRuleDAO ruleDao;
-	
-	private String storageDirectory = "/Users/andy/Documents/workspace/attachment";
 	
 	/*
 	 * 解析检查结果数据
@@ -96,7 +93,7 @@ public class AnalyseServiceImpl implements AnalyseService {
 		// TODO 自动生成的方法存根
 		String outfilename = null;
 		try {  
-            ZipInputStream Zin=new ZipInputStream(new FileInputStream(storageDirectory + "/" + file));
+            ZipInputStream Zin=new ZipInputStream(new FileInputStream(_fileUploadPath + File.pathSeparator + file));
             BufferedInputStream Bin=new BufferedInputStream(Zin);    
             File Fout=null;  
             ZipEntry entry;  
@@ -105,7 +102,7 @@ public class AnalyseServiceImpl implements AnalyseService {
                 while((entry = Zin.getNextEntry())!=null && !entry.isDirectory()){
                 	if(!entry.getName().equals("1.chk"))
                 		continue;
-                	outfilename = storageDirectory + "/" + file.substring(0, file.indexOf('.'))+".chk";
+                	outfilename = _fileUploadPath + File.pathSeparator + file.substring(0, file.indexOf('.'))+".chk";
                     Fout=new File(outfilename);  
                     if(!Fout.exists()){  
                         (new File(Fout.getParent())).mkdirs();  

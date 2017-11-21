@@ -25,6 +25,8 @@ import com.cngc.pm.model.computer.Computer;
 import com.cngc.pm.model.computer.UsbAlarm;
 import com.cngc.pm.service.computer.AnalyseUSBService;
 
+import static com.cngc.utils.Common._fileUploadPath;
+
 @Service
 public class AnalyseUSBServiceImpl implements AnalyseUSBService{
 
@@ -35,7 +37,7 @@ public class AnalyseUSBServiceImpl implements AnalyseUSBService{
 	@Autowired
 	private MessageDAO messageDao;
 	
-	private String storageDirectory = "/Users/andy/Documents/workspace/attachment";
+//	private String storageDirectory = "/Users/andy/Documents/workspace/attachment";
 
 	@Override
 	public void analyse(String file) {
@@ -55,7 +57,7 @@ public class AnalyseUSBServiceImpl implements AnalyseUSBService{
 		// TODO 自动生成的方法存根
 		String outfilename = null;
 		try {  
-            ZipInputStream Zin=new ZipInputStream(new FileInputStream(storageDirectory + "/" + file));
+            ZipInputStream Zin=new ZipInputStream(new FileInputStream(_fileUploadPath + File.pathSeparator + file));
             BufferedInputStream Bin=new BufferedInputStream(Zin);    
             File Fout=null;  
             ZipEntry entry;  
@@ -64,7 +66,7 @@ public class AnalyseUSBServiceImpl implements AnalyseUSBService{
                 while((entry = Zin.getNextEntry())!=null && !entry.isDirectory()){
                 	if(!entry.getName().equals("1.chk"))
                 		continue;
-                	outfilename = storageDirectory + "/" + file.substring(0, file.indexOf('.'))+".chk";
+                	outfilename = _fileUploadPath + File.pathSeparator + file.substring(0, file.indexOf('.'))+".chk";
                     Fout=new File(outfilename);  
                     if(!Fout.exists()){  
                         (new File(Fout.getParent())).mkdirs();  

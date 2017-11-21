@@ -19,7 +19,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 
 public class Common {
-	public static final String _fileUploadPath = "D:/plupload/files/";
+	public static final String _fileUploadPath = "D:\\plupload\\files\\";
 	public static final String _strKey = "LmMGStGtOpF4xNyvYt54EQ==";
 	private static final int BUFFER_SIZE = 100 * 1024;
 

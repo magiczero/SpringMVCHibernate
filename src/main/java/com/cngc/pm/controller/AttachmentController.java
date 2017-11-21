@@ -135,7 +135,7 @@ public class AttachmentController {
 				if (!folder.exists())
 					folder.mkdirs();
 	
-				File newFile = new File(_fileUploadPath + File.separator + newFilename);
+				File newFile = new File(_fileUploadPath + newFilename);
 					//mpf.transferTo(newFile);
 					//加密
 				Cipher cipher = Cipher.getInstance("DES"); 

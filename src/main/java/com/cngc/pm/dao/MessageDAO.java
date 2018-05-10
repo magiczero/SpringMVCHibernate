@@ -47,5 +47,5 @@ public interface MessageDAO extends GenericDAO<Message, Long> {
 	 * @param href
 	 * @return
 	 */
-	boolean sendMessage(String fromUser, String toUser, String content, String href);
+	boolean sendMessage(String fromUser, String fromUsername, String toUser, String toUsername,String content, String href);
 }

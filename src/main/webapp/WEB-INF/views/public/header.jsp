@@ -59,3 +59,6 @@
     </li>                
 </ul>    
 <script type="text/javascript" src="${contextPath }/resources/js/mysettings.js"></script> 
+<%--<script type="text/javascript">
+$.pnotify({title: "注意：", text: "似懂非懂", delay:10000, opacity: .9, type:'error'});
+</script> --%>

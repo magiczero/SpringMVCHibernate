@@ -47,7 +47,7 @@ public class GroupController {
 	@RequestMapping(value = "/save", method = RequestMethod.POST)
 	public String save(@Valid @ModelAttribute Group group, BindingResult result,Model model) {
 		if(group.getId()!=null && group.getId()>0) { //修改
-			group.setParentGroup(groupService.getById(group.getId()).getParentGroup());
+			//group.setParentGroup(groupService.getById(group.getId()).getParentGroup());
 			groupService.saveGroup(group);
 		} else {
 			Long parentId = group.getParentGroup().getId();

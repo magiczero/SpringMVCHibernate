@@ -32,6 +32,8 @@ import com.cngc.pm.service.computer.ComputerService;
 import com.cngc.pm.service.computer.InspectionTaskService;
 import com.cngc.pm.service.computer.ParameterService;
 
+import static com.cngc.utils.Common._fileUploadPath;
+
 /**
  * @author andy
  * 终端合规性管理接口
@@ -56,7 +58,7 @@ public class InterfaceController {
 	private String RESPONSE_NULL = "224";
 	private String RESPONSE_SPLIT_CHAR = "|";
 	private String RESPONSE_CONNECT_CHAR = "&";
-	private String storageDirectory = "/Users/andy/Documents/workspace/attachment";
+	//private String storageDirectory = "/Users/andy/Documents/workspace/attachment";
 	
 	/*
 	 * 终端访问接口
@@ -106,11 +108,11 @@ public class InterfaceController {
 				throw new BusinessException("非法文件");
 			}
 
-			File folder = new File(storageDirectory);
+			File folder = new File(_fileUploadPath);
 			if (!folder.exists())
 				folder.mkdirs();
 
-			File newFile = new File(storageDirectory + "/" + origFilename);
+			File newFile = new File(_fileUploadPath + origFilename);
 			try {
 				mpf.transferTo(newFile);
 				if(origFilename.indexOf("AU_")==0)

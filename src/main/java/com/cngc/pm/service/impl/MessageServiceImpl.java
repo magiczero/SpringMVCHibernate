@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.cngc.pm.dao.MessageDAO;
 import com.cngc.pm.model.Message;
 import com.cngc.pm.service.MessageService;
+import com.googlecode.genericdao.search.Search;
 import com.googlecode.genericdao.search.SearchResult;
 
 @Service
@@ -92,8 +93,37 @@ public class MessageServiceImpl implements MessageService{
 	}
 	@Override
 	@Transactional
-	public boolean sendMessage(String fromUser, String toUser, String content, String href)
+	public boolean sendMessage(String fromUser, String fromUsername, String toUser, String toUsername,String content, String href)
 	{
-		return messageDAO.sendMessage(fromUser, toUser, content, href);
+		return messageDAO.sendMessage(fromUser, fromUsername, toUser, toUsername, content, href);
+	}
+
+	@Override
+	@Transactional(readOnly=true)
+	public SearchResult<Message> getListByUserIdAndPage(String userId, int pageStart, int pageLength) {
+		// TODO Auto-generated method stub
+		Search search = new Search(Message.class);
+		search.addFilterEqual("toUser", userId);
+		
+		search.setFirstResult(pageStart);
+		search.setMaxResults(pageLength);
+		
+		search.addSortAsc("createdTime");
+
+		return messageDAO.searchAndCount(search);
+	}
+
+	@Override
+	public SearchResult<Message> getListByMineAndPage(String userId, int pageStart, int pageLength) {
+		// TODO Auto-generated method stub
+		Search search = new Search(Message.class);
+		search.addFilterEqual("fromUser", userId);
+		
+		search.setFirstResult(pageStart);
+		search.setMaxResults(pageLength);
+		
+		search.addSortAsc("createdTime");
+
+		return messageDAO.searchAndCount(search);
 	}
 }

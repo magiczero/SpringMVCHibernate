@@ -434,10 +434,14 @@ public class TaskController {
 			HttpServletRequest request,  Authentication authentication) throws Exception {
 		Map<String, String> formProperties = new HashMap<String, String>();
 
-		//Task task = taskService.createTaskQuery().taskId(taskId).singleResult();
+		Task task = taskService.createTaskQuery().taskId(taskId).singleResult();
+		String pid = task.getProcessInstanceId();
+		String taskName = task.getTaskDefinitionKey();
+		
 		// 从request中读取参数然后转换
 		Map<String, String[]> parameterMap = request.getParameterMap();
 		Set<Entry<String, String[]>> entrySet = parameterMap.entrySet();
+		String confirmNum = "0";
 		for (Entry<String, String[]> entry : entrySet) {
 			String key = entry.getKey();
 
@@ -445,6 +449,8 @@ public class TaskController {
 			if (StringUtils.defaultString(key).startsWith("fp_")) {
 				formProperties.put(key.split("_")[1], entry.getValue()[0]);
 				taskService.setVariable(taskId, key.split("_")[1], entry.getValue()[0]);  
+			} else if(key.equals("radio1")) {
+				confirmNum = entry.getValue()[0];
 			}
 		}
 		try {
@@ -453,7 +459,18 @@ public class TaskController {
 		} finally {
 			// identityService.setAuthenticatedUserId(null);
 		}
-
+		
+		Task taskNow = taskService.createTaskQuery().processInstanceId(pid).singleResult();
+		if( userUtil.IsServiceDesk(authentication)){
+			if(taskNow.getTaskDefinitionKey().equals("incidentConfirm"))
+				return "redirect:/workflow/task/claim/"+taskNow.getId();
+			else if(taskName.equals("incidentConfirm")) {
+				if(confirmNum.equals("1")) {	//关闭
+					return "redirect:/incident/end-process/"+taskNow.getId();
+				}
+			}
+		}
+		
 		redirectAttributes.addFlashAttribute("message", "任务完成：taskId=" + taskId);
 
 		if (StringUtils.isEmpty(request.getParameter("redirectAddress")))
@@ -466,9 +483,9 @@ public class TaskController {
 	public String commentSave(@RequestParam("fp_taskId") String taskId,
 			@RequestParam("fp_processInstanceId") String processInstanceId, @RequestParam("fp_message") String message,
 			HttpServletRequest request, Model model, Authentication authentication) throws Exception {
-
+		String username = userUtil.getUsernameByAuth(authentication);
 		// 设置当前人为意见的所属人
-		identityService.setAuthenticatedUserId(userUtil.getUsernameByAuth(authentication));
+		identityService.setAuthenticatedUserId(username);
 		Task task;
 		if (taskId == null || taskId.equals("") || taskId.equals("0")) {
 			task = taskService.createTaskQuery().processInstanceId(processInstanceId).singleResult();
@@ -482,9 +499,11 @@ public class TaskController {
 		if (isnotify != null) {
 			if (isnotify.equals("true")) {
 				String s = message;
-				s = userService.getUserName(userUtil.getUsernameByAuth(authentication)) + " 对 [" + task.getName() + "] 任务"
+				String name = userService.getUserName(username);
+				s = name + " 对 [" + task.getName() + "] 任务"
 						+ "发表了意见:" + message;
-				messageService.sendMessage("系统提示", task.getAssignee(), s, "#");
+				
+				messageService.sendMessage("系统提示", "系统",task.getAssignee(), userService.getUserName(task.getAssignee()), s, "#");
 			}
 		}
 

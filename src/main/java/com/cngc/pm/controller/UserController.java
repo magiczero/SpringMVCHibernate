@@ -111,13 +111,26 @@ public class UserController extends BaseController{
 	
 	@RequestMapping(value="/get-user/{id}", method = RequestMethod.GET)
 	@ResponseBody
-	public Map<String, Object> getUserByGroup(@PathVariable("id") long id) throws JsonProcessingException {
+	public Map<String, Object> getUserByUserid(@PathVariable("id") long id) throws JsonProcessingException {
 		Map<String, Object> map = new HashMap<>();
 		ObjectMapper mapper = new ObjectMapper(); 
 		SimpleModule module = new SimpleModule();  
 		module.addSerializer(SysUser.class, new UserSerializer());
 		mapper.registerModule(module);
 		map.put("user", mapper.writeValueAsString(userService.getById(id)));
+		return map;
+	}
+	
+	@RequestMapping(value="/get-user-by-username", method = RequestMethod.GET)
+	@ResponseBody
+	public Map<String, Object> getUserByUsername(@RequestParam("username") String username) throws JsonProcessingException {
+		Map<String, Object> map = new HashMap<>();
+		SysUser user = userService.getByUsername(username);
+		
+		map.put("name", user.getName());
+		map.put("id", user.getId());
+		map.put("tel", user.getDepName());
+		map.put("room", user.getMechName());
 		return map;
 	}
 	

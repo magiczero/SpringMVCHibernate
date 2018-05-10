@@ -39,7 +39,19 @@ public interface UserService {
 
 	void update(SysUser user, String username);
 	
+	/**
+	 * 用于用户管理
+	 * @return
+	 */
 	List<SysUser> getAll();
+	
+	/**
+	 * 根据条件搜索用户，
+	 * @param enable				是否启用
+	 * @param accountNonLocked		是否未锁定
+	 * @return
+	 */
+	List<SysUser> getAllByCondition(boolean enable, boolean accountNonLocked);
 	
 	List<Resources> getResourcesByUser(SysUser user);
 	

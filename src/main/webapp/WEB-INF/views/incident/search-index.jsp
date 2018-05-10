@@ -88,8 +88,19 @@
                             { "name": "endtime", "value": $("#endTime").val() }
                             );
                     },
+                    "aoColumnDefs": [
+                    	{
+                            "aTargets": [ 0 ],
+                            "mData": "download_link",
+                            "mRender": function ( data, type, full ) {
+                              return '<a href="javascript:void(0);" title="查看详情" onclick="viewDetail('+full.id+');">'+data+'</a>';
+                            }
+                          }
+                    	],
     	            "aoColumns" : [
+    	            	{ "mData" : 'processInstanceId' }, 
     	                           { "mData" : 'abs' }, 
+    	                           { "mData" : 'unitName' },
     	                           { "mData" : 'priorityName' }, 
     	                           { "mData" : 'applyUserName' }, 
     	                           { "mData" : 'currentDelegateUserName' },
@@ -133,6 +144,10 @@
             
             function inputGroupinfo(groupid, groupname) {
             	console.log(groupid + ' ' + groupname);
+            }
+            
+            function viewDetail(id) {
+            	window.open(ctx+ '/incident/view/'+id,'查看详情','width=1000,height=500,top=20,left=20, toolbar=no, menubar=no, scrollbars=yes, resizable=no,location=no, status=no');
             }
             
             function inputUserinfo(username,realname,tel,room,userid) {
@@ -202,11 +217,13 @@
                             <table class="table" id="myTable">
                                 <thead>
                                     <tr>
+                                    <th width="80px">流水号</th>
                                         <th>摘要</th>
-                                        <th width="80px">紧急度</th>
+                                        <th width="100px">单位</th>
+                                        <th width="70px">紧急度</th>
                                         <th width="100px">申请人</th>
                                         <th width="100px">受派者</th>
-                                        <th width="80px">满意度</th>
+                                        <th width="70px">满意度</th>
                                         <th width="120px">申请时间</th>
                                         <th width="120px">关闭时间</th>
                                     </tr>

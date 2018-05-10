@@ -131,7 +131,7 @@ public class IncidentController {
 				.getResult());
 		model.addAttribute("priority", syscodeService.getAllByType(PropertyFileUtil.getStringValue("syscode.priority"))
 				.getResult());
-		//model.addAttribute("users", userService.getCommonUser());
+		model.addAttribute("users", userService.getAllByCondition(true, true));
 		return "incident/add";
 	}
 	
@@ -263,6 +263,11 @@ public class IncidentController {
 			incident.setApplyTime(new Date());
 			incidentService.save(incident,userUtil.getUsernameByAuth(authentication),getRemortIP(request));
 
+			if(userUtil.IsServiceDesk(authentication)) {
+				Task task = taskService.createTaskQuery().processInstanceId(incident.getProcessInstanceId()).singleResult();
+				
+				return "redirect:/workflow/task/claim/"+task.getId();
+			}
 			// 启动流程
 //			ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery()
 //					.processDefinitionKey(PropertyFileUtil.getStringValue("workflow.processkey.incident")).active()
@@ -292,6 +297,9 @@ public class IncidentController {
 			newincident.setPriority(incident.getPriority());
 			incidentService.update(newincident);
 		}
+		
+		//注入角色跳转
+		
 
 		return "redirect:/incident/list";
 	}

@@ -190,6 +190,9 @@ public class AttachmentController {
 					 	case "9":
 					 		attach.setType(AttachType.maintainrecord);
 					 		break;
+					 	case "10":
+					 		attach.setType(AttachType.message);
+					 		break;
 					 }
 					 attach = attachService.create(attach,currentusername);
 					
@@ -307,10 +310,10 @@ public class AttachmentController {
 			}
 			log.info("chunk:[" + chunk + "] chunks:[" + chunks + "]");
 			// 检查文件目录，不存在则创建
-			String relativePath = _fileUploadPath;
+			//String relativePath = _fileUploadPath;
 			//String realPath = session.getServletContext().getRealPath("");
 			//File folder = new File(realPath + relativePath);
-			File folder = new File(relativePath);
+			File folder = new File(_fileUploadPath);
 			if (!folder.exists()) {
 				folder.mkdirs();
 			}

@@ -57,7 +57,7 @@ public class AnalyseUSBServiceImpl implements AnalyseUSBService{
 		// TODO 自动生成的方法存根
 		String outfilename = null;
 		try {  
-            ZipInputStream Zin=new ZipInputStream(new FileInputStream(_fileUploadPath + File.pathSeparator + file));
+            ZipInputStream Zin=new ZipInputStream(new FileInputStream(_fileUploadPath + file));
             BufferedInputStream Bin=new BufferedInputStream(Zin);    
             File Fout=null;  
             ZipEntry entry;  
@@ -66,7 +66,7 @@ public class AnalyseUSBServiceImpl implements AnalyseUSBService{
                 while((entry = Zin.getNextEntry())!=null && !entry.isDirectory()){
                 	if(!entry.getName().equals("1.chk"))
                 		continue;
-                	outfilename = _fileUploadPath + File.pathSeparator + file.substring(0, file.indexOf('.'))+".chk";
+                	outfilename = _fileUploadPath + file.substring(0, file.indexOf('.'))+".chk";
                     Fout=new File(outfilename);  
                     if(!Fout.exists()){  
                         (new File(Fout.getParent())).mkdirs();  
@@ -153,7 +153,7 @@ public class AnalyseUSBServiceImpl implements AnalyseUSBService{
 				usbDao.save(data);
 				//发送消息
 				String scontent = "发现用户终端["+c.getUserName()+"]有USB插入记录.";
-				messageDao.sendMessage("系统", "songle", scontent, "#");
+				messageDao.sendMessage("系统", "系统", "songle", "宋乐", scontent, "#");
 			}
 		}	 
 		return;

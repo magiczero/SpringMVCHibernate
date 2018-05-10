@@ -225,7 +225,7 @@
                             </div>
                             <div class="row-form clearfix">
                                 <div class="col-md-1"><form:label path="departmentName">所属部门:</form:label></div>
-                                <div class="col-md-3"><form:input path="departmentName" type="text" readonly="readonly"/></div>
+                                <div class="col-md-3"><form:input path="departmentName" class="validate[required]" type="text" readonly="readonly"/></div>
                                 <div class="col-md-1"><form:label path="userInMaintenance">责任人:</form:label></div>
                                 <div class="col-md-3"><form:select path="userInMaintenance" items="${users }" itemLabel="name" itemValue="username" cssStyle="width:100%"></form:select></div>
                                 <div class="col-md-1"><form:label path="purpose">设备用途:</form:label></div>

@@ -96,7 +96,7 @@ public class CiController {
 		model.addAttribute("status", syscodeService.getAllByType(PropertyFileUtil.getStringValue("syscode.cms.ci.status")).getResult());
 		model.addAttribute("securityLevel", syscodeService.getAllByType(PropertyFileUtil.getStringValue("syscode.cms.ci.securitylevel")).getResult());
 		model.addAttribute("system", syscodeService.getAllByType(PropertyFileUtil.getStringValue("syscode.cms.ci.system")).getResult());
-		model.addAttribute("users", userService.getAll());
+		model.addAttribute("users", userService.getAllByCondition(true, true));
 		
 		return "cms/ci-add";
 	}
@@ -107,7 +107,7 @@ public class CiController {
 		model.addAttribute("status", syscodeService.getAllByType(PropertyFileUtil.getStringValue("syscode.cms.ci.status")).getResult());
 		model.addAttribute("securityLevel", syscodeService.getAllByType(PropertyFileUtil.getStringValue("syscode.cms.ci.securitylevel")).getResult());
 		model.addAttribute("system", syscodeService.getAllByType(PropertyFileUtil.getStringValue("syscode.cms.ci.system")).getResult());
-		model.addAttribute("users", userService.getAll());
+		model.addAttribute("users", userService.getAllByCondition(true, true));
 		return "cms/ci-add";
 	}
 	

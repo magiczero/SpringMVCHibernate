@@ -131,7 +131,6 @@
 			    		        	showLabelsOnBars:true
 			    		        	//
 								});
-			    		        console.log("adg");
 			                }
 			            }
 					    if ($("#chart-3").length > 0) {

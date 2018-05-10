@@ -136,7 +136,7 @@ public class AccountLifeCycleController {
 			break;
 		}
 		model.addAttribute("types", categoryService.getChildListByParent(codeType));
-		model.addAttribute("users", userService.getAll());
+		model.addAttribute("users", userService.getAllByCondition(true, true));
 		return "account-life-cycle/add";
 	}
 	
@@ -336,7 +336,7 @@ public class AccountLifeCycleController {
 					oldvalue.put(_STATUS, ci.getStatusName());
 					changeItem.setOldValue(mapper.writeValueAsString(oldvalue));
 					break;
-				case 6:
+				case 6://重装操作系统
 					changeItem.setType(ChangeitemType.reloados);
 					//更改状态为销毁
 					changeItem.setProperties("CMS_PROPERTY_OSINSTALLTIME,CMS_PROPERTY_OSVERSION");

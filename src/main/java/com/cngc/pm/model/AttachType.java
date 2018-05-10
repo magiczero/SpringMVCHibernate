@@ -11,5 +11,6 @@ public enum AttachType {
 	uefile, 
 	feedback, 
 	threemember, 
-	maintainrecord
+	maintainrecord,
+	message
 }

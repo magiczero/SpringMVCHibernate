@@ -73,7 +73,16 @@
             	act_dialog_category_select('INCIDENT_CATEGORY','category');
             });
             --%>
+            $("#applyUser").select2();
             $(".dateISO").datetimepicker({autoclose: true,language: 'zh-CN',minuteStep: 5,todayBtn: true});
+            
+            $("#applyUser").change(function(){
+            	$.getJSON(ctx + '/user/get-user-by-username?username='+$("#applyUser").val()+'&t=' + pm_random(), function(data){
+                	$("input[name='phoneNumber']").attr("value",data.tel);
+                	$("#room").attr("value", data.room);
+            	});
+            	  
+            });
             $("#module.id").select2();
             //------------------IE8---------------------------
             $(".wrapper").append("<div class='dialog' id='b_popup_select' style='display: none;' title='事件分类'></div>");
@@ -259,7 +268,7 @@
 	                        <c:url var="addAction" value="/incident/save" ></c:url>
 	                        <form:form action="${addAction}" commandName="incident" method="post" id="validation">
 	                        <form:hidden path="id" />
-	                        <form:hidden path="applyUser"/>
+	                        <!--<form:hidden path="applyUser"/>-->
 	                        <input id="fileids" name="fileids" type="hidden" />
 	                        <div class="block-fluid">                        
 	                            <div class="row-form clearfix">
@@ -272,10 +281,10 @@
 	                                </div>
 	                            </div>
 	                            <div class="row-form clearfix">
-	                                <div class="col-md-1"><label for="user_name">申请人:</label></div>
+	                                <div class="col-md-1"><label for="applyUser">申请人:</label></div>
 	                                <div class="col-md-3">
-	                                <input type="text" id="user_name" value="${incident.applyUserName }" readonly="readonly" name="user_name" class="validate[required]">
-	                                <!--<form:select path="applyUser" items="${users }" itemLabel="name" itemValue="username" cssStyle="width:100%"></form:select>--></div>
+	                                <!--<input type="text" id="user_name" value="${incident.applyUserName }" readonly="readonly" name="user_name" class="validate[required]">-->
+	                                <form:select path="applyUser" items="${users }" itemLabel="name" itemValue="username" cssStyle="width:100%"></form:select></div>
 	                                <div class="col-md-1"><form:label path="phoneNumber">电话:</form:label></div>
 	                                <div class="col-md-3"><form:input path="phoneNumber"></form:input></div>
 	                                <div class="col-md-1"><label>房间号:</label></div>

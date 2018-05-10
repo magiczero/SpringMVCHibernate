@@ -93,7 +93,7 @@ public class AnalyseServiceImpl implements AnalyseService {
 		// TODO 自动生成的方法存根
 		String outfilename = null;
 		try {  
-            ZipInputStream Zin=new ZipInputStream(new FileInputStream(_fileUploadPath + File.pathSeparator + file));
+            ZipInputStream Zin=new ZipInputStream(new FileInputStream(_fileUploadPath + file));
             BufferedInputStream Bin=new BufferedInputStream(Zin);    
             File Fout=null;  
             ZipEntry entry;  
@@ -102,7 +102,7 @@ public class AnalyseServiceImpl implements AnalyseService {
                 while((entry = Zin.getNextEntry())!=null && !entry.isDirectory()){
                 	if(!entry.getName().equals("1.chk"))
                 		continue;
-                	outfilename = _fileUploadPath + File.pathSeparator + file.substring(0, file.indexOf('.'))+".chk";
+                	outfilename = _fileUploadPath + file.substring(0, file.indexOf('.'))+".chk";
                     Fout=new File(outfilename);  
                     if(!Fout.exists()){  
                         (new File(Fout.getParent())).mkdirs();  

@@ -414,4 +414,9 @@ public class UserServiceImpl implements UserService {
 		
 		recordsDao.save(records);
 	}
+	@Override
+	public List<SysUser> getAllByCondition(boolean enable, boolean accountNonLocked) {
+		// TODO Auto-generated method stub
+		return userDao.getAllByCondition(enable, true, accountNonLocked, true);
+	}
 }

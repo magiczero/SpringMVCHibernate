@@ -47,4 +47,21 @@ public class UserDAOImpl extends BaseDAOImpl<SysUser, Long> implements UserDAO {
 		
 		return searchUnique(search);
 	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<SysUser> getAllByCondition(boolean enable, boolean accountNonExpired, boolean accountNonLocked,
+			boolean creadentialsNonExpired) {
+		// TODO Auto-generated method stub
+		Search search = new Search(SysUser.class);
+		
+		search.addFilterEqual("enabled", enable);
+		search.addFilterEqual("accountNonExpired", accountNonExpired);
+		search.addFilterEqual("accountNonLocked", accountNonLocked);
+		search.addFilterEqual("creadentialsNonExpired", creadentialsNonExpired);
+		
+		search.addSortAsc("group.id");
+		
+		return _searchAndCount(search).getResult();
+	}
 }

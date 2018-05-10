@@ -97,7 +97,7 @@
                          "mRender": function ( data, type, full ) {
                         	var str = "";
                     		for(var i=0;i<data.length; i++) {
-                        		str += "<a href='"+ctx+"/attachment/download/"+data[i].id+"'>"+data[i].name+"</a>";
+                        		str += "<a href='"+ctx+"/attachment/download/"+data[i].id+"'>"+data[i].name+"</a>&nbsp;&nbsp;";
                         	 }
                            	 return str;
                          }

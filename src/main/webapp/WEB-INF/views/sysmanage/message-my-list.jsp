@@ -63,12 +63,13 @@
                 
                 var table = $("#eventTable").dataTable({
             		"bFilter" : false,
+            		
                     "bSort": false, //排序功能
                     "aLengthMenu":[[10,25,50,-1],[10,25,50,"All"]],
                 	"oLanguage": {"sUrl": "${contextPath}/resources/json/Chinese.json"},
                 	"bProcessing": false, // 是否显示取数据时的那个等待提示
     			    "bServerSide": true,//这个用来指明是通过服务端来取数据
-    	            "sAjaxSource": "${contextPath}/message/table-page-ajax-list",//这个是请求的地址
+    	            "sAjaxSource": "${contextPath}/message/table-page-ajax-my-list",//这个是请求的地址
     	            "fnServerData": retrieveData, // 获取数据的处理函数
     	            "aoColumnDefs": [
                     	{
@@ -94,26 +95,13 @@
                               			return "<span class=\"label label-warning\">未阅读</span>";
                                	 
                               }
-                            },
-                            
-                            {
-                                "aTargets": [ 5 ],
-                                "mData": "download_link",
-                                "mRender": function ( data, type, full ) {
-                                	if(full.isRead==false)
-                                		return "<a href=\"${contextPath }/message/readmessage/"+data+"\"><span class=\"glyphicon glyphicon-check\"></span> 已阅</a>";
-                                		else
-                                			return "";
-                                 	 
-                                }
-                              }],
+                            }],
     	            "aoColumns" : [
     	                           { "mData" : 'content' }, 
     	                           { "mData" : 'attachs' }, 
-    	                           { "mData" : 'fromUsername' }, 
+    	                           { "mData" : 'toUsername' }, 
     	                           { "mData" : 'createdTime' }, 
-    	                           { "mData" : 'isRead' },
-    	                                 { "mData" : 'id' }
+    	                           { "mData" : 'isRead' }
     	                             ]	
                 });
             });
@@ -170,14 +158,14 @@
                     <div class="col-md-12">                    
                         <div class="head clearfix">
                             <div class="isw-grid"></div>
-                            <h1>消息管理</h1>  
+                            <h1>我发送的消息</h1>  
 
                             <ul class="buttons">                          
                                 <li>
                                     <a href="#" class="isw-settings tipl" title="操作 "></a>
                                     <ul class="dd-list">
                                     <li><a href="init-add" ><span class="isw-chat"></span> 新建消息</a></li>
-                                    <li><a href="my-list" ><span class="isw-chat"></span> 我发送的消息</a></li>
+                                    <li><a href="list" ><span class="isw-chat"></span> 我接收的消息</a></li>
                                         <li><a href="#" onclick="pm_refresh()"><span class="isw-refresh"></span> 刷新</a></li>
                                     </ul>
                                 </li>
@@ -189,10 +177,9 @@
 								<tr>
 									<th >消息内容</th>
 									<th>文档</th>
-									<th width="100px">发送者</th>
+									<th width="100px">接收者</th>
 									<th width="150px">发送时间</th>
 									<th width="90px">是否阅读</th>
-									<th width="80px">操作</th>
 								</tr>
                                 </thead>
                                 <tbody>

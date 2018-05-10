@@ -115,6 +115,7 @@ public class ResourcesServiceImpl implements ResourcesService {
 		Search search = new Search(Role.class);
 		//new Filter();
 		search.addFilterOr(new Filter("roleAuths.auth.authResos.resources", resources),  Filter.some("modules.resSet", Filter.equal("id", resources.getId())));
+		search.setDistinct(true);
 //		search.addFilterEqual("roleAuths.auth.authResos.resources", resources);
 //		list.addAll(roleDao.search(search));
 //		

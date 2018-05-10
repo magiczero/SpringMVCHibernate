@@ -41,7 +41,7 @@
 			</a></li> -->
 		</ul>
 	</li>
-	<li id="node_0" class="openable"><a href="#"> <span class="isw-ok"></span><span class="text">终端合规性管理</span></a>
+	<%--<li id="node_0" class="openable"><a href="#"> <span class="isw-ok"></span><span class="text">终端合规性管理</span></a>
 		<ul>
 			<li><a href="${contextPath }/computer/task/list"> <span class="glyphicon glyphicon-ok"></span><span class="text">合规性检查</span>
 			</a></li>
@@ -63,7 +63,7 @@
 			</a></li>
 		</ul>
 	</li>
-	<%--
+	
 	<c:forEach items="${menuMoudle }" var="map">
 		<li id="node_${map.key.id }" class="openable"><a href="${map.key.url }"> <span class="${map.key.styleClass }"></span><span class="text">${map.key.name }</span>	</a>
 		<ul>
@@ -139,7 +139,7 @@
 <div class="modal fade" id="exitModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 	<div class="modal-dialog">
 		<div class="modal-content">
-			<form id="pwdForm" action="${contextPath }/logout" method="post">
+			<form id="outForm" action="${contextPath }/logout" method="post">
 				<div class="modal-header">
 					<button type="button" class="close" data-dismiss="modal">
 						<span aria-hidden="true">&times;</span><span class="sr-only">Close</span>
@@ -163,7 +163,7 @@
 </div>
 <script type='text/javascript' src='${contextPath }/resources/js/mymenu.js'></script>
 <script>
-	var ctx1 = "${contextPath }";
+	//var ctx1 = "${contextPath }";
 	
 	$(document).ready(function() {
 		

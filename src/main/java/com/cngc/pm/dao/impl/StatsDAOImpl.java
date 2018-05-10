@@ -950,7 +950,7 @@ public class StatsDAOImpl extends BaseDAOImpl<Object, Long> implements StatsDAO 
 				list = userService.getEngineer();
 				break;
 			case "APPLY": // 申请用户
-				list = userService.getAll();
+				list = userService.getAllByCondition(true, true);
 				break;
 			}
 			for (Object code : list)

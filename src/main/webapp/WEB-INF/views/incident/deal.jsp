@@ -70,6 +70,7 @@
    		var ctx = "${contextPath}"; 
    		var incidentId = '${incident.id}';
    		var processInstanceId = "${incident.processInstanceId}";
+   		var isApplyUser = ${incident.applyUser == task.assignee};
    		
         $(document).ready(function () {
             $("#eventTable").dataTable({
@@ -109,6 +110,21 @@
 		        buttons: { "确定": function () { $(this).dialog("close") } }
 		    });
             
+           if(isApplyUser) {
+       	 
+       	 	act_form_task(taskId,'/incident/mylist');
+           } else {
+        	   var address = '/incident/list';
+        	   if(tname == '事件确认') {
+        		   address = '/incident/list?incidentConfirm=true';
+        	   }
+        	 //返回到事件控制台
+          	 	act_form_task(taskId,address);
+          	 	
+           }
+           
+           
+            
         });
         
         function inputAttr(name,value) {
@@ -120,22 +136,7 @@
         	pm_cms_initdialogtable(code);
         }
     </script>
-    <c:if test="${incident.applyUser == task.assignee}">
-    	 <script type="text/javascript">
-    	 	// 用户自助评价，则返回到mylist
-    	 	$(document).ready(function(){
-    	 		act_form_task(taskId,'/incident/mylist');
-    		});
-    	 </script>
-    </c:if>
-    <c:if test="${incident.applyUser != task.assignee}">
-    	 <script type="text/javascript">
-    	 	//返回到事件控制台
-    	 	$(document).ready(function(){
-    	 		act_form_task(taskId,'/incident/list');
-    		});
-    	 </script>
-    </c:if>
+   
 </head>
 <body>
     <div class="wrapper"> 
@@ -541,5 +542,4 @@
     </div>
     </div>
 </body>
-
 </html>

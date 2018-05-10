@@ -11,11 +11,14 @@ import org.activiti.engine.impl.persistence.entity.TaskEntity;
 import org.activiti.engine.repository.ProcessDefinition;
 
 import com.cngc.pm.service.MessageService;
+import com.cngc.pm.service.UserService;
 import com.cngc.utils.PropertyFileUtil;
 
 public class SendMessageListener implements ActivitiEventListener {
 	@Resource
 	private MessageService messageService;
+	@Resource
+	private UserService userService;
 
 	@Override
 	public void onEvent(ActivitiEvent event) {
@@ -36,7 +39,7 @@ public class SendMessageListener implements ActivitiEventListener {
 						String msg = PropertyFileUtil.getStringValue("message.format.workflow.taskcreated");
 						msg = msg.replaceAll("%PROCESS_NAME%", processName).replaceAll("%TASK_NAME%", task.getName());
 						
-						messageService.sendMessage("系统", task.getAssignee(), msg, "#");
+						messageService.sendMessage("系统","系统", task.getAssignee(), userService.getUserName(task.getAssignee()), msg, "#");
 					}
 				}
 			}
@@ -51,7 +54,7 @@ public class SendMessageListener implements ActivitiEventListener {
 						String msg = PropertyFileUtil.getStringValue("message.format.workflow.taskassigned");
 						msg = msg.replaceAll("%PROCESS_NAME%", processName).replaceAll("%TASK_NAME%", task.getName());
 						
-						messageService.sendMessage("系统", task.getAssignee(), msg, "#");
+						messageService.sendMessage("系统", "系统", task.getAssignee(), userService.getUserName(task.getAssignee()), msg, "#");
 					}
 				}
 			}
@@ -70,7 +73,7 @@ public class SendMessageListener implements ActivitiEventListener {
 							.singleResult();
 					String msg = PropertyFileUtil.getStringValue("message.format.workflow.processcompleted");
 					msg = msg.replaceAll("%PROCESS_NAME%", processName);
-					messageService.sendMessage("系统", instance.getStartUserId(), msg, "#");
+					messageService.sendMessage("系统", "系统", instance.getStartUserId(), userService.getUserName(instance.getStartUserId()), msg, "#");
 				}
 			}
 			break;

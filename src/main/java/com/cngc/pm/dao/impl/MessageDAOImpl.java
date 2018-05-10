@@ -72,17 +72,17 @@ public class MessageDAOImpl extends BaseDAOImpl<Message, Long> implements Messag
 	/* (non-Javadoc)
 	 * @see com.cngc.pm.dao.MessageDAO#sendMessage(java.lang.String, java.lang.String, java.lang.String, java.lang.String)
 	 */
-	public boolean sendMessage(String fromUser, String toUser, String content, String href){
+	public boolean sendMessage(String fromUser, String fromUsername, String toUser, String toUsername, String content, String href){
 		Message message = new Message();
 		message.setFromUser(fromUser);
+		message.setFromUsername(fromUsername);
 		message.setToUser(toUser);
+		message.setToUsername(toUsername);
 		message.setContent(content);
 		message.setHref(href);
 		message.setCreatedTime(new Date());
 		message.setIsRead(false);
 		
-		this.save(message);
-		
-		return true;
+		return this.save(message);
 	}
 }

@@ -13,6 +13,7 @@ import org.apache.commons.lang3.time.FastDateFormat;
 import com.cngc.pm.model.LeaderTask;
 import com.cngc.pm.service.LeaderTaskService;
 import com.cngc.pm.service.MessageService;
+import com.cngc.pm.service.UserService;
 
 public class LeaderTaskJob {
 
@@ -22,6 +23,8 @@ public class LeaderTaskJob {
 	private MessageService messageServcie;
 	@Resource
 	private TaskService taskService;
+	@Resource
+	private UserService userService;
 	
 	public void taskNotify(){
 		System.out.println("领导交办任务提醒...");
@@ -46,7 +49,7 @@ public class LeaderTaskJob {
 				//今天是最后时间
 				msg = "领导交办任务："+task.getTaskTitle()+" 交办时间为:"
 						+fmt.format(task.getDueTime())+"，请及时处理。" ;
-				messageServcie.sendMessage("系统", task.getToUser(), msg, "#");
+				messageServcie.sendMessage("系统","系统", task.getToUser(), userService.getUserName(task.getToUser()), msg, "#");
 			}
 			else
 			{
@@ -62,7 +65,7 @@ public class LeaderTaskJob {
 				{
 					// 当天没有添加意见
 					msg = "领导交办任务："+task.getTaskTitle()+" 今日未添加处理进度，请及时填写。" ;
-					messageServcie.sendMessage("系统", task.getToUser(), msg, "#");
+					messageServcie.sendMessage("系统", "系统", task.getToUser(), userService.getUserName(task.getToUser()), msg, "#");
 				}
 			}
 		}

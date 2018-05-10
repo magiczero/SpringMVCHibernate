@@ -113,7 +113,7 @@ public class MyInvocationSecurityMetadataSource implements
 //    }
     
   //返回所请求资源所需要的权限
-  	public Collection<ConfigAttribute> getAttributes(Object object) throws IllegalArgumentException {
+  	public Collection<ConfigAttribute> getAttributes(Object object) {
   		
 //  		String requestUrl = ((FilterInvocation) object).getRequestUrl();
 //  		log.info("requestUrl is " + requestUrl);
@@ -124,20 +124,23 @@ public class MyInvocationSecurityMetadataSource implements
 //  		return resourceMap.get(requestUrl);
   		
   		String url = ((FilterInvocation) object).getRequestUrl();
+  		//System.out.println(url);
   		logger.info("访问路径：" + url);
   		
   		List<Resources> resourcesList = resourcesService.getAll();
   		Collection<ConfigAttribute> atts = new ArrayList<ConfigAttribute>();
   		for(Resources r : resourcesList) {
   			if (pathMatchesUrl(r.getPath(), url)) {
+  				//System.out.println(r.getId());
   				//根据资源获得角色
   				for (Role role : resourcesService.getRoles(r)) {
   					ConfigAttribute ca = new SecurityConfig(role.getRoleName());
   					atts.add(ca);
   				}
+  				return atts;
   			}
   		}
-  		return atts;
+  		return null;
   		
 //		Iterator<String> ite = resourceMap.keySet().iterator();
 //		while (ite.hasNext()) {

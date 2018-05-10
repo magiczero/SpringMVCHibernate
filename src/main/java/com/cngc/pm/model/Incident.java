@@ -54,6 +54,8 @@ public class Incident implements Serializable{
 	private boolean endbyuser;
 	
 	@Transient
+	private String unitName;
+	@Transient
 	private String priorityName;
 	@Transient
 	private String categoryName;
@@ -364,5 +366,14 @@ public class Incident implements Serializable{
 
 	public void setSupportTypeName(String supportTypeName) {
 		this.supportTypeName = supportTypeName;
+	}
+	
+	@Formula(value="(SELECT a.group_name FROM sys_group a WHERE a.id=LEFT((SELECT b.group_id FROM sys_users b WHERE b.username=apply_user),2))")
+	public String getUnitName() {
+		return unitName;
+	}
+
+	public void setUnitName(String unitName) {
+		this.unitName = unitName;
 	}
 }

@@ -86,7 +86,7 @@ function act_form_getTaskFields(taskId,redirectAddress) {
 	$.getJSON(ctx + '/workflow/dynamicform/get-form/task/' + taskId + '?t=' + pm_random(), function(datas) {
 		var divs = "";
 		$.each(datas.form.formProperties, function() {
-			var className = this.required === true ? "required" : "";
+			var className = this.required === true ? "validate[required]" : "";
 			this.value = this.value ? this.value : "";
 			divs += "<div class='row-form clearfix'>" + act_form_createfield(this, datas, className)
 			if (this.required === true) {
@@ -98,6 +98,13 @@ function act_form_getTaskFields(taskId,redirectAddress) {
 			divs += "<div class='row-form clearfix'><div class='col-md-3'>\u6267\u884c\u4eba：</div><div class='col-md-8'>";
 			divs += datas.preassignee;
 			divs += "</div></div>";
+		}
+		//分解redirectAddress
+		var address_ = redirectAddress.split('?');
+		if(address_.length>1) {
+			divs += "<div class='row-form clearfix'><div class='col-md-3'></div><div class='col-md-4'>"
+				+ "<label class='checkbox checkbox-inline'><input type='radio' name='radio1' value='1' checked='checked'/> 关闭事件</label></div><div class='col-md-4'><label class='checkbox checkbox-inline'><input type='radio' value='0' name='radio1'/> 转交领导</label>"
+                +"</div></div>";
 		}
 		divs += "<div class='footer'>"
 				+ "<input type=hidden name='redirectAddress' value='" + redirectAddress + "' />"
@@ -195,6 +202,9 @@ function act_form_getTaskFields(taskId,redirectAddress) {
 				act_template_display($("#template").children('option:selected').val(), get_templatedata_address,true );
 			});
 		}
+		
+		//表单验证
+		$form.validationEngine({promptPosition : "topRight", scroll: true});
 	});
 }
 /**
@@ -214,7 +224,11 @@ function act_form_getStartDialog(processDefinitionKey,redirectAddress) {
 	$.getJSON(ctx + '/workflow/dynamicform/getformbykey/start/' + processDefinitionKey + '?t=' + pm_random(),function(data) {
 		act_form_getDialogFieldsByProcessDefinitionKey(processDefinitionKey, data,redirectAddress);
 		//act_form_getDialogFields(data,redirectAddress);
+		
 	});
+	
+	//表单验证
+	$form.validationEngine({promptPosition : "topRight", scroll: true});
 }
 function act_form_getDialogFieldsByProcessDefinitionKey(processDefinitionKey, data,redirectAddress) {
 	if(processDefinitionKey == 'OVERTIME') {
@@ -222,7 +236,7 @@ function act_form_getDialogFieldsByProcessDefinitionKey(processDefinitionKey, da
 		var divs = "";
 		var $form = $('.dynamic-form');
 		$.each(data.form.formProperties,function() {
-			var className = this.required === true ? "required" : "";
+			var className = this.required === true ? "validate[required]" : "";
 			divs += "<div class='row'><div class='block-fluid'><div class='row-form clearfix'>" + act_form_createfield(this, data,className)
 			if (this.required === true) {
 				divs += "<div class='col-md-1' style='color:red;'>*</div>";
@@ -289,7 +303,7 @@ function act_form_getDialogFields(data,redirectAddress) {
 	var divs = "";
 	var $form = $('.dynamic-form');
 	$.each(data.form.formProperties,function() {
-		var className = this.required === true ? "required" : "";
+		var className = this.required === true ? "validate[required]" : "";
 		divs += "<div class='row'><div class='block-fluid'><div class='row-form clearfix'>" + act_form_createfield(this, data,className)
 		if (this.required === true) {
 			divs += "<div class='col-md-1' style='color:red;'>*</div>";

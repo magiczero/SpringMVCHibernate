@@ -14,7 +14,7 @@ public interface ChangeItemService {
 	SearchResult<ChangeItem> getByCi(Long id);
 	SearchResult<ChangeItem> getByCi(List<Long> ids);
 	
-	List<ChangeItem> getByChangeId(Long id);
+	List<ChangeItem> getByChangeId(Long changeId, ChangeitemType type);
 	void setChangeid(String itemids, String changeId);
 	
 	List<ChangeItem> getByCiAndType(Long id, ChangeitemType type);

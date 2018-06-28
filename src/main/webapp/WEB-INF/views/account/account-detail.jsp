@@ -214,7 +214,7 @@
 
                 <ul class="breadcrumb">
                     <li><a href="#">运维管理系统</a> <span class="divider">></span></li>
-                    <li><a href="${contextPath }/cms/ci/list">台账管理</a> <span class="divider">></span></li>       
+                    <li><a href="${contextPath}/account-life-cycle/index">台账管理</a> <span class="divider">></span></li>       
                     <li class="active">台账信息</li>
                 </ul>
 

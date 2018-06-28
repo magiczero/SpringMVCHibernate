@@ -52,4 +52,12 @@ public class RoleDAOImpl extends BaseDAOImpl<Role,Long> implements RoleDAO{
 		
 		return this.search(search);
 	}
+	
+	@Override
+	public Role getByName(String nameStr) {
+		// TODO Auto-generated method stub
+		Search search = new Search();
+		search.addFilterEqual("roleName", nameStr);
+		return this.searchUnique(search);
+	}
 }

@@ -11,4 +11,6 @@ public interface CategoryDAO extends GenericDAO<Category, String> {
 	 * @return
 	 */
 	List<Category> getCategoryOrderByCode();
+
+	Category getByName(String categoryName);
 }

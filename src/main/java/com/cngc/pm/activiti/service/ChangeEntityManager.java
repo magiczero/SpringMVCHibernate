@@ -56,7 +56,7 @@ public class ChangeEntityManager {
 	
 	@SuppressWarnings("unchecked")
 	@Transactional
-	public boolean setChangeStatus(DelegateExecution execution,String status){
+	public boolean setChangeStatus(DelegateExecution execution,String status) throws Exception{
 		Change change = (Change)execution.getVariable("change");
 		Change newChange = changeDao.find(change.getId());
 		newChange.setStatus( status );

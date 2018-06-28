@@ -1,11 +1,17 @@
 package com.cngc.pm.controller;
 
 import static com.cngc.utils.Common.getRemortIP;
+import static com.cngc.utils.Constants._accountMaster;
+import static com.cngc.utils.Constants._accountSub;
+import static com.cngc.utils.Constants.STREAM_OPERATE_LOG;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
@@ -14,6 +20,7 @@ import java.util.List;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 import org.activiti.engine.FormService;
@@ -25,11 +32,14 @@ import org.activiti.engine.TaskService;
 import org.activiti.engine.history.HistoricDetail;
 import org.activiti.engine.history.HistoricFormProperty;
 import org.activiti.engine.history.HistoricProcessInstance;
+import org.activiti.engine.impl.util.json.JSONArray;
+import org.activiti.engine.impl.util.json.JSONObject;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.apache.cxf.common.util.StringUtils;
 import org.codehaus.jackson.JsonGenerationException;
+import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
@@ -44,24 +54,33 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.cngc.pm.common.web.common.UserUtil;
 import com.cngc.pm.model.Attachment;
 import com.cngc.pm.model.ChangeItem;
 import com.cngc.pm.model.ChangeitemType;
+import com.cngc.pm.model.Group;
+import com.cngc.pm.model.SysUser;
+import com.cngc.pm.model.cms.Account;
 import com.cngc.pm.model.cms.AccountType;
+import com.cngc.pm.model.cms.AuditTask;
 import com.cngc.pm.model.cms.Category;
 import com.cngc.pm.model.cms.Ci;
 import com.cngc.pm.model.cms.Property;
+import com.cngc.pm.model.cms.TaskCategoryDepartmentRelation;
 import com.cngc.pm.service.AttachService;
 import com.cngc.pm.service.ChangeItemService;
+import com.cngc.pm.service.GroupService;
 import com.cngc.pm.service.SysCodeService;
 import com.cngc.pm.service.UserService;
 import com.cngc.pm.service.cms.AccountService;
+import com.cngc.pm.service.cms.AuditTaskService;
 import com.cngc.pm.service.cms.CategoryService;
 import com.cngc.pm.service.cms.CiService;
 import com.cngc.pm.service.cms.PropertyService;
 import com.cngc.utils.PropertyFileUtil;
+import com.googlecode.genericdao.search.SearchResult;
 
 @Controller
 @RequestMapping("/account-life-cycle")
@@ -97,6 +116,10 @@ public class AccountLifeCycleController {
 	private AccountService accountService;
 	@Resource
 	private PropertyService propertyService;
+	@Resource
+	private AuditTaskService auditTaskService;
+	@Resource
+	private GroupService groupService;
 	
 	private static final String _STATUS = "CMS_FIELD_STATUS";
 	
@@ -104,6 +127,859 @@ public class AccountLifeCycleController {
 	protected void initBinder(WebDataBinder binder) {
 		binder.registerCustomEditor(java.sql.Date.class,  new CustomDateEditor(new com.cngc.utils.MyDateFormat("yyyy-MM-dd HH:mm:ss"), true));
    
+	}
+	
+	@RequestMapping(value = "/get-html-by-code", method = RequestMethod.GET)
+	@ResponseBody 
+	public Map<String, Object> getHtmlByCode(@RequestParam(required=true) String code) {
+		Category category = categoryService.getByCode(code);
+		if(category == null)
+			return null;
+		else
+			return getHtmlMapByCategory(category.getCategoryCode());
+		
+	}
+	
+	@RequestMapping(value = "/export-xls", method = RequestMethod.POST)
+	public String exportXls(Model model, HttpServletRequest request,HttpServletResponse response,Authentication auth) throws Exception {
+		if(request.getParameterValues("exportGroups")==null ) return "false";
+			
+		if(request.getParameterValues("exportCodes") == null) return "false";
+		
+		String[] groups = request.getParameterValues("exportGroups");
+		String[] codes = request.getParameterValues("exportCodes");
+		
+		List<Group> groupList = new ArrayList<>();
+		for(String groupid : groups) {
+			Group group = groupService.getById(Long.valueOf(groupid));
+			if(group == null) return "redirect:/404";
+			groupList.add(group);
+		}
+		
+		List<Category> categorys =  new ArrayList<>();
+		for(String code : codes) {
+			Category category = categoryService.getByCode(code);
+			if(category==null)return "redirect:/404";
+			categorys.add(category);
+		}
+		
+		SimpleDateFormat sDateFormat=new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
+		String fileName = "台账-"+sDateFormat.format(new Date())+".xlsx";
+		
+        response.setContentType("application/vnd.ms-excel");   
+//        response.setHeader("Content-disposition", "attachment;filename="+ java.net.URLEncoder.encode(fileName, "UTF-8"));
+        response.setHeader("Content-disposition", "attachment;filename="+ new String(fileName.getBytes("GBK"),"ISO-8859-1"));  
+        response.setHeader("Pragma", "No-cache"); 
+		ciService.exportXls(groupList, categorys, response.getOutputStream());
+		
+		return "true";
+	}
+	
+	@RequestMapping(value = "/end-aduit-task/{id}", method = RequestMethod.POST)
+	@ResponseBody 
+	public Map<String, Object> endAuditTask(@PathVariable Long id,@RequestParam(required=true) boolean nonforce,Authentication auth) throws Exception {
+		Map<String, Object> map = new HashMap<>();
+		SysUser currentUser = userUtil.getUserByAuth(auth);
+		if(userUtil.isRolesWithUser(currentUser, _accountMaster)) {
+			AuditTask at = auditTaskService.getById(id);
+			AuditTask at0 = auditTaskService.findUnfinishedTask(currentUser);
+			
+			if(at == at0) {
+				for(TaskCategoryDepartmentRelation relation :at.getRelationSet()) {
+					if(relation.getStatus() == 2){
+						map.put("flag", false);
+						map.put("msg", "还有未完成的部门:"+relation.getCiDepartment().getGroupName()+"，所以无法结束");
+						return map;
+					}
+					
+					if(nonforce){
+						//查看ci是否审核
+						for(Ci ci :auditTaskService.getCiListByGroupAndCategory(relation.getCiCategory(), relation.getCiDepartment())) {
+							if(ci.getReviewStatus().equals("05")) {
+								map.put("flag", false);
+								map.put("force", true);
+								map.put("msg", "还有未完成的审核的台账:"+ci.getName()+"-"+relation.getCiDepartment().getGroupName()+"，所以无法结束");
+							}
+						}
+					}
+				}
+				auditTaskService.endTask(id);
+				STREAM_OPERATE_LOG.info("审核已经结束，id:"+at.getId()+",操作者是："+currentUser.getUsername());
+				map.put("flag", true);
+			} else {
+				map.put("flag", false);
+				map.put("msg", "参数错误");
+			}
+		} else {
+			map.put("flag", false);
+			map.put("msg", "没有权限");
+		}
+		
+		
+		return map;
+	}
+	
+	@RequestMapping(value = "/start-aduit-task", method = RequestMethod.POST)
+	@ResponseBody 
+	public boolean startAuditTask(Model model, HttpServletRequest request,Authentication auth) {
+		
+		if(request.getParameterValues("groups")==null || request.getParameterValues("codes") == null){
+			return false;
+		}
+		SysUser currentUser = userUtil.getUserByAuth(auth);
+		//查找没完成任务
+		if(auditTaskService.findUnfinishedTask(currentUser)==null){
+			String name = request.getParameter("auditName");
+			String reason = request.getParameter("reason");
+			
+			Set<TaskCategoryDepartmentRelation> relationSet = new HashSet<>();
+			
+			//部门
+			for(String groupid : request.getParameterValues("groups")) {
+				Group group = groupService.getById(Long.valueOf(groupid));
+				//分类
+				for(String accountTypeId : request.getParameterValues("codes")) {
+					TaskCategoryDepartmentRelation relation = new TaskCategoryDepartmentRelation();
+					Category category = categoryService.getByCode(accountTypeId);
+					relation.setCiCategory(category);
+					relation.setCiDepartment(group);
+					//状态改为未审核
+					relation.setStatus(2);					//审核状态 1-已审核，2-未审核，5-审核中
+					relationSet.add(relation);
+				}
+			}
+			
+			if(relationSet.size() == 0) {
+				return false;
+			}
+			
+			AuditTask auditTask = new AuditTask();
+			auditTask.setName(name);
+			auditTask.setReason(reason);
+			auditTask.setAssessor(currentUser);
+			auditTask.setRelationSet(relationSet);
+			
+			auditTaskService.startTask(auditTask);
+			
+			STREAM_OPERATE_LOG.info("开启了一个审核，id:"+auditTask.getId()+",操作者是："+currentUser.getUsername());
+			return true;
+		}
+		
+		return false;
+	}
+	
+	@RequestMapping(value="/audit-task/contains0", method=RequestMethod.GET)
+	@ResponseBody 
+	public Map<String, String[]> auditTaskContains0(@RequestParam(required=true) long ciid, Model model, Authentication auth) throws Exception {
+		Ci ci = ciService.getById(ciid);
+		//首先判断是否有审核任务
+		AuditTask at = auditTaskService.findUnfinishedTask(groupService.getById(Long.valueOf(ci.getDepartmentInUse())),categoryService.getByCode(ci.getCategoryCode()));
+		if(at==null){
+			STREAM_OPERATE_LOG.info("没有审核任务，所以無法讀取");
+			throw new Exception("没有审核任务，所以無法讀取,台账id="+ciid);
+		} else {
+			Map<String, String[]> map = ciService.getContrastByCi(ci.getId(), at.getId());
+			
+			return map;
+		}
+	}
+	
+	@RequestMapping(value="/audit-task/contains", method=RequestMethod.GET)
+	public String auditTaskContains(@RequestParam(required=true) long ciid, Model model, Authentication auth) throws Exception {
+//		SysUser currentUser = userUtil.getUserByAuth(auth);
+		Ci ci = ciService.getById(ciid);
+		//首先判断是否有审核任务
+		AuditTask at = auditTaskService.findUnfinishedTask(groupService.getById(Long.valueOf(ci.getDepartmentInUse())),categoryService.getByCode(ci.getCategoryCode()));
+		if(at==null){
+			STREAM_OPERATE_LOG.info("没有审核任务，所以無法讀取");
+			throw new Exception("没有审核任务，所以無法讀取,台账id="+ciid);	
+		} else {
+			Map<String, String[]> map = ciService.getContrastByCi(ci.getId(), at.getId());
+				
+			model.addAttribute("mapContains", map);
+			model.addAttribute("ci", ci);
+				
+			return "account-life-cycle/audit-task-contains";
+		}
+	}
+	
+	@RequestMapping(value="/audit-task/contains1", method=RequestMethod.GET)
+	@ResponseBody 
+	public Map<String, String[]> auditTaskContains1(@RequestParam(required=true) long ciid,@RequestParam(required=true) long at, Model model) throws Exception {
+		Ci ci = ciService.getById(ciid);
+		//首先判断是否有审核任务
+		AuditTask auditTask = auditTaskService.getById(at);
+		if(auditTask==null || ci==null){
+			STREAM_OPERATE_LOG.info("没有审核任务或者没有这个台账，所以無法讀取");
+			throw new Exception("没有审核任务或者没有台账信息，所以無法讀取,审核任务id="+at);	
+		} else {
+			Map<String, String[]> map = ciService.getContrastByCi(ci.getId(), at);
+				
+			return map;
+		}
+	}
+	
+	@RequestMapping(value = "/audit-task/import-xls", method = RequestMethod.POST)
+	public String auditTaskImportXls(@RequestParam("xls_file") MultipartFile file, HttpServletRequest request, Model model,Authentication auth) throws Exception {
+		// 先判断文件是否为空 
+        if (file.isEmpty()) {
+        	throw new Exception("没有可操作的文件");
+        }
+        
+        //验证权限以及是否有任务
+        SysUser currentUser = userUtil.getUserByAuth(auth);
+		if(userUtil.isRolesWithUser(currentUser, _accountSub)) {
+			//首先判断是否有审核任务
+			AuditTask at = auditTaskService.findUnfinishedTask(currentUser.getGroup());
+			
+			if(at==null){
+				throw new Exception("无法完成导入，当前没有审核任务");
+			} else {
+				ciService.importXlsByTask(file,at,currentUser);
+				return "redirect:/account-life-cycle/audit-task/"+at.getId();
+			}
+		}else {
+			throw new Exception("当前用户的角色不允许执行此操作");
+		}
+	}
+	
+	//atid
+	@RequestMapping(value = "/audit-task/commit/{id}", method = RequestMethod.POST)
+	@ResponseBody
+	public Map<String, Object> auditTaskCommit(@PathVariable Long id,Authentication auth) {
+		Map<String, Object> map = new HashMap<>();
+		//验证权限以及是否有任务
+        SysUser currentUser = userUtil.getUserByAuth(auth);
+		if(userUtil.isRolesWithUser(currentUser, _accountSub)) {
+			//首先判断是否有审核任务
+			AuditTask at = auditTaskService.findUnfinishedTask(currentUser.getGroup());
+			
+			AuditTask at0 = auditTaskService.getById(id);
+			
+			if(at==at0 && at.getEndTime() == null) {
+				//把at中relation的状态和所有ci的状态修改
+				//提交
+				auditTaskService.subAccountCommit(at, currentUser.getGroup());
+				map.put("flag", true);
+				map.put("msg", "提交成功");
+			} else {
+				map.put("flag", false);
+				map.put("msg", "参数错误");
+			}
+		} else {
+			map.put("flag", false);
+			map.put("msg", "没有权限");
+		}
+		return map;
+	}
+	
+	@RequestMapping(value = "/audit-task/save", method = RequestMethod.POST)
+	public String auditTaskSave(@Valid @ModelAttribute("ci") Ci ci, HttpServletRequest request, Model model,Authentication auth) throws Exception {
+		SysUser currentUser = userUtil.getUserByAuth(auth);
+		if(userUtil.isRolesWithUser(currentUser, _accountSub)) {
+			//首先判断是否有审核任务
+			AuditTask at = auditTaskService.findUnfinishedTask(currentUser.getGroup(),categoryService.getByCode(ci.getCategoryCode()));
+			if(at==null){
+				return "redirect:/404";	//没有审核任务
+			} else {
+				ObjectMapper mapper = new ObjectMapper();
+				//找到属性
+				try
+				{
+					@SuppressWarnings("unchecked")
+					Set<Entry<String, String[]>> entrySet = request.getParameterMap().entrySet();
+					Map<String,String> parameters = new HashMap<String,String>();
+					for (Entry<String, String[]> entry : entrySet)
+					{
+						if(entry.getKey().startsWith("CMS_PROPERTY_")) {
+							parameters.put(entry.getKey(), entry.getValue()[0]);
+						}
+					}
+					ci.setPropertiesData(mapper.writeValueAsString(parameters));
+					
+				}catch(JsonGenerationException e){
+					
+				}catch(JsonMappingException e){
+					
+				}catch(IOException e){
+					
+				}
+				
+				ciService.saveByAuditTask(ci,at);
+				
+				return "redirect:/account-life-cycle/audit-task/"+at.getId();
+			}
+		} else {
+			return "redirect:/403";				//没有权限
+		}
+
+	}
+	
+	@RequestMapping(value="/audit-task/pass", method=RequestMethod.POST)
+	@ResponseBody
+	public Map<String, Object> auditTaskPass(@RequestParam(required=true) Long[] ids, Authentication auth) throws Exception {
+		SysUser currentUser = userUtil.getUserByAuth(auth);
+		Map<String, Object> map = new HashMap<>();
+		if(userUtil.isRolesWithUser(currentUser, _accountMaster)) {
+			map.put("flag", true);
+			//判断当前是否有审核任务
+			AuditTask at = auditTaskService.findUnfinishedTask(currentUser);
+			
+			if(at == null) { 
+				map.put("flag", true);
+				return map;
+			}else {
+				boolean b = true;
+				List<Ci> ciList = ciService.getByIds(Arrays.asList(ids)).getResult();
+				if(ciList.size()==0) {
+					map.put("flag", true);
+					return map;
+				}
+				for(Ci ci : ciList) {
+					AuditTask at0 = auditTaskService.findUnfinishedTask(groupService.getById(Long.valueOf(ci.getDepartmentInUse())), categoryService.getByCode(ci.getCategoryCode()));
+					
+					if(at0!=at){
+						b = false;
+						break;
+					}
+				}
+				
+				if(!b) {
+					map.put("flag", true);
+				} else {
+					ciService.passCis(at,ids);
+					map.put("flag", true);
+				}
+			}
+		}
+		return map;
+	}
+	
+//	@RequestMapping(value="/audit-task/pass", method=RequestMethod.GET)
+//	public String auditTaskPass(@RequestParam(required=true) long ciid,@RequestParam(required=true) boolean flag, Authentication auth) throws Exception {
+//		Ci ci = ciService.getById(ciid);
+//		if(ci ==null ) return "redirect:/404";
+//		
+//		//首先判断是否有审核任务
+//		AuditTask at = auditTaskService.findUnfinishedTask(groupService.getById(Long.valueOf(ci.getDepartmentInUse())),categoryService.getByCode(ci.getCategoryCode()));
+//		
+//		if(at == null) return "redirect:/404";
+//		
+//		ciService.passCi(ci, at, flag);
+//		
+//		return "redirect:/account-life-cycle/index";
+//	}
+	
+	@RequestMapping(value = "/audit-task/del/{ciid}", method = RequestMethod.POST)
+	@ResponseBody 
+	public Map<String, Object> auditTaskDel(@PathVariable Long ciid, HttpServletRequest request, Model model,Authentication auth) throws Exception {
+		SysUser currentUser = userUtil.getUserByAuth(auth);
+		Map<String, Object> map = new HashMap<>();
+		if(userUtil.isRolesWithUser(currentUser, _accountSub)) {
+			Ci ci = ciService.getById(ciid);
+			if(ci==null) {
+				
+			} else {
+				if(ci.getDepartmentInUse().equals(String.valueOf(currentUser.getGroup().getId()))) {
+					AuditTask at= auditTaskService.findUnfinishedTask(currentUser.getGroup(), categoryService.getByCode(ci.getCategoryCode()));
+					if(at==null) {
+						
+					} else {
+						ciService.delByAuditTask(ci,at);
+						map.put("flag", true);
+					}
+				}
+			}
+		}
+		
+		return map;
+	}
+	
+	@RequestMapping(value = "/audit-task/recover/{ciid}", method = RequestMethod.POST)
+	@ResponseBody 
+	public Map<String, Object> auditTaskRecover(@PathVariable Long ciid, HttpServletRequest request, Model model,Authentication auth) throws Exception {
+		SysUser currentUser = userUtil.getUserByAuth(auth);
+		Map<String, Object> map = new HashMap<>();
+		if(userUtil.isRolesWithUser(currentUser, _accountSub)) {
+			Ci ci = ciService.getById(ciid);
+			if(ci==null) {
+				
+			} else {
+				if(ci.getDepartmentInUse().equals(String.valueOf(currentUser.getGroup().getId()))) {
+					AuditTask at= auditTaskService.findUnfinishedTask(currentUser.getGroup(), categoryService.getByCode(ci.getCategoryCode()));
+					if(at==null) {
+						
+					} else {
+						ciService.recoverByAuditTask(ci,at);
+						map.put("flag", true);
+					}
+				}
+			}
+		}
+		
+		return map;
+	}
+	
+	@RequestMapping(value = "/audit-task/update", method = RequestMethod.POST)
+	public String auditTaskUpdate(@Valid @ModelAttribute("ci") Ci ci, HttpServletRequest request, Model model,Authentication auth) throws Exception {
+		SysUser currentUser = userUtil.getUserByAuth(auth);
+		if(userUtil.isRolesWithUser(currentUser, _accountSub)) {
+			//首先判断是否有审核任务
+			AuditTask at = auditTaskService.findUnfinishedTask(currentUser.getGroup(),categoryService.getByCode(ci.getCategoryCode()));
+			
+			if(at==null) return "redirect:/404";	//没有审核任务
+				ObjectMapper mapper = new ObjectMapper();
+				//找到属性
+				try
+				{
+					@SuppressWarnings("unchecked")
+					Set<Entry<String, String[]>> entrySet = request.getParameterMap().entrySet();
+					Map<String,String> parameters = new HashMap<String,String>();
+					for (Entry<String, String[]> entry : entrySet)
+					{
+						if(entry.getKey().startsWith("CMS_PROPERTY_")) {
+							parameters.put(entry.getKey(), entry.getValue()[0]);
+						}
+					}
+					ci.setPropertiesData(mapper.writeValueAsString(parameters));
+					
+				}catch(JsonGenerationException e){
+					
+				}catch(JsonMappingException e){
+					
+				}catch(IOException e){
+					
+				}
+				ciService.updateByAuditTask(ci,at);
+				return "redirect:/account-life-cycle/audit-task/"+at.getId();
+		} else {
+			return "redirect:/403";				//没有权限
+		}
+
+	}
+	
+	@RequestMapping(value = "/audit-task/{id}", method = RequestMethod.GET)
+	public String auditTaskDetails(@PathVariable Long id,Model model,Authentication auth) throws Exception {
+		//判断有没有权限进入
+		SysUser currentUser = userUtil.getUserByAuth(auth);
+		
+		AuditTask at= auditTaskService.getById(id);
+		
+		if(at==null)
+			throw new Exception("没有这个任务，参数错误 ： "+id);
+		
+		if(at.getEndTime() != null)
+			throw new Exception("任务已结束");
+		boolean isAccountMaster = false, isAccountSub = false;
+		if(userUtil.isRolesWithUser(currentUser, _accountMaster)){
+			if(at.getAssessor() == currentUser) {
+				model.addAttribute("at", at);
+			} else {
+				throw new Exception("此用户没有这个任务");
+			}
+			isAccountMaster = true;
+			//获取部门
+			Set<Map<String, Object>> setGroup = new HashSet<>();
+			for(TaskCategoryDepartmentRelation relation : at.getRelationSet()) {
+				Map<String, Object> mapGroup = new HashMap<>();
+				
+				Group group = relation.getCiDepartment();
+				mapGroup.put("id", group.getId());
+				mapGroup.put("groupName", group.getGroupName());
+				setGroup.add(mapGroup);
+				
+			}
+			model.addAttribute("groups", setGroup);
+			model.addAttribute("groupId", 0);
+		} else if(userUtil.isRolesWithUser(currentUser, _accountSub)) {
+			boolean isTask = false;
+			int departmentAuditStatus = 0;	//部门的审核状态
+			for(TaskCategoryDepartmentRelation relation : at.getRelationSet()) {
+				if(relation.getCiDepartment() == currentUser.getGroup()){
+					departmentAuditStatus = relation.getStatus();
+					isTask = true;
+					break;
+				}
+			}
+			if(isTask) {
+				model.addAttribute("at", at);
+				model.addAttribute("departmentAuditStatus",departmentAuditStatus);
+			} else
+				throw new Exception("此用户没有这个任务");
+			isAccountSub = true;
+			Set<Category> categorySet = new HashSet<>();
+			for(TaskCategoryDepartmentRelation relation : at.getRelationSet()) {
+				categorySet.add(relation.getCiCategory());
+			}
+			model.addAttribute("categorys", categorySet);
+			model.addAttribute("groupId", currentUser.getGroup().getId());
+		} else 
+			throw new Exception("没有权限");
+		
+		model.addAttribute("isAccountMaster", isAccountMaster);
+		model.addAttribute("isAccountSub", isAccountSub);
+		
+		return "account-life-cycle/audit-task-details";
+	}
+	
+	@RequestMapping(value = "/audit-task/index", method = RequestMethod.GET)
+	public String auditTaskIndexHtml(Model model,Authentication auth) {
+		SysUser currentUser = userUtil.getUserByAuth(auth);
+		boolean isAccountMaster = false, isAccountSub = false;
+		if(userUtil.isRolesWithUser(currentUser, _accountMaster)) {
+			//将部门和分类传入
+			model.addAttribute("topGroup", userUtil.getTopGroup(currentUser.getGroup()));
+			model.addAttribute("accountTypes", accountService.getAll());
+			isAccountMaster = true;
+			
+			//查找本人是否有任务
+			if(auditTaskService.findUnfinishedTask(currentUser)==null)
+				model.addAttribute("nonTask", true);
+			else
+				model.addAttribute("nonTask", false);
+		} 
+		model.addAttribute("isAccountMaster", isAccountMaster);
+		
+		if(userUtil.isRolesWithUser(currentUser, _accountSub)) {
+			isAccountSub = true;
+			
+		} 
+		model.addAttribute("isAccountSub", isAccountSub);
+		
+	
+		
+		return "account-life-cycle/audit-task-index-html";
+	}
+	
+	@RequestMapping(value = "/get-aduit-task-list", method = RequestMethod.GET)
+	@ResponseBody 
+	public String getAuditTaskList(@RequestParam(required=true) String aoData,Authentication auth) throws Exception {
+		JSONArray jsonarray = new JSONArray(aoData);
+		
+		String sEcho = null;  
+	    int iDisplayStart = 0; // 起始索引  
+	    int iDisplayLength = 0; // 每页显示的行数  
+	    
+	    for (int i = 0; i < jsonarray.length(); i++) {  
+	        JSONObject obj = (JSONObject) jsonarray.get(i);  
+	        if (obj.get("name").equals("sEcho"))  {
+	            sEcho = obj.get("value").toString();  
+	        } else if (obj.get("name").equals("iDisplayStart")) {  
+	            iDisplayStart = obj.getInt("value");  
+	        } else if (obj.get("name").equals("iDisplayLength")) {  
+	            iDisplayLength = obj.getInt("value");  
+	        }  
+	    } 
+		SysUser currentUser = userUtil.getUserByAuth(auth);
+		Map<String, Object> map = new HashMap<>();
+		if(currentUser == null) {
+			map.put("status", false);
+			map.put("msg", "当前没有用户");
+		}
+		
+		List<Map<String, Object>> list = auditTaskService.getListByUser(currentUser,iDisplayStart,iDisplayLength);
+		
+		 JSONObject getObj = new JSONObject();
+			
+			getObj.put("sEcho", sEcho);// 不知道这个值有什么用,有知道的请告知一下
+		    getObj.put("iTotalRecords", list.size());//实际的行数
+		    getObj.put("iTotalDisplayRecords", list.size());//显示的行数,这个要和上面写的一样
+		    
+		    getObj.put("aaData", list);//要以JSON格式返回
+		    
+			return getObj.toString();
+	}
+	
+	@RequestMapping(value = "/audit-task/history", method = RequestMethod.GET)
+	public String auditTaskHistory(@RequestParam(required=true) long at,Model model,Authentication auth) throws Exception {
+		AuditTask auditTask = auditTaskService.getById(at);
+		
+		if(auditTask == null){
+			STREAM_OPERATE_LOG.debug(this.getClass().getName()+"查找审核任务时出错，id="+at);
+			throw new Exception("没有这个审核记录，id="+at);
+		}
+		
+		
+		SysUser currentUser = userUtil.getUserByAuth(auth);
+		boolean isAccountMaster = false, isAccountSub = false;
+		if(userUtil.isRolesWithUser(currentUser, _accountMaster)){
+			if(auditTask.getAssessor() == currentUser) {
+				model.addAttribute("at", auditTask);
+			} else {
+				throw new Exception("此用户没有这个任务");
+			}
+			isAccountMaster = true;
+			//获取部门
+			Set<Map<String, Object>> setGroup = new HashSet<>();
+			for(TaskCategoryDepartmentRelation relation : auditTask.getRelationSet()) {
+				Map<String, Object> mapGroup = new HashMap<>();
+				
+				Group group = relation.getCiDepartment();
+				mapGroup.put("id", group.getId());
+				mapGroup.put("groupName", group.getGroupName());
+				setGroup.add(mapGroup);
+				
+			}
+			model.addAttribute("groups", setGroup);
+			model.addAttribute("groupId", 0);
+		} else if(userUtil.isRolesWithUser(currentUser, _accountSub)) {
+			boolean isTask = false;
+			for(TaskCategoryDepartmentRelation relation : auditTask.getRelationSet()) {
+				if(relation.getCiDepartment() == currentUser.getGroup()){
+					isTask = true;
+					break;
+				}
+			}
+			if(isTask) {
+				model.addAttribute("at", auditTask);
+			} else
+				throw new Exception("此用户没有这个任务");
+			isAccountSub = true;
+			Set<Category> categorySet = new HashSet<>();
+			for(TaskCategoryDepartmentRelation relation : auditTask.getRelationSet()) {
+				categorySet.add(relation.getCiCategory());
+			}
+			model.addAttribute("categorys", categorySet);
+			model.addAttribute("groupId", currentUser.getGroup().getId());
+		} else 
+			throw new Exception("没有权限");
+		
+		model.addAttribute("isAccountMaster", isAccountMaster);
+		model.addAttribute("isAccountSub", isAccountSub);
+		
+		return "account-life-cycle/audit-task-history";
+	}
+	
+	@RequestMapping(value = "/audit-task/init-update-html", method = RequestMethod.GET)
+	public String auditTaskInitUpdate(@RequestParam(required=true) long ciid,Model model,Authentication auth) {
+		Ci ci = ciService.getById(ciid);
+		if(ci ==null ) return "redirect:/404";
+		Category category = categoryService.getByCode(ci.getCategoryCode());
+		//if(category == null) return "redirect:/404";		
+		SysUser currentUser = userUtil.getUserByAuth(auth);
+		if(userUtil.isRolesWithUser(currentUser, _accountSub)) {			//只有部门台账负责人有权限
+			Group group = currentUser.getGroup();
+			AuditTask auditTask = auditTaskService.findUnfinishedTask(group);
+			//查看是否有审核任务
+			if(auditTask != null) {
+				//设置group
+				model.addAttribute("group", group);
+				
+				model.addAttribute("category", category);
+				model.addAttribute("properties", getHtmlMapByCategory(category.getCategoryCode()));
+				model.addAttribute("ci", ci);
+				model.addAttribute("status", syscodeService.getAllByType(PropertyFileUtil.getStringValue("syscode.cms.ci.status")).getResult());
+				model.addAttribute("securityLevel", syscodeService.getAllByType(PropertyFileUtil.getStringValue("syscode.cms.ci.securitylevel")).getResult());
+				model.addAttribute("users", group.getUsers());
+				
+				return "account-life-cycle/audit-task-update";
+			}
+		}
+		return "redirect:/404";
+	}
+	
+	@RequestMapping(value = "/audit-task/init-create-html", method = RequestMethod.POST)
+	public String auditTaskInitCreate(@RequestParam(required=true) String code,Model model,Authentication auth) {
+		Category category = categoryService.getByCode(code);
+		if(category == null) return "redirect:/404";		
+		SysUser currentUser = userUtil.getUserByAuth(auth);
+		if(userUtil.isRolesWithUser(currentUser, _accountSub)) {			//只有部门台账负责人有权限
+			Group group = currentUser.getGroup();
+			AuditTask auditTask = auditTaskService.findUnfinishedTask(group);
+			//查看是否有审核任务
+			if(auditTask != null) {
+				//设置group
+				model.addAttribute("group", group);
+				
+				model.addAttribute("category", category);
+				model.addAttribute("properties", getHtmlMapByCategory(category.getCategoryCode()));
+				model.addAttribute("ci", new Ci());
+				model.addAttribute("status", syscodeService.getAllByType(PropertyFileUtil.getStringValue("syscode.cms.ci.status")).getResult());
+				model.addAttribute("securityLevel", syscodeService.getAllByType(PropertyFileUtil.getStringValue("syscode.cms.ci.securitylevel")).getResult());
+				model.addAttribute("users", group.getUsers());
+				
+				return "account-life-cycle/audit-task-create";
+			}
+		}
+		return "redirect:/404";
+	}
+	
+	@RequestMapping(value = "/index", method = RequestMethod.GET)
+	public String index(Model model,Authentication auth) {
+		Map<String, List<Account>> map = new HashMap<>();
+		//根据权限获取相应的CI列表
+		for(AccountType at : AccountType.values()) {
+			map.put(at.getName(), accountService.getListByType(at));
+		}
+		
+		SysUser currentUser = userUtil.getUserByAuth(auth);
+		boolean isAccountMaster = false, isAccountSub = false;
+		if(userUtil.isRolesWithUser(currentUser, _accountMaster)) {
+			//将部门和分类传入
+			model.addAttribute("topGroup", userUtil.getTopGroup(currentUser.getGroup()));
+			model.addAttribute("accountTypes", accountService.getAll());
+			isAccountMaster = true;
+		} 
+		model.addAttribute("isAccountMaster", isAccountMaster);
+		
+		if(userUtil.isRolesWithUser(currentUser, _accountSub)) {
+			isAccountSub = true;
+		} 
+		model.addAttribute("isAccountSub", isAccountSub);
+		
+		if(isAccountMaster) { 
+			//查找本人是否有任务
+			if(auditTaskService.findUnfinishedTask(currentUser)==null)
+				model.addAttribute("nonTask", true);
+			else
+				model.addAttribute("nonTask", false);
+		}
+		
+		if(isAccountSub) {			//查找部门下是否有为完成的审核任务
+			AuditTask at = auditTaskService.findUnfinishedTask(currentUser.getGroup());
+			if(at==null) {
+				model.addAttribute("nonTask", true);
+			}
+			else {
+				model.addAttribute("nonTask", false);
+				//将类别
+				Set<Category> categorySet = new HashSet<>();
+				for(TaskCategoryDepartmentRelation relation : at.getRelationSet()) {
+					categorySet.add(relation.getCiCategory());
+				}
+				model.addAttribute("categorys", categorySet);
+			}
+		}
+		
+		model.addAttribute("types", map);
+		
+		return "account-life-cycle/audit-task-index";
+	}
+	
+	@RequestMapping(value="/get-accounts-by-group",method = RequestMethod.GET)
+	@ResponseBody
+	public String getAuditTaskListCiByGroup(@RequestParam(required=true) String aoData,Authentication auth) throws Exception{
+		SysUser currentUser = userUtil.getUserByAuth(auth);
+		boolean isAccountMaster = false;//, isAccountSub = false;
+		if(userUtil.isRolesWithUser(currentUser, _accountMaster)) {
+			isAccountMaster = true;
+		} else if(userUtil.isRolesWithUser(currentUser, _accountSub)) {
+			//isAccountSub = true;
+		} else {
+			throw new Exception("没有权限");
+		}
+		JSONArray jsonarray = new JSONArray(aoData);
+		
+		String sEcho = null;  
+	    int iDisplayStart = 0; // 起始索引  
+	    int iDisplayLength = 0; // 每页显示的行数  
+	    Long groupId = 0L;			//部门
+	    Long atId = 0L;
+	    
+	    
+	    for (int i = 0; i < jsonarray.length(); i++) {  
+	        JSONObject obj = (JSONObject) jsonarray.get(i);  
+	        if (obj.get("name").equals("sEcho"))  {
+	            sEcho = obj.get("value").toString();  
+	        } else if (obj.get("name").equals("iDisplayStart")) {  
+	            iDisplayStart = obj.getInt("value");  
+	        } else if (obj.get("name").equals("iDisplayLength")) {  
+	            iDisplayLength = obj.getInt("value");  
+	        } else if (obj.get("name").equals("groupId")) {  
+	        	groupId = obj.getLong("value");  
+	        } else if (obj.get("name").equals("atId")) {  
+	        	atId = obj.getLong("value");  
+	        } 
+	    } 
+	    
+	    AuditTask at = auditTaskService.getById(atId);
+	    
+	    if(at==null) throw new Exception("参数错误，id"+atId);
+	    
+	    
+	    	JSONObject getObj = new JSONObject();
+	    	//找出逻辑
+	    	Set<String> groupIdSet = new HashSet<>();
+	    	Set<String> codeSet = new HashSet<>();
+	    	Map<String,Integer> groupStatusMap = new HashMap<>();
+	    	for(TaskCategoryDepartmentRelation relation : at.getRelationSet()) {
+				String groupIdStr = String.valueOf(relation.getCiDepartment().getId());
+				String categoryCode = relation.getCiCategory().getCategoryCode();
+				groupIdSet.add(groupIdStr);
+				codeSet.add(categoryCode);
+				groupStatusMap.put(groupIdStr+"-"+categoryCode, relation.getStatus());
+	    	}
+
+	    		if(groupId == 0 && isAccountMaster) {
+	    			if(at.getAssessor() != currentUser)
+	    				 throw new Exception("没有权限");
+	    		} else {		//按部门查
+	    			Group group = new Group();
+	    			if(isAccountMaster) {
+	    				group = groupService.getById(groupId);
+	    			} else {
+	    				group = currentUser.getGroup();
+	    			}
+	    			if(groupIdSet.contains(group.getId().toString())) {
+	    				groupIdSet.clear();
+	    				groupIdSet.add(group.getId().toString());
+	    			} else {
+	    				throw new Exception("没有权限");
+	    			}
+	    		}
+	    	
+
+	    	SearchResult<Ci> result = auditTaskService.getCiList(groupIdSet,codeSet,iDisplayStart, iDisplayLength);
+	    	
+	    	List<Map<String, Object>> resultList = auditTaskService.getCiMapList(at, result.getResult());
+
+	    	getObj.put("sEcho", sEcho);// 不知道这个值有什么用,有知道的请告知一下
+		    getObj.put("iTotalRecords", result.getTotalCount());//实际的行数
+		    getObj.put("iTotalDisplayRecords", result.getTotalCount());//显示的行数,这个要和上面写的一样
+		    
+		    getObj.put("aaData", resultList);//要以JSON格式返回
+		    
+			return getObj.toString();
+	   
+		
+	}
+	
+	@RequestMapping(value="/get-all",method = RequestMethod.GET)
+	@ResponseBody
+	public String getListByCategoryCode(@RequestParam(required=true) String aoData,Authentication auth) throws JsonParseException, JsonMappingException, IOException{
+		JSONArray jsonarray = new JSONArray(aoData);
+		
+		String sEcho = null;  
+	    int iDisplayStart = 0; // 起始索引  
+	    int iDisplayLength = 0; // 每页显示的行数  
+	    String categoryCode = "0";			//部门
+	    
+	    for (int i = 0; i < jsonarray.length(); i++) {  
+	        JSONObject obj = (JSONObject) jsonarray.get(i);  
+	        if (obj.get("name").equals("sEcho"))  {
+	            sEcho = obj.get("value").toString();  
+	        } else if (obj.get("name").equals("iDisplayStart")) {  
+	            iDisplayStart = obj.getInt("value");  
+	        } else if (obj.get("name").equals("iDisplayLength")) {  
+	            iDisplayLength = obj.getInt("value");  
+	        }  
+	        else if (obj.get("name").equals("categoryCode")) {  
+	        	categoryCode = obj.getString("value");  
+	        } 
+	    } 
+	    //获取当前用户的角色
+	    
+	    SearchResult<Ci> result = ciService.getListByUserAndType(userUtil.getUserByAuth(auth), categoryCode,iDisplayStart, iDisplayLength);
+	    
+	    JSONObject getObj = new JSONObject();
+		
+		getObj.put("sEcho", sEcho);// 不知道这个值有什么用,有知道的请告知一下
+	    getObj.put("iTotalRecords", result.getTotalCount());//实际的行数
+	    getObj.put("iTotalDisplayRecords", result.getTotalCount());//显示的行数,这个要和上面写的一样
+	    
+	    getObj.put("aaData", result.getResult());//要以JSON格式返回
+	    
+		return getObj.toString();
 	}
 
 	@RequestMapping(value = "/start", method = RequestMethod.GET)
@@ -137,6 +1013,7 @@ public class AccountLifeCycleController {
 		}
 		model.addAttribute("types", categoryService.getChildListByParent(codeType));
 		model.addAttribute("users", userService.getAllByCondition(true, true));
+		
 		return "account-life-cycle/add";
 	}
 	
@@ -229,7 +1106,17 @@ public class AccountLifeCycleController {
 	public String addProperty(@PathVariable("id") long id,Model model){
 		Ci ci = ciService.getById(id);
 		model.addAttribute("ci",ci);
-		String code = ci.getCategoryCode();
+		
+		model.addAttribute("properties", getHtmlMapByCategory(ci.getCategoryCode()));
+		return "account-life-cycle/ci-addproperty";
+	}
+	
+	/**
+	 * 根据分类代码生成html
+	 * @param code
+	 * @return
+	 */
+	private Map<String, Object> getHtmlMapByCategory(String code) {
 		String tmpcode = code.substring(0,2);
 		Map<String,Object> map = new LinkedHashMap<String,Object>();
 		while(tmpcode.length()<=code.length())
@@ -246,13 +1133,13 @@ public class AccountLifeCycleController {
 				break;
 			tmpcode = code.substring(0,tmpcode.length()+2);
 		}
-		model.addAttribute("properties", map);
-		return "account-life-cycle/ci-addproperty";
+		
+		return map;
 	}
 	
 	@SuppressWarnings("unchecked")
 	@RequestMapping(value="/ci/saveproperty/{id}",method=RequestMethod.POST)
-	public String saveProperty(@PathVariable("id") long id,HttpServletRequest request){	
+	public String saveProperty(@PathVariable("id") long id,HttpServletRequest request) throws JsonParseException, JsonMappingException, IOException{	
 		ObjectMapper mapper = new ObjectMapper();
 		Ci ci = ciService.getById(id);
 		try
@@ -411,7 +1298,7 @@ public class AccountLifeCycleController {
 			task = taskService.createTaskQuery().taskId(taskId).singleResult();
 
 		//查找操作类型
-		List<ChangeItem> list = changeitemService.getByChangeId(Long.valueOf(task.getProcessInstanceId()));
+		List<ChangeItem> list = changeitemService.getByChangeId(Long.valueOf(task.getProcessInstanceId()),ChangeitemType.change);
 		if(list.size()>0) {
 			ChangeItem item = list.get(0);
 			
@@ -777,7 +1664,7 @@ public class AccountLifeCycleController {
 	public Map<String, Object> getItems(@RequestParam(required=true) String processInstanceId) {
 		Map<String, Object> map = new HashMap<String, Object>();
 
-		map.put("items", changeitemService.getByChangeId(Long.valueOf(processInstanceId)));
+		map.put("items", changeitemService.getByChangeId(Long.valueOf(processInstanceId), ChangeitemType.change));
 
 		return map;
 	}
@@ -794,4 +1681,5 @@ public class AccountLifeCycleController {
 
 		return map;
 	}
+	
 }

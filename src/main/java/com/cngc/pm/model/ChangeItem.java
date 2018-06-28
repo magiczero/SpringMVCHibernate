@@ -31,6 +31,24 @@ public class ChangeItem implements Serializable {
 	private Date createdTime;
 	private Date updatedTime;
 	private ChangeitemType type;
+	private ChangeitemActionType actionType;
+	private boolean isPass;					//改变是否通过
+	
+	@Column(name="passed_")
+	public boolean isPass() {
+		return isPass;
+	}
+	public void setPass(boolean isPass) {
+		this.isPass = isPass;
+	}
+	@Enumerated(EnumType.ORDINAL)
+	@Column(name="action_")
+	public ChangeitemActionType getActionType() {
+		return actionType;
+	}
+	public void setActionType(ChangeitemActionType actionType) {
+		this.actionType = actionType;
+	}
 	
 	@Enumerated(EnumType.ORDINAL)
 	@Column(name="type_")

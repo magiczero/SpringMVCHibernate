@@ -6,6 +6,8 @@ import org.springframework.stereotype.Repository;
 
 import com.cngc.pm.dao.ChangeItemDAO;
 import com.cngc.pm.model.ChangeItem;
+import com.cngc.pm.model.ChangeitemType;
+import com.cngc.pm.model.cms.AuditTask;
 import com.googlecode.genericdao.search.Search;
 import com.googlecode.genericdao.search.SearchResult;
 
@@ -33,12 +35,25 @@ public class ChangeItemDAOImpl extends BaseDAOImpl<ChangeItem,Long> implements C
 	}
 	
 	@Override
-	public List<ChangeItem> getByChangeId(Long id) {
+	public List<ChangeItem> getByChangeId(Long id, ChangeitemType type) {
 		// TODO Auto-generated method stub
 		Search search = new Search();
 		
 		search.addFilterEqual("changeId", id);
+		search.addFilterEqual("type", type);
 		
 		return this.search(search);
+	}
+	
+	@Override
+	public ChangeItem getByCiIdAndAuditTask(Long ciid, AuditTask at) {
+		// TODO Auto-generated method stub
+		Search search = new Search();
+		
+		search.addFilterIn("ciId", ciid);
+		search.addFilterEqual("type", ChangeitemType.audit);
+		search.addFilterEqual("changeId", at.getId());
+		
+		return this.searchUnique(search);	
 	}
 }

@@ -1,6 +1,8 @@
 package com.cngc.pm.service.impl;
 
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -153,6 +155,24 @@ public class ResourcesServiceImpl implements ResourcesService {
 		recordsDao.save(record);
 				
 		return true;
+	}
+
+	@Override
+	@Transactional(readOnly=true)
+	public Resources getByPath(String url) {
+		// TODO Auto-generated method stub
+		if(url.indexOf("?")>0){
+  			url = url.substring(0, url.indexOf("?"));
+  		}
+  		
+  		//判断路径中是否有数字，如果有则替换
+  		Pattern pattern = Pattern.compile("\\d+");    
+ 	    Matcher matcher = pattern.matcher(url);
+ 	    if(matcher.find()) {
+ 	    	url = url.substring(0,matcher.start())+"*";
+ 	    }
+		
+ 	   return resourcesDao.getByPath(url);
 	}
 
 	

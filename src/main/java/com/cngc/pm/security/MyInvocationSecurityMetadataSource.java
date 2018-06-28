@@ -2,11 +2,10 @@ package com.cngc.pm.security;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 
 import javax.annotation.Resource;
 
-import org.slf4j.Logger;
+import org.apache.log4j.Logger;
 import org.springframework.security.access.ConfigAttribute;
 import org.springframework.security.access.SecurityConfig;
 import org.springframework.security.web.FilterInvocation;
@@ -17,14 +16,15 @@ import org.springframework.util.PathMatcher;
 import com.cngc.pm.model.Resources;
 import com.cngc.pm.model.Role;
 import com.cngc.pm.service.ResourcesService;
+
+import static com.cngc.utils.Constants.STREAM_OPERATE_LOG;
 //import org.codehaus.jackson.map.ObjectMapper;
 //import org.codehaus.jackson.map.SerializationConfig;
 
 public class MyInvocationSecurityMetadataSource implements
 				FilterInvocationSecurityMetadataSource {
 	//由spring调用
-//	Logger log=Logge..getLogger(MyInvocationSecurityMetadataSource.class);
-	private static final Logger logger = org.slf4j.LoggerFactory.getLogger(MyInvocationSecurityMetadataSource.class);      
+	private static final Logger logger = Logger.getLogger(MyInvocationSecurityMetadataSource.class);      
 //	private static Map<String, Collection<ConfigAttribute>> resourceMap = null;
 //	private ApplicationContext context;
 
@@ -126,21 +126,30 @@ public class MyInvocationSecurityMetadataSource implements
   		String url = ((FilterInvocation) object).getRequestUrl();
   		//System.out.println(url);
   		logger.info("访问路径：" + url);
+  		STREAM_OPERATE_LOG.info(this.getClass().getName()+"：访问路径--" + url);
   		
-  		List<Resources> resourcesList = resourcesService.getAll();
+  		//List<Resources> resourcesList = resourcesService.getAll();
   		Collection<ConfigAttribute> atts = new ArrayList<ConfigAttribute>();
-  		for(Resources r : resourcesList) {
-  			if (pathMatchesUrl(r.getPath(), url)) {
-  				//System.out.println(r.getId());
-  				//根据资源获得角色
-  				for (Role role : resourcesService.getRoles(r)) {
-  					ConfigAttribute ca = new SecurityConfig(role.getRoleName());
-  					atts.add(ca);
-  				}
-  				return atts;
+  		//for(Resources r : resourcesList) {
+  		Resources r = resourcesService.getByPath(url);
+  		if (r!=null) {
+  			//System.out.println(r.getId());
+  			//根据资源获得角色
+  			for (Role role : resourcesService.getRoles(r)) {
+  				ConfigAttribute ca = new SecurityConfig(role.getRoleName());
+  				atts.add(ca);
   			}
+  				//return atts;
   		}
-  		return null;
+  		//}
+  		
+  		if(atts.size()<1) {//没有任何权限
+  			STREAM_OPERATE_LOG.info(this.getClass().getName()+"：这个url -- " + url+"，未设置任何权限");
+//  			ConfigAttribute ca = new SecurityConfig("ROLE_NON");
+//  			atts.add(ca);
+  		}
+  		
+  		return atts;
   		
 //		Iterator<String> ite = resourceMap.keySet().iterator();
 //		while (ite.hasNext()) {

@@ -1,5 +1,8 @@
 package com.cngc.pm.service.impl.cms;
 
+import static com.cngc.utils.Constants._accountMaster;
+import static com.cngc.utils.Constants._accountSub;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -15,12 +18,12 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-import javax.annotation.Resource;
 import javax.crypto.Cipher;
 import javax.crypto.CipherInputStream;
 import javax.crypto.KeyGenerator;
@@ -36,26 +39,44 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.codehaus.jackson.JsonParseException;
+import org.codehaus.jackson.map.JsonMappingException;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import com.cngc.pm.dao.ChangeItemDAO;
 import com.cngc.pm.dao.MaintainRecordDAO;
 import com.cngc.pm.dao.RecordsDAO;
 import com.cngc.pm.dao.StatsDAO;
+import com.cngc.pm.dao.SysCodeDAO;
 import com.cngc.pm.dao.UserDAO;
+import com.cngc.pm.dao.cms.AccountDAO;
+import com.cngc.pm.dao.cms.AuditTaskDAO;
+import com.cngc.pm.dao.cms.CategoryDAO;
 import com.cngc.pm.dao.cms.CiDAO;
+import com.cngc.pm.dao.cms.PropertyDAO;
 import com.cngc.pm.model.Attachment;
 import com.cngc.pm.model.ChangeItem;
+import com.cngc.pm.model.ChangeitemActionType;
 import com.cngc.pm.model.ChangeitemType;
+import com.cngc.pm.model.Group;
 import com.cngc.pm.model.MaintainRecord;
 import com.cngc.pm.model.Records;
 import com.cngc.pm.model.RecordsType;
 import com.cngc.pm.model.SysUser;
+import com.cngc.pm.model.UserRole;
+import com.cngc.pm.model.cms.Account;
+import com.cngc.pm.model.cms.AuditTask;
+import com.cngc.pm.model.cms.Category;
 import com.cngc.pm.model.cms.Ci;
-import com.cngc.pm.service.ChangeItemService;
+import com.cngc.pm.model.cms.Property;
+import com.cngc.pm.model.cms.TaskCategoryDepartmentRelation;
 import com.cngc.pm.service.cms.CiService;
+import com.cngc.utils.Common;
 import com.cngc.utils.PropertyFileUtil;
 import com.googlecode.genericdao.search.Search;
 import com.googlecode.genericdao.search.SearchResult;
@@ -68,67 +89,102 @@ public class CiServiceImpl implements CiService{
 	private CiDAO ciDao;
 	@Autowired
 	private StatsDAO statsDao;
-//	@Autowired
-//	private CategoryDAO categoryDao;
+	@Autowired
+	private CategoryDAO categoryDao;
 	@Autowired
 	private UserDAO userDao;
-//	@Autowired
-//	private UserUtil userUtil;
 	@Autowired
 	private MaintainRecordDAO maintainRecordDao;
 	@Autowired
 	private RecordsDAO recordsDao;
-	@Resource
-	private ChangeItemService changeitemService;
+	@Autowired
+	private ChangeItemDAO changeitemDao;
+	@Autowired
+	private AccountDAO accountDao;
+	@Autowired
+	private PropertyDAO propertyDao;
+	@Autowired
+	private AuditTaskDAO auditTaskDao;
+	@Autowired
+	private SysCodeDAO sysCodeDao;
 
 	@Override
 	@Transactional(propagation = Propagation.REQUIRED, readOnly=false)
-	public void save(Ci ci, String ip){
+	public void save(Ci ci, String ip) throws JsonParseException, JsonMappingException, IOException{
 		ciDao.save(ci);
 		//Date date = new Date();
 		//同时在变更表中填写记录
 		ChangeItem item = new ChangeItem();
 		item.setCiId(ci.getId());
 		
-		StringBuffer sb = new StringBuffer("{");
+//		StringBuffer sb = new StringBuffer("{");
 		//存入时间
-		Date inTime = ci.getLastUpdateTime();
-		SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd");  
-		String strTime = sdf.format(inTime);
-		sb.append("\"CMS_FIELD_CREATEDTIME\":\""+strTime+"\"");
-		sb.append(",");
-		//责任部门
-		sb.append("\"CMS_FIELD_DEPARTMENTINUSE\":\""+ci.getDepartmentName()+"\"");
-		sb.append(",");
-		//责任人
-		sb.append("\"CMS_FIELD_USERINMAINTENANCE\":\""+ci.getUserInMaintenance()+"\"");
-		sb.append(",");
-		//设备类型
-		sb.append("\"CMS_FIELD_CATEGORYCODE\":\""+ci.getCategoryCode()+"\"");
-		sb.append(",");
-		//设备名称
-		sb.append("\"CMS_FIELD_NAME\":\""+ci.getName()+"\"");
-		sb.append(",");
-		//品牌
-		sb.append("\"CMS_FIELD_PRODUCER\":\""+ci.getProducer()+"\"");
-		sb.append(",");
-		//型号
-		sb.append("\"CMS_FIELD_MODEL\":\""+ci.getModel()+"\"");
-		sb.append(",");
-		//物理位置
-		sb.append("\"CMS_FIELD_LOCATION\":\""+ci.getLocation()+"\"");
-		sb.append(",");
-		//密级
-		sb.append("\"CMS_FIELD_SECURITYLEVEL\":\""+ci.getSecurityLevel()+"\"");
-		sb.append(",");
-		//涉密编号
-		sb.append("\"CMS_FIELD_SECURITYNO\":\""+ci.getSecurityNo()+"\"");
-		sb.append("}");
-		item.setNewValue(sb.toString());
-		item.setCreatedTime(inTime);
+//		Date inTime = ci.getLastUpdateTime();
+//		SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd");  
+//		String strTime = sdf.format(inTime);
+//		sb.append("\"CMS_FIELD_CREATEDTIME\":\""+strTime+"\"");
+//		sb.append(",");
+//		//责任部门
+//		sb.append("\"CMS_FIELD_DEPARTMENTINUSE\":\""+ci.getDepartmentName()+"\"");
+//		sb.append(",");
+//		//责任人
+//		sb.append("\"CMS_FIELD_USERINMAINTENANCE\":\""+ci.getUserInMaintenance()+"\"");
+//		sb.append(",");
+//		//设备类型
+//		sb.append("\"CMS_FIELD_CATEGORYCODE\":\""+ci.getCategoryCode()+"\"");
+//		sb.append(",");
+//		//设备名称
+//		sb.append("\"CMS_FIELD_NAME\":\""+ci.getName()+"\"");
+//		sb.append(",");
+//		//品牌
+//		sb.append("\"CMS_FIELD_PRODUCER\":\""+ci.getProducer()+"\"");
+//		sb.append(",");
+//		//型号
+//		sb.append("\"CMS_FIELD_MODEL\":\""+ci.getModel()+"\"");
+//		sb.append(",");
+//		//物理位置
+//		sb.append("\"CMS_FIELD_LOCATION\":\""+ci.getLocation()+"\"");
+//		sb.append(",");
+//		//密级
+//		sb.append("\"CMS_FIELD_SECURITYLEVEL\":\""+ci.getSecurityLevel()+"\"");
+//		sb.append(",");
+//		//涉密编号
+//		sb.append("\"CMS_FIELD_SECURITYNO\":\""+ci.getSecurityNo()+"\"");
+//		sb.append("}");
+//		item.setNewValue(sb.toString());
+		
+		//根据类型获得要显示的列
+				List<Property> fieldsSet = getParpertiesByCode(ci.getCategoryCode());
+				
+				String propertiesStr="", propertyNames = "";
+				Map<String, Object> mapNewValue = new HashMap<>();
+				ObjectMapper mapper = new ObjectMapper();
+				@SuppressWarnings("unchecked")
+				Map<String,String> newPropertymap = mapper.readValue(ci.getPropertiesData(), Map.class);
+				for(Property p:fieldsSet) {
+					propertyNames+=p.getPropertyName()+",";
+					propertiesStr+=p.getPropertyId()+",";
+					//对比值
+					if(p.getPropertyId().indexOf("CMS_FIELD_")==0 ) {
+						if(p.isNonTransient()) {
+							mapNewValue.put(p.getPropertyId(), Common.getFieldValueByName(ci, p.getPropertyConstraint()));
+						}
+					} else {
+						mapNewValue.put(p.getPropertyId(), newPropertymap.get(p.getPropertyId()));
+					}
+					
+				}
+		
+		item.setNewValue(mapper.writeValueAsString(mapNewValue));
+		
+		Date now = new Date();
+		
+		item.setCreatedTime(now);
+		item.setPropertiesName(propertyNames.substring(0, propertyNames.length()-1));
+		item.setProperties(propertiesStr.substring(0, propertiesStr.length()-1));
 		item.setType(ChangeitemType.create);
 		//保存
-		changeitemService.save(item);
+		changeitemDao.save(item);
 		//同时写入工作记录
 		MaintainRecord mr = new MaintainRecord();
 		mr.setEquipId(ci.getId().toString());
@@ -136,8 +192,8 @@ public class CiServiceImpl implements CiService{
 		mr.setEquipNum(ci.getNum());
 		mr.setExecutor(ci.getLastUpdateUser());
 		
-		mr.setMaintainTime(inTime);
-		mr.setInTime(inTime);
+		mr.setMaintainTime(now);
+		mr.setInTime(now);
 		mr.setType(1);
 		mr.setRole(1);
 		
@@ -158,8 +214,7 @@ public class CiServiceImpl implements CiService{
 	@Transactional(propagation = Propagation.REQUIRED, readOnly=false)
 	public boolean delById(Long id)
 	{
-		ciDao.removeById(id);
-		return true;
+		return ciDao.removeById(id);
 	}
 	
 	@Override
@@ -211,6 +266,129 @@ public class CiServiceImpl implements CiService{
 	public SearchResult<Ci> getByUser(String user)
 	{
 		return ciDao.getByUser(user);
+	}
+	
+	@Override
+	@Transactional(propagation = Propagation.REQUIRED, readOnly=false)
+	public void importXlsByTask(MultipartFile file, AuditTask at, SysUser user) throws Exception {
+		String[] fileNames = file.getOriginalFilename().split("\\.");
+        
+        if(fileNames[1].equals("xls") || fileNames[1].equals("xlsx")) {
+	        
+	        Workbook wb  = null;  
+            //根据文件格式(2003或者2007)来初始化  
+	        if(fileNames[1].equals("xlsx"))  
+	                wb = new XSSFWorkbook(file.getInputStream());  
+	        else  
+	                wb = new HSSFWorkbook(file.getInputStream()); 
+	        
+	        //可以导入的类别
+	        Set<TaskCategoryDepartmentRelation> relationSet = at.getRelationSet();
+	        //注意部门和类别是必须项
+	        for (int numSheet = 0; numSheet < wb.getNumberOfSheets(); numSheet++) {				//每一行是一个CI
+            	Sheet sheet = wb.getSheetAt(numSheet);  
+            	
+            	//根据sheet名获取类别
+            	Category category = categoryDao.getByName(sheet.getSheetName());
+            	
+            	if(category == null) throw new NullPointerException("excel中的数据有问题，没有找到这个类别："+sheet.getSheetName());
+            	
+            	Map<String, Category> categoryMap = new HashMap<>();
+            	Map<String, Group> groupMap = new HashMap<>();
+            	for(TaskCategoryDepartmentRelation relation : relationSet) {
+            		categoryMap.put(relation.getCiCategory().getCategoryCode(),relation.getCiCategory());
+            		groupMap.put(relation.getCiDepartment().getGroupName(), relation.getCiDepartment());
+            	}
+            	//判断类别是否是审核状态
+            	if(!categoryMap.containsKey(category.getCategoryCode())) {
+            		throw new Exception("表中有的类别不是审核状态");
+            	}
+            	
+            	String categoryCode = category.getCategoryCode();
+            	if(sheet.getLastRowNum() > 0) {
+	            	// 遍历表格的每一行
+	                int rowStart = sheet.getFirstRowNum();
+	                // 最小行数为1行
+	                int rowEnd = sheet.getLastRowNum();
+	                
+	                Row headerRow = sheet.getRow(1);
+	            	//标题栏
+	            	String headers[] = _parseExcelHeader(headerRow);
+	            	
+	            	//区域内容
+	            	String datas[][] = _parseExcelData(sheet, rowStart + 2, rowEnd,Math.max(headerRow.getLastCellNum(), 1));
+	            	
+	            	ObjectMapper mapper = new ObjectMapper();
+	            	Group group = user.getGroup();
+	            	for(int i = 0; i < datas.length; i++) {
+	                	String datas2[] = datas[i];
+	                	Ci ci = new Ci();
+	                	
+            			ci.setCategoryCode(categoryCode);				//设置类型
+	                	ci.setSystem("01"); 			//归属系统
+	                	ci.setDeleteStatus("01");
+	                	ci.setImportance("低");
+	                	ci.setUse("启用");
+	                	Map<String,String> propertymap = new HashMap<>();
+	                	SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd"); 
+	                	for(int j = 0; j<datas2.length; j++) {			//每一行是一个CI
+	                		if(!datas2[j].equals("")) {
+	                			Property p = propertyDao.getByPropertyName(headers[j]);
+	                			if(p == null) throw new Exception("excel中的数据有问题，没有找到这个标题对应的类别："+headers[i]);
+	                			
+	                			if(p.getPropertyId().indexOf("CMS_FIELD_")==0){
+	                				Object value = datas2[j];
+	                				if(p.getPropertyType().equals("date")) {
+	                					value = format.parse(datas2[j]);
+	                				} else if(p.getPropertyType().equals("sqldate")) {
+	                					value = new java.sql.Date(format.parse(datas2[j]).getTime());
+	                				}	else {
+		                				switch(p.getPropertyId()) {
+		                					case "CMS_FIELD_DEPARTMENTINUSE"://使用部门
+		                						if(group.getGroupName().equals(value)) {
+			                						value = String.valueOf(group.getId());
+			                					} else
+			                						throw new Exception("表格中的部门与操作人员的部门不一致，请查实");
+		                						break;
+		                					case "CMS_FIELD_USERINMAINTENANCE"://使用人
+		                						value=userDao.getUserByName(datas2[j]).getUsername();
+		                						break;
+		                					case "CMS_FIELD_STATUS":	//使用情况
+		                						value = sysCodeDao.getByCodeNameAndType(datas2[j], "CI_STATUS").getCode();
+		                						break;
+		                					case "CMS_FIELD_SECURITYLEVEL":	//密级
+		                						value = sysCodeDao.getByCodeNameAndType(datas2[j], "CI_SECURITY_LEVEL").getCode();
+		                						break;
+		                				}
+	                				}
+	            					// 更新字段
+	                				Common.setFieldValueByName(ci, p.getPropertyConstraint(), value);
+	            				}else{
+	            					if(p.isNonTransient())
+	            						propertymap.put(p.getPropertyId(), datas2[j]);
+	            				}
+	                		}
+	                	}
+	                	ci.setReviewStatus("02");
+	                	
+	                	ci.setPropertiesData(mapper.writeValueAsString(propertymap));
+	                	
+	                	if(StringUtils.isEmpty(ci.getSecurityNo())){
+	                		throw new Exception("没有保密编号");
+	                	}
+	                	
+	                	Ci ci0 = ciDao.getBySecurityNo(ci.getSecurityNo());
+	                	
+	                	if(ci0==null) {			//新建
+	                		saveCiByAuditTask(ci, at);
+	                	} else {				//修改
+	                		updateCiByAuditTask(ci0 , ci, at);
+	                	}
+	                }
+            	}
+            	
+	        }
+        }
 	}
 
 	@Override
@@ -453,28 +631,28 @@ public class CiServiceImpl implements CiService{
 			case "status" :								//状态
 				switch(propertyValue) {
 					case "丢弃":
-						ci.setSecurityLevel("12");
+						ci.setStatus("12");
 						break;
 					case "变更中":
-						ci.setSecurityLevel("05");
+						ci.setStatus("05");
 						break;
-					case "运行中":
-						ci.setSecurityLevel("07");
+					case "运行正常":
+						ci.setStatus("07");
 						break;
 					case "入库":
-						ci.setSecurityLevel("03");
+						ci.setStatus("03");
 						break;
 					case "故障":
-						ci.setSecurityLevel("09");
+						ci.setStatus("09");
 						break;
 					case "报废":
-						ci.setSecurityLevel("11");
+						ci.setStatus("11");
 						break;
 					case "闲置":
-						ci.setSecurityLevel("14");
+						ci.setStatus("14");
 						break;
 					default:
-						ci.setSecurityLevel("07");
+						ci.setStatus("07");
 						break;
 				}
 				break;
@@ -552,32 +730,6 @@ public class CiServiceImpl implements CiService{
 		return ciDao.searchAndCount(search);
 	}
 
-	@Override
-	public List<Ci> getByAuthAndCategory(int secretlevel, SysUser user, List<String> codeList) {
-		// TODO Auto-generated method stub
-//		Search search = new Search(Ci.class);
-//		//权限
-//		if(userUtil.isRolesWithUser(user, "ROLE_USER")) {		//普通员工
-//			search.addFilterEqual("userInMaintenance", user.getUsername());
-//		} else if(userUtil.isRolesWithUser(user, "DEPARTMENT_LEADER")) {	//部门领导
-//			search.addFilterEqual("departmentInUse", user.getGroup().getId());
-//		} else if(userUtil.isRolesWithUser(user, "COMPANY_LEADER")) {	//单位领导
-//			String groupid = userUtil.getTopGroup(user.getGroup()).getId().toString();
-//			search.addFilterLike("departmentInUse", groupid+"%");
-//		}
-//		
-//		//密级
-//		if(secretlevel == 1) {
-//			search.addFilterNotEqual("serviceLevel", "04");
-//		} else if(secretlevel ==2) {	//非密
-//			search.addFilterEqual("serviceLevel", "04");
-//		}
-//		
-//		SearchResult<Ci> sr = ciDao.searchAndCount(search); 
-//		
-//		return sr.getResult();
-		return null;
-	}
 
 	@Override
 	public SearchResult<Ci> getListByCondition(List<String> codeList, String type, String department, String status,
@@ -609,5 +761,552 @@ public class CiServiceImpl implements CiService{
 		search.setMaxResults(iDisplayLength);
 		
 		return ciDao.searchAndCount(search);
+	}
+
+	@Override
+	public SearchResult<Ci> getListByUserAndType(SysUser user, String categoryCode,int iDisplayStart,int iDisplayLength) {
+		// TODO Auto-generated method stub
+		Search search = new Search(Ci.class);
+		
+		Set<UserRole> roles = user.getUserRoles();
+		
+		boolean isMaster = false, isSub = false;
+		for (UserRole role : roles) {
+			String roleName = role.getRole().getRoleName();
+			if (_accountMaster.equals(roleName) ) {
+				isMaster = true;
+				break;
+			} else if(_accountSub.equals(roleName)) {
+				isSub = true;
+				break;
+			}
+		}
+		
+		String groupIdStr = user.getGroup().getId().toString();
+		//权限
+		if(isMaster) {		//单位台账负责人
+			search.addFilterILike("departmentInUse", groupIdStr.substring(0, 2)+"%");
+		} else if(isSub) {	//部门台账负责人
+			search.addFilterEqual("departmentInUse", groupIdStr);
+		} else  {	
+			return null;
+		}
+		
+		if(!categoryCode.equals("0"))
+			search.addFilterEqual("categoryCode", categoryCode);
+		search.setFirstResult(iDisplayStart);
+		search.setMaxResults(iDisplayLength);
+		
+		return ciDao.searchAndCount(search);
+	}
+
+	@Override
+	@Transactional(propagation = Propagation.REQUIRED, readOnly=false)
+	public void saveByAuditTask(Ci ci, AuditTask at) throws Exception {
+		// TODO Auto-generated method stub
+		//是否有这个台账信息
+		Search search0 = new Search(Ci.class);
+		search0.addFilterEqual("securityNo", ci.getSecurityNo().trim());
+		if(!ciDao.search(search0).isEmpty()) throw new Exception("此保密编号下已经有设备了");
+		
+		saveCiByAuditTask(ci, at);
+	}
+	
+	private void saveCiByAuditTask(Ci ci, AuditTask at) throws JsonParseException, JsonMappingException, IOException {
+		//ci.setReviewStatus("05");		//改状态为“审核中”
+		ci.setReviewStatus("02");
+		ciDao.save(ci);
+		//Date date = new Date();
+		//同时在变更表中填写记录
+		ChangeItem item = new ChangeItem();
+		item.setCiId(ci.getId());
+		item.setChangeId(at.getId());
+		
+		//根据类型获得要显示的列
+		List<Property> fieldsSet = getParpertiesByCode(ci.getCategoryCode());
+		
+		String propertiesStr="", propertyNames = "";
+		Map<String, Object> mapNewValue = new HashMap<>();
+		ObjectMapper mapper = new ObjectMapper();
+		@SuppressWarnings("unchecked")
+		Map<String,String> propertymap = mapper.readValue(ci.getPropertiesData(), Map.class);
+		for(Property p:fieldsSet) {
+			
+			if(p.getPropertyId().indexOf("CMS_FIELD_")==0 )
+			{
+				if( p.isNonTransient()) {
+					mapNewValue.put(p.getPropertyId(), Common.getFieldValueByName(ci, p.getPropertyConstraint()));
+					propertyNames+=p.getPropertyName()+",";
+					propertiesStr+=p.getPropertyId()+",";
+				}
+			}
+			else {
+				mapNewValue.put(p.getPropertyId(), propertymap.get(p.getPropertyId()));
+				propertyNames+=p.getPropertyName()+",";
+				propertiesStr+=p.getPropertyId()+",";
+			}
+		}
+		
+		item.setCreatedTime(ci.getLastUpdateTime());
+		item.setNewValue(mapper.writeValueAsString(mapNewValue));
+		item.setProperties(propertiesStr.substring(0, propertiesStr.length()-1));
+		item.setPropertiesName(propertyNames.substring(0, propertyNames.length()-1));
+		item.setType(ChangeitemType.audit);
+		item.setActionType(ChangeitemActionType.insert);
+		
+		changeitemDao.save(item);
+	}
+	
+	
+	@Override
+	@Transactional(propagation = Propagation.REQUIRED, readOnly=false)
+	public void updateByAuditTask(Ci ci, AuditTask at) throws Exception {
+		// TODO Auto-generated method stub
+		Ci originalCi = ciDao.find(ci.getId());
+		if(originalCi == null) throw new Exception("没有这个台账信息");
+		if(!originalCi.getReviewStatus().equals("02")) throw new Exception("此台账的审核状态不允许修改");
+		
+		updateCiByAuditTask(originalCi , ci, at);
+	}
+	
+	private void updateCiByAuditTask(Ci originalCi,Ci ci, AuditTask at) throws JsonParseException, JsonMappingException, IOException {
+		//originalCi.setReviewStatus("05");		//改状态为“审核中” --修改后并不改变状态
+		//ciDao.save(originalCi);
+		//Date date = new Date();
+		//同时在变更表中填写记录
+
+		//根据类型获得要显示的列
+		List<Property> fieldsSet = getParpertiesByCode(ci.getCategoryCode());
+		
+		String propertiesStr="", propertyNames = "";
+		Map<String, Object> mapNewValue = new HashMap<>();
+		Map<String, Object> mapOldValue = new HashMap<>();
+		ObjectMapper mapper = new ObjectMapper();
+		@SuppressWarnings("unchecked")
+		Map<String,String> newPropertymap = mapper.readValue(ci.getPropertiesData(), Map.class);
+		@SuppressWarnings("unchecked")
+		Map<String,String> oldPropertymap = mapper.readValue(originalCi.getPropertiesData(), Map.class);
+		for(Property p:fieldsSet) {
+			//对比值
+			if(p.getPropertyId().indexOf("CMS_FIELD_")==0 ) {
+				if(p.isNonTransient()) {
+					if(p.getPropertyType().equals("string")) {
+						String oldValue = (String)Common.getFieldValueByName(originalCi, p.getPropertyConstraint());
+						String newValue = (String)Common.getFieldValueByName(ci, p.getPropertyConstraint());
+						if(!oldValue.equals(newValue)) {
+							propertyNames+=p.getPropertyName()+",";
+							propertiesStr+=p.getPropertyId()+",";
+							mapNewValue.put(p.getPropertyId(), newValue);
+							mapOldValue.put(p.getPropertyId(), oldValue);
+						}
+					} else if(p.getPropertyType().equals("date")) {
+						Date oldValue = (Date)Common.getFieldValueByName(originalCi, p.getPropertyConstraint());
+						Date newValue = (Date)Common.getFieldValueByName(ci, p.getPropertyConstraint());
+						if(oldValue.getTime()!=newValue.getTime()) {
+							propertyNames+=p.getPropertyName()+",";
+							propertiesStr+=p.getPropertyId()+",";
+							mapNewValue.put(p.getPropertyId(), newValue);
+							mapOldValue.put(p.getPropertyId(), oldValue);
+						}
+					}else {
+						Object oldValue = Common.getFieldValueByName(originalCi, p.getPropertyConstraint());
+						Object newValue = Common.getFieldValueByName(ci, p.getPropertyConstraint());
+						if(oldValue!=newValue) {
+							propertyNames+=p.getPropertyName()+",";
+							propertiesStr+=p.getPropertyId()+",";
+							mapNewValue.put(p.getPropertyId(), newValue);
+							mapOldValue.put(p.getPropertyId(), oldValue);
+						}
+					}
+				}
+			} else {
+					String oldValue = oldPropertymap.get(p.getPropertyId());
+					String newValue = newPropertymap.get(p.getPropertyId());
+					if(!oldValue.equals(newValue)) {
+						propertyNames+=p.getPropertyName()+",";
+						propertiesStr+=p.getPropertyId()+",";
+						mapNewValue.put(p.getPropertyId(), newValue);
+						mapOldValue.put(p.getPropertyId(), oldValue);
+					}
+			}
+			
+		}
+		
+		ChangeItem item = changeitemDao.getByCiIdAndAuditTask(ci.getId(), at);
+		if(item == null) {//证明是修改已存在的
+			item = new ChangeItem();
+			item.setCiId(originalCi.getId());
+			item.setChangeId(at.getId());
+			
+			
+			item.setCreatedTime(ci.getLastUpdateTime());
+			item.setNewValue(mapper.writeValueAsString(mapNewValue));
+			item.setOldValue(mapper.writeValueAsString(mapOldValue));
+			item.setProperties(propertiesStr.substring(0, propertiesStr.length()-1));
+			item.setPropertiesName(propertyNames.substring(0, propertyNames.length()-1));
+			item.setType(ChangeitemType.audit);
+			item.setActionType(ChangeitemActionType.update);
+			changeitemDao.save(item);
+		} else if(item.getActionType() == ChangeitemActionType.update) {
+			item.setCreatedTime(ci.getLastUpdateTime());
+			item.setNewValue(mapper.writeValueAsString(mapNewValue));
+			item.setOldValue(mapper.writeValueAsString(mapOldValue));
+			item.setProperties(propertiesStr.substring(0, propertiesStr.length()-1));
+			item.setPropertiesName(propertyNames.substring(0, propertyNames.length()-1));
+		} else if(item.getActionType() == ChangeitemActionType.insert) {
+			
+			//做替换
+			if(!mapOldValue.isEmpty()) {
+				String strTemp = item.getNewValue();
+				for(String s:mapNewValue.keySet()){
+		            String oldStr = "\""+s+"\":\""+mapOldValue.get(s)+"\"";
+		            String newStr = "\""+s+"\":\""+mapNewValue.get(s)+"\"";
+		            strTemp = strTemp.replace(oldStr, newStr);
+				}
+				//String oldStr = mapper.writeValueAsString(mapOldValue), newStr=mapper.writeValueAsString(mapNewValue);
+				
+				item.setNewValue(strTemp);
+				//保存新的ci
+				ciDao.merge(ci);
+			}
+			
+		}
+		
+		
+	}
+
+	@Override
+	public Map<String, String[]> getContrastByCi(long ciid, long atid) throws Exception {
+		// TODO Auto-generated method stub
+		Ci ci = ciDao.find(ciid);
+		if(ci==null) throw new Exception("没有这个设备");
+		
+		//if(!ci.getReviewStatus().equals("05")) throw new Exception("此设备的审核状态无法获取对比数据");
+		
+		AuditTask at = auditTaskDao.find(atid);
+		if(at==null) throw new Exception("没有这个审核任务");
+		
+//		if(at.getEndTime()!=null) throw new Exception("审核任务已关闭，无法获取对比数据");
+		
+		//查找对比数据
+		Search search = new Search(ChangeItem.class);
+		search.addFilterEqual("changeId", at.getId());
+		search.addFilterEqual("ciId", ci.getId());
+		search.addFilterEqual("type", ChangeitemType.audit);
+		
+		ChangeItem changeItem = changeitemDao.searchUnique(search);
+		
+		List<Property> fieldsSet = getParpertiesByCode(ci.getCategoryCode());
+		
+		Map<String, String[]> map = new HashMap<>();
+		ObjectMapper mapper = new ObjectMapper();
+		@SuppressWarnings("unchecked")
+		Map<String,String> newPropertymap = mapper.readValue(changeItem.getNewValue(), Map.class);
+		@SuppressWarnings("unchecked")
+		Map<String,String> oldPropertiesmap = mapper.readValue(ci.getPropertiesData(), Map.class);
+		for(Property p:fieldsSet) {
+			String[] str = new String[2];
+			//对比值
+			if(p.getPropertyId().indexOf("CMS_FIELD_")==0) {
+				if(p.getPropertyType().equals("string")) {
+					
+					str[0] = (String)Common.getFieldValueByName(ci, p.getPropertyConstraint());
+					str[1] = newPropertymap.get(p.getPropertyId());
+				} else if(p.getPropertyType().equals("date")) {
+					Date date = (Date)Common.getFieldValueByName(ci, p.getPropertyConstraint());
+					str[0] = date.toString();
+					str[1] = newPropertymap.get(p.getPropertyId());
+				}else {
+					Object obj = Common.getFieldValueByName(ci, p.getPropertyConstraint());
+					str[0] = obj.toString();
+					str[1] = newPropertymap.get(p.getPropertyId());
+				}
+			} else {
+				str[0] = oldPropertiesmap.get(p.getPropertyId());
+				str[1] = newPropertymap.get(p.getPropertyId());
+			}
+			map.put(p.getPropertyName(), str);
+			
+		}
+		
+		return map;
+	}
+	
+	//根据类型获得要显示的列
+	private List<Property> getParpertiesByCode(String code) {
+		Search search = new Search(Account.class);
+		search.addFilterEqual("category", code);
+		
+		Account account = accountDao.searchUnique(search);
+		
+		String fields="", properties = "";
+		//获取属性
+		switch(account.getType()) {
+			case infoSys:
+				fields = PropertyFileUtil.getStringValue("account.type.infosys.filed");
+				properties = PropertyFileUtil.getStringValue("account.type.infosys.property");
+				break;
+			case infoEquipment:
+				fields = PropertyFileUtil.getStringValue("account.type.infoequipment.filed");
+				properties = PropertyFileUtil.getStringValue("account.type.infoequipment.property");
+				break;
+			case storage:
+				fields = PropertyFileUtil.getStringValue("account.type.storage.filed");
+				properties = PropertyFileUtil.getStringValue("account.type.storage.property");
+				break;
+			case security:
+				fields = PropertyFileUtil.getStringValue("account.type.security.filed");
+				properties = PropertyFileUtil.getStringValue("account.type.security.property");
+				break;
+			case appSys:
+				fields = PropertyFileUtil.getStringValue("account.type.appsys.filed");
+				properties = PropertyFileUtil.getStringValue("account.type.appsys.property");
+				break;
+		}
+		
+		return propertyDao.getByPropertyIds(fields+","+properties+","+account.getProperties()).getResult();
+	}
+
+	@Override
+	@Transactional(propagation = Propagation.REQUIRED, readOnly=false)
+	public void passCi(Ci ci ,AuditTask at, boolean flag) throws Exception {
+		// TODO Auto-generated method stub
+		//查找对比数据
+		Search search = new Search(ChangeItem.class);
+		search.addFilterEqual("changeId", at.getId());
+		search.addFilterEqual("ciId", ci.getId());
+		search.addFilterEqual("type", ChangeitemType.audit);
+		
+		ChangeItem changeItem = changeitemDao.searchUnique(search);
+		
+		if(flag) {			//审核通过
+			ObjectMapper mapper = new ObjectMapper();
+			List<Property> propertylist = propertyDao.getFields();
+			@SuppressWarnings("unchecked")
+			Map<String,String> newPropertymap = mapper.readValue(changeItem.getNewValue(), Map.class);
+			@SuppressWarnings("unchecked")
+			Map<String,String> propertymap = mapper.readValue(ci.getPropertiesData(), Map.class);
+			
+			String ps[] = changeItem.getProperties().split(",");
+			Map<String,Property> fieldmap = new HashMap<String,Property>();
+			for(Property p:propertylist)
+				fieldmap.put(p.getPropertyId(), p);
+			for(String s:ps)
+			{
+				if(s.indexOf("CMS_FIELD_")==0)
+				{
+					// 更新字段
+					Common.setFieldValueByName(ci, fieldmap.get(s).getPropertyConstraint(), newPropertymap.get(s));
+				}
+				else
+				{
+					// 更新参数
+					propertymap.put(s, newPropertymap.get(s));
+				}
+			}
+			ci.setPropertiesData( mapper.writeValueAsString(propertymap) );
+			ci.setReviewStatus("04");
+			
+			ciDao.save(ci);
+		} else {
+			//删除修改
+			if(changeItem.getOldValue()==null) {		//新建的，需要删除ci
+				ciDao.remove(ci);
+			} else {
+				ci.setReviewStatus("03");
+				ciDao.save(ci);
+			}
+			
+			changeitemDao.remove(changeItem);
+			
+		}
+	}
+
+	@Override
+	public void exportXls(List<Group> groups, List<Category> categorys, java.io.OutputStream out) throws Exception {
+		// TODO Auto-generated method stub
+		//查找数据
+		if(categorys.size()==0)
+			throw new Exception("没有选择任何类别，至少选择一项类别");
+		
+		if(groups.size() == 0) throw new Exception("没有选择任何部门，至少选择一个部门");
+		
+		ObjectMapper mapper = new ObjectMapper();
+		Map<String, String[]> headerMap = new HashMap<>(); 
+		Map<String, List<Object[]>> datasetMap = new HashMap<>();
+		for(Category category : categorys) {
+			//获取表头
+			List<Property> propertyList =  getParpertiesByCode(category.getCategoryCode());
+			int headerNum = propertyList.size();
+			String[] headers = new String[headerNum];
+			
+			for(int i=0 ; i<headerNum; i++) {
+				headers[i] = propertyList.get(i).getPropertyName();
+			}
+			List<Object[]> dataset = new ArrayList<Object[]>();	
+			for(Group group : groups) {
+				List<Ci> list = ciDao.getListByCodeAndGroup(category, group, "01");		//已审核的
+				for(Ci ci : list) {
+					@SuppressWarnings("unchecked")
+					Map<String,String> propertymap = mapper.readValue(ci.getPropertiesData(), Map.class);
+					Object[] objs = new Object[headerNum];
+					//获取要导出的列
+					for(int i=0; i<headerNum; i++) {
+						Property p = propertyList.get(i);
+						
+						if(p.getPropertyId().indexOf("CMS_FIELD_")==0) {
+							if(StringUtils.contains(p.getPropertyId(),"CMS_FIELD_DEPARTMENTINUSE"))			//使用部门
+								objs[i] = ci.getDepartmentName();
+							else if(StringUtils.contains(p.getPropertyId(),"CMS_FIELD_USERINMAINTENANCE"))		//使用人
+								objs[i] = ci.getUserInMaintenanceName();
+							else if(StringUtils.contains(p.getPropertyId(),"CMS_FIELD_SERVICESTARTTIME")){
+								SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");    
+								objs[i] = format.format(ci.getServiceStartTime());
+							}else if(StringUtils.contains(p.getPropertyId(),"CMS_FIELD_STATUS"))			//使用情况
+								objs[i] = ci.getStatusName();
+							else if(StringUtils.contains(p.getPropertyId(),"CMS_FIELD_SECURITYLEVEL"))			//密级
+								objs[i] = ci.getSecurityLevelName();
+							else
+								objs[i] = Common.getFieldValueByName(ci, p.getPropertyConstraint());
+						} else {
+							objs[i] = propertymap.get(p.getPropertyId());
+						}
+					}
+					dataset.add(objs);
+				}
+			}
+			
+			headerMap.put(category.getCategoryName(), headers);
+			datasetMap.put(category.getCategoryName(), dataset);
+		}
+		
+		//Common.exportExcel( headerMap, datasetMap, new FileOutputStream("E://a.xls"));
+		Common.exportExcel( headerMap, datasetMap, out);
+	}
+
+	@Override
+	@Transactional(propagation = Propagation.REQUIRED, readOnly=false)
+	public void delByAuditTask(Ci ci, AuditTask at) throws JsonParseException, JsonMappingException, IOException {
+		// TODO Auto-generated method stub
+		ChangeItem item = changeitemDao.getByCiIdAndAuditTask(ci.getId(), at);
+		if(item == null) {
+			//添加删除标记
+			item = new ChangeItem();
+			
+			List<Property> fieldsSet = getParpertiesByCode(ci.getCategoryCode());
+			String propertiesStr="", propertyNames = "";
+			Map<String, Object> mapOldValue = new HashMap<>();
+			ObjectMapper mapper = new ObjectMapper();
+			Ci originalCi = ciDao.find(ci.getId());
+			@SuppressWarnings("unchecked")
+			Map<String,String> oldPropertymap = mapper.readValue(originalCi.getPropertiesData(), Map.class);
+			for(Property p:fieldsSet) {
+				propertyNames+=p.getPropertyName()+",";
+				propertiesStr+=p.getPropertyId()+",";
+				//对比值
+				if(p.getPropertyId().indexOf("CMS_FIELD_")==0 ) {
+					if(p.getPropertyType().equals("string")) {
+						mapOldValue.put(p.getPropertyId(), (String)Common.getFieldValueByName(originalCi, p.getPropertyConstraint()));
+					} else if(p.getPropertyType().equals("date")) {
+						mapOldValue.put(p.getPropertyId(), (Date)Common.getFieldValueByName(originalCi, p.getPropertyConstraint()));
+					}else {
+						Object oldValue = Common.getFieldValueByName(originalCi, p.getPropertyConstraint());
+						mapOldValue.put(p.getPropertyId(), oldValue);
+					}
+				} else {
+					String oldValue = oldPropertymap.get(p.getPropertyId());
+					mapOldValue.put(p.getPropertyId(), oldValue);
+				}
+				
+			}
+			
+			item.setNewValue(null);
+			item.setOldValue(mapper.writeValueAsString(mapOldValue));
+			item.setActionType(ChangeitemActionType.delete);
+			item.setPropertiesName(propertyNames.substring(0, propertyNames.length()-1));
+			item.setProperties(propertiesStr.substring(0, propertiesStr.length()-1));
+			item.setChangeId(at.getId());
+			item.setCiId(ci.getId());
+			item.setType(ChangeitemType.audit);
+			
+			changeitemDao.save(item);
+		} else {
+			switch(item.getActionType() ) {
+				//直接删
+				case insert:
+					ciDao.removeById(ci.getId());
+					changeitemDao.removeById(item.getId());
+					break;
+				case update:
+					//把数据保存到oldvalue中
+					List<Property> fieldsSet = getParpertiesByCode(ci.getCategoryCode());
+					String propertiesStr="", propertyNames = "";
+					Map<String, Object> mapOldValue = new HashMap<>();
+					ObjectMapper mapper = new ObjectMapper();
+					Ci originalCi = ciDao.find(ci.getId());
+					@SuppressWarnings("unchecked")
+					Map<String,String> oldPropertymap = mapper.readValue(originalCi.getPropertiesData(), Map.class);
+					for(Property p:fieldsSet) {
+						propertyNames+=p.getPropertyName()+",";
+						propertiesStr+=p.getPropertyId()+",";
+						//对比值
+						if(p.getPropertyId().indexOf("CMS_FIELD_")==0 ) {
+							if(p.getPropertyType().equals("string")) {
+								mapOldValue.put(p.getPropertyId(), (String)Common.getFieldValueByName(originalCi, p.getPropertyConstraint()));
+							} else if(p.getPropertyType().equals("date")) {
+								mapOldValue.put(p.getPropertyId(), (Date)Common.getFieldValueByName(originalCi, p.getPropertyConstraint()));
+							}else {
+								Object oldValue = Common.getFieldValueByName(originalCi, p.getPropertyConstraint());
+								mapOldValue.put(p.getPropertyId(), oldValue);
+							}
+						} else {
+							String oldValue = oldPropertymap.get(p.getPropertyId());
+							mapOldValue.put(p.getPropertyId(), oldValue);
+						}
+						
+					}
+					
+					item.setNewValue(null);
+					item.setOldValue(mapper.writeValueAsString(mapOldValue));
+					item.setPropertiesName(propertyNames.substring(0, propertyNames.length()-1));
+					item.setProperties(propertiesStr.substring(0, propertiesStr.length()-1));
+					item.setActionType(ChangeitemActionType.delete);
+					break;
+				default:
+					break;
+			}
+		}
+	}
+
+	@Override
+	@Transactional(propagation = Propagation.REQUIRED, readOnly=false)
+	public void recoverByAuditTask(Ci ci, AuditTask at) throws Exception {
+		// TODO Auto-generated method stub
+		ChangeItem item = changeitemDao.getByCiIdAndAuditTask(ci.getId(), at);
+		if(item == null) {
+			throw new Exception("无法删除");
+		} else {
+			if(item.getActionType()== ChangeitemActionType.delete) {
+				changeitemDao.removeById(item.getId());
+			} else
+				throw new Exception("此状态下无法删除");
+		}
+	}
+
+	@Override
+	@Transactional(propagation = Propagation.REQUIRED, readOnly=false)
+	public void passCis(AuditTask at, Long[] ids) {
+		// TODO Auto-generated method stub
+		for(Ci ci : ciDao.find(ids)){
+			if(ci.getReviewStatus().equals("05")) {
+				ChangeItem item = changeitemDao.getByCiIdAndAuditTask(ci.getId(), at);
+				
+				ci.setReviewStatus("04");//审核已通过
+				
+				if(item!=null) {
+					item.setPass(true);
+				}
+			}
+		}
 	}
 }

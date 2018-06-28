@@ -1,6 +1,6 @@
 package com.cngc.pm.service;
 
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -146,15 +146,18 @@ public class ServiceTest {
     
     @Test
     public void testPersonAudit() throws Exception {
-    	Person person = new Person();
-    	person.setCountry("china");
-    	person.setName("xiaoming");
-    	
-    	personService.addPerson(person);
-    	//personDao.save(person);
-    	
-    	System.out.println(person);
+//    	Person person = new Person();
+//    	person.setCountry("china");
+//    	person.setName("xiaoming");
 //    	
+//    	personService.addPerson(person);
+
+    	Person person = personService.getPersonById(32);
+    	person.setName("xiaoming1");
+    	personService.addPerson(person);
+//    	
+    	Person p = personService.getPersonById(32);
+    	assertEquals(p.getName(),"xiaoming1");
 //    	person.setCountry("japan");
 //    	person.setName("xx");
 //    	

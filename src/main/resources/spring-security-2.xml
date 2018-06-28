@@ -14,19 +14,18 @@
 
 	<http pattern="/resources/**" security="none" />
 	<http pattern="/fixedcolumns/**" security="none" />
-	<!-- <http pattern="/initLogin.html" security="none" />
-	<http pattern="/workflow/task/getmytaskcount*" security="none" /> -->
-	
-	<http  use-expressions="true" entry-point-ref="authenticationEntryPoint">
-		<intercept-url pattern="/initLogin.html" access="IS_AUTHENTICATED_ANONYMOUSLY"/>
+	<http pattern="/initLogin.html" security="none" />
+	<http pattern="/welcome.html" security="none" />
+	<http pattern="/403" security="none" />
+	<!-- <http pattern="/workflow/task/getmytaskcount*" security="none" /> -->
+	<!-- 
+	entry-point-ref=""  未登录的切入点 
+	servlet-api-provision="true" 默认启用  保存没有登录之前的请求   
+	access-denied-page="" 用户无权限被拦截之后的页面 
+	-->
+	<http  use-expressions="true" entry-point-ref="authenticationEntryPoint" servlet-api-provision="true">
 		<intercept-url pattern="/workflow/task/mytask" access="hasAnyRole('WK_SERVICE_DESK','WK_ENGINEER','WK_MANAGER','WK_LEADER')"/>
 		<intercept-url pattern="/**" access="IS_AUTHENTICATED_FULLY"/><!-- 允许登录用户进入 -->
-		<!-- <intercept-url pattern="/logout" access="permitAll"/>
-		<intercept-url pattern="/denied" access="hasRole('ROLE_USER')"/>
-		<intercept-url pattern="/**" access="hasRole('ROLE_USER')"/>
-		<intercept-url pattern="/user" access="hasRole('ROLE_USER')"/>
-		<intercept-url pattern="/admin" access="hasRole('ROLE_ADMIN')"/>
-		 -->
 	  	
 	  	<!-- 把usernamePasswordAuthenticationFilter加入FilterChain -->
       	<custom-filter ref="usernamePasswordAuthenticationFilter" before="FORM_LOGIN_FILTER"/>
@@ -34,7 +33,7 @@
 		<!-- <security:custom-filter ref="loginFilter" position="FORM_LOGIN_FILTER"  /> -->
         <custom-filter ref="myFilter" before="FILTER_SECURITY_INTERCEPTOR"/>
         <!-- <custom-filter ref="logoutFilter" position="LOGOUT_FILTER" /> -->
-		<access-denied-handler error-page="/403"/>
+		<access-denied-handler ref="myAuthenticationFailureHandler"/>
 		<!-- 实现免登陆验证 -->
         <!-- <remember-me remember-me-parameter="remember-me" user-service-ref="customUserDetailsService" token-validity-seconds="123456789"/> -->
         <session-management invalid-session-url="/initLogin.html">
@@ -144,6 +143,8 @@
         class="org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint">  
         <beans:constructor-arg value="/initLogin.html" />  
     </beans:bean>
+    
+    <beans:bean id="myAuthenticationFailureHandler" class="com.cngc.pm.security.MyAccessDeniedHandler" />  
 	
 	<!-- 退出系统
 	<beans:bean id="logoutFilter" class="com.cngc.pm.security.CustomLogoutFilter">

@@ -9,4 +9,6 @@ public interface SysCodeDAO extends GenericDAO<SysCode,Long>{
 	SearchResult<SysCode> getCodeByType(String type);
 	SearchResult<SysCode> getParentCodeByType(String type);
 	SysCode getCode(String code,String type);
+	
+	SysCode getByCodeNameAndType(String codeName, String type);
 }

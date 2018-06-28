@@ -7,5 +7,6 @@ public enum ChangeitemType {
 	scrap,	//报废
 	destroy,	//销毁
 	reloados,	//
-	maintain
+	maintain,	//维修
+	audit		//审核
 }

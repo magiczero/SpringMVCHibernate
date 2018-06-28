@@ -11,8 +11,14 @@ import org.springframework.security.authentication.InsufficientAuthenticationExc
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 
+import static com.cngc.utils.Constants.STREAM_OPERATE_LOG;
+
 public class MyAccessDecisionManager implements AccessDecisionManager {
 
+	//检查用户是否够权限访问资源
+    //参数authentication是从spring的全局缓存SecurityContextHolder中拿到的，里面是用户的权限信息
+    //参数object是url
+    //参数configAttributes所需的权限
 	@Override
 	public void decide(Authentication authentication, Object object,
 			Collection<ConfigAttribute> configAttributes)
@@ -30,7 +36,7 @@ public class MyAccessDecisionManager implements AccessDecisionManager {
 			String needRole = ((SecurityConfig) ca).getAttribute();
 			for (GrantedAuthority ga : authentication.getAuthorities()) {
 				if (needRole.equals(ga.getAuthority())) { // ga is user's role.
-//					System.out.println("决策成功");
+					STREAM_OPERATE_LOG.info(object + ",允许访问");
 					return;
 				}
 			}

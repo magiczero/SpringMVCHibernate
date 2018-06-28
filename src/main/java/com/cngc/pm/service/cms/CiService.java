@@ -10,14 +10,21 @@ import java.util.Set;
 
 import javax.crypto.NoSuchPaddingException;
 
+import org.codehaus.jackson.JsonParseException;
+import org.codehaus.jackson.map.JsonMappingException;
+import org.springframework.web.multipart.MultipartFile;
+
 import com.cngc.pm.model.Attachment;
+import com.cngc.pm.model.Group;
 import com.cngc.pm.model.SysUser;
+import com.cngc.pm.model.cms.AuditTask;
+import com.cngc.pm.model.cms.Category;
 import com.cngc.pm.model.cms.Ci;
 import com.googlecode.genericdao.search.SearchResult;
 
 public interface CiService {
 
-	void save(Ci ci,String ip);
+	void save(Ci ci,String ip) throws JsonParseException, JsonMappingException, IOException;
 
 	boolean delById(Long id);
 
@@ -56,14 +63,37 @@ public interface CiService {
 	 */
 	SearchResult<Ci> getAllWithPage(String categoryCode,int iDisplayStart, int iDisplayLength);
 
-	/**
-	 * 根据用户权限和分类代码确定Ci集合
-	 * @param secretlevel  0=全部，1=涉密，2=非密
-	 * @param user
-	 * @param codeList
-	 * @return
-	 */
-	List<Ci> getByAuthAndCategory(int secretlevel,SysUser user, List<String> codeList);
-
 	SearchResult<Ci> getListByCondition(List<String> codeList, String type, String department, String status, String securityLevel,int iDisplayStart, int iDisplayLength);
+
+	SearchResult<Ci> getListByUserAndType(SysUser user, String categoryCode,int iDisplayStart,int iDisplayLength);
+
+	/**
+	 * 保存审核中的ci
+	 * @param ci
+	 * @param at 	审核任务信息
+	 */
+	void saveByAuditTask(Ci ci, AuditTask at) throws Exception;
+
+	void updateByAuditTask(Ci ci, AuditTask at) throws Exception;
+	
+	/**
+	 * 获取对比数据
+	 * @param ciid
+	 * @param atid
+	 * @return
+	 * @throws Exception
+	 */
+	Map<String, String[]> getContrastByCi(long ciid, long atid) throws Exception;
+	
+	void passCi(Ci ci, AuditTask at, boolean flag) throws Exception;
+
+	void importXlsByTask(MultipartFile file, AuditTask at, SysUser user) throws Exception;
+
+	void exportXls(List<Group> groups , List<Category> categorys, java.io.OutputStream out) throws Exception;
+
+	void delByAuditTask(Ci ci, AuditTask at) throws JsonParseException, JsonMappingException, IOException;
+
+	void recoverByAuditTask(Ci ci, AuditTask at) throws Exception;
+
+	void passCis(AuditTask at, Long[] ids);
 }

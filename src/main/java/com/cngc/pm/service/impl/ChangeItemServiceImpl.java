@@ -54,9 +54,9 @@ public class ChangeItemServiceImpl implements ChangeItemService{
 
 	@Override
 	@Transactional(readOnly=true)
-	public List<ChangeItem> getByChangeId(Long id) {
+	public List<ChangeItem> getByChangeId(Long changeId, ChangeitemType type) {
 		// TODO Auto-generated method stub
-		return changeItemDao.getByChangeId(id);
+		return changeItemDao.getByChangeId(changeId, type);
 	}
 
 	@Override

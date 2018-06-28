@@ -75,7 +75,7 @@ public class AccountLifeCycleManager {
 	
 	@SuppressWarnings("unchecked")
 	@Transactional
-	public boolean setChangeResult(DelegateExecution execution){
+	public boolean setChangeResult(DelegateExecution execution) throws Exception{
 		
 			Search search = new Search(ChangeItem.class);
 			search.addFilterEqual("changeId", Long.valueOf(execution.getProcessInstanceId()));

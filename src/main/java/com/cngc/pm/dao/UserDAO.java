@@ -2,6 +2,7 @@ package com.cngc.pm.dao;
 
 import java.util.List;
 
+import com.cngc.pm.model.Role;
 import com.cngc.pm.model.SysUser;
 import com.googlecode.genericdao.dao.hibernate.GenericDAO;
 
@@ -22,4 +23,12 @@ public interface UserDAO extends GenericDAO<SysUser, Long> {
 	 * @return
 	 */
 	List<SysUser> getAllByCondition(boolean enable, boolean accountNonExpired, boolean accountNonLocked, boolean creadentialsNonExpired);
+	
+	/**
+	 * 判断用户是否拥有角色
+	 * @param user
+	 * @param role
+	 * @return
+	 */
+	boolean isRole(SysUser user, Role role);
 }

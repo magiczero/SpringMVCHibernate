@@ -4,3 +4,12 @@
 12.16 wk_account表增加views_字段
 
 4.27 cms_ci表增加num_和serial_字段
+
+2018-05-17 	增加 audit_task --			审核任务表
+			增加 audit_task_category -- 	审核任务-台账类别对应表
+			增加 audit_task_department -- 审核任务-部门对应表
+			sys_code表增加内容
+			05  ：： 审核中 ：： CI_REVIEW_STATUS
+			sys_code表修改内容
+			03  ：： 不匹配  ：： CI_REVIEW_STATUS  --  	“不匹配”修改为“审核未采纳”
+			04  ：： 丢失  ：： CI_REVIEW_STATUS  --  	“丢失”修改为“审核已采纳”

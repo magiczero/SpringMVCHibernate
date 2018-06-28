@@ -3,6 +3,8 @@ package com.cngc.pm.dao;
 import java.util.List;
 
 import com.cngc.pm.model.ChangeItem;
+import com.cngc.pm.model.ChangeitemType;
+import com.cngc.pm.model.cms.AuditTask;
 import com.googlecode.genericdao.dao.hibernate.GenericDAO;
 import com.googlecode.genericdao.search.SearchResult;
 
@@ -10,5 +12,7 @@ public interface ChangeItemDAO extends GenericDAO<ChangeItem,Long>{
 
 	SearchResult<ChangeItem> getByCi(Long id);
 	SearchResult<ChangeItem> getByCi(List<Long> ids);
-	List<ChangeItem> getByChangeId(Long id);
+	List<ChangeItem> getByChangeId(Long id,ChangeitemType type);
+	
+	ChangeItem getByCiIdAndAuditTask(Long ciid, AuditTask at);
 }

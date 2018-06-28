@@ -28,4 +28,11 @@ public interface PropertyDAO extends GenericDAO<Property, Long> {
 	SearchResult<Property> getByPropertyIds(String propertyIds);
 	
 	String getPropertyNameByPropertyId(String propertyId);
+
+	/**
+	 * 根据属性的名称获取属性
+	 * @param propertyName
+	 * @return
+	 */
+	Property getByPropertyName(String propertyName);
 }

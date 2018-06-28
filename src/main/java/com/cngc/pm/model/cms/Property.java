@@ -43,6 +43,17 @@ public class Property {
 
 	private String defaultDateFormat;		//默认的时间格式
 	
+	private boolean nonTransient = true;
+	
+	@Column(name="non_transient")
+	public boolean isNonTransient() {
+		return nonTransient;
+	}
+
+	public void setNonTransient(boolean nonTransient) {
+		this.nonTransient = nonTransient;
+	}
+
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name="in_time")
 	@org.hibernate.annotations.CreationTimestamp

@@ -12,7 +12,7 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <![endif]-->
     
-    <title>工程师工作台--运维管理系统</title>
+    <title>文档管理--运维管理系统</title>
 
     <link href="${contextPath }/resources/css/icons.css" rel="stylesheet" type="text/css" />
     <link href="${contextPath }/resources/css/bootstrap.css" rel="stylesheet" type="text/css" />

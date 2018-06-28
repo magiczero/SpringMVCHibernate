@@ -67,10 +67,10 @@ public class Ci {
 	private String securityNo;
 	private String securityLevel;
 	private String system;
-	private String categoryCode;
+	private String categoryCode;					//类别
 	private String incidence;
 	private String location;
-	private String departmentInUse;
+	private String departmentInUse;					//部门id
 	private String departmentInMaintenance;
 	private String userInMaintenance;
 	private java.sql.Date serviceStartTime;
@@ -92,7 +92,7 @@ public class Ci {
 	private Date lastUpdateTime;
 	private String remark;
 	private String propertiesData;
-	private String num;
+	private String num;			//设备编号
 	private String serial;
 	private boolean isAccount;
 	

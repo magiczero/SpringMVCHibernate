@@ -38,4 +38,14 @@ public class SysCodeDAOImpl extends BaseDAOImpl<SysCode,Long> implements SysCode
 		
 		return this.searchAndCount(search);
 	}
+
+	@Override
+	public SysCode getByCodeNameAndType(String codeName, String type) {
+		// TODO Auto-generated method stub
+		Search search = new Search();
+		search.addFilterEqual("type", type);
+		search.addFilterEqual("codeName", codeName);
+		
+		return this.searchUnique(search);
+	}
 }

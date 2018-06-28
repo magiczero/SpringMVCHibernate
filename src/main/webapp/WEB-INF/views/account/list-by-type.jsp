@@ -23,7 +23,6 @@
     <link href="${contextPath }/resources/css/validation.css" rel="stylesheet" type="text/css" />
     <link href="${contextPath }/resources/css/mycss.css" rel="stylesheet" type="text/css" />
     <link href="${contextPath }/resources/css/dataTables.css" rel="stylesheet" type="text/css" />
-    <link href="${contextPath }/resources/css/dataTables.fixedColumns.css" rel="stylesheet" type="text/css" />
     <!--[if lt IE 8]>
         <link href="${contextPath }/resources/css/ie7.css" rel="stylesheet" type="text/css" />
     <![endif]-->    
@@ -34,7 +33,6 @@
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/cookie/jquery.cookies.2.2.0.min.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/bootstrap.min.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/dataTables/jquery.dataTables.min.js'></script>
-    <script type='text/javascript' src='${contextPath }/resources/js/plugins/dataTables/dataTables.fixedColumns.min.js'></script>
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/validation/languages/jquery.validationEngine-zh-CN.js' charset='utf-8'></script>
 <script type='text/javascript' src='${contextPath }/resources/js/plugins/validation/jquery.validationEngine.js' charset='utf-8'></script>    
     <script type='text/javascript' src='${contextPath }/resources/js/plugins/highlight/jquery.highlight-4.js'></script>

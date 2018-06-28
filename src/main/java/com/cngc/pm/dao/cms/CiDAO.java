@@ -2,6 +2,8 @@ package com.cngc.pm.dao.cms;
 
 import java.util.List;
 
+import com.cngc.pm.model.Group;
+import com.cngc.pm.model.cms.Category;
 import com.cngc.pm.model.cms.Ci;
 import com.googlecode.genericdao.dao.hibernate.GenericDAO;
 import com.googlecode.genericdao.search.SearchResult;
@@ -42,4 +44,10 @@ public interface CiDAO extends GenericDAO<Ci, Long> {
 	SearchResult<Ci> getByUser(String user);
 
 	List<Ci> getListByCode(String curcode);
+
+	Ci getBySecurityNo(String securityNo);
+
+	List<Ci> getListByCodeAndGroup(Category category, Group group, String reviewStatus);
+	
+	void merge(Ci ci);
 }

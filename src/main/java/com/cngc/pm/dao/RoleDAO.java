@@ -10,4 +10,5 @@ public interface RoleDAO extends GenericDAO<Role,Long>{
 	
 	Set<Role> getSet(String ids);
 	List<Role> getRoleByNames(String names);
+	Role getByName(String nameStr);
 }

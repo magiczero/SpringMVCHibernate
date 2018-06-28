@@ -623,7 +623,7 @@ public class ChangeController {
 	public String items(@PathVariable("id") long id, Model model) {
 		Map<String, Object> map = new HashMap<String, Object>();
 		//Change change = changeService.getById(id);
-		List<ChangeItem> list = changeitemService.getByChangeId(id);
+		List<ChangeItem> list = changeitemService.getByChangeId(id, ChangeitemType.change);
 		model.addAttribute("items", list);
 		for (ChangeItem item : list) {
 			map.put(item.getCiId().toString(), ciService.getById(item.getCiId()));
@@ -637,7 +637,7 @@ public class ChangeController {
 	public String items0(@PathVariable("id") long id, Model model) {
 		Map<String, Object> map = new HashMap<String, Object>();
 		//Change change = changeService.getById(id);
-		List<ChangeItem> list = changeitemService.getByChangeId(id);
+		List<ChangeItem> list = changeitemService.getByChangeId(id, ChangeitemType.change);
 		model.addAttribute("items", list);
 		
 		for (ChangeItem item : list) {
@@ -658,7 +658,7 @@ public class ChangeController {
 //		Change change = changeService.getById(id);
 //		Set<ChangeItem> items = change.getItems();
 		
-		List<ChangeItem> items = changeitemService.getByChangeId(id);
+		List<ChangeItem> items = changeitemService.getByChangeId(id, ChangeitemType.change);
 
 		Map<String, Map<String, String>> values = new HashMap<String, Map<String, String>>();
 		for (ChangeItem item : items) {

@@ -22,7 +22,10 @@ public interface ResourcesService {
 
 	List<Moudle> getModules();
 
+	@Deprecated
 	Resources getByURL(String servletPath);
+	
+	Resources getByPath(String urlStr);
 	
 	List<Role> getRoles(Resources resources);
 

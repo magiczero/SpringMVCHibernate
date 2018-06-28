@@ -126,7 +126,7 @@ public class ChangeServiceImpl implements ChangeService{
 	@SuppressWarnings("unchecked")
 	@Override
 	@Transactional
-	public boolean updateCi(Long changeId)
+	public boolean updateCi(Long changeId) throws Exception
 	{
 		// 获取item
 		Change change = changeDao.find(changeId);

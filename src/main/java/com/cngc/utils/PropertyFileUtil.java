@@ -206,6 +206,8 @@ public class PropertyFileUtil {
 		{
 			if(!INITIALIZED)
 				init();
+			if(get(key)==null) return value;
+				
 			value = get(key).trim();
 		}
 		catch(IOException e)

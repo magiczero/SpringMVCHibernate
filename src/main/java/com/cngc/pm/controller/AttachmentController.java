@@ -99,7 +99,7 @@ public class AttachmentController {
 	@RequestMapping(value = "/upload", produces="text/html;charset=UTF-8",method = RequestMethod.POST)
 	public String upload(Model model,MultipartHttpServletRequest request,
 			HttpServletResponse response) throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException, IOException {
-		log.debug("上传附件……");
+		log.info("上传附件……");
 		String currentusername = SecurityContextHolder.getContext().getAuthentication().getName();
 		Iterator<String> itr = request.getFileNames();
 		MultipartFile mpf;

@@ -22,4 +22,6 @@ public interface ResourcesDAO extends GenericDAO<Resources, Long> {
 	 */
 	Resources getByURL(String url);
 
+	Resources getByPath(String url);
+
 }

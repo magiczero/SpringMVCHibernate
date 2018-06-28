@@ -8,6 +8,8 @@ import org.springframework.stereotype.Repository;
 
 import com.cngc.pm.dao.cms.CiDAO;
 import com.cngc.pm.dao.impl.BaseDAOImpl;
+import com.cngc.pm.model.Group;
+import com.cngc.pm.model.cms.Category;
 import com.cngc.pm.model.cms.Ci;
 import com.googlecode.genericdao.search.Search;
 import com.googlecode.genericdao.search.SearchResult;
@@ -91,6 +93,35 @@ public class CiDAOImpl extends BaseDAOImpl<Ci, Long> implements CiDAO {
 		search.addFilterEqual("categoryCode", curcode);
 		
 		return this.search(search);
+	}
+
+	@Override
+	public Ci getBySecurityNo(String securityNo) {
+		// TODO Auto-generated method stub
+		Search search = new Search();
+		
+		search.addFilterEqual("securityNo", securityNo);
+		
+		return this.searchUnique(search);
+	}
+	
+	@Override
+	public List<Ci> getListByCodeAndGroup(Category category, Group group, String reviewStatus) {
+		// TODO Auto-generated method stub
+		Search search = new Search();
+		
+		search.addFilterEqual("categoryCode", category.getCategoryCode());
+		search.addFilterEqual("departmentInUse", group.getId());
+		if(!reviewStatus.equals("00"))
+			search.addFilterEqual("reviewStatus",reviewStatus);
+		
+		return this.search(search);
+	}
+	
+	@Override
+	public void merge(Ci ci) {
+		// TODO Auto-generated method stub
+		this._merge(ci);
 	}
 	
 }

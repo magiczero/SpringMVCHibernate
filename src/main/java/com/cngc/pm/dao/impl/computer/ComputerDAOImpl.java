@@ -20,7 +20,7 @@ public class ComputerDAOImpl extends BaseDAOImpl<Computer,Long> implements Compu
 	
 	@Override
 	public Computer getComputerByMac(String mac){
-		String hql = "from Computer where mac = ?";
+		String hql = "from Computer where mac = ?0";
 		 Query query = this.getSession().createQuery(hql);
 		 
 		 query.setParameter(0, mac);

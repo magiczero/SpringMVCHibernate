@@ -8,7 +8,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 
 import com.cngc.pm.dao.UserDAO;
+import com.cngc.pm.model.Role;
 import com.cngc.pm.model.SysUser;
+import com.googlecode.genericdao.search.Filter;
 import com.googlecode.genericdao.search.Search;
 
 @Repository
@@ -18,10 +20,10 @@ public class UserDAOImpl extends BaseDAOImpl<SysUser, Long> implements UserDAO {
 	@Override
 	public SysUser getUserByUserName(String username) {
 		// TODO Auto-generated method stub
-		 String hql = "from SysUser where username = ?";
+		 String hql = "from SysUser where username =:un";
 		 Query query = this.getSession().createQuery(hql);
 		 
-		 query.setParameter(0, username);
+		 query.setParameter("un", username);
 		 @SuppressWarnings("unchecked")
 		List<SysUser> list = query.list();
 		 if(list.size() > 0) {
@@ -63,5 +65,20 @@ public class UserDAOImpl extends BaseDAOImpl<SysUser, Long> implements UserDAO {
 		search.addSortAsc("group.id");
 		
 		return _searchAndCount(search).getResult();
+	}
+
+	@Override
+	public boolean isRole(SysUser user, Role role) {
+		// TODO Auto-generated method stub
+		Search search = new Search(SysUser.class);
+		
+		search.addFilterEqual("id", user.getId());
+		
+		search.addFilterSome("userRoles", Filter.equal("role", role));
+		
+		if(this.searchUnique(search)==null)
+			return false;
+			
+		return true;
 	}
 }

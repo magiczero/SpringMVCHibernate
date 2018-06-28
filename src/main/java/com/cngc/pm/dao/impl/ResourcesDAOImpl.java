@@ -2,6 +2,7 @@ package com.cngc.pm.dao.impl;
 
 import java.util.List;
 
+import org.apache.log4j.Logger;
 import org.hibernate.Query;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.AntPathMatcher;
@@ -9,10 +10,13 @@ import org.springframework.util.PathMatcher;
 
 import com.cngc.pm.dao.ResourcesDAO;
 import com.cngc.pm.model.Resources;
+import com.googlecode.genericdao.search.Search;
 
 @Repository
 public class ResourcesDAOImpl extends BaseDAOImpl<Resources, Long> implements
 		ResourcesDAO {
+	
+	private static final Logger logger = Logger.getLogger(ResourcesDAOImpl.class);  
 
 	@SuppressWarnings("unchecked")
 	@Override
@@ -49,6 +53,17 @@ public class ResourcesDAOImpl extends BaseDAOImpl<Resources, Long> implements
 		}
 		
 		return null;
+	}
+
+	@Override
+	public Resources getByPath(String url) {
+		// TODO Auto-generated method stub
+		logger.info("搜索资源方法，搜索的资源是："+url);
+		Search search = new Search(Resources.class);
+		
+		search.addFilterEqual("path", url);
+		
+		return this.searchUnique(search);
 	}
 
 }

@@ -17,6 +17,7 @@ public class TaskCategoryDepartmentRelation {
 
 	protected Category ciCategory;
 	protected Group ciDepartment;
+	//2018/07/03 修改状态的表示为提交修改 1，未提交修改 0
 	protected int status;//过程状态，1-（已审核）关闭结束，2-未审核，5-审核中
 	
 	public TaskCategoryDepartmentRelation() {}

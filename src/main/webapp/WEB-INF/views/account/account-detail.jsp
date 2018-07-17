@@ -157,7 +157,7 @@
             function pm_cms_getScraps() {
         		$("#scrapTable tbody tr").remove();
         		$.getJSON(ctx+'/account-life-cycle/get-scraps-by-ci?ciid='+ciId+'&t='+pm_random(),function(data){
-        			var trs = "";
+        			var trs = " ";
         			$.each(data,function(i,v){
         				trs += "<tr><td>"+v.solution+"</td><td>"+v.delegateUser+"</td>"
         					+"<td>"+new Date(v.startTime).format("yyyy-MM-dd HH:mm")+"</td>"

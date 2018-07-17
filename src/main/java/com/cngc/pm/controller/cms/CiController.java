@@ -24,7 +24,6 @@ import org.activiti.engine.impl.util.json.JSONArray;
 import org.activiti.engine.impl.util.json.JSONObject;
 import org.apache.cxf.common.util.StringUtils;
 import org.codehaus.jackson.JsonGenerationException;
-import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
@@ -255,7 +254,7 @@ public class CiController {
 	
 	@SuppressWarnings("unchecked")
 	@RequestMapping(value="/saveproperty/{id}",method=RequestMethod.POST)
-	public String saveProperty(@PathVariable("id") long id,HttpServletRequest request) throws JsonParseException, JsonMappingException, IOException{	
+	public String saveProperty(@PathVariable("id") long id,HttpServletRequest request) throws Exception{	
 		ObjectMapper mapper = new ObjectMapper();
 		Ci ci = ciService.getById(id);
 		try
@@ -335,7 +334,7 @@ public class CiController {
 	}
 	
 	@RequestMapping(value="/delete/{id}", method = RequestMethod.GET)
-	public String delete(@PathVariable("id") long id,Model model,HttpServletRequest request) throws JsonParseException, JsonMappingException, IOException{
+	public String delete(@PathVariable("id") long id,Model model,HttpServletRequest request) throws Exception{
 		if(id!=0)
 		{
 			//	ciService.delById(id);

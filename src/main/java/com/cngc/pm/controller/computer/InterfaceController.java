@@ -96,7 +96,7 @@ public class InterfaceController {
 	 * 回传检查结果文件
 	 */
 	@RequestMapping(value="/getfile",produces="text/html;charset=UTF-8",method = RequestMethod.POST)
-	public String upload(Model model,MultipartHttpServletRequest request,HttpServletResponse response){
+	public String upload(Model model,MultipartHttpServletRequest request,HttpServletResponse response) throws BusinessException{
 		Iterator<String> itr = request.getFileNames();
 		MultipartFile mpf;
 		while (itr.hasNext()) {

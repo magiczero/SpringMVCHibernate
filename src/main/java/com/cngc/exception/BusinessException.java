@@ -5,7 +5,7 @@ package com.cngc.exception;
  * @author HP
  * 
  */
-public class BusinessException extends RuntimeException {
+public class BusinessException extends Exception {
 
 	/**
 	 * 

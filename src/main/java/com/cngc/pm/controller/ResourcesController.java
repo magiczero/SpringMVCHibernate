@@ -56,7 +56,7 @@ public class ResourcesController extends BaseController {
 	
 	@RequestMapping(value = "/enable/{id}")
 	@ResponseBody  
-	public Map<String,Object> enableStatus(@PathVariable("id") long id) {
+	public Map<String,Object> enableStatus(@PathVariable("id") long id) throws BusinessException {
 		Map<String,Object> map = new HashMap<String,Object>();
 		Resources r = resourcesService.getById(id);
 		

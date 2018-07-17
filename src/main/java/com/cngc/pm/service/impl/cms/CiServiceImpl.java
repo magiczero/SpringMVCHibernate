@@ -17,6 +17,7 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -39,8 +40,6 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.codehaus.jackson.JsonParseException;
-import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -49,6 +48,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.cngc.pm.dao.ChangeItemDAO;
+import com.cngc.pm.dao.GroupDAO;
 import com.cngc.pm.dao.MaintainRecordDAO;
 import com.cngc.pm.dao.RecordsDAO;
 import com.cngc.pm.dao.StatsDAO;
@@ -107,51 +107,17 @@ public class CiServiceImpl implements CiService{
 	private AuditTaskDAO auditTaskDao;
 	@Autowired
 	private SysCodeDAO sysCodeDao;
+	@Autowired
+	private GroupDAO groupDao;
 
 	@Override
 	@Transactional(propagation = Propagation.REQUIRED, readOnly=false)
-	public void save(Ci ci, String ip) throws JsonParseException, JsonMappingException, IOException{
+	public void save(Ci ci, String ip) throws Exception{
 		ciDao.save(ci);
 		//Date date = new Date();
 		//同时在变更表中填写记录
 		ChangeItem item = new ChangeItem();
 		item.setCiId(ci.getId());
-		
-//		StringBuffer sb = new StringBuffer("{");
-		//存入时间
-//		Date inTime = ci.getLastUpdateTime();
-//		SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd");  
-//		String strTime = sdf.format(inTime);
-//		sb.append("\"CMS_FIELD_CREATEDTIME\":\""+strTime+"\"");
-//		sb.append(",");
-//		//责任部门
-//		sb.append("\"CMS_FIELD_DEPARTMENTINUSE\":\""+ci.getDepartmentName()+"\"");
-//		sb.append(",");
-//		//责任人
-//		sb.append("\"CMS_FIELD_USERINMAINTENANCE\":\""+ci.getUserInMaintenance()+"\"");
-//		sb.append(",");
-//		//设备类型
-//		sb.append("\"CMS_FIELD_CATEGORYCODE\":\""+ci.getCategoryCode()+"\"");
-//		sb.append(",");
-//		//设备名称
-//		sb.append("\"CMS_FIELD_NAME\":\""+ci.getName()+"\"");
-//		sb.append(",");
-//		//品牌
-//		sb.append("\"CMS_FIELD_PRODUCER\":\""+ci.getProducer()+"\"");
-//		sb.append(",");
-//		//型号
-//		sb.append("\"CMS_FIELD_MODEL\":\""+ci.getModel()+"\"");
-//		sb.append(",");
-//		//物理位置
-//		sb.append("\"CMS_FIELD_LOCATION\":\""+ci.getLocation()+"\"");
-//		sb.append(",");
-//		//密级
-//		sb.append("\"CMS_FIELD_SECURITYLEVEL\":\""+ci.getSecurityLevel()+"\"");
-//		sb.append(",");
-//		//涉密编号
-//		sb.append("\"CMS_FIELD_SECURITYNO\":\""+ci.getSecurityNo()+"\"");
-//		sb.append("}");
-//		item.setNewValue(sb.toString());
 		
 		//根据类型获得要显示的列
 				List<Property> fieldsSet = getParpertiesByCode(ci.getCategoryCode());
@@ -332,18 +298,19 @@ public class CiServiceImpl implements CiService{
 	                	Map<String,String> propertymap = new HashMap<>();
 	                	SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd"); 
 	                	for(int j = 0; j<datas2.length; j++) {			//每一行是一个CI
-	                		if(!datas2[j].equals("")) {
+	                		if(StringUtils.isNotBlank(datas2[j])) {
 	                			Property p = propertyDao.getByPropertyName(headers[j]);
 	                			if(p == null) throw new Exception("excel中的数据有问题，没有找到这个标题对应的类别："+headers[i]);
-	                			
-	                			if(p.getPropertyId().indexOf("CMS_FIELD_")==0){
+	                			String propertyId =p.getPropertyId(); 
+	                			if(propertyId.indexOf("CMS_FIELD_")==0){
+	                				if(StringUtils.contains(propertyId, "CMS_FIELD_REVIEWSTATUS")) continue;
 	                				Object value = datas2[j];
 	                				if(p.getPropertyType().equals("date")) {
 	                					value = format.parse(datas2[j]);
 	                				} else if(p.getPropertyType().equals("sqldate")) {
 	                					value = new java.sql.Date(format.parse(datas2[j]).getTime());
-	                				}	else {
-		                				switch(p.getPropertyId()) {
+	                				} else {
+	                					switch(propertyId) {
 		                					case "CMS_FIELD_DEPARTMENTINUSE"://使用部门
 		                						if(group.getGroupName().equals(value)) {
 			                						value = String.valueOf(group.getId());
@@ -365,12 +332,13 @@ public class CiServiceImpl implements CiService{
 	                				Common.setFieldValueByName(ci, p.getPropertyConstraint(), value);
 	            				}else{
 	            					if(p.isNonTransient())
-	            						propertymap.put(p.getPropertyId(), datas2[j]);
+	            						propertymap.put(propertyId, datas2[j]);
 	            				}
 	                		}
 	                	}
 	                	ci.setReviewStatus("02");
 	                	
+	        			//ci.setLastUpdateUser(user.getUsername());
 	                	ci.setPropertiesData(mapper.writeValueAsString(propertymap));
 	                	
 	                	if(StringUtils.isEmpty(ci.getSecurityNo())){
@@ -812,7 +780,7 @@ public class CiServiceImpl implements CiService{
 		saveCiByAuditTask(ci, at);
 	}
 	
-	private void saveCiByAuditTask(Ci ci, AuditTask at) throws JsonParseException, JsonMappingException, IOException {
+	private void saveCiByAuditTask(Ci ci, AuditTask at) throws Exception {
 		//ci.setReviewStatus("05");		//改状态为“审核中”
 		ci.setReviewStatus("02");
 		ciDao.save(ci);
@@ -847,12 +815,13 @@ public class CiServiceImpl implements CiService{
 			}
 		}
 		
-		item.setCreatedTime(ci.getLastUpdateTime());
+		item.setCreatedTime(new Date());
 		item.setNewValue(mapper.writeValueAsString(mapNewValue));
 		item.setProperties(propertiesStr.substring(0, propertiesStr.length()-1));
 		item.setPropertiesName(propertyNames.substring(0, propertyNames.length()-1));
 		item.setType(ChangeitemType.audit);
 		item.setActionType(ChangeitemActionType.insert);
+		item.setPass(false);
 		
 		changeitemDao.save(item);
 	}
@@ -864,12 +833,13 @@ public class CiServiceImpl implements CiService{
 		// TODO Auto-generated method stub
 		Ci originalCi = ciDao.find(ci.getId());
 		if(originalCi == null) throw new Exception("没有这个台账信息");
-		if(!originalCi.getReviewStatus().equals("02")) throw new Exception("此台账的审核状态不允许修改");
-		
-		updateCiByAuditTask(originalCi , ci, at);
+		if(originalCi.getReviewStatus().equals("02") ||originalCi.getReviewStatus().equals("03"))
+			updateCiByAuditTask(originalCi , ci, at);
+		else
+			 throw new Exception("此台账的审核状态不允许修改");
 	}
 	
-	private void updateCiByAuditTask(Ci originalCi,Ci ci, AuditTask at) throws JsonParseException, JsonMappingException, IOException {
+	private void updateCiByAuditTask(Ci originalCi,Ci ci, AuditTask at) throws Exception {
 		//originalCi.setReviewStatus("05");		//改状态为“审核中” --修改后并不改变状态
 		//ciDao.save(originalCi);
 		//Date date = new Date();
@@ -887,46 +857,91 @@ public class CiServiceImpl implements CiService{
 		@SuppressWarnings("unchecked")
 		Map<String,String> oldPropertymap = mapper.readValue(originalCi.getPropertiesData(), Map.class);
 		for(Property p:fieldsSet) {
+			String propertyId = p.getPropertyId();
 			//对比值
-			if(p.getPropertyId().indexOf("CMS_FIELD_")==0 ) {
+			if(propertyId.indexOf("CMS_FIELD_")==0 ) {
 				if(p.isNonTransient()) {
 					if(p.getPropertyType().equals("string")) {
 						String oldValue = (String)Common.getFieldValueByName(originalCi, p.getPropertyConstraint());
 						String newValue = (String)Common.getFieldValueByName(ci, p.getPropertyConstraint());
-						if(!oldValue.equals(newValue)) {
+						//判断为null
+						if(oldValue==null && newValue!=null) {
 							propertyNames+=p.getPropertyName()+",";
-							propertiesStr+=p.getPropertyId()+",";
+							propertiesStr+=propertyId+",";
+							mapNewValue.put(p.getPropertyId(), newValue);
+							mapOldValue.put(p.getPropertyId(), "");
+						} else if(oldValue!=null && newValue==null) {
+							propertyNames+=p.getPropertyName()+",";
+							propertiesStr+=propertyId+",";
+							mapNewValue.put(p.getPropertyId(), "");
+							mapOldValue.put(p.getPropertyId(), oldValue);
+						} else if(!oldValue.equals(newValue)) {
+							propertyNames+=p.getPropertyName()+",";
+							propertiesStr+=propertyId+",";
 							mapNewValue.put(p.getPropertyId(), newValue);
 							mapOldValue.put(p.getPropertyId(), oldValue);
 						}
-					} else if(p.getPropertyType().equals("date")) {
+					} else if(p.getPropertyType().equals("date") || p.getPropertyType().equals("sqldate")) {
 						Date oldValue = (Date)Common.getFieldValueByName(originalCi, p.getPropertyConstraint());
 						Date newValue = (Date)Common.getFieldValueByName(ci, p.getPropertyConstraint());
-						if(oldValue.getTime()!=newValue.getTime()) {
+						//判断为null
+						if(oldValue==null && newValue!=null) {
 							propertyNames+=p.getPropertyName()+",";
-							propertiesStr+=p.getPropertyId()+",";
+							propertiesStr+=propertyId+",";
+							mapNewValue.put(p.getPropertyId(), newValue);
+							mapOldValue.put(p.getPropertyId(), null);
+						} else if(oldValue!=null && newValue==null) {
+							propertyNames+=p.getPropertyName()+",";
+							propertiesStr+=propertyId+",";
+							mapNewValue.put(p.getPropertyId(), null);
+							mapOldValue.put(p.getPropertyId(), oldValue);
+						} else if(oldValue.getTime()!=newValue.getTime()) {
+							propertyNames+=p.getPropertyName()+",";
+							propertiesStr+=propertyId+",";
 							mapNewValue.put(p.getPropertyId(), newValue);
 							mapOldValue.put(p.getPropertyId(), oldValue);
 						}
 					}else {
 						Object oldValue = Common.getFieldValueByName(originalCi, p.getPropertyConstraint());
 						Object newValue = Common.getFieldValueByName(ci, p.getPropertyConstraint());
-						if(oldValue!=newValue) {
+						//判断为null
+						if(oldValue==null && newValue!=null) {
 							propertyNames+=p.getPropertyName()+",";
-							propertiesStr+=p.getPropertyId()+",";
+							propertiesStr+=propertyId+",";
 							mapNewValue.put(p.getPropertyId(), newValue);
+							mapOldValue.put(p.getPropertyId(), null);
+						} else if(oldValue!=null && newValue==null) {
+							propertyNames+=p.getPropertyName()+",";
+							propertiesStr+=propertyId+",";
+							mapNewValue.put(p.getPropertyId(), null);
 							mapOldValue.put(p.getPropertyId(), oldValue);
+						} else if(oldValue!=newValue) {
+							propertyNames+=p.getPropertyName()+",";
+							propertiesStr+=propertyId+",";
+							mapNewValue.put(propertyId, newValue);
+							mapOldValue.put(propertyId, oldValue);
 						}
 					}
 				}
 			} else {
-					String oldValue = oldPropertymap.get(p.getPropertyId());
-					String newValue = newPropertymap.get(p.getPropertyId());
-					if(!oldValue.equals(newValue)) {
+					String oldValue = oldPropertymap.get(propertyId);
+					String newValue = newPropertymap.get(propertyId);
+					//判断为null
+					if(oldValue==null && newValue!=null) {
 						propertyNames+=p.getPropertyName()+",";
-						propertiesStr+=p.getPropertyId()+",";
+						propertiesStr+=propertyId+",";
 						mapNewValue.put(p.getPropertyId(), newValue);
+						mapOldValue.put(p.getPropertyId(), "");
+					} else if(oldValue!=null && newValue==null) {
+						propertyNames+=p.getPropertyName()+",";
+						propertiesStr+=propertyId+",";
+						mapNewValue.put(p.getPropertyId(), "");
 						mapOldValue.put(p.getPropertyId(), oldValue);
+					} else if(!oldValue.equals(newValue)) {
+						propertyNames+=p.getPropertyName()+",";
+						propertiesStr+=propertyId+",";
+						mapNewValue.put(propertyId, newValue);
+						mapOldValue.put(propertyId, oldValue);
 					}
 			}
 			
@@ -946,13 +961,18 @@ public class CiServiceImpl implements CiService{
 			item.setPropertiesName(propertyNames.substring(0, propertyNames.length()-1));
 			item.setType(ChangeitemType.audit);
 			item.setActionType(ChangeitemActionType.update);
+			item.setCreatedTime(new Date());
+			item.setPass(false);
 			changeitemDao.save(item);
-		} else if(item.getActionType() == ChangeitemActionType.update) {
+		} else if(item.getActionType() ==null || item.getActionType() == ChangeitemActionType.update) {
 			item.setCreatedTime(ci.getLastUpdateTime());
 			item.setNewValue(mapper.writeValueAsString(mapNewValue));
 			item.setOldValue(mapper.writeValueAsString(mapOldValue));
 			item.setProperties(propertiesStr.substring(0, propertiesStr.length()-1));
 			item.setPropertiesName(propertyNames.substring(0, propertyNames.length()-1));
+			item.setUpdatedTime(new Date());
+			item.setActionType(ChangeitemActionType.update);
+			item.setPass(false);
 		} else if(item.getActionType() == ChangeitemActionType.insert) {
 			
 			//做替换
@@ -964,7 +984,8 @@ public class CiServiceImpl implements CiService{
 		            strTemp = strTemp.replace(oldStr, newStr);
 				}
 				//String oldStr = mapper.writeValueAsString(mapOldValue), newStr=mapper.writeValueAsString(mapNewValue);
-				
+				item.setUpdatedTime(new Date());
+				item.setPass(false);
 				item.setNewValue(strTemp);
 				//保存新的ci
 				ciDao.merge(ci);
@@ -975,18 +996,15 @@ public class CiServiceImpl implements CiService{
 		
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public Map<String, String[]> getContrastByCi(long ciid, long atid) throws Exception {
 		// TODO Auto-generated method stub
 		Ci ci = ciDao.find(ciid);
 		if(ci==null) throw new Exception("没有这个设备");
 		
-		//if(!ci.getReviewStatus().equals("05")) throw new Exception("此设备的审核状态无法获取对比数据");
-		
 		AuditTask at = auditTaskDao.find(atid);
 		if(at==null) throw new Exception("没有这个审核任务");
-		
-//		if(at.getEndTime()!=null) throw new Exception("审核任务已关闭，无法获取对比数据");
 		
 		//查找对比数据
 		Search search = new Search(ChangeItem.class);
@@ -1000,33 +1018,192 @@ public class CiServiceImpl implements CiService{
 		
 		Map<String, String[]> map = new HashMap<>();
 		ObjectMapper mapper = new ObjectMapper();
-		@SuppressWarnings("unchecked")
-		Map<String,String> newPropertymap = mapper.readValue(changeItem.getNewValue(), Map.class);
-		@SuppressWarnings("unchecked")
-		Map<String,String> oldPropertiesmap = mapper.readValue(ci.getPropertiesData(), Map.class);
+		
+		Map<String,String> newPropertymap = new HashMap<>();
+		Map<String,String> oldPropertiesmap = new HashMap<>();
+		
+		//新建情况
+		if(changeItem.getOldValue()!=null) {
+			oldPropertiesmap = mapper.readValue(changeItem.getOldValue(), Map.class);
+		}
+		//删除情况
+		if(changeItem.getNewValue()!=null) {
+			newPropertymap = mapper.readValue(changeItem.getNewValue(), Map.class);
+		}
+		
+		//对比当时的记录
+		String propertyNames = changeItem.getPropertiesName();
+		String[] arrayNames = propertyNames.split(",");
+		Arrays.sort(arrayNames);
+		ChangeitemActionType type = changeItem.getActionType();
+		
 		for(Property p:fieldsSet) {
-			String[] str = new String[2];
+			if(p.isNonTransient()) {
+			String[] str = {"",""};
+			String propertyId = p.getPropertyId();
 			//对比值
-			if(p.getPropertyId().indexOf("CMS_FIELD_")==0) {
-				if(p.getPropertyType().equals("string")) {
-					
-					str[0] = (String)Common.getFieldValueByName(ci, p.getPropertyConstraint());
-					str[1] = newPropertymap.get(p.getPropertyId());
-				} else if(p.getPropertyType().equals("date")) {
-					Date date = (Date)Common.getFieldValueByName(ci, p.getPropertyConstraint());
-					str[0] = date.toString();
-					str[1] = newPropertymap.get(p.getPropertyId());
-				}else {
-					Object obj = Common.getFieldValueByName(ci, p.getPropertyConstraint());
-					str[0] = obj.toString();
-					str[1] = newPropertymap.get(p.getPropertyId());
+			if(Arrays.binarySearch(arrayNames,p.getPropertyName())>=0){
+				//如果是状态（使用情况），审核状态，部门，密级,责任人
+				switch(propertyId) {
+					case "CMS_FIELD_REVIEWSTATUS"://审核状态
+						break;
+					case "CMS_FIELD_DEPARTMENTINUSE"://使用部门
+						switch(type) {
+						case insert:
+							str[0] = "";
+							str[1] = groupDao.find(Long.valueOf(newPropertymap.get(propertyId))).getGroupName();
+							break;
+						case update:
+							str[0] = groupDao.find(Long.valueOf(oldPropertiesmap.get(propertyId))).getGroupName();
+							str[1] = groupDao.find(Long.valueOf(newPropertymap.get(propertyId))).getGroupName();
+							break;
+						case delete:
+							str[0] = groupDao.find(Long.valueOf(oldPropertiesmap.get(propertyId))).getGroupName();
+							str[1] = "";
+							break;
+						default:
+							break;
+						}
+						
+						map.put(p.getPropertyName(), str);
+						break;
+					case "CMS_FIELD_USERINMAINTENANCE"://使用人
+						switch(type) {
+						case insert:
+							str[0] = "";
+							str[1] = userDao.getUserByUserName(newPropertymap.get(propertyId)).getName();
+							break;
+						case update:
+							str[0] = userDao.getUserByUserName(oldPropertiesmap.get(propertyId)).getName();
+							str[1] = userDao.getUserByUserName(newPropertymap.get(propertyId)).getName();
+							break;
+						case delete:
+							str[0] = userDao.getUserByUserName(oldPropertiesmap.get(propertyId)).getName();
+							str[1] = "";
+							break;
+						default:
+							break;
+						}
+						
+						map.put(p.getPropertyName(), str);
+						break;
+					case "CMS_FIELD_STATUS":	//使用情况
+						switch(type) {
+						case insert:
+							str[0] = "";
+							str[1] = sysCodeDao.getCode(newPropertymap.get(propertyId), "CI_STATUS").getCodeName();
+							break;
+						case update:
+							str[0] = sysCodeDao.getCode(oldPropertiesmap.get(propertyId), "CI_STATUS").getCodeName();
+							str[1] = sysCodeDao.getCode(newPropertymap.get(propertyId), "CI_STATUS").getCodeName();
+							break;
+						case delete:
+							str[0] = sysCodeDao.getCode(oldPropertiesmap.get(propertyId), "CI_STATUS").getCodeName();
+							str[1] = "";
+							break;
+						default:
+							break;
+						}
+						
+						map.put(p.getPropertyName(), str);
+						break;
+					case "CMS_FIELD_SECURITYLEVEL":	//密级
+						switch(type) {
+						case insert:
+							str[0] = "";
+							str[1] = sysCodeDao.getCode(newPropertymap.get(propertyId), "CI_SECURITY_LEVEL").getCodeName();
+							break;
+						case update:
+							str[0] = sysCodeDao.getCode(oldPropertiesmap.get(propertyId), "CI_SECURITY_LEVEL").getCodeName();
+							str[1] = sysCodeDao.getCode(newPropertymap.get(propertyId), "CI_SECURITY_LEVEL").getCodeName();
+							break;
+						case delete:
+							str[0] = sysCodeDao.getCode(oldPropertiesmap.get(propertyId), "CI_SECURITY_LEVEL").getCodeName();
+							str[1] = "";
+							break;
+						default:
+							break;
+						}
+						
+						map.put(p.getPropertyName(), str);
+						break;
+					default:
+						switch(type) {
+						case insert:
+							str[0] = "";
+							str[1] = newPropertymap.get(propertyId);
+							break;
+						case update:
+							str[0] = oldPropertiesmap.get(propertyId);
+							str[1] = newPropertymap.get(propertyId);
+							break;
+						case delete:
+							str[0] = oldPropertiesmap.get(propertyId);
+							str[1] = "";
+							break;
+						default:
+							break;
+						}
+						
+						map.put(p.getPropertyName(), str);
+						break;
 				}
+				
 			} else {
-				str[0] = oldPropertiesmap.get(p.getPropertyId());
-				str[1] = newPropertymap.get(p.getPropertyId());
+				map.put(p.getPropertyName(), str);
 			}
-			map.put(p.getPropertyName(), str);
 			
+//			
+//			if(propertyId.indexOf("CMS_FIELD_")==0) {
+//				if(p.isNonTransient()){
+//					String fieldName = p.getPropertyConstraint();
+//					if(p.getPropertyType().equals("string")) {
+//						//如果是状态（使用情况），审核状态，部门，密级,责任人
+//						switch(propertyId) {
+//							case "CMS_FIELD_REVIEWSTATUS"://审核状态
+//								str[0] = (String)Common.getFieldValueByName(ci, fieldName+="Name");
+//								str[1] = sysCodeDao.getCode(newPropertymap.get(propertyId), "CI_REVIEW_STATUS").getCodeName();
+//								break;
+//	    					case "CMS_FIELD_DEPARTMENTINUSE"://使用部门
+//	    						str[0] = (String)Common.getFieldValueByName(ci, fieldName+="Name");
+//	    						str[1] = groupDao.find(Long.valueOf(newPropertymap.get(propertyId))).getGroupName();
+//	    						break;
+//	    					case "CMS_FIELD_USERINMAINTENANCE"://使用人
+//	    						str[0] = (String)Common.getFieldValueByName(ci, fieldName+="Name");
+//	    						str[1]=userDao.getUserByUserName(newPropertymap.get(propertyId)).getName();
+//	    						break;
+//	    					case "CMS_FIELD_STATUS":	//使用情况
+//	    						str[0] = (String)Common.getFieldValueByName(ci, fieldName+="Name");
+//	    						str[1] = sysCodeDao.getCode(newPropertymap.get(propertyId), "CI_STATUS").getCodeName();
+//	    						break;
+//	    					case "CMS_FIELD_SECURITYLEVEL":	//密级
+//	    						str[0] = (String)Common.getFieldValueByName(ci, fieldName+="Name");
+//	    						str[1] = sysCodeDao.getCode(newPropertymap.get(propertyId), "CI_SECURITY_LEVEL").getCodeName();
+//	    						break;
+//	    					default:
+//	    						str[0] = (String)Common.getFieldValueByName(ci, fieldName);
+//	    						str[1] = newPropertymap.get(propertyId);
+//	    						break;
+//	    				}
+//						
+//					} else if(p.getPropertyType().equals("date")) {
+//						Date date = (Date)Common.getFieldValueByName(ci, fieldName);
+//						str[0] = date.toString();
+//						str[1] = newPropertymap.get(propertyId);
+//					} else {
+//						Object obj = Common.getFieldValueByName(ci, fieldName);
+//						str[0] = obj.toString();
+//						str[1] = newPropertymap.get(propertyId);
+//					}
+//					map.put(p.getPropertyName(), str);
+//				}
+//			} else {
+//				str[0] = oldPropertiesmap.get(propertyId);
+//				str[1] = newPropertymap.get(propertyId);
+//				map.put(p.getPropertyName(), str);
+//			}
+//			
+			}
 		}
 		
 		return map;
@@ -1156,7 +1333,7 @@ public class CiServiceImpl implements CiService{
 						
 						if(p.getPropertyId().indexOf("CMS_FIELD_")==0) {
 							if(StringUtils.contains(p.getPropertyId(),"CMS_FIELD_DEPARTMENTINUSE"))			//使用部门
-								objs[i] = ci.getDepartmentName();
+								objs[i] = ci.getDepartmentInUseName();
 							else if(StringUtils.contains(p.getPropertyId(),"CMS_FIELD_USERINMAINTENANCE"))		//使用人
 								objs[i] = ci.getUserInMaintenanceName();
 							else if(StringUtils.contains(p.getPropertyId(),"CMS_FIELD_SERVICESTARTTIME")){
@@ -1186,7 +1363,7 @@ public class CiServiceImpl implements CiService{
 
 	@Override
 	@Transactional(propagation = Propagation.REQUIRED, readOnly=false)
-	public void delByAuditTask(Ci ci, AuditTask at) throws JsonParseException, JsonMappingException, IOException {
+	public void delByAuditTask(Ci ci, AuditTask at) throws Exception {
 		// TODO Auto-generated method stub
 		ChangeItem item = changeitemDao.getByCiIdAndAuditTask(ci.getId(), at);
 		if(item == null) {
@@ -1228,52 +1405,94 @@ public class CiServiceImpl implements CiService{
 			item.setChangeId(at.getId());
 			item.setCiId(ci.getId());
 			item.setType(ChangeitemType.audit);
+			item.setCreatedTime(new Date());
+			item.setPass(false);
 			
 			changeitemDao.save(item);
 		} else {
-			switch(item.getActionType() ) {
-				//直接删
-				case insert:
-					ciDao.removeById(ci.getId());
-					changeitemDao.removeById(item.getId());
-					break;
-				case update:
-					//把数据保存到oldvalue中
-					List<Property> fieldsSet = getParpertiesByCode(ci.getCategoryCode());
-					String propertiesStr="", propertyNames = "";
-					Map<String, Object> mapOldValue = new HashMap<>();
-					ObjectMapper mapper = new ObjectMapper();
-					Ci originalCi = ciDao.find(ci.getId());
-					@SuppressWarnings("unchecked")
-					Map<String,String> oldPropertymap = mapper.readValue(originalCi.getPropertiesData(), Map.class);
-					for(Property p:fieldsSet) {
-						propertyNames+=p.getPropertyName()+",";
-						propertiesStr+=p.getPropertyId()+",";
-						//对比值
-						if(p.getPropertyId().indexOf("CMS_FIELD_")==0 ) {
-							if(p.getPropertyType().equals("string")) {
-								mapOldValue.put(p.getPropertyId(), (String)Common.getFieldValueByName(originalCi, p.getPropertyConstraint()));
-							} else if(p.getPropertyType().equals("date")) {
-								mapOldValue.put(p.getPropertyId(), (Date)Common.getFieldValueByName(originalCi, p.getPropertyConstraint()));
-							}else {
-								Object oldValue = Common.getFieldValueByName(originalCi, p.getPropertyConstraint());
-								mapOldValue.put(p.getPropertyId(), oldValue);
-							}
-						} else {
-							String oldValue = oldPropertymap.get(p.getPropertyId());
+			if(item.getActionType()==null) {
+
+				List<Property> fieldsSet = getParpertiesByCode(ci.getCategoryCode());
+				String propertiesStr="", propertyNames = "";
+				Map<String, Object> mapOldValue = new HashMap<>();
+				ObjectMapper mapper = new ObjectMapper();
+				Ci originalCi = ciDao.find(ci.getId());
+				@SuppressWarnings("unchecked")
+				Map<String,String> oldPropertymap = mapper.readValue(originalCi.getPropertiesData(), Map.class);
+				for(Property p:fieldsSet) {
+					propertyNames+=p.getPropertyName()+",";
+					propertiesStr+=p.getPropertyId()+",";
+					//对比值
+					if(p.getPropertyId().indexOf("CMS_FIELD_")==0 ) {
+						if(p.getPropertyType().equals("string")) {
+							mapOldValue.put(p.getPropertyId(), (String)Common.getFieldValueByName(originalCi, p.getPropertyConstraint()));
+						} else if(p.getPropertyType().equals("date")) {
+							mapOldValue.put(p.getPropertyId(), (Date)Common.getFieldValueByName(originalCi, p.getPropertyConstraint()));
+						}else {
+							Object oldValue = Common.getFieldValueByName(originalCi, p.getPropertyConstraint());
 							mapOldValue.put(p.getPropertyId(), oldValue);
 						}
-						
+					} else {
+						String oldValue = oldPropertymap.get(p.getPropertyId());
+						mapOldValue.put(p.getPropertyId(), oldValue);
 					}
 					
-					item.setNewValue(null);
-					item.setOldValue(mapper.writeValueAsString(mapOldValue));
-					item.setPropertiesName(propertyNames.substring(0, propertyNames.length()-1));
-					item.setProperties(propertiesStr.substring(0, propertiesStr.length()-1));
-					item.setActionType(ChangeitemActionType.delete);
-					break;
-				default:
-					break;
+				}
+				
+				item.setNewValue(null);
+				item.setOldValue(mapper.writeValueAsString(mapOldValue));
+				item.setActionType(ChangeitemActionType.delete);
+				item.setPropertiesName(propertyNames.substring(0, propertyNames.length()-1));
+				item.setProperties(propertiesStr.substring(0, propertiesStr.length()-1));
+				item.setUpdatedTime(new Date());
+				item.setPass(false);
+			} else {
+				switch(item.getActionType() ) {
+					//直接删
+					case insert:
+						ciDao.removeById(ci.getId());
+						changeitemDao.removeById(item.getId());
+						break;
+					case update:
+						//把数据保存到oldvalue中
+						List<Property> fieldsSet = getParpertiesByCode(ci.getCategoryCode());
+						String propertiesStr="", propertyNames = "";
+						Map<String, Object> mapOldValue = new HashMap<>();
+						ObjectMapper mapper = new ObjectMapper();
+						Ci originalCi = ciDao.find(ci.getId());
+						@SuppressWarnings("unchecked")
+						Map<String,String> oldPropertymap = mapper.readValue(originalCi.getPropertiesData(), Map.class);
+						for(Property p:fieldsSet) {
+							propertyNames+=p.getPropertyName()+",";
+							propertiesStr+=p.getPropertyId()+",";
+							//对比值
+							if(p.getPropertyId().indexOf("CMS_FIELD_")==0 ) {
+								if(p.getPropertyType().equals("string")) {
+									mapOldValue.put(p.getPropertyId(), (String)Common.getFieldValueByName(originalCi, p.getPropertyConstraint()));
+								} else if(p.getPropertyType().equals("date")) {
+									mapOldValue.put(p.getPropertyId(), (Date)Common.getFieldValueByName(originalCi, p.getPropertyConstraint()));
+								}else {
+									Object oldValue = Common.getFieldValueByName(originalCi, p.getPropertyConstraint());
+									mapOldValue.put(p.getPropertyId(), oldValue);
+								}
+							} else {
+								String oldValue = oldPropertymap.get(p.getPropertyId());
+								mapOldValue.put(p.getPropertyId(), oldValue);
+							}
+							
+						}
+						
+						item.setNewValue(null);
+						item.setOldValue(mapper.writeValueAsString(mapOldValue));
+						item.setPropertiesName(propertyNames.substring(0, propertyNames.length()-1));
+						item.setProperties(propertiesStr.substring(0, propertiesStr.length()-1));
+						item.setActionType(ChangeitemActionType.delete);
+						item.setUpdatedTime(new Date());
+						item.setPass(false);
+						break;
+					default:
+						break;
+				}
 			}
 		}
 	}
@@ -1284,24 +1503,33 @@ public class CiServiceImpl implements CiService{
 		// TODO Auto-generated method stub
 		ChangeItem item = changeitemDao.getByCiIdAndAuditTask(ci.getId(), at);
 		if(item == null) {
-			throw new Exception("无法删除");
+			throw new Exception("无法恢复");
 		} else {
 			if(item.getActionType()== ChangeitemActionType.delete) {
-				changeitemDao.removeById(item.getId());
+				//changeitemDao.removeById(item.getId());
+				item.setActionType(null);
+				item.setUpdatedTime(new Date());
+				item.setNewValue(null);
+				item.setOldValue(null);
+				item.setPass(false);
+				item.setProperties(null);
+				item.setPropertiesName(null);
 			} else
-				throw new Exception("此状态下无法删除");
+				throw new Exception("此状态下无法执行恢复操作");
 		}
 	}
 
 	@Override
 	@Transactional(propagation = Propagation.REQUIRED, readOnly=false)
-	public void passCis(AuditTask at, Long[] ids) {
+	public void passCis(AuditTask at, Long[] ids, boolean decide) {
 		// TODO Auto-generated method stub
 		for(Ci ci : ciDao.find(ids)){
 			if(ci.getReviewStatus().equals("05")) {
 				ChangeItem item = changeitemDao.getByCiIdAndAuditTask(ci.getId(), at);
-				
-				ci.setReviewStatus("04");//审核已通过
+				if(decide)
+					ci.setReviewStatus("04");//审核已通过
+				else
+					ci.setReviewStatus("03");
 				
 				if(item!=null) {
 					item.setPass(true);

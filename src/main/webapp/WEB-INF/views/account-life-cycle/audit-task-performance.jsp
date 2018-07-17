@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-    <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %><%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %> 
+    <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
     <c:set var="contextPath" value="${pageContext.request.contextPath}"></c:set>
 <!DOCTYPE html>
 <html lang="en">
@@ -11,7 +11,7 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <![endif]-->
     
-    <title>台账管理--运维管理系统</title>
+    <title>审核任务执行情况--运维管理系统</title>
 
     <link href="${contextPath }/resources/css/icons.css" rel="stylesheet" type="text/css" />
     <link href="${contextPath }/resources/css/bootstrap.css" rel="stylesheet" type="text/css" />
@@ -96,116 +96,49 @@
     <![endif]-->
     <script type="text/javascript">
     var ctx = "${contextPath}";
-    var table;
-    var isAccountMaster = ${isAccountMaster};
-    var isAccountSub = ${isAccountSub};
-            $(document).ready(function () {
-
-            	$(".header").load("${contextPath }/header?t="+pm_random());
-            	$(".menu").load("${contextPath }/menu?t="+pm_random(), function() {$("#node_${moduleId}").addClass("active");});
-            	$(".breadLine .buttons").load("${contextPath}/contentbuttons?t="+pm_random());
+    
+    $(document).ready(function () {
+		$(".header").load("${contextPath }/header?t="+pm_random());
+        $(".menu").load("${contextPath }/menu?t="+pm_random(), function() {$("#node_${moduleId}").addClass("active");});
+        $(".breadLine .buttons").load("${contextPath}/contentbuttons?t="+pm_random());
+           
+        $('#end').click(function(){
+        	if(confirm('是否结束此次审核？')){
             	
-            	$("#validation").validationEngine({promptPosition : "topRight", scroll: true });
-            	$('#submitBtn').click(function(){
-                	if($("#validation").validationEngine("validate")){
-	                    $("#validation").ajaxSubmit(function(data){
-	                         if(data) {
-	                        	 //shuan新Table
-	                        	 table.fnDraw();
-	                        	 $('#fModal').modal('hide');
-	                        	 
-	                        	 return true;
-	                         } else {
-	                        	 alert('请选择部门或分类');
-	                        	 return false;
-	                         }
-	                          });
-	                }
-              	});
-                
-                table = $('#eventTable').dataTable({
-                	"oLanguage": {"sUrl": "${contextPath}/resources/json/Chinese.json"},
-    			    "bAutoWidth": true,
-    			    "sDom": '<"top"i>rt<"bottom"flp><"clear">',     //改变页面元素位置      
-    			    "bPaginate": true,   
-    			    "sPaginationType": "full_numbers", 
-    			    "iDisplayLength": 10, 
-    			    "bSort": false, 
-    			    "bFilter": false, 
-    			    "aaSorting": [], 
-    			    "bInfo": false, 
-    			    "bStateSave": false, 
-    			    "iCookieDuration": 0, 
-    			    "bScrollCollapse": true, 
-    			    "bProcessing": true, 
-    			    "bJQueryUI": false,
-    		        "bServerSide": true,//这个用来指明是通过服务端来取数据
-    	            "sAjaxSource": ctx + '/account-life-cycle/get-audit-task-list?t=' + pm_random(),//这个是请求的地址
-    	            "fnServerData": retrieveData, // 获取数据的处理函数
-    	            "fnServerParams": function (aoData) {  //查询条件
-    	                aoData.push(
-    	                		{ "name": "categoryCode", "value": $("#categorycode").val() }
-    	                    );
-    	            },
-    	            "aoColumnDefs": [ {
-    	                "aTargets": [ 5 ],
-    	                "mRender": function ( data, type, full ) {
-    	                	var group = "";
-    	                	for(var i=0;i<data.length;i++){
-    	                		group += data[i].groupName + " ";
-    	                		}
-    	                	return group;
-    	                }
-    	              },{
-    	                "aTargets": [ 6 ],
-    	                "mRender": function ( data, type, full ) {
-    	                	var codeNames = "";
-    	                	for(var i=0;i<data.length;i++){
-    	                		codeNames+=data[i].codeName + " ";
-    	                		}
-    	                	return codeNames;
-    	                }
-    	              },{
-    	                "aTargets": [ 7 ],
-    	                "mRender": function ( data, type, full ) {
-    	                	if(full.endTime == null) {
-    	                		if(isAccountMaster)
-    	                			return "<a href='performance?at="+data+"' >执行情况</a>";
-    	                		else
-        	                		return "<a href='"+data+"'>进入任务</a>";
-    	                	} else {
-    	                		return "<a href='history?at="+data+"'>查看历史任务信息</a>";
-    	                	}
-    	                }
-    	              }],
-    	            "aoColumns" : [
-    	                           { "mData" : 'name' }, 
-    	                           { "mData" : 'reason' }, 
-    	                           { "mData" : 'startTime' }, 
-    	                           { "mData" : 'endTime'}, 
-    	                           { "mData" : 'assessor.realname'}, 
-    	                           { "mData" : 'groups'}, 
-    	                           { "mData" : 'categorys'},
-    	                           { "mData" : 'id' }
-    	                             ]
-    			});
-                
-            });
-            
-            function retrieveData( sSource111,aoData111, fnCallback111) {
-    			$.ajax({
-    				url : sSource111,//这个就是请求地址对应sAjaxSource
-    				data : {"aoData":JSON.stringify(aoData111)},//这个是把datatable的一些基本数据传给后台,比如起始位置,每页显示的行数
-    				type : 'get',
-    				dataType : 'json',
-    				async : false,
-    				success : function(result) {
-    						fnCallback111(result);//把返回的数据传给这个方法就可以了,datatable会自动绑定数据的
-    				},
-    				error : function(msg) {
-    				}
-    			});
-    		}
+        		$.post("${contextPath }/account-life-cycle/end-audit-task/${at.id}?nonforce=false", function(data) {
+
+    				if(data.flag){
+    					//table.fnDraw();
+    					window.location.href='${contextPath }/account-life-cycle/audit-task/index';
+    				} else
+    					if(data.force){
+    						if(confirm(data.msg+'，是否强制结束此次审核？')){
+    		                	
+    		            		$.post("${contextPath }/account-life-cycle/end-audit-task/${at.id}?nonforce=true", function(data) {
+    		
+    								if(data.flag){
+    									//table.fnDraw();
+    									alert('审核已结束');	
+    								}else
+    									alert("操作失败，原因："+data.msg);
+    	            			},"json");
+    		            		return true;
+    	            		} else
+    	            			return false;
+    					} else
+    						alert("操作失败，原因："+data.msg);
+    			},"json");
+        		return true;
+    		} else
+    			return false;
+        });
+    });
+    
+    function viewGroup(id) {
+    	$("#view0").load("${contextPath }/account-life-cycle/audit-task/details?at=${at.id}&t="+pm_random());
+    	$("#detailsModal").modal('show');
+    }
+    
     </script>
 </head>
 <body>
@@ -225,7 +158,8 @@
 
                 <ul class="breadcrumb">
                     <li><a href="#">运维管理系统</a> <span class="divider">></span></li>
-                    <li><a href="#">台账管理</a></li>       
+                    <li><a href="#">台账管理</a> <span class="divider">></span></li>
+                    <li><a href="index">台账审核</a> <span class="divider">></span></li><li><a href="#">台账审核任务执行情况</a></li>    
                 </ul>
 
                 <ul class="buttons"></ul>
@@ -237,38 +171,51 @@
             <div class="workplace">             
 
                 <div class="row">
-
+<input type="hidden" id="group0" value="">
                     <div class="col-md-12" >
-                            
-                                    <div class="dr"></div>
-                        	<div class="toolbar clearfix">
-                        		
-                        	</div>
+                        	<input type="hidden" id="categorycode" value="0">
 						<div class="head clearfix">
+						<div class="isw-grid"></div>
+                            <h1>审核任务执行情况</h1>
                             <ul class="buttons">
                                 <li>
                                     <a class="isw-settings" href="#"></a>
                                     <ul class="dd-list">
-                                        <c:if test="${nonTask && isAccountMaster }"><li><a href="#fModal" data-toggle="modal"><span class="isw-plus"></span> 新建审核任务</a></li></c:if>
+                                        <c:if test="${isAccountMaster }"> <li><a data-toggle="modal" href="#eModal"><span class="isw-edit"></span> 按部门查看</a></li></c:if>
+                                        <li><a href="javascript:void(0);" id="end"><span class="isw-edit"></span> 结束审核</a></li>
                                     </ul>
                                 </li>
                             </ul>                        
                         </div>
-                        <div class="block-fluid  table-sorting clearfix" id="inbox">
-                            <table  class="table" id="eventTable">
+                        <div class="block-fluid">
+                            <table  class="table">
                                 <thead>
                                     <tr>
-                                        <th width="10%">审核名称</th>
-                                        <th width="15%">原因</th>
-										<th width="10%">开始时间</th>
-										<th width="10%">结束时间</th>
-										<th width="12%">发起人</th>
-										<th >部门</th>
-										<th >类别</th>
-										<th >操作</th>
+                                       	<th width="6%"></th>
+                                        <th>部门</th>
+                                        <th width="10%">是否提交</th>
+										<th width="15%">台账类别</th>
+										<th width="8%">已确认</th>
+										<th width="8%">未确认</th>
+										<th width="8%">审核中</th>
+										<th width="8%">审核通过</th>
+										<th width="8%">审核未通过</th>
                                     </tr>
                                 </thead>
                                 <tbody>
+                                <c:forEach items="${list}" var="item0">
+                                	<tr>
+                                		<td></td>
+                                		<td><a title="查看详细信息" href="javascript:void(0);" onclick="viewGroup(${item0.groupId});">${item0.groupName }</a></td>
+                                		<td>${item0.commit0 }</td>
+                                		<td>${item0.categoryName }</td>
+                                		<td>${item0.verity }</td>
+                                		<td>${item0.unVerity }</td>
+                                		<td>${item0.auditing }</td>
+                                		<td>${item0.auditPass }</td>
+                                		<td>${item0.auditUnPass }</td>
+                                	</tr>
+                                	</c:forEach>
                                 </tbody>
                             </table>                       
                         </div>
@@ -282,50 +229,27 @@
         </div>
         
          <!-- Bootrstrap modal form -->
-         <c:if test="${nonTask && isAccountMaster }">
-         <div class="modal fade" id="fModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
+        <div class="modal fade" id="detailsModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-dialog" style="width:1000px">
                 <div class="modal-content">
                     <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>                        
-                        <h4>新建审核任务</h4>
+                        <h4>详细信息</h4>
                     </div>
-                    <form id="validation" action="${contextPath}/account-life-cycle/start-audit-task" method="post">
                     <div class="modal-body modal-body-np">
                         <div class="row">
-                            <div class="block-fluid">
-                                <div class="row-form clearfix">
-                                    <div class="col-md-3">审核名称:</div>
-                                    <div class="col-md-9"><input type="text" name="auditName" class="validate[required,maxSize[50]]" value=""/></div>
-                                </div>            
-                                <div class="row-form clearfix">
-                                    <div class="col-md-3">原因:</div>
-                                    <div class="col-md-9"><textarea name="reason" class="validate[required,maxSize[500]]"></textarea></div>                    
-                                </div>                                    
-                                <div class="row-form clearfix">
-                                    <div class="col-md-3">部门:</div>
-                                    <div class="col-md-9"><c:forEach items="${topGroup.child }" var="group"><label class="checkbox checkbox-inline">
-                                        <input type="checkbox" name="groups" value="${group.id }" /> ${group.groupName} </label></c:forEach></div>
-                                </div>         
-                                <div class="row-form clearfix">
-                                    <div class="col-md-3">台账分类:</div>
-                                    <div class="col-md-9"><c:forEach items="${accountTypes }" var="type"><label class="checkbox checkbox-inline">
-                                        <input type="checkbox" name="codes" value="${type.category }" /> ${type.name} </label></c:forEach></div>
-                                </div>                                          
-                            </div>                
-                            <div class="dr"><span></span></div>
+                        <div class="block-fluid">
+                        <div class="row-form clearfix">
+                        <div id="view0" class="col-md-12" >
+						
+                            </div>
+                            </div>             
+                            </div>
                         </div>
                     </div>   
-                    </form>
-                    <div class="modal-footer">
-                        <button class="btn btn-warning" id="submitBtn" aria-hidden="true"> 提 交 </button> 
-                        <button class="btn btn-default" data-dismiss="modal" aria-hidden="true">Close</button>            
-                    </div>
-                    
                 </div>
             </div>
         </div>
-        </c:if>
     </div>
 </body>
 

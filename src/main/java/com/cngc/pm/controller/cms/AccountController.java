@@ -280,7 +280,7 @@ public class AccountController {
 	
 	@RequestMapping(value="/search-by-table",method = RequestMethod.GET)
 	@ResponseBody
-	public String geListByCategoryCode(@RequestParam(required=true) String aoData) throws JsonParseException, JsonMappingException, IOException{
+	public String geListByCategoryCode(@RequestParam(required=true) String aoData) throws Exception{
 		JSONArray jsonarray = new JSONArray(aoData);
 		
 		String sEcho = null;  
@@ -440,10 +440,11 @@ public class AccountController {
 	 * @param model
 	 * @param request
 	 * @return
+	 * @throws Exception 
 	 */
 	@SuppressWarnings("unchecked")
 	@RequestMapping(value="/generate",method = RequestMethod.POST)
-	public String accountList(Model model,HttpServletRequest request){
+	public String accountList(Model model,HttpServletRequest request) throws Exception{
 
 		String code = request.getParameter("category");
 		String fields = request.getParameter("fm_fields");
@@ -500,7 +501,7 @@ public class AccountController {
 	}
 	
 	@RequestMapping(value="/view/{ciid}/{accountid}",method = RequestMethod.GET)
-	public String viewAccount(@PathVariable("ciid") Long ciId,@PathVariable("accountid") Long accountId,Model model) throws JsonParseException, JsonMappingException, IOException {
+	public String viewAccount(@PathVariable("ciid") Long ciId,@PathVariable("accountid") Long accountId,Model model) throws Exception {
 		//根据id获取ci
 		Ci ci = ciService.getById(ciId);
 		Account account = accountService.getById(accountId);
@@ -557,7 +558,7 @@ public class AccountController {
 	
 	@SuppressWarnings("unchecked")
 	@RequestMapping(value="/get/{id}",method = RequestMethod.GET)
-	public String getAccount(@PathVariable("id") Long id,HttpServletRequest request,Model model){
+	public String getAccount(@PathVariable("id") Long id,HttpServletRequest request,Model model) throws Exception{
 
 		List<Account> accounts = accountService.getAll();
 		Account account = accountService.getById(id);
@@ -656,12 +657,10 @@ public class AccountController {
         * @param projectId 
         * @param request 
         * @return 
-     * @throws IOException 
-     * @throws JsonMappingException 
-     * @throws JsonParseException 
+     * @throws Exception 
         */  
     @RequestMapping(value="/dcExcel",method=RequestMethod.GET)  
-    public ModelAndView toDcExcel(ModelMap model, HttpServletRequest request) throws JsonParseException, JsonMappingException, IOException{  
+    public ModelAndView toDcExcel(ModelMap model, HttpServletRequest request) throws Exception{  
     	   String accountid = request.getParameter("id");
     	   
     	   Long id = Long.valueOf(accountid);

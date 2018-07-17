@@ -570,7 +570,7 @@ public class ChangeController {
 	@SuppressWarnings("unchecked")
 	@RequestMapping(value = "/updateitem")
 	@ResponseBody
-	public Map<String, Object> updateItem(HttpServletRequest request, Model model) {
+	public Map<String, Object> updateItem(HttpServletRequest request, Model model) throws Exception {
 		Map<String, Object> map = new HashMap<String, Object>();
 
 		String id = request.getParameter("fm_id");

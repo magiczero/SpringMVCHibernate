@@ -4,7 +4,7 @@ import static com.cngc.utils.Constants._accountMaster;
 import static com.cngc.utils.Constants._accountSub;
 
 import java.io.IOException;
-//import java.text.SimpleDateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -21,6 +21,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.cngc.exception.BusinessException;
 import com.cngc.pm.dao.ChangeItemDAO;
 import com.cngc.pm.dao.RoleDAO;
 import com.cngc.pm.dao.UserDAO;
@@ -29,7 +30,6 @@ import com.cngc.pm.dao.cms.AuditTaskDAO;
 import com.cngc.pm.dao.cms.CiDAO;
 import com.cngc.pm.dao.cms.PropertyDAO;
 import com.cngc.pm.model.ChangeItem;
-import com.cngc.pm.model.ChangeitemActionType;
 import com.cngc.pm.model.ChangeitemType;
 import com.cngc.pm.model.Group;
 import com.cngc.pm.model.Records;
@@ -78,11 +78,24 @@ public class AuditTaskServiceImpl implements AuditTaskService {
 			Search search = new Search(Ci.class);
 			search.addFilterEqual("departmentInUse", String.valueOf(relation.getCiDepartment().getId()));
 			search.addFilterEqual("categoryCode", relation.getCiCategory().getCategoryCode());
+			//20180711 删除状态正式启用
+			search.addFilterEqual("deleteStatus", "01");			//未删除的台账
 			
-			for(Object ci : ciDao.search(search)) {
-				Ci cii = (Ci)ci;//改审核状态为未审核
-				cii.setReviewStatus("02");
-				ciDao.save(cii);
+			for(Object obj : ciDao.search(search)) {
+				Ci ci = (Ci)obj;//改审核状态为未审核
+				ci.setReviewStatus("02");
+				
+				//在审核信息表中添加一条记录
+				ChangeItem item  = new ChangeItem();
+				item.setCiId(ci.getId());
+				item.setChangeId(auditTask.getId());
+				
+				item.setCreator(auditTask.getAssessor().getUsername());
+				item.setCreatedTime(new java.util.Date());
+				item.setType(ChangeitemType.audit);
+				item.setPass(false);			//未确认状态
+				
+				changeItemDao.save(item);
 			}
 		}
 		//同时写入审计记录
@@ -127,30 +140,8 @@ public class AuditTaskServiceImpl implements AuditTaskService {
 	@Override
 	public AuditTask findUnfinishedTask(Group group, Category category) {
 		// TODO Auto-generated method stub
-//		Search search = new Search(AuditTask.class);
-//		//search.addFilterSome("relationSet", Filter.equal("ciDepartment", group));
-//		search.addFilterEmpty("endTime");
-//		
-//		for(Object task : auditTaskDao.search(search)) {
-//			AuditTask temp = (AuditTask)task;
-//			for(TaskCategoryDepartmentRelation relation : temp.getRelationSet()) {
-//				if(relation.getCiDepartment() == group && relation.getCiCategory() == category) {
-//					return temp;
-//				}
-//			}
-//		}
-//		
-//		return null;
+		return auditTaskDao.getByGroupAndCode(group, category);
 		
-		AuditTask at = auditTaskDao.getByGroupAndCode(group, category);
-		
-		if(at == null) 
-			return null;
-		
-		if(at.getEndTime()==null) {
-			return at;
-		} else
-			return null;
 	}
 
 	@Override
@@ -317,18 +308,23 @@ public class AuditTaskServiceImpl implements AuditTaskService {
 	}
 
 	@Override
-	@Transactional(propagation = Propagation.REQUIRED, readOnly=false)
-	public void subAccountCommit(AuditTask at, Group group) {
+	@Transactional(rollbackFor = Exception.class,propagation = Propagation.REQUIRED, readOnly=false)
+	public void subAccountCommit(AuditTask at, Group group) throws BusinessException {
 		// TODO Auto-generated method stub
 		//需要改状态的地方
 		Set<TaskCategoryDepartmentRelation> set = new HashSet<>();
 		for(TaskCategoryDepartmentRelation relation : at.getRelationSet()) {
 			if(relation.getCiDepartment() == group) {
-				relation.setStatus(5);		//审核中
+				relation.setStatus(1);		//部门提交
 				//找到所有的ci
 				List<Ci> list = ciDao.getListByCodeAndGroup(relation.getCiCategory(), relation.getCiDepartment(), "02");	//未审核的
 				
 				for(Ci ci : list) {
+					//同时看看有没有确认
+					ChangeItem item = changeItemDao.getByCiIdAndAuditTask(ci.getId(), at);
+					if(item==null || !item.isPass()) {
+						throw new BusinessException("有未确认的台账，所以无法提交");
+					}
 					ci.setReviewStatus("05");
 				}
 			}
@@ -343,11 +339,15 @@ public class AuditTaskServiceImpl implements AuditTaskService {
 	}
 
 	@Override
-	public List<Map<String, Object>> getCiMapList(AuditTask at, List<Ci> result) throws JsonParseException, JsonMappingException, IOException {
+	public List<Map<String, Object>> getCiMapList(AuditTask at, List<Ci> result) throws Exception {
 		// TODO Auto-generated method stub
 		List<Map<String, Object>> list = new ArrayList<>();
-//		List<ChangeItem> itemList = changeItemDao.getByChangeId(at.getId(),ChangeitemType.audit);
-//		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+
+		Map<String, Integer> map0 = new HashMap<>();
+		for(TaskCategoryDepartmentRelation relation : at.getRelationSet()){
+			map0.put(relation.getCiDepartment().getId()+relation.getCiCategory().getCategoryCode(), relation.getStatus());
+		}
+
 		for(Ci ci : result) {
 			Map<String, Object> map = new HashMap<>();
 			
@@ -356,8 +356,11 @@ public class AuditTaskServiceImpl implements AuditTaskService {
 			
 			if(item==null) {
 				map.put("action", "");
+				map.put("verity", false);
 			} else {
-				map.put("ispass", item.isPass());
+				map.put("verity", item.isPass());
+				if(item.getActionType()==null)map.put("action", "");
+				else
 				switch(item.getActionType()) {
 					case insert:
 						map.put("action", "1");
@@ -370,8 +373,9 @@ public class AuditTaskServiceImpl implements AuditTaskService {
 						break;
 				}
 				//读取所有的属性
-				
 			}
+			//部门是否通过
+			map.put("departmentcommitstatus", map0.get(ci.getDepartmentInUse()+ci.getCategoryCode()));
 			
 			List<Property> fieldsSet = getParpertiesByCode(ci.getCategoryCode());
 			//赋值
@@ -428,7 +432,7 @@ public class AuditTaskServiceImpl implements AuditTaskService {
 	}
 	
 	//根据类型获得要显示的列
-		private List<Property> getParpertiesByCode(String code) {
+	private List<Property> getParpertiesByCode(String code) {
 			Search search = new Search(Account.class);
 			search.addFilterEqual("category", code);
 			
@@ -460,77 +464,191 @@ public class AuditTaskServiceImpl implements AuditTaskService {
 			}
 			
 			return propertyDao.getByPropertyIds(fields+","+properties+","+account.getProperties()).getResult();
-		}
+	}
 
-		@Override
-		@Transactional(propagation = Propagation.REQUIRED, readOnly=false)
-		public void endTask(Long id) throws Exception {
-			// TODO Auto-generated method stub
-			AuditTask at = auditTaskDao.find(id);
+	@Override
+	@Transactional(rollbackFor=Exception.class, propagation = Propagation.REQUIRED, readOnly=false)
+	public void endTask(Long id) throws BusinessException, JsonParseException, JsonMappingException, IOException {
+		// TODO Auto-generated method stub
+		AuditTask at = auditTaskDao.find(id);
+		if(at==null || at.getEndTime()!=null) {
+			throw new BusinessException("没有这个审核任务，或者这个审核任务已经结束");
+		} else {
 			for(TaskCategoryDepartmentRelation relation :at.getRelationSet()) {
 				//条件下的所有的ci
 				for(Ci ci : ciDao.getListByCodeAndGroup(relation.getCiCategory(), relation.getCiDepartment(), "00")) {
-					ChangeItem item = changeItemDao.getByCiIdAndAuditTask(ci.getId(), at);
-					
-					if(item == null) {
-						ci.setReviewStatus("01");
-					} else if(item.getActionType() == ChangeitemActionType.insert) {
-						if(item.isPass()) {
-							ci.setReviewStatus("01");
-						} else {
-							ciDao.remove(ci);
-							changeItemDao.remove(item);
-						}
-					} else if(item.getActionType() == ChangeitemActionType.delete) {
-						if(item.isPass()) {
-							ciDao.remove(ci);
-							//changeItemDao.remove(item);
-						} else {
-							ci.setReviewStatus("01");
-						}
-					} else if(item.getActionType() == ChangeitemActionType.update) {
-						if(item.isPass()) {
-							//修改ci
-							ObjectMapper mapper = new ObjectMapper();
-							List<Property> propertylist = propertyDao.getFields();
-							@SuppressWarnings("unchecked")
-							Map<String,String> newPropertymap = mapper.readValue(item.getNewValue(), Map.class);
-							@SuppressWarnings("unchecked")
-							Map<String,String> propertymap = mapper.readValue(ci.getPropertiesData(), Map.class);
-							
-							String ps[] = item.getProperties().split(",");
-							Map<String,Property> fieldmap = new HashMap<String,Property>();
-							for(Property p:propertylist)
-								fieldmap.put(p.getPropertyId(), p);
-							for(String s:ps)
-							{
-								if(s.indexOf("CMS_FIELD_")==0)
-								{
-									// 更新字段
-									Common.setFieldValueByName(ci, fieldmap.get(s).getPropertyConstraint(), newPropertymap.get(s));
-								}
-								else
-								{
-									// 更新参数
-									propertymap.put(s, newPropertymap.get(s));
+					if(ci.getReviewStatus().equals("04")) {
+						ChangeItem item = changeItemDao.getByCiIdAndAuditTask(ci.getId(), at);
+						
+						if(item==null) {
+							throw new BusinessException("台账未做任务操作，也未确认！台账："+ci.getName());
+						} else if(item.isPass()) {
+							if(item.getActionType()==null) {
+								ci.setReviewStatus("01");
+							} else {
+								switch(item.getActionType()) {
+								case insert:
+									ci.setReviewStatus("01");
+									break;
+								case update:
+									//修改ci
+									ObjectMapper mapper = new ObjectMapper();
+									List<Property> propertylist = propertyDao.getFields();
+									@SuppressWarnings("unchecked")
+									Map<String,String> newPropertymap = mapper.readValue(item.getNewValue(), Map.class);
+									@SuppressWarnings("unchecked")
+									Map<String,String> propertymap = mapper.readValue(ci.getPropertiesData(), Map.class);
+									//需修改的属性
+									String ps[] = item.getProperties().split(",");
+									
+									Map<String,Property> fieldmap = new HashMap<String,Property>();
+									for(Property p:propertylist)
+										fieldmap.put(p.getPropertyId(), p);
+									for(String s:ps)
+									{
+										Property p0 = fieldmap.get(s);
+										if(s.indexOf("CMS_FIELD_")==0){
+											// 更新字段
+											try {
+												Object objValue;	//只有Date和String两个类型
+												if(p0.getPropertyType().equals("date")) {
+													SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+													objValue = formatter.parse(newPropertymap.get(s));
+												} else if(p0.getPropertyType().equals("sqldate")){
+													SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+													java.util.Date date = formatter.parse(newPropertymap.get(s));
+													objValue = new java.sql.Date(date.getTime());
+												}else {
+													objValue = newPropertymap.get(s);
+												}
+												Common.setFieldValueByName(ci, p0.getPropertyConstraint(), objValue);
+											} catch (Exception e) {
+												// TODO Auto-generated catch block
+												throw new BusinessException("未知错误，无法更新");
+											}
+										}else{
+											// 更新参数
+											propertymap.put(s, newPropertymap.get(s));
+										}
+									}
+									ci.setPropertiesData( mapper.writeValueAsString(propertymap) );
+									ci.setReviewStatus("01");
+									break;
+								default:	//删除
+									ci.setReviewStatus("01");
+									ci.setDeleteStatus("00");		//删除状态
+									ci.setDeleteTime(new java.util.Date());
+									break;
 								}
 							}
-							ci.setPropertiesData( mapper.writeValueAsString(propertymap) );
-							ci.setReviewStatus("01");
+							
 						} else {
-							ci.setReviewStatus("01");
+							throw new BusinessException("台账未确认！台账："+ci.getName());
 						}
+						
+					}else {
+						throw new BusinessException("台账的审核状态不正确，无法完成操作："+ci.getName());
+					}
+					//relation.setStatus(1);
+				}
+			}
+		}
+		at.setEndTime(new java.sql.Date((new java.util.Date()).getTime()));
+	}
+
+	@Override
+	public List<Ci> getCiListByGroupAndCategory(Category ciCategory, Group ciDepartment) {
+		// TODO Auto-generated method stub
+		return ciDao.getListByCodeAndGroup(ciCategory, ciDepartment, "00");
+	}
+
+	@Override
+	@Transactional(propagation = Propagation.REQUIRED, readOnly=false)
+	public void verity(AuditTask at, Ci ci) {
+		// TODO Auto-generated method stub
+		ChangeItem item = changeItemDao.getByCiIdAndAuditTask(ci.getId(), at);
+		if(item == null) {		//新建一个
+			item = new ChangeItem();
+			item.setCiId(ci.getId());
+			item.setChangeId(at.getId());
+			
+			
+			item.setCreatedTime(new java.util.Date());
+			item.setType(ChangeitemType.audit);
+			item.setPass(true);
+			changeItemDao.save(item);
+		} else//修改确认列
+			item.setPass(true);
+		
+		ci.setReviewStatus("02");
+	}
+
+	@Override
+	@Transactional(propagation=Propagation.REQUIRED, readOnly = false)
+	public void verityByCiids(AuditTask at, Long[] ids) {
+		// TODO Auto-generated method stub
+		for(Ci ci:ciDao.find(ids)) {
+			ChangeItem item = changeItemDao.getByCiIdAndAuditTask(ci.getId(), at);
+			if(item == null) {		//新建一个
+				item = new ChangeItem();
+				item.setCiId(ci.getId());
+				item.setChangeId(at.getId());
+				
+				
+				item.setCreatedTime(new java.util.Date());
+				item.setType(ChangeitemType.audit);
+				item.setPass(true);
+				changeItemDao.save(item);
+			} else//修改确认列
+				item.setPass(true);
+			
+			ci.setReviewStatus("02");
+		}
+	}
+
+	@Override
+	@Transactional(rollbackFor=Exception.class,propagation=Propagation.REQUIRED, readOnly = false)
+	public void reviewAudit(Long atid, Long groupid) throws BusinessException {
+		// TODO Auto-generated method stub
+		AuditTask at = auditTaskDao.find(atid);
+		
+		for(TaskCategoryDepartmentRelation relation :at.getRelationSet()) {
+			if(groupid==0l) {
+				for(Ci ci : ciDao.getListByCodeAndGroup(relation.getCiCategory(), relation.getCiDepartment(), "00")){
+					//有审核状态不正确的
+					if(ci.getReviewStatus().equals("05")) {
+						throw new BusinessException("此台账审核状态不正确："+ci.getName());
 					}
 				}
-				relation.setStatus(1);
+				relation.setStatus(0);
+			} else {
+				if(relation.getCiDepartment().getId().equals(groupid)) {
+					for(Ci ci : ciDao.getListByCodeAndGroup(relation.getCiCategory(), relation.getCiDepartment(), "00")){
+						//有审核状态不正确的
+						if(ci.getReviewStatus().equals("05")) {
+							throw new BusinessException("此台账审核状态不正确："+ci.getName());
+						} else if(ci.getReviewStatus().equals("03")) {
+							ChangeItem item = changeItemDao.getByCiIdAndAuditTask(ci.getId(), at);
+							item.setPass(false);
+						}
+					}
+					relation.setStatus(0);
+				}
 			}
-			at.setEndTime(new java.sql.Date((new java.util.Date()).getTime()));
 		}
+	}
 
-		@Override
-		public List<Ci> getCiListByGroupAndCategory(Category ciCategory, Group ciDepartment) {
-			// TODO Auto-generated method stub
-			return ciDao.getListByCodeAndGroup(ciCategory, ciDepartment, "00");
-		}
+	@Override
+	public SearchResult<Ci> getCiListByAudit(Long auditTaskId, Collection<String> groupIdSet,
+			Collection<String> codeSet, int iDisplayStart, int iDisplayLength) {
+		// TODO Auto-generated method stub
+		return auditTaskDao.getCiList(auditTaskId, groupIdSet, codeSet, iDisplayStart, iDisplayLength);
+	}
+
+	@Override
+	public int getCountByStatus(long at, Long groupId, String categoryCode, boolean isCommit, String status) {
+		// TODO Auto-generated method stub
+		return auditTaskDao.getCountByCondition(at, groupId, categoryCode, isCommit, status);
+	}
 
 }

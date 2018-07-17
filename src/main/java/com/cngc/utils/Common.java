@@ -154,7 +154,7 @@ public class Common {
 		}
 	}
 
-	public static Object getFieldValueByName( Object o, String fieldName) {
+	public static Object getFieldValueByName( Object o, String fieldName) throws Exception {
 		try {
 			String firstLetter = fieldName.substring(0, 1).toUpperCase();
 			String getter = "get" + firstLetter + fieldName.substring(1);
@@ -162,8 +162,7 @@ public class Common {
 			Object value = method.invoke(o, new Object[] {});
 			return value;
 		} catch (Exception e) {
-			System.out.print(e.getMessage());
-			return null;
+			throw new Exception("读取方法的值时出现问题");
 		}
 	}
 	public static void setFieldValueByName( Object o, String fieldName,Object value) throws Exception {

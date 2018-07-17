@@ -56,6 +56,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.cngc.exception.BusinessException;
 import com.cngc.pm.common.web.common.UserUtil;
 import com.cngc.pm.model.Attachment;
 import com.cngc.pm.model.ChangeItem;
@@ -175,18 +176,19 @@ public class AccountLifeCycleController {
 		return "true";
 	}
 	
-	@RequestMapping(value = "/end-aduit-task/{id}", method = RequestMethod.POST)
+	@RequestMapping(value = "/end-audit-task/{id}", method = RequestMethod.POST)
 	@ResponseBody 
-	public Map<String, Object> endAuditTask(@PathVariable Long id,@RequestParam(required=true) boolean nonforce,Authentication auth) throws Exception {
+	public Map<String, Object> endAuditTask(@PathVariable Long id,@RequestParam(required=true) boolean nonforce,Authentication auth) {
 		Map<String, Object> map = new HashMap<>();
 		SysUser currentUser = userUtil.getUserByAuth(auth);
-		if(userUtil.isRolesWithUser(currentUser, _accountMaster)) {
-			AuditTask at = auditTaskService.getById(id);
-			AuditTask at0 = auditTaskService.findUnfinishedTask(currentUser);
-			
-			if(at == at0) {
+		AuditTask at = auditTaskService.getById(id);
+		if(at==null){
+			map.put("flag", false);
+			map.put("msg", "没有这个审核任务,id="+id);
+		}else{
+			if(at.getAssessor() == currentUser) {
 				for(TaskCategoryDepartmentRelation relation :at.getRelationSet()) {
-					if(relation.getStatus() == 2){
+					if(relation.getStatus() == 0){
 						map.put("flag", false);
 						map.put("msg", "还有未完成的部门:"+relation.getCiDepartment().getGroupName()+"，所以无法结束");
 						return map;
@@ -195,7 +197,7 @@ public class AccountLifeCycleController {
 					if(nonforce){
 						//查看ci是否审核
 						for(Ci ci :auditTaskService.getCiListByGroupAndCategory(relation.getCiCategory(), relation.getCiDepartment())) {
-							if(ci.getReviewStatus().equals("05")) {
+							if(!ci.getReviewStatus().equals("04")) {
 								map.put("flag", false);
 								map.put("force", true);
 								map.put("msg", "还有未完成的审核的台账:"+ci.getName()+"-"+relation.getCiDepartment().getGroupName()+"，所以无法结束");
@@ -203,23 +205,30 @@ public class AccountLifeCycleController {
 						}
 					}
 				}
-				auditTaskService.endTask(id);
-				STREAM_OPERATE_LOG.info("审核已经结束，id:"+at.getId()+",操作者是："+currentUser.getUsername());
-				map.put("flag", true);
+				try {
+					auditTaskService.endTask(id);
+					STREAM_OPERATE_LOG.info("审核已经结束，id:"+at.getId()+",操作者是："+currentUser.getUsername());
+					map.put("flag", true);
+				} catch (BusinessException be) {
+					// TODO Auto-generated catch block
+					map.put("flag", false);
+					map.put("msg", be.getMessage());
+				} catch(IOException ioe) {
+					map.put("flag", false);
+					map.put("msg", "未知错误，请联系管理员");
+				}
+				
 			} else {
 				map.put("flag", false);
-				map.put("msg", "参数错误");
+				map.put("msg", "你没有权限结束这个审核任务");
+				STREAM_OPERATE_LOG.info("没有权限结束审核任务，id:"+at.getId()+",因为审核任务的发起者是："+at.getAssessor().getUsername());
 			}
-		} else {
-			map.put("flag", false);
-			map.put("msg", "没有权限");
 		}
-		
 		
 		return map;
 	}
 	
-	@RequestMapping(value = "/start-aduit-task", method = RequestMethod.POST)
+	@RequestMapping(value = "/start-audit-task", method = RequestMethod.POST)
 	@ResponseBody 
 	public boolean startAuditTask(Model model, HttpServletRequest request,Authentication auth) {
 		
@@ -244,7 +253,9 @@ public class AccountLifeCycleController {
 					relation.setCiCategory(category);
 					relation.setCiDepartment(group);
 					//状态改为未审核
-					relation.setStatus(2);					//审核状态 1-已审核，2-未审核，5-审核中
+					//relation.setStatus(2);					//审核状态 1-已审核，2-未审核，5-审核中
+					//状态改为未提交
+					relation.setStatus(0); 		//提交状态
 					relationSet.add(relation);
 				}
 			}
@@ -284,9 +295,71 @@ public class AccountLifeCycleController {
 		}
 	}
 	
+	/**
+	 * 任务执行情况
+	 * @param at
+	 * @param model
+	 * @param auth
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value="/audit-task/performance", method=RequestMethod.GET)
+	public String auditTaskPerformance(@RequestParam(required=true) long at, Model model, Authentication auth) throws Exception {
+		AuditTask auditTask = auditTaskService.getById(at);
+		SysUser currentUser = userUtil.getUserByAuth(auth);
+		//逻辑有问题，暂时这么用
+		if(auditTask.getAssessor() == currentUser) {		//继续
+			List<Map<String, Object>> list = new ArrayList<>();
+			for(TaskCategoryDepartmentRelation relation : auditTask.getRelationSet()) {
+				Map<String, Object> map = new HashMap<>();
+				Group group = relation.getCiDepartment();
+				map.put("groupId", group.getId());
+				map.put("groupName", group.getGroupName());
+				Category category = relation.getCiCategory();
+				map.put("categoryCode", category.getCategoryCode());
+				map.put("categoryName", category.getCategoryName());
+				
+				//查找数量
+				if(relation.getStatus()==1) {	//已提交
+					map.put("commit0", "是");
+					//查找审核中
+					map.put("auditing", auditTaskService.getCountByStatus(at, group.getId(), category.getCategoryCode(), true,"05"));
+					map.put("auditPass",  auditTaskService.getCountByStatus(at, group.getId(), category.getCategoryCode(), true,"04"));
+					map.put("auditUnPass",  auditTaskService.getCountByStatus(at, group.getId(), category.getCategoryCode(), true,"03"));
+					
+					map.put("verity", "");
+					map.put("unVerity", "");
+				} else {
+					map.put("commit0", "否");
+					
+					map.put("auditing", "");
+					map.put("auditPass",  "");
+					map.put("auditUnPass", "");
+					
+					map.put("verity", auditTaskService.getCountByStatus(at, group.getId(), category.getCategoryCode(), false,"1"));
+					map.put("unVerity", auditTaskService.getCountByStatus(at, group.getId(), category.getCategoryCode(), false,"0"));
+				}
+				list.add(map);
+			}
+			
+			model.addAttribute("list", list);
+		} else
+			return "redirect:/403";	
+		
+		model.addAttribute("at", auditTask);
+		return "account-life-cycle/audit-task-performance";
+	}
+	
+	/**
+	 * 对比
+	 * @param ciid
+	 * @param model
+	 * @param auth
+	 * @return
+	 * @throws Exception
+	 */
 	@RequestMapping(value="/audit-task/contains", method=RequestMethod.GET)
 	public String auditTaskContains(@RequestParam(required=true) long ciid, Model model, Authentication auth) throws Exception {
-//		SysUser currentUser = userUtil.getUserByAuth(auth);
 		Ci ci = ciService.getById(ciid);
 		//首先判断是否有审核任务
 		AuditTask at = auditTaskService.findUnfinishedTask(groupService.getById(Long.valueOf(ci.getDepartmentInUse())),categoryService.getByCode(ci.getCategoryCode()));
@@ -350,7 +423,6 @@ public class AccountLifeCycleController {
 		Map<String, Object> map = new HashMap<>();
 		//验证权限以及是否有任务
         SysUser currentUser = userUtil.getUserByAuth(auth);
-		if(userUtil.isRolesWithUser(currentUser, _accountSub)) {
 			//首先判断是否有审核任务
 			AuditTask at = auditTaskService.findUnfinishedTask(currentUser.getGroup());
 			
@@ -359,17 +431,20 @@ public class AccountLifeCycleController {
 			if(at==at0 && at.getEndTime() == null) {
 				//把at中relation的状态和所有ci的状态修改
 				//提交
-				auditTaskService.subAccountCommit(at, currentUser.getGroup());
-				map.put("flag", true);
-				map.put("msg", "提交成功");
+				try {
+					auditTaskService.subAccountCommit(at, currentUser.getGroup());
+					map.put("flag", true);
+					map.put("msg", "提交成功");
+				} catch (BusinessException e) {
+					// TODO Auto-generated catch block
+					map.put("flag", false);
+					map.put("msg", e.getMessage());
+				}
+				
 			} else {
 				map.put("flag", false);
 				map.put("msg", "参数错误");
 			}
-		} else {
-			map.put("flag", false);
-			map.put("msg", "没有权限");
-		}
 		return map;
 	}
 	
@@ -415,43 +490,66 @@ public class AccountLifeCycleController {
 
 	}
 	
-	@RequestMapping(value="/audit-task/pass", method=RequestMethod.POST)
+	@RequestMapping(value="/audit-task/reaudit", method=RequestMethod.POST)
 	@ResponseBody
-	public Map<String, Object> auditTaskPass(@RequestParam(required=true) Long[] ids, Authentication auth) throws Exception {
+	public Map<String, Object> auditTaskReview(@RequestParam(required=true) Long at,@RequestParam(required=true) Long group, Authentication auth) {
 		SysUser currentUser = userUtil.getUserByAuth(auth);
 		Map<String, Object> map = new HashMap<>();
-		if(userUtil.isRolesWithUser(currentUser, _accountMaster)) {
-			map.put("flag", true);
+		AuditTask at0 = auditTaskService.getById(at);
+		
+		if(at0.getAssessor()==currentUser){
+			//发回重审
+			try {
+				auditTaskService.reviewAudit(at, group);
+				map.put("flag", true);
+			} catch (BusinessException e) {
+				// TODO Auto-generated catch block
+				map.put("flag", false);
+				map.put("msg", e.getMessage());
+			}
+		} else {
+			map.put("flag", false);
+			map.put("msg", "没有权限执行这个操作");
+		}
+		return map;
+	}
+	
+	@RequestMapping(value="/audit-task/pass", method=RequestMethod.POST)
+	@ResponseBody
+	public Map<String, Object> auditTaskPass(@RequestParam(required=true) int decide,@RequestParam(required=true) Long[] ids, Authentication auth) throws Exception {
+		SysUser currentUser = userUtil.getUserByAuth(auth);
+		Map<String, Object> map = new HashMap<>();
 			//判断当前是否有审核任务
 			AuditTask at = auditTaskService.findUnfinishedTask(currentUser);
 			
 			if(at == null) { 
-				map.put("flag", true);
-				return map;
+				map.put("flag", false);
+				map.put("msg", "当前用户没有审核任务");
 			}else {
 				boolean b = true;
 				List<Ci> ciList = ciService.getByIds(Arrays.asList(ids)).getResult();
 				if(ciList.size()==0) {
-					map.put("flag", true);
-					return map;
-				}
-				for(Ci ci : ciList) {
-					AuditTask at0 = auditTaskService.findUnfinishedTask(groupService.getById(Long.valueOf(ci.getDepartmentInUse())), categoryService.getByCode(ci.getCategoryCode()));
+					map.put("flag", false);
+					map.put("msg", "没有选择任何台账");
+				} else {
+					for(Ci ci : ciList) {
+						AuditTask at0 = auditTaskService.findUnfinishedTask(groupService.getById(Long.valueOf(ci.getDepartmentInUse())), categoryService.getByCode(ci.getCategoryCode()));
+						
+						if(at0!=at){
+							b = false;
+							break;
+						}
+					}
 					
-					if(at0!=at){
-						b = false;
-						break;
+					if(b) {
+						ciService.passCis(at,ids,decide==1?true:false);
+						map.put("flag", true);
+					} else {
+						map.put("flag", false);
+						map.put("msg", "有些台账不是当前任务的");
 					}
 				}
-				
-				if(!b) {
-					map.put("flag", true);
-				} else {
-					ciService.passCis(at,ids);
-					map.put("flag", true);
-				}
 			}
-		}
 		return map;
 	}
 	
@@ -503,12 +601,14 @@ public class AccountLifeCycleController {
 		if(userUtil.isRolesWithUser(currentUser, _accountSub)) {
 			Ci ci = ciService.getById(ciid);
 			if(ci==null) {
-				
+				map.put("flag", false);
+				map.put("msg", "没有这个台账");
 			} else {
 				if(ci.getDepartmentInUse().equals(String.valueOf(currentUser.getGroup().getId()))) {
 					AuditTask at= auditTaskService.findUnfinishedTask(currentUser.getGroup(), categoryService.getByCode(ci.getCategoryCode()));
 					if(at==null) {
-						
+						map.put("flag", false);
+						map.put("msg", "这个台账没有审核任务");
 					} else {
 						ciService.recoverByAuditTask(ci,at);
 						map.put("flag", true);
@@ -558,6 +658,30 @@ public class AccountLifeCycleController {
 
 	}
 	
+	/**
+	 * 以小窗口的形式显示详细信息
+	 * @param id
+	 * @param model
+	 * @param auth
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/audit-task/details", method = RequestMethod.GET)
+	public String auditTaskSmallDetails(@RequestParam(required=true) Long at,Model model,Authentication auth) throws Exception {
+		AuditTask auditTask= auditTaskService.getById(at);
+		SysUser currentUser = userUtil.getUserByAuth(auth);
+		
+		if(auditTask.getAssessor() == currentUser) {
+			model.addAttribute("at", auditTask);
+			
+			model.addAttribute("groupId", 0);
+		} else {
+			return "redirect:403";
+		}
+		
+		return "account-life-cycle/audit-task-details-small";
+	}
+	
 	@RequestMapping(value = "/audit-task/{id}", method = RequestMethod.GET)
 	public String auditTaskDetails(@PathVariable Long id,Model model,Authentication auth) throws Exception {
 		//判断有没有权限进入
@@ -591,6 +715,7 @@ public class AccountLifeCycleController {
 			}
 			model.addAttribute("groups", setGroup);
 			model.addAttribute("groupId", 0);
+			model.addAttribute("departmentAuditStatus",2);
 		} else if(userUtil.isRolesWithUser(currentUser, _accountSub)) {
 			boolean isTask = false;
 			int departmentAuditStatus = 0;	//部门的审核状态
@@ -651,7 +776,7 @@ public class AccountLifeCycleController {
 		return "account-life-cycle/audit-task-index-html";
 	}
 	
-	@RequestMapping(value = "/get-aduit-task-list", method = RequestMethod.GET)
+	@RequestMapping(value = "/get-audit-task-list", method = RequestMethod.GET)
 	@ResponseBody 
 	public String getAuditTaskList(@RequestParam(required=true) String aoData,Authentication auth) throws Exception {
 		JSONArray jsonarray = new JSONArray(aoData);
@@ -856,6 +981,120 @@ public class AccountLifeCycleController {
 		return "account-life-cycle/audit-task-index";
 	}
 	
+	@RequestMapping(value="/audit-task/batch-verity", method=RequestMethod.POST)
+	@ResponseBody
+	public Map<String, Object> auditTaskBatchVerity(@RequestParam(required=true) Long[] ids, @RequestParam(value="at",defaultValue="0") Long atid, HttpServletRequest request,Authentication auth) throws Exception {
+//		@SuppressWarnings("rawtypes")
+//		Enumeration em = request.getParameterNames();
+//		 while (em.hasMoreElements()) {
+//		    String name = (String) em.nextElement();
+//		    String value = request.getParameter(name);
+//		    System.out.println(name+"--"+value);
+//		}
+		SysUser currentUser = userUtil.getUserByAuth(auth);
+		Map<String, Object> map = new HashMap<>();
+			//判断当前是否有审核任务
+		AuditTask at = auditTaskService.getById(atid);
+			
+		if(at == null) { 
+			map.put("flag", false);
+			map.put("msg", "没有这个审核任务");
+		}else {
+			List<Ci> ciList = ciService.getByIds(Arrays.asList(ids)).getResult();
+			if(ciList.size()==0) {
+				map.put("flag", false);
+				map.put("msg", "没有选择任何台账");
+			} else {
+				boolean b = true;
+				for(Ci ci : ciList) {
+					AuditTask at0 = auditTaskService.findUnfinishedTask(groupService.getById(Long.valueOf(ci.getDepartmentInUse())), categoryService.getByCode(ci.getCategoryCode()));
+					
+					if(at0!=at){
+						b = false;
+						break;
+					}
+				}
+				
+				//判断当前用户是否可以进行此操作
+				boolean isTask = false;
+				for(TaskCategoryDepartmentRelation relation : at.getRelationSet()) {
+					if(relation.getStatus()==0 && relation.getCiDepartment()==currentUser.getGroup()) {
+						isTask = true;
+						break;
+					}
+				}
+				
+				if(b && isTask) {
+					auditTaskService.verityByCiids(at,ids);
+					map.put("flag", true);
+				} else {
+					map.put("flag", false);
+					map.put("msg", "有些台账不在此次任务中");
+				}
+			}
+		}
+		return map;
+	}
+	
+	/**
+	 * 确认修改
+	 * @param ciid		
+	 * @param atid
+	 * @param auth
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value="/audit-task/verity",method = RequestMethod.POST)
+	@ResponseBody
+	public Map<String, Object> auditTaskVerityCi(@RequestParam(required=true) Long ciid,@RequestParam(required=true) Long atid,Authentication auth) throws Exception{
+		Map<String, Object> map = new HashMap<>();
+		
+		AuditTask at = auditTaskService.getById(atid); 
+		
+		if(at == null) {
+			map.put("flag", false);
+			map.put("msg", "没有这个审核任务");
+		} else {
+			//验证Ci是这个任务的
+			Ci ci = ciService.getById(ciid);
+			if(ci==null) {
+				map.put("flag", false);
+				map.put("msg", "没有台账");
+			} else {
+				Group ciGroup = groupService.getById(Long.valueOf(ci.getDepartmentInUse()));
+				Category category = categoryService.getByCode(ci.getCategoryCode());
+				AuditTask at0 = auditTaskService.getByGroupAndCategory(ciGroup, category);
+				
+				if(at==at0) {
+					//判断当前用户是否可以进行此操作
+					SysUser currentUser = userUtil.getUserByAuth(auth);
+					boolean isTask = false;
+					for(TaskCategoryDepartmentRelation relation : at.getRelationSet()) {
+						if(relation.getStatus()==0 && relation.getCiDepartment()==currentUser.getGroup()) {
+							isTask = true;
+							break;
+						}
+					}
+					
+					if(isTask) {
+						auditTaskService.verity(at, ci);
+						map.put("flag", true);
+						map.put("msg", "成功确认");
+					} else {
+						map.put("flag", false);
+						map.put("msg", "当前用户没有操作权限");
+					}
+				}else {
+					map.put("flag", false);
+					map.put("msg", "审核任务中没有这个台账");
+				}
+				
+			}
+		}
+		
+		return map;
+	}
+	
 	@RequestMapping(value="/get-accounts-by-group",method = RequestMethod.GET)
 	@ResponseBody
 	public String getAuditTaskListCiByGroup(@RequestParam(required=true) String aoData,Authentication auth) throws Exception{
@@ -896,19 +1135,18 @@ public class AccountLifeCycleController {
 	    
 	    if(at==null) throw new Exception("参数错误，id"+atId);
 	    
-	    
-	    	JSONObject getObj = new JSONObject();
-	    	//找出逻辑
-	    	Set<String> groupIdSet = new HashSet<>();
-	    	Set<String> codeSet = new HashSet<>();
-	    	Map<String,Integer> groupStatusMap = new HashMap<>();
-	    	for(TaskCategoryDepartmentRelation relation : at.getRelationSet()) {
-				String groupIdStr = String.valueOf(relation.getCiDepartment().getId());
-				String categoryCode = relation.getCiCategory().getCategoryCode();
-				groupIdSet.add(groupIdStr);
-				codeSet.add(categoryCode);
-				groupStatusMap.put(groupIdStr+"-"+categoryCode, relation.getStatus());
-	    	}
+	    JSONObject getObj = new JSONObject();
+	    //找出逻辑
+	    Set<String> groupIdSet = new HashSet<>();
+	    Set<String> codeSet = new HashSet<>();
+	    //Map<String,Integer> groupStatusMap = new HashMap<>();
+	    for(TaskCategoryDepartmentRelation relation : at.getRelationSet()) {
+			String groupIdStr = String.valueOf(relation.getCiDepartment().getId());
+			String categoryCode = relation.getCiCategory().getCategoryCode();
+			groupIdSet.add(groupIdStr);
+			codeSet.add(categoryCode);
+			//groupStatusMap.put(groupIdStr+"-"+categoryCode, relation.getStatus());
+	    }
 
 	    		if(groupId == 0 && isAccountMaster) {
 	    			if(at.getAssessor() != currentUser)
@@ -927,9 +1165,9 @@ public class AccountLifeCycleController {
 	    				throw new Exception("没有权限");
 	    			}
 	    		}
-	    	
 
-	    	SearchResult<Ci> result = auditTaskService.getCiList(groupIdSet,codeSet,iDisplayStart, iDisplayLength);
+	    	//SearchResult<Ci> result = auditTaskService.getCiList(groupIdSet,codeSet,iDisplayStart, iDisplayLength);
+	    	SearchResult<Ci> result = auditTaskService.getCiListByAudit(atId, groupIdSet, codeSet, iDisplayStart, iDisplayLength);
 	    	
 	    	List<Map<String, Object>> resultList = auditTaskService.getCiMapList(at, result.getResult());
 
@@ -940,8 +1178,6 @@ public class AccountLifeCycleController {
 		    getObj.put("aaData", resultList);//要以JSON格式返回
 		    
 			return getObj.toString();
-	   
-		
 	}
 	
 	@RequestMapping(value="/get-all",method = RequestMethod.GET)
@@ -1139,7 +1375,7 @@ public class AccountLifeCycleController {
 	
 	@SuppressWarnings("unchecked")
 	@RequestMapping(value="/ci/saveproperty/{id}",method=RequestMethod.POST)
-	public String saveProperty(@PathVariable("id") long id,HttpServletRequest request) throws JsonParseException, JsonMappingException, IOException{	
+	public String saveProperty(@PathVariable("id") long id,HttpServletRequest request) throws Exception{	
 		ObjectMapper mapper = new ObjectMapper();
 		Ci ci = ciService.getById(id);
 		try

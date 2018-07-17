@@ -142,21 +142,11 @@
     	            	sDefaultContent : '',  
     	            	aTargets: ['_all']  
     	            	}, 
-    	            	{
-        	                "aTargets": [ 9 ],
-        	                "mRender": function ( data, type, full ) {
-          	                	if(data) {
-          	                		return '审核已通过';
-          	                	} else {
-          	                		return '审核未通过';
-          	                	}
-        	                }
-        	              },
       	            	{
         	                "aTargets": [ 10 ],
         	                "mRender": function ( data, type, full ) {
         	                	if(data=="") {
-        	                		return "";
+        	                		return "未操作";
         	                	} else if(data=="1") {
         	                		return '<span class="label label-success">新建</span>';
         	                	} else if(data=="2") {
@@ -167,9 +157,9 @@
         	                }
         	              },
     	              {
-      	                "aTargets": [ 12 ],
+      	                "aTargets": [ 11 ],
       	                "mRender": function ( data, type, full ) {
-      	                	if(full.action==2)
+      	                	if(full.action==2 || full.action==1 || full.action==3)
       	                  		return '<a href="javascript:void(0);" onclick="contains0('+data+')">对比</a>';
       	                	
       	                }
@@ -180,13 +170,12 @@
     	                           { "mData" : 'SecurityLevelName' }, 
     	                           { "mData" : 'UserInMaintenanceName' }, 
     	                           { "mData" : 'CategoryName'},
-    	                           { "mData" : 'DepartmentName' }, 
+    	                           { "mData" : 'DepartmentInUseName' }, 
     	                           { "mData" : 'Location' }, 
     	                           { "mData" : 'ServiceStartTime' }, 
     	                           { "mData" : 'StatusName' }, 
-    	                           { "mData" : 'ispass' }, 
+    	                           { "mData" : 'ReviewStatusName' }, 
     	                           { "mData" : 'action' }, 
-    	                           { "mData" : 'Purpose' }, 
     	                           { "mData" : 'id' }
     	                             ]
     			});
@@ -270,7 +259,6 @@
                                 </li>
                             </ul>                        
                         </div>
-                        <input type="hidden" id="categorycode" value="0">
                         <div class="block-fluid  table-sorting clearfix" id="inbox">
                             <table  class="table" id="eventTable">
                                 <thead>
@@ -286,7 +274,6 @@
 										<th width="10%">使用情况</th>
 										<th>审核状态</th>
 										<th>审核操作</th>
-										<th width="10%">用途</th>
 										<th width="8%">操作</th>
                                     </tr>
                                 </thead>

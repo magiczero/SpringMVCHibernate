@@ -99,6 +99,7 @@
     var table;
     var isAccountMaster = ${isAccountMaster};
     var isAccountSub = ${isAccountSub};
+    var atid = ${at.id};
             $(document).ready(function () {
 
             	$(".header").load("${contextPath }/header?t="+pm_random());
@@ -112,10 +113,28 @@
                 	table.fnDraw();
                 });
                 
+                $('#groupBackBtn').click(function(){
+					if(confirm('确定发回重审？')){
+						var a = $("input[name='group2']:checked").val();
+						if(a==null||a==''){alert('请选择一个部门');return false;}
+						else{
+		            		$.post("${contextPath }/account-life-cycle/audit-task/reaudit?at="+atid+"&group="+a, function(data) {
+		
+								if(data.flag)
+									table.fnDraw();
+								else
+									alert("操作失败，原因："+data.msg);
+	            			},"json");
+		            		return true;
+						}
+            		} else
+            			return false;
+                });
+                
                 $('#end').click(function(){
                 	if(confirm('是否结束此次审核？')){
 	                	
-	            		$.post("${contextPath }/account-life-cycle/end-aduit-task/${at.id}?nonforce=false", function(data) {
+	            		$.post("${contextPath }/account-life-cycle/end-audit-task/${at.id}?nonforce=false", function(data) {
 	
 							if(data.flag)
 								table.fnDraw();
@@ -123,7 +142,7 @@
 								if(data.force){
 									if(confirm(data.msg+'，是否强制结束此次审核？')){
 					                	
-					            		$.post("${contextPath }/account-life-cycle/end-aduit-task/${at.id}?nonforce=true", function(data) {
+					            		$.post("${contextPath }/account-life-cycle/end-audit-task/${at.id}?nonforce=true", function(data) {
 					
 											if(data.flag){
 												table.fnDraw();
@@ -156,7 +175,33 @@
 	            			return false;
 	            		}
 	            		
-	            		$.post("${contextPath }/account-life-cycle/audit-task/pass?ids="+arrs, function(data) {
+	            		$.post("${contextPath }/account-life-cycle/audit-task/pass?decide=1&ids="+arrs, function(data) {
+	
+							if(data.flag)
+								table.fnDraw();
+							else
+								alert("操作失败，原因："+data.msg);
+            			},"json");
+	            		return true;
+            		} else
+            			return false;
+                });
+                
+                $('#batchVerity').click(function(){
+                	if(confirm('确认操作？')){
+	                	var arrs = [];
+	            		$("input[name=ids]").each(function() {
+	            			if($(this).attr("checked")=='checked') {
+	            				arrs.push($(this).val());
+	            			}
+	            		});
+	            		
+	            		if(arrs.length ==0 ) {
+	            			alert('请选择一项');
+	            			return false;
+	            		}
+	            		
+	            		$.post("${contextPath }/account-life-cycle/audit-task/batch-verity?ids="+arrs, {at:atid},function(data) {
 	
 							if(data.flag)
 								table.fnDraw();
@@ -171,7 +216,7 @@
                 $('#commitBtn').click(function(){
                 	if(confirm('确认提交？')){
 	                	$.ajax({
-	        				url : "${contextPath }/account-life-cycle/audit-task/commit/${at.id}",//这个就是请求地址对应sAjaxSource
+	        				url : "${contextPath }/account-life-cycle/audit-task/commit/"+atid,//这个就是请求地址对应sAjaxSource
 	        				type : "post",//这个是把datatable的一些基本数据传给后台,比如起始位置,每页显示的行数
 	        				success : function(result) {
 	        					if(result.flag) {
@@ -229,7 +274,9 @@
     	            	{
     	                "aTargets": [ 0 ],
     	                "mRender": function ( data, type, full ) {
-    	                	if(full.ReviewStatus=='05' && isAccountMaster)
+    	                	if(isAccountSub&& !full.verity && full.departmentcommitstatus==0)
+    	                  		return '<input type="checkbox" name="ids" value="'+full.id+'"/>';
+    	                  	else if(isAccountMaster&&full.departmentcommitstatus==1&&full.ReviewStatus == '05')
     	                  		return '<input type="checkbox" name="ids" value="'+full.id+'"/>';
     	                }
     	              },
@@ -240,7 +287,7 @@
       	                }
       	              },
       	            	{
-        	                "aTargets": [ 11 ],
+        	                "aTargets": [ 10 ],
         	                "mRender": function ( data, type, full ) {
         	                	if(data=="") {
         	                		return "";
@@ -253,29 +300,40 @@
         	                	}
         	                }
         	              },
+        	              {
+          	                "aTargets": [ 11 ],
+          	                "mRender": function ( data, type, full ) {
+          	                	if(data) {
+          	                		return '<span class="label label-info">已确认</span>';
+          	                	} else {
+          	                		if(isAccountSub)
+          	                		 return '<a title="点击确认" href="javascript:void(0);" onclick="verity0('+full.id+')">未确认</a>'
+          	                		 else
+          	                			 return '<span class="label label-warning">未确认</span>';
+          	                	}
+          	                }
+          	              },
     	              {
-      	                "aTargets": [ 13 ],
+      	                "aTargets": [ 12 ],
       	                "mRender": function ( data, type, full ) {
-      	                	if(full.ReviewStatus=='02'&& isAccountSub) {
-      	                		if(full.action=="")
-      	                			return '<a href="${contextPath}/account-life-cycle/audit-task/init-update-html?ciid='+data+'">修改</a>&nbsp;&nbsp;<a href="javascript:void(0);" onclick="del('+data+')">删除</a>';
-      	                		if(full.action=="3")
-      	                  			return '<a href="javascript:void(0);" onclick="recover('+data+')">恢复</a>';
-      	                  		else
-      	                  			return '<a href="javascript:void(0);" onclick="contains0('+data+')">对比</a>&nbsp;<a href="${contextPath}/account-life-cycle/audit-task/init-update-html?ciid='+data+'">修改</a>&nbsp;&nbsp;<a href="javascript:void(0);" onclick="del('+data+')">删除</a>';
-      	                	} 
-							
-      	                	if(full.ReviewStatus == '05' && isAccountMaster) {
-      	                		if(full.action=="2")
-      	                  			return '<a href="javascript:void(0);" onclick="contains0('+data+')">对比</a>';
-      	                	}
-      	                	
-      	                	if(full.ReviewStatus == '03') {
-      	                		return '审核未通过';
-      	                	}
-      	                	
-      	                	if(full.ReviewStatus == '04') {
-      	                		return '审核已通过';
+      	                	if(isAccountSub) {
+      	                		if(full.ReviewStatus=='02'||(full.ReviewStatus=='03'&&full.departmentcommitstatus==0)) {
+	      	                		if(full.action=="")
+	      	                			return '<a href="${contextPath}/account-life-cycle/audit-task/init-update-html?ciid='+data+'">修改</a>&nbsp;&nbsp;<a href="javascript:void(0);" onclick="del('+data+')">删除</a>';
+	      	                		if(full.action=="3")
+	      	                  			return '<a href="javascript:void(0);" onclick="recover('+data+')">恢复</a>';
+	      	                  		else
+	      	                  			return '<a href="javascript:void(0);" onclick="contains0('+data+')">对比</a>&nbsp;<a href="${contextPath}/account-life-cycle/audit-task/init-update-html?ciid='+data+'">修改</a>&nbsp;&nbsp;<a href="javascript:void(0);" onclick="del('+data+')">删除</a>';
+      	                		}
+      	                	} else if(isAccountMaster) {
+      	                		if(full.ReviewStatus == '05') {
+      	                			if(full.action=="")
+	      	                  			return '<a href="javascript:void(0);" onclick="pass0('+data+',1)">审核通过</a><br/><a href="javascript:void(0);" onclick="pass0('+data+',0)">审核不通过</a>';
+	      	                  		else
+	      	                  			return '<a href="javascript:void(0);" onclick="contains0('+data+')">对比</a><br/><a href="javascript:void(0);" onclick="pass0('+data+',1)">审核通过</a><br/><a href="javascript:void(0);" onclick="pass0('+data+',0)">审核不通过</a>';
+      	                		} else {
+      	                			return '';
+      	                		}
       	                	}
       	                	
       	                	return '';
@@ -288,32 +346,60 @@
     	                           { "mData" : 'SecurityLevelName' }, 
     	                           { "mData" : 'UserInMaintenanceName' }, 
     	                           { "mData" : 'CategoryName'},
-    	                           { "mData" : 'DepartmentName' }, 
-    	                           { "mData" : 'Location' }, 
+    	                           { "mData" : 'DepartmentInUseName' }, 
     	                           { "mData" : 'ServiceStartTime' }, 
     	                           { "mData" : 'StatusName' }, 
     	                           { "mData" : 'ReviewStatusName' }, 
     	                           { "mData" : 'action' }, 
-    	                           { "mData" : 'Purpose' }, 
+    	                           { "mData" : 'verity' }, 
     	                           { "mData" : 'id' }
     	                             ]
     			});
                 
             });
             
+            function verity0(id) {
+            	if(confirm("是否确认此台账？")) {
+            		$.post("${contextPath }/account-life-cycle/audit-task/verity",{ciid: id, atid: atid},function(result){
+            		    if(result.flag) {
+            		    	table.fnDraw();
+            		    }else {
+            		    	alert(result.msg);
+            		    }
+            		  });
+                	return true;
+                	} else
+                		return false;
+            }
+            
+            function pass0(id,decide){
+            	if(confirm('确认操作？')){
+            		$.post("${contextPath }/account-life-cycle/audit-task/pass?decide="+decide+"&ids="+id, function(data) {
+
+						if(data.flag)
+							table.fnDraw();
+						else
+							alert("操作失败，原因："+data.msg);
+        			},"json");
+            		return true;
+        		} else
+        			return false;
+            }
+            
             function contains0(id) {
             	$.ajax({
     				url : "${contextPath}/account-life-cycle/audit-task/contains0?ciid="+id,//这个就是请求地址对应sAjaxSource
     				type : "get",//这个是把datatable的一些基本数据传给后台,比如起始位置,每页显示的行数
     				success : function(result) {
-    					var str = "";
+    					var str = '<div class="row-form clearfix"><div class="col-md-3">&nbsp;</div><div class="col-md-4"><b>原 值</b></div><div class="col-md-5"><b>修改值</b></div></div>';
     					$.each(result,function(name,value) {
     						var value1 = "";
     						if(value[1]!=null)
     							value1 = value[1];
     						str+='<div class="row-form clearfix"><div class="col-md-3"><b>'+name+'：</b></div><div class="col-md-4">'+value[0]+'</div><div class="col-md-5">'+value1+'</div></div>';
     						});
-    					$('#title0').append(str);
+    					$('#contains0').empty();
+    					$('#contains0').append(str);
     					$("#containsModal").modal('show');
     				}
     			});
@@ -340,18 +426,18 @@
             
             function recover(id) {
             	if(confirm("是否恢复？")) {
-            	$.ajax({
-    				url : "${contextPath }/account-life-cycle/audit-task/recover/"+id,//这个就是请求地址对应sAjaxSource
-    				type : "post",//这个是把datatable的一些基本数据传给后台,比如起始位置,每页显示的行数
-    				success : function(result) {
-    					if(result.flag) {
-    						table.fnDraw();
-    					} else {
-    						alert(result.msg);
-    					}
-    				}
-    			});
-            	return true;
+	            	$.ajax({
+	    				url : "${contextPath }/account-life-cycle/audit-task/recover/"+id,//这个就是请求地址对应sAjaxSource
+	    				type : "post",//这个是把datatable的一些基本数据传给后台,比如起始位置,每页显示的行数
+	    				success : function(result) {
+	    					if(result.flag) {
+	    						table.fnDraw();
+	    					} else {
+	    						alert(result.msg);
+	    					}
+	    				}
+	    			});
+	            	return true;
             	} else
             		return false;
             }
@@ -409,10 +495,18 @@
                                 <li>
                                     <a class="isw-settings" href="#"></a>
                                     <ul class="dd-list">
-                                        <c:if test="${isAccountMaster }"> <li><a data-toggle="modal" href="#eModal"><span class="isw-edit"></span> 按部门查看</a></li><li><a  href="javascript:void(0);" id="pass"><span class="isw-edit"></span> 审核通过</a></li><li><a  href="javascript:void(0);" id="end"><span class="isw-edit"></span> 结束审核</a></li></c:if>
-                                        <c:if test="${isAccountSub && departmentAuditStatus==2 }"><li><a data-toggle="modal" href="#createModal"><span class="isw-plus"></span> 新建台账</a></li>
+                                        <c:if test="${isAccountMaster }">
+                                        <li><a data-toggle="modal" href="#eModal"><span class="isw-edit"></span> 按部门查看</a></li>
+                                        <li><a href="javascript:void(0);" id="pass"><span class="isw-edit"></span> 审核通过</a></li>
+                                        <li><a href="javascript:void(0);" id="end"><span class="isw-edit"></span> 结束审核</a></li>
+                                        <li><a data-toggle="modal" href="#fModal"><span class="isw-edit"></span> 发回重审</a>
+                                        </c:if>
+                                        <c:if test="${isAccountSub && departmentAuditStatus==0 }">
+                                        <li><a data-toggle="modal" href="#createModal"><span class="isw-plus"></span> 新建台账</a></li>
                                         <li><a href="#fileModal" data-toggle="modal"><span class="isw-edit"></span> 导入</a></li>
-                                        <li><a href="javascript:void(0);" id="commitBtn"><span class="isw-edit"></span> 提交审核任务</a></li></c:if>
+                                        <li><a href="javascript:void(0);" id="batchVerity"><span class="isw-edit"></span> 批量确认</a></li>
+                                        <li><a href="javascript:void(0);" id="commitBtn"><span class="isw-edit"></span> 提交审核任务</a></li>
+                                        </c:if>
                                     </ul>
                                 </li>
                             </ul>                        
@@ -429,13 +523,12 @@
 										<th width="7%">责任人</th>
 										<th width="7%">类别</th>
 										<th width="10%">所属部门</th>
-										<th>物理位置</th>
 										<th width="10%">启用时间</th>
 										<th width="10%">使用情况</th>
 										<th>审核状态</th>
 										<th>审核操作</th>
-										<th width="10%">用途</th>
-										<th width="8%">操作</th>
+										<th>是否确认</th>
+										<th width="10%">操作</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -452,6 +545,7 @@
         </div>
         
          <!-- Bootrstrap modal form -->
+        
         <div class="modal fade" id="eModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
@@ -483,13 +577,46 @@
                 </div>
             </div>
         </div>
+         <c:if test="${isAccountMaster }">
+        <div class="modal fade" id="fModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>                        
+                        <h4>发回重审</h4>
+                    </div>
+                    <div class="modal-body modal-body-np">
+                        <div class="row">
+                            <div class="block-fluid">
+                                <input type="hidden" id="at1" value="${at.id }"/>                        
+                                <div class="row-form clearfix">
+                                    <div class="col-md-3">部门:</div>
+                                    <div class="col-md-9"><label class="checkbox checkbox-inline">
+                                        <input type="radio" name="group2" checked="checked" value="${groupId }"/> 全部
+                                    </label><c:forEach items="${groups }" var="group">
+                                    <label class="checkbox checkbox-inline">
+                                        <input type="radio" name="group2" value="${group.id }" /> ${group.groupName} </label></c:forEach></div>
+                                </div>         
+                            </div>                
+                            <div class="dr"><span></span></div>
+                        </div>
+                    </div>   
+                    <div class="modal-footer">
+                        <button class="btn btn-warning" id="groupBackBtn" aria-hidden="true"> 提 交 </button> 
+                        <button class="btn btn-default" data-dismiss="modal" aria-hidden="true">Close</button>            
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+        </c:if>
         <c:if test="${isAccountSub }">
         <div class="modal fade" id="createModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>                        
-                        <h4>选择类别</h4>
+                        <h4>新建台账</h4>
                     </div>
                     <form id="validation1" action="${contextPath}/account-life-cycle/audit-task/init-create-html" method="post">
                     <div class="modal-body modal-body-np">
@@ -520,7 +647,7 @@
                 <div class="modal-content">
                     <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>                        
-                        <h4>选择类别</h4>
+                        <h4>导入台账</h4>
                     </div>
                     <form id="validation2" enctype="multipart/form-data" action="${contextPath}/account-life-cycle/audit-task/import-xls" method="post">
                     <div class="modal-body modal-body-np">
@@ -550,16 +677,11 @@
                 <div class="modal-content">
                     <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>                        
-                        <h4>对比</h4>
+                        <h4>对比数据</h4>
                     </div>
                     <div class="modal-body modal-body-np">
                         <div class="row">
-                            <div class="block-fluid">
-                            	<div class="row-form clearfix" id="title0">
-                                    <div class="col-md-3">&nbsp;</div>
-                                    <div class="col-md-4"><b>原 值</b></div>
-                                    <div class="col-md-5"><b>修改值</b></div>
-                                </div>
+                            <div class="block-fluid" id="contains0">
                             </div>                
                         </div>
                     </div>   

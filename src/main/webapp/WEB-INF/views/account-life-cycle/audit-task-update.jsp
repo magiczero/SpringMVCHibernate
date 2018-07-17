@@ -189,12 +189,12 @@
 	                            <div class="col-md-3"><form:select path="securityLevel" items="${securityLevel }" itemLabel="codeName" itemValue="code" cssStyle="width:100%"></form:select></div>
                         
                                 <div class="col-md-1"><form:label path="securityNo">保密编号:</form:label></div>
-                                <div class="col-md-3"><form:input path="securityNo"></form:input></div>
+                                <div class="col-md-3"><form:input path="securityNo" readonly="true"></form:input></div>
                                 
                             </div>
                             <div class="row-form clearfix">
-                                <div class="col-md-1"><form:label path="departmentName">所属部门:</form:label></div>
-                                <div class="col-md-3"><form:input path="departmentName" class="validate[required]" type="text" value="${group.groupName }" readonly="true"/></div>
+                                <div class="col-md-1"><form:label path="departmentInUseName">所属部门:</form:label></div>
+                                <div class="col-md-3"><form:input path="departmentInUseName" class="validate[required]" type="text" readonly="true"/></div>
                                 <div class="col-md-1"><form:label path="userInMaintenance">责任人:</form:label></div>
                                 <div class="col-md-3"><form:select path="userInMaintenance" items="${users }" itemLabel="name" itemValue="username" cssStyle="width:100%"></form:select></div>
                                 <div class="col-md-1"><form:label path="purpose">设备用途:</form:label></div>

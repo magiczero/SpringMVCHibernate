@@ -71,7 +71,7 @@ public class RoleController {
 	}
 	
 	@RequestMapping(value="/delete/{id}", method = RequestMethod.GET)
-	public String delete(@PathVariable("id") long id, Model model) {
+	public String delete(@PathVariable("id") long id, Model model) throws BusinessException {
 		Role role = roleService.getById(id);
 		
 		if (role == null)

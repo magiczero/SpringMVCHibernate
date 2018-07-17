@@ -348,7 +348,7 @@ public class UserController extends BaseController{
 	}
 	
 	@RequestMapping(value="/enable/{id}", method = RequestMethod.PUT)
-	public @ResponseBody Map<String, Object> enableUser(@PathVariable("id") long id,HttpServletRequest request) {
+	public @ResponseBody Map<String, Object> enableUser(@PathVariable("id") long id,HttpServletRequest request) throws BusinessException {
 		Map<String, Object> map = new HashMap<>();
 		map.put("flag", false);
 		
@@ -402,7 +402,7 @@ public class UserController extends BaseController{
 	}
 	
 	@RequestMapping(value="/del/{id}", method = RequestMethod.PUT)
-	public @ResponseBody Map<String, Object> delUser(@PathVariable("id") long id,HttpServletRequest request) {
+	public @ResponseBody Map<String, Object> delUser(@PathVariable("id") long id,HttpServletRequest request) throws BusinessException {
 		Map<String, Object> map = new HashMap<>();
 		map.put("flag", false);
 		boolean isSysAdmin = false;

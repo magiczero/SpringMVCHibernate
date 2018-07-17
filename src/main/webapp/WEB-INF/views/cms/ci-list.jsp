@@ -177,7 +177,7 @@
         	                           { "mData" : 'categoryName' }, 
         	                           { "mData" : 'producer' }, 
         	                           { "mData" : 'model' }, 
-        	                           { "mData" : 'departmentName' }, 
+        	                           { "mData" : 'departmentInUseName' }, 
         	                           { "mData" : 'userInMaintenanceName' }, 
         	                           { "mData" : 'serial' }, 
         	                           { "mData" : 'createdTime' }, 

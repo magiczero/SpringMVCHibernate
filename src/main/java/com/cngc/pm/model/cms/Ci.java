@@ -32,6 +32,8 @@ import com.cngc.pm.model.Attachment;
 public class Ci {
 
 	private Long id;
+	private Date inWhile;		//创建时间
+
 	private String name;
 	private String model;
 	private String use;
@@ -80,7 +82,7 @@ public class Ci {
 	private String serviceProviderContact;
 	private String reviewStatus;
 	private Date lastReviewTime;
-	private String deleteStatus;
+	private String deleteStatus;			//00删除状态，01未删除
 	private Date deleteTime;
 	private String producer;
 	private String status;
@@ -138,7 +140,7 @@ public class Ci {
 	@Transient
 	private String userInMaintenanceName;
 	@Transient
-	private String departmentName;
+	private String departmentInUseName;
 	
 	private Set<Attachment> attachs = new HashSet<>();							//附件
 	
@@ -268,6 +270,15 @@ public class Ci {
 
 	public void setServiceStartTime(java.sql.Date serviceStartTime) {
 		this.serviceStartTime = serviceStartTime;
+	}
+	
+	@Column(name = "in_while")
+	public Date getInWhile() {
+		return inWhile;
+	}
+
+	public void setInWhile(Date inWhile) {
+		this.inWhile = inWhile;
 	}
 
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
@@ -493,12 +504,12 @@ public class Ci {
 		this.userInMaintenanceName = userInMaintenanceName;
 	}
 	@Formula(value="(SELECT a.group_name FROM sys_group a WHERE a.id=department_in_use)")
-	public String getDepartmentName() {
-		return departmentName;
+	public String getDepartmentInUseName() {
+		return departmentInUseName;
 	}
 
-	public void setDepartmentName(String departmentName) {
-		this.departmentName = departmentName;
+	public void setDepartmentInUseName(String departmentInUseName) {
+		this.departmentInUseName = departmentInUseName;
 	}
 
 }

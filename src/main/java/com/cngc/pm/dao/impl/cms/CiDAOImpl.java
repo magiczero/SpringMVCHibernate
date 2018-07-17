@@ -112,6 +112,7 @@ public class CiDAOImpl extends BaseDAOImpl<Ci, Long> implements CiDAO {
 		
 		search.addFilterEqual("categoryCode", category.getCategoryCode());
 		search.addFilterEqual("departmentInUse", group.getId());
+		search.addFilterEqual("deleteStatus", "01");
 		if(!reviewStatus.equals("00"))
 			search.addFilterEqual("reviewStatus",reviewStatus);
 		

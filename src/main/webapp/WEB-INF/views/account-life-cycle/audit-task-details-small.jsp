@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-    <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %><%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %> 
+    <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
     <c:set var="contextPath" value="${pageContext.request.contextPath}"></c:set>
 <!DOCTYPE html>
 <html lang="en">
@@ -97,29 +97,120 @@
     <script type="text/javascript">
     var ctx = "${contextPath}";
     var table;
-    var isAccountMaster = ${isAccountMaster};
-    var isAccountSub = ${isAccountSub};
+    var atid = ${at.id};
             $(document).ready(function () {
 
             	$(".header").load("${contextPath }/header?t="+pm_random());
             	$(".menu").load("${contextPath }/menu?t="+pm_random(), function() {$("#node_${moduleId}").addClass("active");});
             	$(".breadLine .buttons").load("${contextPath}/contentbuttons?t="+pm_random());
             	
-                $('[data-submenu]').submenupicker();
+              //表单验证
+                $("#validation2").validationEngine({promptPosition : "topRight", scroll: true });
                 
-                $('#exportBtn').click(function(){
-                	if($("input:checkbox[name='exportGroups']:checked").length>0 && $("input:checkbox[name='exportCodes']:checked").length>0)  {
-	                    $("#export").submit();
-                	} else {
-                		alert('请选择部门或分类');
-                		return false;
-                	}
-              	});
-                
-                $(".confirm").bind("click",function(){
-                  	if(!confirm("确定要执行该操作?"))
-                   		return false;
+                $('#groupBtn').click(function(){
+                	table.fnDraw();
                 });
+                
+                $('#groupBackBtn').click(function(){
+					if(confirm('确定发回重审？')){
+						var a = $("input[name='group2']:checked").val();
+						if(a==null||a==''){alert('请选择一个部门');return false;}
+						else{
+		            		$.post("${contextPath }/account-life-cycle/audit-task/reaudit?at="+atid+"&group="+a, function(data) {
+		
+								if(data.flag)
+									table.fnDraw();
+								else
+									alert("操作失败，原因："+data.msg);
+	            			},"json");
+		            		return true;
+						}
+            		} else
+            			return false;
+                });
+                
+                
+                
+                $('#pass').click(function(){
+                	if(confirm('确认操作？')){
+	                	var arrs = [];
+	            		$("input[name=ids]").each(function() {
+	            			if($(this).attr("checked")=='checked') {
+	            				arrs.push($(this).val());
+	            			}
+	            		});
+	            		
+	            		if(arrs.length ==0 ) {
+	            			alert('请选择一项');
+	            			return false;
+	            		}
+	            		
+	            		$.post("${contextPath }/account-life-cycle/audit-task/pass?decide=1&ids="+arrs, function(data) {
+	
+							if(data.flag)
+								table.fnDraw();
+							else
+								alert("操作失败，原因："+data.msg);
+            			},"json");
+	            		return true;
+            		} else
+            			return false;
+                });
+                
+                $('#batchVerity').click(function(){
+                	if(confirm('确认操作？')){
+	                	var arrs = [];
+	            		$("input[name=ids]").each(function() {
+	            			if($(this).attr("checked")=='checked') {
+	            				arrs.push($(this).val());
+	            			}
+	            		});
+	            		
+	            		if(arrs.length ==0 ) {
+	            			alert('请选择一项');
+	            			return false;
+	            		}
+	            		
+	            		$.post("${contextPath }/account-life-cycle/audit-task/batch-verity?ids="+arrs, {at:atid},function(data) {
+	
+							if(data.flag)
+								table.fnDraw();
+							else
+								alert("操作失败，原因："+data.msg);
+            			},"json");
+	            		return true;
+            		} else
+            			return false;
+                });
+                
+                $('#commitBtn').click(function(){
+                	if(confirm('确认提交？')){
+	                	$.ajax({
+	        				url : "${contextPath }/account-life-cycle/audit-task/commit/"+atid,//这个就是请求地址对应sAjaxSource
+	        				type : "post",//这个是把datatable的一些基本数据传给后台,比如起始位置,每页显示的行数
+	        				success : function(result) {
+	        					if(result.flag) {
+	        						table.fnDraw();
+	        						alert('提交成功');
+	        					} else {
+	        						alert(result.msg);
+	        					}
+	        				}
+	        			});
+	                	return true;
+                	} 
+                	
+                });
+                
+                $("input[name=checkall]").click(function(){
+                    
+                    if(!$(this).is(':checked'))
+                        $(this).parents('table').find('input[type=checkbox]').attr('checked',false);
+                    else
+                        $(this).parents('table').find('input[type=checkbox]').attr('checked',true);
+                        
+                });    
+                
                 
                 table = $('#eventTable').dataTable({
                 	"oLanguage": {"sUrl": "${contextPath}/resources/json/Chinese.json"},
@@ -138,46 +229,173 @@
     			    "bProcessing": true, 
     			    "bJQueryUI": false,
     		        "bServerSide": true,//这个用来指明是通过服务端来取数据
-    	            "sAjaxSource": ctx + '/account-life-cycle/get-all?t=' + pm_random(),//这个是请求的地址
+    	            "sAjaxSource": ctx + '/account-life-cycle/get-accounts-by-group?t=' + pm_random(),//这个是请求的地址
     	            "fnServerData": retrieveData, // 获取数据的处理函数
     	            "fnServerParams": function (aoData) {  //查询条件
     	                aoData.push(
-    	                		{ "name": "categoryCode", "value": $("#categorycode").val() }
+    	                		{ "name": "groupId", "value": $("input[name='group1']").val() },
+    	                		{ "name": "atId", "value": ${at.id} }
     	                    );
     	            },
     	            "aoColumnDefs": [ {  
     	            	sDefaultContent : '',  
     	            	aTargets: ['_all']  
-    	            	},
+    	            	}, 
+    	            	{
+    	                "aTargets": [ 0 ],
+    	                "mRender": function ( data, type, full ) {
+    	                	if(full.departmentcommitstatus==1&&full.ReviewStatus == '05')
+    	                  		return '<input type="checkbox" name="ids" value="'+full.id+'"/>';
+    	                }
+    	              },
     	              {
-      	                "aTargets": [ 1 ],
+      	                "aTargets": [ 2 ],
       	                "mRender": function ( data, type, full ) {
       	                	return '<a href="${contextPath}/stats/account/detail/'+full.id+'">'+data+'</a>';
       	                }
+      	              },
+      	            	{
+        	                "aTargets": [ 10 ],
+        	                "mRender": function ( data, type, full ) {
+        	                	if(data=="") {
+        	                		return "";
+        	                	} else if(data=="1") {
+        	                		return '<span class="label label-success">新建</span>';
+        	                	} else if(data=="2") {
+        	                		return '<span class="label label-warning">修改</span>';
+        	                	} else if(data=="3") {
+        	                		return '<span class="label label-default">删除</span>';
+        	                	}
+        	                }
+        	              },
+        	              {
+          	                "aTargets": [ 11 ],
+          	                "mRender": function ( data, type, full ) {
+          	                	if(data) {
+          	                		return '<span class="label label-info">已确认</span>';
+          	                	} else
+     	                			 return '<span class="label label-warning">未确认</span>';
+          	                }
+          	              },
+    	              {
+      	                "aTargets": [ 12 ],
+      	                "mRender": function ( data, type, full ) {
+      	                	var str = '<a href="javascript:void(0);" onclick="contains0('+data+')">对比</a><br/>';
+      	                		if(full.ReviewStatus == '05') {
+      	                			if(full.action=="")
+	      	                  			return '<a href="javascript:void(0);" onclick="pass0('+data+',1)">审核通过</a><br/><a href="javascript:void(0);" onclick="pass0('+data+',0)">审核不通过</a>';
+	      	                  		else
+	      	                  			return str+'<a href="javascript:void(0);" onclick="pass0('+data+',1)">审核通过</a><br/><a href="javascript:void(0);" onclick="pass0('+data+',0)">审核不通过</a>';
+      	                		} else if(full.ReviewStatus == '03' || full.ReviewStatus == '04') {
+      	                			if(full.action=="")
+	      	                  			return '';
+	      	                  		else
+      	                				return str;
+      	                		}
+      	                }
       	              }],
     	            "aoColumns" : [
-    	                           { "mData" : 'securityNo' }, 
-    	                           { "mData" : 'name' }, 
-    	                           { "mData" : 'securityLevelName' }, 
-    	                           { "mData" : 'userInMaintenanceName' }, 
-    	                           { "mData" : 'categoryName'},
-    	                           { "mData" : 'departmentInUseName' }, 
-    	                           { "mData" : 'location' }, 
-    	                           { "mData" : 'serviceStartTime' }, 
-    	                           { "mData" : 'statusName' }, 
-    	                           { "mData" : 'reviewStatusName' }, 
-    	                           { "mData" : 'purpose' }
+    	            	 { "mData" : 'id' },
+    	                           { "mData" : 'SecurityNo' }, 
+    	                           { "mData" : 'Name' }, 
+    	                           { "mData" : 'SecurityLevelName' }, 
+    	                           { "mData" : 'UserInMaintenanceName' }, 
+    	                           { "mData" : 'CategoryName'},
+    	                           { "mData" : 'DepartmentInUseName' }, 
+    	                           { "mData" : 'ServiceStartTime' }, 
+    	                           { "mData" : 'StatusName' }, 
+    	                           { "mData" : 'ReviewStatusName' }, 
+    	                           { "mData" : 'action' }, 
+    	                           { "mData" : 'verity' }, 
+    	                           { "mData" : 'id' }
     	                             ]
     			});
                 
             });
             
-            function view(id) {
-            	$("#categorycode").val(id);
-            	
-            	table.fnDraw();
+            function verity0(id) {
+            	if(confirm("是否确认此台账？")) {
+            		$.post("${contextPath }/account-life-cycle/audit-task/verity",{ciid: id, atid: atid},function(result){
+            		    if(result.flag) {
+            		    	table.fnDraw();
+            		    }else {
+            		    	alert(result.msg);
+            		    }
+            		  });
+                	return true;
+                	} else
+                		return false;
             }
             
+            function pass0(id,decide){
+            	if(confirm('确认操作？')){
+            		$.post("${contextPath }/account-life-cycle/audit-task/pass?decide="+decide+"&ids="+id, function(data) {
+
+						if(data.flag)
+							table.fnDraw();
+						else
+							alert("操作失败，原因："+data.msg);
+        			},"json");
+            		return true;
+        		} else
+        			return false;
+            }
+            
+            function contains0(id) {
+            	$.ajax({
+    				url : "${contextPath}/account-life-cycle/audit-task/contains0?ciid="+id,//这个就是请求地址对应sAjaxSource
+    				type : "get",//这个是把datatable的一些基本数据传给后台,比如起始位置,每页显示的行数
+    				success : function(result) {
+    					var str = '<div class="row-form clearfix"><div class="col-md-3">&nbsp;</div><div class="col-md-4"><b>原 值</b></div><div class="col-md-5"><b>修改值</b></div></div>';
+    					$.each(result,function(name,value) {
+    						var value1 = "";
+    						if(value[1]!=null)
+    							value1 = value[1];
+    						str+='<div class="row-form clearfix"><div class="col-md-3"><b>'+name+'：</b></div><div class="col-md-4">'+value[0]+'</div><div class="col-md-5">'+value1+'</div></div>';
+    						});
+    					$('#contains0').empty();
+    					$('#contains0').append(str);
+    					$("#containsModal").modal('show');
+    				}
+    			});
+            	
+            }
+            
+            function del(id) {
+            	if(confirm("是否删除？")) {
+            	$.ajax({
+    				url : "${contextPath }/account-life-cycle/audit-task/del/"+id,//这个就是请求地址对应sAjaxSource
+    				type : "post",//这个是把datatable的一些基本数据传给后台,比如起始位置,每页显示的行数
+    				success : function(result) {
+    					if(result.flag) {
+    						table.fnDraw();
+    					} else {
+    						alert(result.msg);
+    					}
+    				}
+    			});
+            	return true;
+            	} else
+            		return false;
+            }
+            
+            function recover(id) {
+            	if(confirm("是否恢复？")) {
+	            	$.ajax({
+	    				url : "${contextPath }/account-life-cycle/audit-task/recover/"+id,//这个就是请求地址对应sAjaxSource
+	    				type : "post",//这个是把datatable的一些基本数据传给后台,比如起始位置,每页显示的行数
+	    				success : function(result) {
+	    					if(result.flag) {
+	    						table.fnDraw();
+	    					} else {
+	    						alert(result.msg);
+	    					}
+	    				}
+	    			});
+	            	return true;
+            	} else
+            		return false;
+            }
             
             function retrieveData( sSource111,aoData111, fnCallback111) {
     			$.ajax({
@@ -198,86 +416,46 @@
 <body>
     <div class="wrapper"> 
 
-        <!--header-->
-        <div class="header"></div>
-        <!--header end-->
-        
-        <!--menu-->
-        <div class="menu"></div>
-        <!--menu end-->
 
-        <div class="content">
-            <!--breadline-->
-            <div class="breadLine">
-
-                <ul class="breadcrumb">
-                    <li><a href="#">运维管理系统</a> <span class="divider">></span></li>
-                    <li><a href="#">台账管理</a></li>       
-                </ul>
-
-                <ul class="buttons"></ul>
-
-            </div>
-            <!--breadline end-->
+        <div class="content wide0">
 
             <!--workplace-->
-            <div class="workplace">             
+            <div class="workplace wide0">             
 
                 <div class="row">
 
                     <div class="col-md-12" >
-                            
-                      <ul class="nav nav-pills">
-                      <li class="active"><a>台账管理</a></li>
-                      <c:forEach items="${types }" var="map">
-                      <li class="dropdown">
-						<a tabindex="0" data-toggle="dropdown" data-submenu>${map.key } <span class="caret"></span></a>
-						<ul class="dropdown-menu">
-						<c:forEach items="${map.value }" var="accountType">
-						<li><a href="javascript:void(0);" onclick="view('${accountType.category}');">${accountType.name }</a>
-							
-						</li>
-						
-						</c:forEach>	
-						</ul>			
-					</li>
-                      </c:forEach>
-                                    </ul>
-                                    <div class="dr"></div>
-                        	<!--<div class="toolbar clearfix">
-                        		<div class="pull-right">
-                                    <p>
-                                       <c:if test="${!nonTask && isAccountSub }"> <a class="btn btn-default" href="#fileModal" data-toggle="modal" role="button" >导入</a></c:if>
-                                       <sec:authorize access="hasRole('account_master')">  <a class="btn btn-default" href="#eModal" data-toggle="modal" role="button" >导出</a></sec:authorize>                              
-                                    </p>
-                                </div>
-                        	</div>-->
+                    	<input type="hidden" name="group1" value="${groupId }"/>
+                        <input type="hidden" id="categorycode" value="0">
 						<div class="head clearfix">
                             <ul class="buttons">
                                 <li>
                                     <a class="isw-settings" href="#"></a>
                                     <ul class="dd-list">
-                                        <li><a  href="#eModal" data-toggle="modal"><span class="isw-plus"></span> 导出</a></li>
+                                        <li><a href="javascript:void(0);" id="pass"><span class="isw-edit"></span> 审核通过</a></li>
+                                        <li><a data-toggle="modal" href="#fModal"><span class="isw-edit"></span> 发回重审</a>
                                     </ul>
                                 </li>
                             </ul>                        
                         </div>
                         <input type="hidden" id="categorycode" value="0">
-                        <div class="block-fluid  table-sorting clearfix" id="inbox">
+                        <div class="block-fluid  table-sorting clearfix">
                             <table  class="table" id="eventTable">
                                 <thead>
                                     <tr>
+                                       <th width="30px"><input type="checkbox" name="checkall"/></th>
                                        	<th width="6%">编号</th>
-                                        <th width="10%">名称</th>
+                                        <th>名称</th>
                                         <th width="5%">密级</th>
 										<th width="7%">责任人</th>
 										<th width="7%">类别</th>
 										<th width="10%">所属部门</th>
-										<th>物理位置</th>
 										<th width="10%">启用时间</th>
 										<th width="10%">使用情况</th>
-										<th width="10%">审核状态</th>
-										<th>用途</th>
+										<th>审核状态</th>
+										<th>审核操作</th>
+										<th>是否确认</th>
+										<th width="10%">操作</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -294,43 +472,23 @@
         </div>
         
          <!-- Bootrstrap modal form -->
-         <c:if test="${isAccountMaster }">
-        <div class="modal fade" id="eModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        
+        <div class="modal fade" id="containsModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>                        
-                        <h4>导出台账</h4>
+                        <h4>对比数据</h4>
                     </div>
-                    <form id="export" action="${contextPath}/account-life-cycle/export-xls" method="post">
                     <div class="modal-body modal-body-np">
                         <div class="row">
-                            <div class="block-fluid">
-                                                                  
-                                <div class="row-form clearfix">
-                                    <div class="col-md-3">部门:</div>
-                                    <div class="col-md-9"><c:forEach items="${topGroup.child }" var="group"><label class="checkbox checkbox-inline">
-                                        <input type="checkbox" name="exportGroups" value="${group.id }" /> ${group.groupName} </label></c:forEach></div>
-                                </div>         
-                                <div class="row-form clearfix">
-                                    <div class="col-md-3">台账分类:</div>
-                                    <div class="col-md-9"><c:forEach items="${accountTypes }" var="type"><label class="checkbox checkbox-inline">
-                                        <input type="checkbox" name="exportCodes" value="${type.category }" /> ${type.name} </label></c:forEach></div>
-                                </div>                                          
+                            <div class="block-fluid" id="contains0">
                             </div>                
-                            <div class="dr"><span></span></div>
                         </div>
                     </div>   
-                    </form>
-                    <div class="modal-footer">
-                        <button class="btn btn-warning" id="exportBtn" aria-hidden="true"> 提 交 </button> 
-                        <button class="btn btn-default" data-dismiss="modal" aria-hidden="true">Close</button>            
-                    </div>
-                    
                 </div>
             </div>
         </div>
-        </c:if>
     </div>
 </body>
 

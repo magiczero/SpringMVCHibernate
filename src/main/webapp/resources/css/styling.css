@@ -15,6 +15,8 @@ body.grid{background-image: url("../img/backgrounds/body_grid.jpg");}
     .menu.hidden{display: none; visibility: visible; position: absolute; left: 50%; margin-top: 0px; margin-left: -110px !important; top: 15px; z-index: 2000; height: auto; min-height: auto;}
         .menu.hidden .breadLine .arrow {display: block;}
     .content.wide{margin-left: 0px;}
+    .content.wide0{margin: 0; padding:0;}
+    .workplace.wide0{margin: 0; padding:0;}
 
 /* Dark */    
     .wrapper.dark a,.wrapper.dark .users .item .info a,.wrapper.dark .ui-accordion .ui-accordion-header,.wrapper.dark .fc-state-default,

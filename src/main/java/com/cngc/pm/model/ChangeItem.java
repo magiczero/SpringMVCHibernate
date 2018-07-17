@@ -28,11 +28,13 @@ public class ChangeItem implements Serializable {
 	private String propertiesName;
 	private String oldValue;
 	private String newValue;
+	private String creator;				//创建者
 	private Date createdTime;
+	private String modifier;					//修改人
 	private Date updatedTime;
 	private ChangeitemType type;
 	private ChangeitemActionType actionType;
-	private boolean isPass;					//改变是否通过
+	private boolean isPass;					//改变是否通过  20180703修改概念为是否确认
 	
 	@Column(name="passed_")
 	public boolean isPass() {
@@ -123,6 +125,19 @@ public class ChangeItem implements Serializable {
 	public void setUpdatedTime(Date updatedTime) {
 		this.updatedTime = updatedTime;
 	}
-	
+	@Column(name="create_by")
+	public String getCreator() {
+		return creator;
+	}
+	public void setCreator(String creator) {
+		this.creator = creator;
+	}
+	@Column(name="update_by")
+	public String getModifier() {
+		return modifier;
+	}
+	public void setModifier(String modifier) {
+		this.modifier = modifier;
+	}
 	
 }

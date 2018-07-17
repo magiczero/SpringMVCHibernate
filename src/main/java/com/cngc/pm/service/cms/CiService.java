@@ -10,8 +10,6 @@ import java.util.Set;
 
 import javax.crypto.NoSuchPaddingException;
 
-import org.codehaus.jackson.JsonParseException;
-import org.codehaus.jackson.map.JsonMappingException;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.cngc.pm.model.Attachment;
@@ -24,7 +22,7 @@ import com.googlecode.genericdao.search.SearchResult;
 
 public interface CiService {
 
-	void save(Ci ci,String ip) throws JsonParseException, JsonMappingException, IOException;
+	void save(Ci ci,String ip) throws Exception;
 
 	boolean delById(Long id);
 
@@ -91,9 +89,10 @@ public interface CiService {
 
 	void exportXls(List<Group> groups , List<Category> categorys, java.io.OutputStream out) throws Exception;
 
-	void delByAuditTask(Ci ci, AuditTask at) throws JsonParseException, JsonMappingException, IOException;
+	void delByAuditTask(Ci ci, AuditTask at) throws Exception;
 
 	void recoverByAuditTask(Ci ci, AuditTask at) throws Exception;
 
-	void passCis(AuditTask at, Long[] ids);
+	void passCis(AuditTask at, Long[] ids, boolean decide);
+
 }

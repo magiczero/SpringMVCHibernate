@@ -1,12 +1,15 @@
 package com.cngc.pm.dao.cms;
 
+import java.util.Collection;
 import java.util.List;
 
 import com.cngc.pm.model.cms.Category;
+import com.cngc.pm.model.cms.Ci;
 import com.cngc.pm.model.Group;
 import com.cngc.pm.model.SysUser;
 import com.cngc.pm.model.cms.AuditTask;
 import com.googlecode.genericdao.dao.hibernate.GenericDAO;
+import com.googlecode.genericdao.search.SearchResult;
 
 public interface AuditTaskDAO extends GenericDAO<AuditTask, Long> {
 
@@ -28,4 +31,17 @@ public interface AuditTaskDAO extends GenericDAO<AuditTask, Long> {
 	 * @return
 	 */
 	AuditTask getByGroupAndCode(Group group, Category category);
+	
+	SearchResult<Ci> getCiList(Long atId,Collection<String> groupIdSet, Collection<String> codeSet, int iDisplayStart, int iDisplayLength);
+
+	/**
+	 * 根据条件获取数量
+	 * @param at
+	 * @param groupId
+	 * @param categoryCode
+	 * @param isCommit
+	 * @param status
+	 * @return
+	 */
+	int getCountByCondition(long at, Long groupId, String categoryCode, boolean isCommit, String status);
 }

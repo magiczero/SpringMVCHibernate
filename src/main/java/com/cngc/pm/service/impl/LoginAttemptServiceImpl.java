@@ -57,7 +57,7 @@ public class LoginAttemptServiceImpl implements LoginAttemptService {
         	SysUser user0 = userDao.getUserByUserName(key);
 			user0.setAccountNonLocked(false);
 			
-			userDao.save(user0);
+			//userDao.save(user0);
 			
 			Records record = new Records();
 			record.setUsername(user0.getUsername());
@@ -86,6 +86,27 @@ public class LoginAttemptServiceImpl implements LoginAttemptService {
 	public int getAttempts(String key) throws ExecutionException {
 		// TODO Auto-generated method stub
 		return attemptsCache.get(key)+1;
+	}
+	
+	@Override
+	@Transactional(propagation = Propagation.REQUIRED, readOnly=false)
+	public void unLock(String username, String operator, String remortIP) {
+		// TODO Auto-generated method stub
+		SysUser user0 = userDao.getUserByUserName(username);
+		
+		if(!user0.isAccountNonLocked()&&isBlocked(username)) {
+			user0.setAccountNonLocked(true);		//解锁
+			
+			attemptsCache.invalidate(username);
+			
+			Records records = new Records();
+			records.setUsername(operator);
+			records.setType(RecordsType.role);
+			records.setIpAddress(remortIP);
+			records.setDesc("【"+operator+"】解锁了用户["+username+"]");
+			
+			recordsDao.save(records);
+		}
 	}
 
 }

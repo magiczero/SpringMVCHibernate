@@ -33,6 +33,7 @@ import com.cngc.pm.model.Role;
 import com.cngc.pm.model.SysUser;
 import com.cngc.pm.service.DocumentService;
 import com.cngc.pm.service.GroupService;
+import com.cngc.pm.service.LoginAttemptService;
 import com.cngc.pm.service.RoleService;
 import com.cngc.pm.service.UserService;
 import com.cngc.utils.UserSerializer;
@@ -54,6 +55,8 @@ public class UserController extends BaseController{
 	private GroupService groupService;
 	@Resource
 	private DocumentService docService;
+	@Resource
+	private LoginAttemptService loginService;
 	
 	@RequestMapping(value = "/name-check")
 	@ResponseBody  
@@ -389,9 +392,10 @@ public class UserController extends BaseController{
 		}
 		if(!isAuth)
 			return map;
-		String currentusername = SecurityContextHolder.getContext().getAuthentication().getName();
+		//String currentusername = SecurityContextHolder.getContext().getAuthentication().getName();
 		try{
-			userService.lockingOrUnlockingWithUser(false, username, currentusername,getRemortIP(request));
+			//userService.lockingOrUnlockingWithUser(false, username, currentusername,getRemortIP(request));
+			loginService.unLock(username, SecurityContextHolder.getContext().getAuthentication().getName(), getRemortIP(request));
 			map.put("flag", true);
 		} catch (Exception e) {
 			

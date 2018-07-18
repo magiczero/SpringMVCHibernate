@@ -9,4 +9,5 @@ public interface LoginAttemptService {
 	boolean isBlocked(String key);
 	
 	int getAttempts(String key) throws ExecutionException;
+	void unLock(String username, String operator, String remortIP);
 }

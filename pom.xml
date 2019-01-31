@@ -16,7 +16,7 @@
 		<hibernate.version>4.3.5.Final</hibernate.version>
 		<activiti.version>5.16</activiti.version>
         <activiti.engine.version>5.16</activiti.engine.version>
-        <jackson.version>2.9.6</jackson.version>
+        <jackson.version>2.9.8</jackson.version>
         <!-- <spring.security.oauth.version>2.0.16.RELEASE</spring.security.oauth.version>
         <spring-data-jpa.version>1.0.1.RELEASE</spring-data-jpa.version> -->
 	</properties>

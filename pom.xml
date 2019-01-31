@@ -9,13 +9,14 @@
 	<version>1.0.0-BUILD-SNAPSHOT</version>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<org.springframework-version>4.3.18.RELEASE</org.springframework-version>
-		<org.springframework.security-version>3.2.4.RELEASE</org.springframework.security-version>
+		<org.springframework-version>4.3.8.RELEASE</org.springframework-version>
+		<org.springframework.security-version>4.2.6.RELEASE</org.springframework.security-version>
 		<org.aspectj-version>1.7.4</org.aspectj-version>
 		<org.slf4j-version>1.7.5</org.slf4j-version>
 		<hibernate.version>4.3.5.Final</hibernate.version>
 		<activiti.version>5.16</activiti.version>
         <activiti.engine.version>5.16</activiti.engine.version>
+        <jackson.version>2.6.3</jackson.version>
         <!-- <spring.security.oauth.version>2.0.16.RELEASE</spring.security.oauth.version>
         <spring-data-jpa.version>1.0.1.RELEASE</spring-data-jpa.version> -->
 	</properties>
@@ -295,11 +296,11 @@
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
-			<version>4.7</version>
+			<version>4.12</version>
 			<scope>test</scope>
 		</dependency>
 
-		<!-- json数据 -->
+		<!-- json数据 
 		<dependency>
 			<groupId>org.codehaus.jackson</groupId>
 			<artifactId>jackson-core-asl</artifactId>
@@ -309,7 +310,37 @@
 			<groupId>org.codehaus.jackson</groupId>
 			<artifactId>jackson-mapper-asl</artifactId>
 			<version>1.9.13</version>
+		</dependency>-->
+		<!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-core -->
+		<dependency>
+		    <groupId>com.fasterxml.jackson.core</groupId>
+		    <artifactId>jackson-core</artifactId>
+		    <version>${jackson.version}</version>
 		</dependency>
+		<!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind -->
+		<dependency>
+		    <groupId>com.fasterxml.jackson.core</groupId>
+		    <artifactId>jackson-databind</artifactId>
+		    <version>${jackson.version}</version>
+		</dependency>
+		<dependency>
+      		<groupId>com.fasterxml.jackson.dataformat</groupId>
+	      	<artifactId>jackson-dataformat-xml</artifactId>
+	      	<version>${jackson.version}</version>
+	    </dependency>
+		
+		<!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-annotations
+		<dependency>
+		    <groupId>com.fasterxml.jackson.core</groupId>
+		    <artifactId>jackson-annotations</artifactId>
+		    <version>${jackson.version}</version>
+		</dependency>
+		<dependency>
+            <groupId>com.fasterxml.jackson.module</groupId>
+            <artifactId>jackson-module-jaxb-annotations</artifactId>
+            <version>${jackson.version}</version>
+        </dependency> -->
+		
 		<!-- 图片处理 -->
 		<dependency>
             <groupId>org.imgscalr</groupId>

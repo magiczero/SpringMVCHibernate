@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.cngc.utils.Common;
@@ -15,6 +16,7 @@ import com.cngc.utils.Common;
 public class UtilTest {
 
 	@Test
+	@Ignore
 	public void test() throws FileNotFoundException {
 		Map<String, String[]> headers = new HashMap<>();  
         Map<String, List<Object[]>> dataset = new HashMap<>();

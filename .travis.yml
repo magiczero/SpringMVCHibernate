@@ -1,3 +1,11 @@
 language: java
 jdk:
   - oraclejdk8
+  
+service:
+  - mysql
+before_install: # 注意需要先创建一个与你程序运行需要数据库名
+  - mysql -e 'create database pmsys_20170711;'
+  
+before_script:
+  - echo "USE mysql;\nUPDATE user SET password=PASSWORD('Myoa_888') WHERE user='root';\nFLUSH PRIVILEGES;\n" | mysql -u root
